@@ -1,0 +1,5 @@
+<dataset>
+	<rataplanuser username="Peter" mail="peter@sch.mitz" firstName="peter" lastName="schmitz" />
+	<rataplanuser username="Hans" mail="hans@mei.er" firstName="hans" lastName="meier" />
+	<rataplanuser username="fritz" mail="fritz@fri.tte" firstName="fritz" lastName="fritte" />
+</dataset>
