@@ -1,0 +1,15 @@
+<dataset>
+  <backendUser />
+  
+  <appointmentRequestConfig decisionType="1" isDescription="1" isStartDate="1" isStartTime="1" isEndDate="1" isEndTime="1" isUrl="1"/>
+  
+  <appointmentRequest title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isExpired="false" />
+
+  <appointment description="Let's Do Something" url="www.maybe.here" startDate="2050-11-11 11:11:00" endDate="2050-12-12 12:12:00" />
+
+  <appointmentMember />
+  
+  <appointmentDecision />
+  
+  <backendUserAccess />
+</dataset>

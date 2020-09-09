@@ -1,0 +1,21 @@
+package de.iks.rataplan.domain;
+
+public enum ErrorCode {
+	MALFORMED,
+	UNEXPECTED_ERROR,
+	RESOURCE_NOT_FOUND,
+	SERVICE_UNAVAILABLE,
+	TIMEOUT,
+	FORBIDDEN,
+
+	// ErrorCodes from rataplan-auth 
+	INVALID_TOKEN,
+//	UNEXPECTED_ERROR,
+	MAIL_IN_USE,
+	USERNAME_IN_USE,
+	WRONG_CREDENTIALS,
+	ONLY_CREATOR,
+	NO_ACCESS
+//	TIMEOUT;
+	;
+}
