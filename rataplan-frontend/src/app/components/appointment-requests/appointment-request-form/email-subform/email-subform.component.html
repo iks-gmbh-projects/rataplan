@@ -1,0 +1,15 @@
+<div [formGroup]="emailConfig">
+  <label>Bitte tragen Sie die E-Mail-Adressen der bereits bekannten Terminteilnehmer ein um diese einzuladen.</label>
+  <br>
+  <div class="form-control email-wrapper" type="text">
+    <div *ngFor="let email of emailList; let idx = index" class="email-div">
+      {{email}}
+      <div>
+        <button type="button" (click)="deleteConsignee(idx)" class="btn-delete">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+      </div>
+    </div>
+    <input formControlName="consignee" type="text" class="form-control email-input" (keydown)="onKeyDown($event)" (paste)="onPaste($event)" (keyup.enter)="onEnter()" (blur)="onBlur()" />
+  </div>
+</div>

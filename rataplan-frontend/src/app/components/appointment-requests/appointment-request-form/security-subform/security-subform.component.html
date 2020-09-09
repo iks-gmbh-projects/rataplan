@@ -1,0 +1,42 @@
+<div *ngIf="!create">
+  <label>
+    <input [(ngModel)]="changePassword" type="checkbox" (change)="onClickCheckbox()">
+    Passwort ändern
+  </label>
+</div>
+
+<div *ngIf="changePassword">
+  <div [formGroup]="securityForm">
+
+    <div [ngClass]="{'has-error' : hasErrors('adminPassword') }">
+      <label>{{adminPasswordText}}</label>
+      <br>
+      <div class="password-container">
+        <input formControlName="adminPassword" #adminPassword class="form-control"
+               id="admin-password" type="password" placeholder="Adminpasswort" maxlength="32"/>
+        <span class="glyphicon glyphicon-eye-open pull-right" (mouseover)="over('adminPassword')"
+              (mouseleave)="leave('adminPassword')"></span>
+      </div>
+      <br>
+      <small *ngIf="hasErrors('adminPassword')" class="text-danger">
+        Ein gültiges Passwort ist mindestens 4 und maximal 32 Zeichen lang.
+      </small>
+    </div>
+
+    <br>
+    <div [ngClass]="{'has-error' : hasErrors('password') }">
+      <label>{{passwordText}}</label><br>
+      <div class="password-container">
+        <input formControlName="password" #password class="form-control" id="password" type="password"
+             placeholder="Passwort" maxlength="32"/>
+        <span class="glyphicon glyphicon-eye-open pull-right" (mouseover)="over('password')" (mouseleave)="leave('password')"></span>
+      </div>
+      <br>
+      <small *ngIf="hasErrors('password')" class="text-danger">
+        Ein gültiges Passwort ist mindestens 4 und maximal 32 Zeichen lang.
+      </small>
+    </div>
+    <br>
+  </div>
+
+</div>

@@ -1,0 +1,23 @@
+<h1>
+  Meine Teilnahmen
+</h1>
+
+<div class="row well">
+  <div class="col-md-12">
+    <table class="table">
+      <tr>
+        <th>Titel</th>
+        <th>läuft bis</th>
+        <th>Anzahl Vorschläge</th>
+        <th>Anzahl Teilnehmer</th>
+        <th></th>
+      </tr>
+      <tr *ngFor="let request of appointmentRequests" (click)="onClickRow(request.id)" class="clickable appointment-request-row">
+        <td>{{request.title}}</td>
+        <td>{{request.deadline | date:'dd.MM.y'}}</td>
+        <td>{{request.appointments.length}}</td>
+        <td>{{request.appointmentMembers.length}}</td>
+      </tr>
+    </table>
+  </div>
+</div>

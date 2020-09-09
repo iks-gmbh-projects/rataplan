@@ -1,0 +1,15 @@
+.inputNumber {
+  width: 80px;
+}
+
+input[type="number"] {
+  display: block;
+  margin: 0 auto;
+}
+
+.no-side-padding {
+  padding-left: 0px;
+  padding-right: 0px;
+  display: table;
+  margin: 0 auto;
+}

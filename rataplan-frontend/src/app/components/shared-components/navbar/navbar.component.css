@@ -1,0 +1,7 @@
+.active {
+  background: #18bc9c;
+  background: -webkit-linear-gradient(#18bc9c, #2c3e50, #18bc9c);
+  background: -o-linear-gradient(#18bc9c, #2c3e50, #18bc9c);
+  background: -moz-linear-gradient(#18bc9c, #2c3e50, #18bc9c);
+  background: linear-gradient(#18bc9c, #2c3e50, #18bc9c);
+}

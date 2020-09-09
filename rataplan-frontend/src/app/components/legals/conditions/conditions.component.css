@@ -1,0 +1,16 @@
+.wrapper {
+  height: 700px;
+  overflow-y: scroll;
+}
+
+.centered {
+  text-align: center;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.inner {
+  padding: 20px;
+}

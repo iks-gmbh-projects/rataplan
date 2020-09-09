@@ -1,0 +1,28 @@
+<h1>
+  Geschafft!
+</h1>
+<h3>
+  Unter dem folgenden Link können nun alle Teilnehmer abstimmen:
+</h3>
+<a routerLink="/appointmentrequest/{{ id }}">
+  {{ baseUrl }}/appointmentrequest/{{ id }}
+</a>
+<br><br>
+<h4>
+  Falls Sie die Terminanfrage bearbeiten möchten, können Sie dies unter folgendem Link tun:
+</h4>
+<a routerLink="/appointmentrequest/{{ id }}/edit">
+  {{ baseUrl }}/appointmentrequest/{{ id }}/edit
+</a>
+<br><br>
+<h3 *ngIf="!mail">
+  Speichern Sie diese Links ab, da sie ansonsten verloren gehen.
+</h3>
+<br>
+<span *ngIf="mail">
+	Es wurde eine E-Mail an
+	<i>
+		"{{ mail }}"
+	</i>
+	geschickt. Dort sind auch die Links zu finden.
+</span>

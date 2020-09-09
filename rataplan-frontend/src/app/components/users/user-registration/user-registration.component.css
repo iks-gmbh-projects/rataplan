@@ -1,0 +1,12 @@
+.register-button {
+  text-align: center;
+  float: right;
+ }
+
+.register-button::after {
+  clear: both;
+}
+
+.inline {
+  display: inline;
+}

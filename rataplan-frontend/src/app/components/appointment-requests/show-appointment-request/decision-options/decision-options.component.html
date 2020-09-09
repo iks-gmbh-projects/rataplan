@@ -1,0 +1,17 @@
+  <select [selectedIndex]="selectedIndex()"
+    (change)="changeDecision($event)"
+    class="form-control clickable"
+          tabindex="{{tabindex}}">
+    <option>
+      {{ decisionOptions[0] }}
+    </option>
+    <option>
+      {{ decisionOptions[1] }}
+    </option>
+    <option *ngIf="isExtended()">
+      {{ decisionOptions[2] }}
+    </option>
+    <option>
+      {{ decisionOptions[3] }}
+    </option>
+  </select>

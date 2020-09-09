@@ -1,0 +1,53 @@
+<div *ngIf="!isLoadingComponent; else loadingComponent">
+  <div *ngIf="isAuthorized && !isLoadingData; else protector">
+
+    <rp-show-information [appointmentRequest]="appointmentRequest" [dateFormat]="dateFormat"></rp-show-information>
+
+    <div class="show-container">
+      <div class="table-container" id="table-container">
+        <table>
+
+          <thead rp-show-thead [appointmentRequest]="appointmentRequest" [dateFormat]="dateFormat">
+          </thead>
+
+          <tbody>
+
+          <tr rp-appointment-member-form-row *ngIf="!appointmentRequest.expired"
+              [appointmentRequest]="appointmentRequest"
+              [password]="password" [spinnerDelay]="delay" [user]="user">
+          </tr>
+
+          <tr rp-show-appointment-member-row class="show-appointment-member-row"
+              *ngFor="let appointmentMember of appointmentRequest.appointmentMembers.slice().reverse(); let idx = index"
+              [appointmentRequest]="appointmentRequest"
+              [appointmentMember]="appointmentMember" [spinnerDelay]="delay" [password]="password" [memberId]="appointmentMember.id"
+              [user]="user" (onEdit)="setEditMemberId($event)" [editMemberId]="editMemberId" [idx]="idx"
+              [@flyInOut]="appointmentMember">
+          </tr>
+
+          <tr>
+            <td class="fix-left-col dividing-row"></td>
+            <td class="dividing-row" *ngFor="let appointment of appointmentRequest.appointments"></td>
+            <td class="fix-right-col dividing-row" *ngIf="!appointmentRequest.expired"></td>
+          </tr>
+
+          <tr rp-statistic [appointmentRequest]="appointmentRequest" [expired]="appointmentRequest.expired">
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <ng-template #protector>
+    <rp-protector [isEdit]="isEdit" [isLoading]="isLoadingData" [wrongPassword]="isWrongPassword"
+                  (onSubmitPassword)="onSubmitPassword($event)"></rp-protector>
+  </ng-template>
+
+</div>
+
+<ng-template #loadingComponent>
+  <rp-spinner [spinnerStyles]="loadingSpinner"></rp-spinner>
+</ng-template>

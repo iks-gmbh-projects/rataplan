@@ -1,0 +1,15 @@
+.password-container {
+  max-width: 400px;
+  margin: auto;
+}
+.inline {
+  display: inline;
+}
+span {
+  margin-top: -30px;
+  padding-right: 11px;
+}
+.wrapper {
+  margin-top: 10px;
+  text-align: center;
+}

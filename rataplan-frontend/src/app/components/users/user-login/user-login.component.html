@@ -1,0 +1,61 @@
+<div class="col-md-4 col-md-offset-4">
+  <h1>Login</h1>
+  <br><br>
+  <div class="well row">
+    <form [formGroup]="userLoginForm">
+
+      <div [ngClass]="{'has-error' : hasErrors('username') }">
+        <label for="username">
+          Benutzername
+        </label>
+        <input autofocus class="form-control" formControlName="username" id="username" #username tabindex="1"
+               type="text" placeholder="Benutzername" autofocus/>
+        <div class="optional">oder</div>
+      </div>
+
+      <div [ngClass]="{'has-error' : hasErrors('mail') }">
+        <label for="mail">
+          E-Mail
+        </label>
+        <input class="form-control" formControlName="mail" id="mail" #mail tabindex="1"
+               type="text" placeholder="E-Mail"/>
+      </div>
+
+      <small *ngIf="hasErrors('username')" class="text-danger">
+        Bitte tragen Sie Benutzername oder E-Mail ein.
+      </small>
+
+      <br>
+      <br>
+
+      <label for="password">
+        Passwort
+      </label>
+      <br>
+      <div [ngClass]="{'has-error' : hasErrors('password') }">
+        <input class="form-control" formControlName="password" id="password" #password tabindex="2"
+               type="password" placeholder="Passwort"/>
+        <small *ngIf="hasErrors('password')" class="text-danger">
+          Bitte geben Sie Ihr Passwort ein.
+        </small>
+      </div>
+
+      <br>
+      <small *ngIf="wrongCombination" class="text-danger">
+        {{wrongEntry}} oder Passwort falsch.
+      </small>
+      <br>
+      <br>
+      <a *ngIf="wrongCombination" routerLink="/register">
+        Schon registriert?
+      </a>
+      <div class="login-btn-wrapper">
+        <button (click)="login()" (keyup.enter)="login()" class="btn btn-primary btn-margin"
+                tabindex="15">
+          <div *ngIf="!alreadySubmitted">Login</div>
+          <rp-spinner *ngIf="alreadySubmitted" [spinnerStyles]="spinnerStyles"></rp-spinner>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

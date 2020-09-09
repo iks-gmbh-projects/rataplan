@@ -1,0 +1,7 @@
+.login-btn-wrapper {
+  float: right;
+}
+
+.login-btn-wrapper::after {
+  clear: both;
+}

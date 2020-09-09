@@ -1,0 +1,44 @@
+<label>Welche Entscheidungsmöglichkeit soll auswählbar sein?</label>
+<div [formGroup]="decisionConfiguration" id="decision-config-wrapper">
+  <label>
+    <input formControlName="decisionType"
+           type="radio"
+           value="DEFAULT"
+           tabindex="0"
+           id="defaultConfig"/>
+    Ja, Nein
+    <span popover="Die Anfrageteilnehmer sollen nur mit ja oder nein antworten können."
+          popoverPlacement="right"
+          [popoverOnHover]="true">
+                <i class="glyphicon glyphicon-info-sign"></i>
+              </span>
+  </label>
+  <br>
+  <label>
+    <input formControlName="decisionType"
+           type="radio"
+           value="EXTENDED"
+           tabindex="0"
+           id="extendedConfig"/>
+    Ja, eher Ja, Nein
+    <span popover="Es ist gibt auch die Möglichkeit ein 'Ja, wenn es nicht anders geht.' einzugeben."
+          popoverPlacement="right"
+          [popoverOnHover]="true">
+                <i class="glyphicon glyphicon-info-sign"></i>
+              </span>
+  </label>
+  <br>
+  <label>
+    <input formControlName="decisionType"
+           type="radio"
+           value="NUMBER"
+           tabindex="0"
+           id="numberConfig"/>
+    Anzahl Personen
+    <span popover="Die Anfrageteilnehmer sollen angeben mit wievielen Personen sie kommen."
+          popoverPlacement="right"
+          [popoverOnHover]="true">
+                  <i class="glyphicon glyphicon-info-sign"></i>
+              </span>
+  </label>
+</div>

@@ -1,0 +1,12 @@
+.description-div {
+  min-height: 135px;
+  height: auto;
+}
+
+:host /deep/ .datepicker-error .mydp input {
+  border: 2px solid #e74c3c;
+}
+
+textarea {
+  resize: vertical;
+}

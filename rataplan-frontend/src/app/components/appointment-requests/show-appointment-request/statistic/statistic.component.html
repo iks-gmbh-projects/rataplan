@@ -1,0 +1,7 @@
+<td class="fix-left-col final">Anzahl</td>
+<td *ngFor="let appointmentDecision of decisionStatisticList; let idx = index"
+    [ngClass]="{'accept final-accept': isFavorite(idx)}"
+    class="centered final">
+  {{ getAccepts(idx) }}
+</td>
+<td *ngIf="!expired" class="fix-right-col final">&nbsp;</td>

@@ -1,0 +1,22 @@
+.appointment-div  {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background: #f4f4f4; /* For browsers that do not support gradients */
+}
+.decision {
+  width: 50%;
+  display: block;
+  margin: 0 auto;
+}
+.top-button {
+  margin-top: -15px;
+}
+.arrow-button {
+  color: #828282;
+  padding-right: 8px;
+}
+h3 {
+  margin: 0 0 0 0;
+}

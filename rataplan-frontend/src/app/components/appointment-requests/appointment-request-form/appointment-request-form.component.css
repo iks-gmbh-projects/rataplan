@@ -1,0 +1,28 @@
+.top-label {
+  padding-left: 5px;
+}
+
+button {
+  margin-top: 25px;
+}
+
+h2 {
+  margin: 25px 0 40px 20px;
+  text-decoration: underline;
+}
+
+.password-container {
+  padding-left: 50px;
+}
+
+.pull-right {
+  float: right;
+}
+
+.pull-right::after {
+  clear: both;
+}
+.no-padding {
+  padding-left: 0px;
+  padding-right: 0px;
+}

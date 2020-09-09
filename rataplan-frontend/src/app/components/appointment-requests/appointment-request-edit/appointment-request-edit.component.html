@@ -1,0 +1,30 @@
+<div *ngIf="!isLoadingComponent; else loadingComponent">
+  <div *ngIf="isAuthorized; else protector">
+    <rp-appointment-request-form [appointmentRequest]="appointmentRequest" [create]="false"
+                                 (onSubmit)="saveAppointmentRequest($event)"
+                                 (onCancel)="cancel($event)"></rp-appointment-request-form>
+
+    <modal [title]="modalTitle" [hideCloseButton]="false" [closeOnEscape]="true" [closeOnOutsideClick]="true"
+           (onClose)="onCloseModal()" modalClass="modal-lg">
+      <modal-content>
+        {{modalContent}}
+      </modal-content>
+    </modal>
+  </div>
+
+  <ng-template #protector>
+    <rp-protector *ngIf="!onlyCreator; else onlyCreatorMessage" [isEdit]="isEdit" [isLoading]="isLoadingData"
+                  [wrongPassword]="wrongPassword" (onSubmitPassword)="onSubmitPassword($event)"></rp-protector>
+
+    <ng-template #onlyCreatorMessage>
+      <p class="error-text">Nur der Ersteller hat Zugriff.</p>
+
+      <a routerLink="/login">Nicht eingeloggt?</a>
+    </ng-template>
+  </ng-template>
+
+</div>
+
+<ng-template #loadingComponent>
+  <rp-spinner [spinnerStyles]="loadingSpinner"></rp-spinner>
+</ng-template>

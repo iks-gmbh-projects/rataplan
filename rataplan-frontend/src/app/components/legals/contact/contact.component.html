@@ -1,0 +1,66 @@
+<div class="col-md-6 col-md-offset-3">
+<h1>
+  Kontakt
+</h1>
+<div class="form-group row well">
+  <div [formGroup]="contact">
+
+    <div [ngClass]="{'has-error' : hasErrors('subject') }">
+      <label for="subject" class="top-label">
+        Betreff
+      </label>
+      <br>
+      <input formControlName="subject" #subject class="form-control" id="subject" type="text" tabindex="0" autofocus
+             placeholder="Betreff" maxlength="100"/>
+      <small *ngIf="hasErrors('subject')" class="text-danger">
+        Bitte tragen Sie einen Betreff ein.
+      </small>
+      <br>
+      <br>
+    </div>
+
+    <div [ngClass]="{'has-error' : hasErrors('content') }">
+      <label for="content" class="top-label">
+        Nachricht
+      </label>
+      <br>
+      <textarea formControlName="content" #content class="form-control" id="content" tabindex="0"
+                placeholder="Nachricht..." maxlength="350">
+        </textarea>
+      <small *ngIf="hasErrors('content')" class="text-danger">
+        Bitte geben Sie Ihre Nachricht ein.
+      </small>
+      <br>
+      <br>
+    </div>
+
+    <div [ngClass]="{'has-error' : hasErrors('senderMail') }">
+      <label for="senderMail" class="top-label">
+        E-Mail
+      </label>
+      <br>
+      <input formControlName="senderMail" #senderMail class="form-control" id="senderMail" type="text" tabindex="0"
+             placeholder="name@mail.com" maxlength="100"/>
+      <small *ngIf="hasErrors('senderMail')" class="text-danger">
+        Bitte geben Sie eine gültige E-Mail Adresse ein.
+      </small>
+      <br>
+      <br>
+    </div>
+    <i *ngIf="success">
+      Vielen Dank!
+      <br>
+      Die Kontaktaufnahme war erfolgreich.
+    </i>
+    <button type="button" (click)="submit()" class="btn btn-primary pull-right" id="btn-submit" tabindex="0" >
+      Abschicken
+    </button>
+
+  </div>
+</div>
+<modal [title]="modalTitle" [hideCloseButton]="false" [closeOnEscape]="true" [closeOnOutsideClick]="true" (onClose)="onCloseModal()" modalClass="modal-lg">
+  <modal-content>
+    {{modalContent}}
+  </modal-content>
+</modal>
+</div>

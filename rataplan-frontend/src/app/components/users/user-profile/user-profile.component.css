@@ -1,0 +1,15 @@
+.bold {
+  font-weight: bold;
+}
+
+table {
+  width: 350px;
+}
+
+th {
+  padding: 5px;
+}
+
+.wrapper {
+  min-width: 350px;
+}

@@ -1,0 +1,65 @@
+<tr *ngIf="hasStartDate || hasStartTime || hasEndTime">
+  <th class="fix-left-col date-height">
+    <span *ngIf="hasStartDate"><br></span>
+    <span *ngIf="hasEndDate"></span>
+  </th>
+
+  <th *ngFor="let appointment of appointmentRequest.appointments" class="long">
+          <span *ngIf="dateCompare.isSameDateTime(appointment.startDate, appointment.endDate); else diffTime">
+              {{ appointment.startDate | datex: dateFormat[0] }}
+            </span>
+    <ng-template #diffTime>
+              <span *ngIf="dateCompare.isSameDate(appointment.startDate, appointment.endDate); else diffDate">
+                {{ appointment.startDate | datex: dateFormat[0] }}<br>bis {{ appointment.endDate | datex: dateFormat[2] }}
+              </span>
+      <ng-template #diffDate>
+        <span *ngIf="hasStartDate || hasStartTime">{{ appointment.startDate | datex: dateFormat[0] }}<br></span>
+        <span *ngIf="hasEndDate || hasEndTime">bis {{ appointment.endDate | datex: dateFormat[1] }}</span>
+      </ng-template>
+    </ng-template>
+  </th>
+
+  <th *ngIf="!appointmentRequest.expired" class="fix-right-col date-height">
+    &nbsp;
+  </th>
+</tr>
+
+<tr *ngIf="hasUrl">
+  <th class="fix-left-col">
+    &nbsp;
+  </th>
+
+  <th *ngFor="let appointment of appointmentRequest.appointments" class="long">
+    <a *ngIf="appointment.url" href="{{ appointment.url }}" target="_blank" tabindex="-1">weitere
+      Informationen...</a>
+  </th>
+
+  <th *ngIf="!appointmentRequest.expired" class="fix-right-col">
+    &nbsp;
+  </th>
+</tr>
+
+<tr>
+  <th (click)="sortAppointmentMember()" class="fix-left-col">Anfrageteilnehmer ({{
+    appointmentRequest.appointmentMembers.length }})
+    <i *ngIf="!sortAZ" class="arrow-padding-top glyphicon glyphicon-triangle-bottom pull-right sort-arrow"></i>
+    <i *ngIf="sortAZ" class="arrow-padding-top glyphicon glyphicon-triangle-top pull-right sort-arrow"></i>
+  </th>
+
+  <th *ngFor="let appointment of appointmentRequest.appointments" class="long">
+    <span *ngIf="!appointment.displayedDescription; else shortDescription">
+      {{ appointment.description }}
+    </span>
+    <ng-template #shortDescription>
+    <span popover="{{appointment.description}}"
+          popoverPlacement="bottom"
+          [popoverOnHover]="true">
+    {{appointment.displayedDescription}}
+              </span>
+    </ng-template>
+  </th>
+
+  <th *ngIf="!appointmentRequest.expired" class="fix-right-col">
+    &nbsp;
+  </th>
+</tr>

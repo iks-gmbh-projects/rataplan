@@ -1,0 +1,18 @@
+<div class="password-container">
+  <h1>Passwort</h1>
+  <br>
+  <br>
+  <div class="well">
+    <input [(ngModel)]="password" #passwordInput id="new-password" class="form-control" type="password" placeholder="Passwort" maxlength="32" (keyup.enter)="submit()">
+    <span class="glyphicon glyphicon-eye-open pull-right" (mouseover)="over()" (mouseleave)="leave()"></span>
+    <div class="wrapper">
+      <button (click)="submit()" (keyup.enter)="submit()" type="submit" class="btn btn-primary">
+        <div *ngIf="!isLoading; else spinner">Senden</div>
+        <ng-template #spinner>
+          <rp-spinner [spinnerStyles]="spinnerStyles"></rp-spinner>
+        </ng-template>
+      </button>
+    </div>
+  </div>
+  <small *ngIf="wrongPassword" class="error-text">Passwort ungültig!</small>
+</div>
