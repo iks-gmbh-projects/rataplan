@@ -137,6 +137,6 @@ public class AuthorizationControllerService {
 	}
 
 	public void refreshCookie(String jwtToken) {
-		servletResponse.addCookie(cookieBuilder.createJWTCookie(jwtToken, false));
+		servletResponse.addHeader("Set-Cookie", cookieBuilder.generateCookieValue(jwtToken, false));
 	}
 }

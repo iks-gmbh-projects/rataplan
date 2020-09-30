@@ -60,7 +60,7 @@ public class UserControllerService {
 	}
 
 	public void logoutUser() {
-		this.servletResponse.addCookie(this.cookieBuilder.createJWTCookie(null, true));
+		this.servletResponse.addHeader("Set-Cookie", this.cookieBuilder.generateCookieValue(null, true));
 	}
 
 	public FrontendUser getUserData(String jwtToken) {

@@ -49,7 +49,7 @@ public class RataplanExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(HttpClientErrorException.class) 
 	public ResponseEntity<Error> httpClientErrorException(HttpClientErrorException e) {
 		Error error = gson.fromJson(e.getResponseBodyAsString(), Error.class);
-		servletResponse.addCookie(cookieBuilder.createJWTCookie(null, true));
+		servletResponse.addHeader("Set-Cookie", cookieBuilder.generateCookieValue(null, true));
 		return new ResponseEntity<>(error, e.getStatusCode());
 	}
 	
