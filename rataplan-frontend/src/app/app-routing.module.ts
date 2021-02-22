@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AboutComponent } from './components/legals/about/about.component';
+import { AboutComponent } from './components/legals/imprint/about.component';
 import { AppointmentRequestCreateComponent } from './components/appointment-requests/appointment-request-create/appointment-request-create.component';
 import { ConditionsComponent } from './components/legals/conditions/conditions.component';
 import { ContactComponent } from './components/legals/contact/contact.component';

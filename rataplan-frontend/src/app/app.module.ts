@@ -12,7 +12,7 @@ import { RataplanFrontendRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 
-import { AboutComponent } from './components/legals/about/about.component';
+import { AboutComponent } from './components/legals/imprint/about.component';
 
 import { AppointmentRequestCreateComponent } from './components/appointment-requests/appointment-request-create/appointment-request-create.component';
 import { AppointmentRequestLinkComponent } from './components/appointment-requests/appointment-request-create/appointment-request-link/appointment-request-link.component';
