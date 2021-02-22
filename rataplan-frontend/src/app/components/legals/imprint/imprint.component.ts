@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'rp-about',
-  templateUrl: './about.component.html',
-  styleUrls: ['./about.component.css']
+  templateUrl: './imprint.component.html',
+  styleUrls: ['./imprint.component.css']
 })
-export class AboutComponent implements OnInit {
+export class ImprintComponent implements OnInit {
 
   constructor() { }
 

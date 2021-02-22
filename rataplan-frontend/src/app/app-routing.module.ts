@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AboutComponent } from './components/legals/imprint/about.component';
+import { ImprintComponent } from './components/legals/imprint/imprint.component';
 import { AppointmentRequestCreateComponent } from './components/appointment-requests/appointment-request-create/appointment-request-create.component';
 import { ConditionsComponent } from './components/legals/conditions/conditions.component';
 import { ContactComponent } from './components/legals/contact/contact.component';
@@ -34,7 +34,7 @@ const routes: Routes = [
   { path: 'login', component: UserLoginComponent },
 
   { path: 'privacy', component: PrivacyComponent },
-  { path: 'about', component: AboutComponent },
+  { path: 'about', component: ImprintComponent },
   { path: 'terms-and-conditions', component: ConditionsComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'unavailable', component: ServiceUnavailableComponent },

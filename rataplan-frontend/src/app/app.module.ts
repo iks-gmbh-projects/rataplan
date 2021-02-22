@@ -12,7 +12,7 @@ import { RataplanFrontendRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 
-import { AboutComponent } from './components/legals/imprint/about.component';
+import { ImprintComponent } from './components/legals/imprint/imprint.component';
 
 import { AppointmentRequestCreateComponent } from './components/appointment-requests/appointment-request-create/appointment-request-create.component';
 import { AppointmentRequestLinkComponent } from './components/appointment-requests/appointment-request-create/appointment-request-link/appointment-request-link.component';
@@ -93,7 +93,7 @@ export function appInitializer(injector: Injector, service: EnvironmentService) 
     AppComponent,
     NavbarComponent,
     FooterComponent,
-    AboutComponent,
+    ImprintComponent,
     ConditionsComponent,
     ContactComponent,
     HomeComponent,
