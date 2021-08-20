@@ -3,7 +3,7 @@
   <br>
   <br>
   <div class="well">
-    <input [(ngModel)]="password" #passwordInput id="new-password" class="form-control" type="password" placeholder="Passwort" maxlength="32" (keyup.enter)="submit()">
+    <input [(ngModel)]="password" #passwordInput id="new-password" class="form-control" type="password" placeholder="Passwort" maxlength="32" (keyup.enter)="submit()" autofocus >
     <span class="glyphicon glyphicon-eye-open pull-right" (mouseover)="over()" (mouseleave)="leave()"></span>
     <div class="wrapper">
       <button (click)="submit()" (keyup.enter)="submit()" type="submit" class="btn btn-primary">
