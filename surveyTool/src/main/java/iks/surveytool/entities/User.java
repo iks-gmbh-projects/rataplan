@@ -2,10 +2,8 @@ package iks.surveytool.entities;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,4 +13,10 @@ public class User {
     private Long id;
 
     private String name;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Answer> answers;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Survey> surveys;
 }

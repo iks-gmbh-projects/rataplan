@@ -2,11 +2,9 @@ package iks.surveytool.entities;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,4 +17,14 @@ public class Question {
     private String question;
     @NotNull
     private boolean required;
+
+    @ManyToOne
+    @JoinColumn(name = "question_group_id")
+    private QuestionGroup questionGroup;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    private List<Answer> answers;
+
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
+    private CheckboxGroup checkboxGroup;
 }

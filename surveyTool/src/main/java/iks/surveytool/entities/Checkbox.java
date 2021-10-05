@@ -2,11 +2,9 @@ package iks.surveytool.entities;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,4 +17,11 @@ public class Checkbox {
     private String text;
     @NotNull
     private boolean hasTextField;
+
+    @ManyToOne
+    @JoinColumn(name = "checkbox_group_id")
+    private CheckboxGroup checkboxGroup;
+
+    @OneToMany(mappedBy = "checkbox", cascade = CascadeType.ALL)
+    private List<Answer> answers;
 }

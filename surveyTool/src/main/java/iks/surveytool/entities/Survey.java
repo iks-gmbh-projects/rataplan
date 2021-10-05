@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,4 +31,11 @@ public class Survey {
     private String accessID;
     // Link for users to submit their answers:
     private String link;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
+    private List<QuestionGroup> questionGroups;
 }
