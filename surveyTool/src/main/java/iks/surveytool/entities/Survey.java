@@ -1,8 +1,10 @@
 package iks.surveytool.entities;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,10 +21,12 @@ public class Survey {
     private String description;
 
     @Column(name = "startDate")
-    @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDate;
+
     @Column(name = "endDate")
-    @NotNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Future(message = "Das Enddatum muss in der Zukunft liegen.")
     private LocalDateTime endDate;
 
     // Whether the survey is open to be answered or not:

@@ -13,9 +13,11 @@ public class SurveyService {
 
     private final SurveyRepository surveyRepository;
 
-    public void addSurvey(Survey survey, LocalDateTime startDate, LocalDateTime endDate) {
-        survey.setStartDate(startDate);
-        survey.setEndDate(endDate);
+    public void addSurvey(Survey survey) {
         surveyRepository.save(survey);
+    }
+
+    public boolean validateDates(LocalDateTime startDate, LocalDateTime endDate) {
+        return endDate.isAfter(startDate);
     }
 }
