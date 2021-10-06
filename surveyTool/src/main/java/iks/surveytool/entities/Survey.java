@@ -20,10 +20,10 @@ public class Survey {
 
     @Column(name = "startDate")
     @NotNull
-    private Date start;
+    private Date startDate;
     @Column(name = "endDate")
     @NotNull
-    private Date end;
+    private Date endDate;
 
     // Whether the survey is open to be answered or not:
     private boolean open;
