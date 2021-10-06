@@ -27,19 +27,19 @@
         <div id="surveyDescription" class="row mb-3">
             <div class="col">
                 <label for="surveyDescriptionInput" class="form-label labelInput">Beschreibung</label>
-                <textarea id="surveyDescriptionInput" type="text" class="form-control"
+                <textarea id="surveyDescriptionInput" class="form-control"
                           th:field="${newSurvey.description}"></textarea>
             </div>
         </div>
         <div id="surveyDates" class="row mb-3">
             <div class="col">
                 <label for="surveyStartDateInput" class="form-label labelInput">Startdatum*</label>
-                <input id="surveyStartDateInput" type="date" class="form-control" th:field="${newSurvey.startDate}"
+                <input id="surveyStartDateInput" type="datetime-local" class="form-control" name="start"
                        required>
             </div>
             <div class="col">
                 <label for="surveyEndDateInput" class="form-label labelInput">Enddatum*</label>
-                <input id="surveyEndDateInput" type="date" class="form-control" th:field="${newSurvey.endDate}"
+                <input id="surveyEndDateInput" type="datetime-local" class="form-control" name="end"
                        required>
             </div>
         </div>

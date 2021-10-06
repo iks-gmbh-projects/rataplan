@@ -4,7 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,10 +20,10 @@ public class Survey {
 
     @Column(name = "startDate")
     @NotNull
-    private Date startDate;
+    private LocalDateTime startDate;
     @Column(name = "endDate")
     @NotNull
-    private Date endDate;
+    private LocalDateTime endDate;
 
     // Whether the survey is open to be answered or not:
     private boolean open;
