@@ -14,30 +14,33 @@
 <body>
 <a></a>
 <section id="SurveyCreation" class="d-flex flex-row min-vh-100 min-vw-100 justify-content-center">
-    <form id="surveyInput" class="container">
+    <form id="surveyInput" class="container" th:object="${newSurvey}" th:action="@{/createSurvey}" th:method="POST">
         <h1 class="my-4">
             Erstellen Sie Ihre Umfrage:
         </h1>
         <div id="surveyName" class="row mb-3">
             <div class="col">
-                <label for="surveyNameInput" class="form-label labelInput">Name</label>
-                <input id="surveyNameInput" type="text" class="form-control">
+                <label for="surveyNameInput" class="form-label labelInput">Name*</label>
+                <input id="surveyNameInput" type="text" class="form-control" th:field="${newSurvey.name}" required>
             </div>
         </div>
         <div id="surveyDescription" class="row mb-3">
             <div class="col">
                 <label for="surveyDescriptionInput" class="form-label labelInput">Beschreibung</label>
-                <textarea id="surveyDescriptionInput" type="text" class="form-control"></textarea>
+                <textarea id="surveyDescriptionInput" type="text" class="form-control"
+                          th:field="${newSurvey.description}"></textarea>
             </div>
         </div>
         <div id="surveyDates" class="row mb-3">
             <div class="col">
-                <label for="surveyStartDateInput" class="form-label labelInput">Startdatum</label>
-                <input id="surveyStartDateInput" type="date" class="form-control">
+                <label for="surveyStartDateInput" class="form-label labelInput">Startdatum*</label>
+                <input id="surveyStartDateInput" type="date" class="form-control" th:field="${newSurvey.startDate}"
+                       required>
             </div>
             <div class="col">
-                <label for="surveyEndDateInput" class="form-label labelInput">Enddatum</label>
-                <input id="surveyEndDateInput" type="date" class="form-control">
+                <label for="surveyEndDateInput" class="form-label labelInput">Enddatum*</label>
+                <input id="surveyEndDateInput" type="date" class="form-control" th:field="${newSurvey.endDate}"
+                       required>
             </div>
         </div>
         <button type="submit" class="mt-4 btn btn-primary float-end">
