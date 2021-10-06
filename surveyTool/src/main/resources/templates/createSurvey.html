@@ -6,11 +6,44 @@
     <title>IKS - Umfragetool</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
             crossorigin="anonymous"></script>
 </head>
 <body>
-
+<a></a>
+<section id="SurveyCreation" class="d-flex flex-row min-vh-100 min-vw-100 justify-content-center">
+    <form id="surveyInput" class="container">
+        <h1 class="my-4">
+            Erstellen Sie Ihre Umfrage:
+        </h1>
+        <div id="surveyName" class="row mb-3">
+            <div class="col">
+                <label for="surveyNameInput" class="form-label labelInput">Name</label>
+                <input id="surveyNameInput" type="text" class="form-control">
+            </div>
+        </div>
+        <div id="surveyDescription" class="row mb-3">
+            <div class="col">
+                <label for="surveyDescriptionInput" class="form-label labelInput">Beschreibung</label>
+                <textarea id="surveyDescriptionInput" type="text" class="form-control"></textarea>
+            </div>
+        </div>
+        <div id="surveyDates" class="row mb-3">
+            <div class="col">
+                <label for="surveyStartDateInput" class="form-label labelInput">Startdatum</label>
+                <input id="surveyStartDateInput" type="date" class="form-control">
+            </div>
+            <div class="col">
+                <label for="surveyEndDateInput" class="form-label labelInput">Enddatum</label>
+                <input id="surveyEndDateInput" type="date" class="form-control">
+            </div>
+        </div>
+        <button type="submit" class="mt-4 btn btn-primary float-end">
+            Weiter
+        </button>
+    </form>
+</section>
 </body>
 </html>
