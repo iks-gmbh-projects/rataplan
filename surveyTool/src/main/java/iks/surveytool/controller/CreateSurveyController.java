@@ -30,10 +30,12 @@ public class CreateSurveyController {
 
     @PostMapping("")
     public String postSurveyForm(@Valid @ModelAttribute("newSurvey") Survey newSurvey,
-                                 Model model,
                                  BindingResult bindingResult) {
+        // TODO: Validate that endDate is after startDate
         if (!bindingResult.hasErrors()) {
             surveyService.addSurvey(newSurvey);
+        } else {
+            return "createSurvey";
         }
 
         return "redirect:/";
