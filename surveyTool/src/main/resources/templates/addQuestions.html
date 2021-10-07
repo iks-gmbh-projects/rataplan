@@ -12,6 +12,27 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<h1>Fragen</h1>
+<section id="addQuestions" class="d-flex flex-column min-vh-100 min-vw-100">
+    <div id="basicInformation" class="container restrictWidth">
+        <div id="surveyName" class="row my-4">
+            <div class="col d-flex flex-column">
+                <span>Name:</span>
+                <span class="surveyInfo" th:text="${survey.name}"></span>
+            </div>
+            <div class="col d-flex flex-column">
+                <span>Startdatum:</span>
+                <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'dd.MM.yyyy')}"></span>
+            </div>
+            <div class="col d-flex flex-column">
+                <span>Enddatum:</span>
+                <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'dd.MM.yyyy')}"></span>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div id="addQuestionsForm" class="container restrictWidth">
+        <h3>Fügen Sie Ihrer Umfrage Fragen hinzu:</h3>
+    </div>
+</section>
 </body>
 </html>

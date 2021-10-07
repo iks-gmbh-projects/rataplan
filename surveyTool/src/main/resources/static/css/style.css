@@ -1,7 +1,17 @@
-#surveyInput {
+.restrictWidth {
     max-width: 720px;
 }
 
+/* Enter basic information of survey: */
 .labelInput {
     font-size: 18px;
+}
+
+/* Preview basic information when adding questions: */
+#basicInformation {
+    font-size: 20px;
+}
+
+.surveyInfo {
+    color: #2A52CC;
 }
