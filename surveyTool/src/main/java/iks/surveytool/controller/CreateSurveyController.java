@@ -59,8 +59,6 @@ public class CreateSurveyController {
         Survey survey = surveyService.findById(surveyID);
         surveyService.addQuestionGroupToSurvey(questionGroup, survey);
 
-        model.addAttribute("survey", survey);
-        model.addAttribute("newQuestionGroup", new QuestionGroup());
         redirectAttributes.addAttribute("surveyID", surveyID);
 
         return "redirect:/createSurvey/questions";
