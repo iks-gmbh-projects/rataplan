@@ -5,10 +5,8 @@ import iks.surveytool.services.SurveyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -30,14 +28,24 @@ public class CreateSurveyController {
 
     @PostMapping("")
     public String postSurveyForm(@Valid @ModelAttribute("newSurvey") Survey newSurvey,
-                                 BindingResult bindingResult) {
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes) {
         // TODO: Validate that endDate is after startDate
+        Long surveyID;
         if (!bindingResult.hasErrors()) {
-            surveyService.addSurvey(newSurvey);
+            surveyID = surveyService.addSurvey(newSurvey);
+            redirectAttributes.addAttribute("surveyID", surveyID);
         } else {
             return "createSurvey";
         }
 
-        return "redirect:/";
+        return "redirect:createSurvey/questions";
+    }
+
+    @GetMapping("/questions")
+    public String addQuestions(@RequestParam Long surveyID, Model model) {
+        Survey survey = surveyService.findById(surveyID);
+        model.addAttribute(survey);
+        return "addQuestions";
     }
 }
