@@ -1,5 +1,6 @@
 package iks.surveytool.controller;
 
+import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.services.SurveyService;
 import org.springframework.stereotype.Controller;
@@ -45,7 +46,23 @@ public class CreateSurveyController {
     @GetMapping("/questions")
     public String addQuestions(@RequestParam Long surveyID, Model model) {
         Survey survey = surveyService.findById(surveyID);
-        model.addAttribute(survey);
+        model.addAttribute("survey", survey);
+        model.addAttribute("newQuestionGroup", new QuestionGroup());
         return "addQuestions";
+    }
+
+    @PostMapping("/questions/addGroup/{id}")
+    public String addQuestionGroup(@ModelAttribute("newQuestionGroup") QuestionGroup questionGroup,
+                                   @PathVariable("id") Long surveyID,
+                                   Model model,
+                                   RedirectAttributes redirectAttributes) {
+        Survey survey = surveyService.findById(surveyID);
+        surveyService.addQuestionGroupToSurvey(questionGroup, survey);
+
+        model.addAttribute("survey", survey);
+        model.addAttribute("newQuestionGroup", new QuestionGroup());
+        redirectAttributes.addAttribute("surveyID", surveyID);
+
+        return "redirect:/createSurvey/questions";
     }
 }

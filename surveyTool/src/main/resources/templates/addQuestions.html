@@ -12,7 +12,7 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<section id="addQuestions" class="d-flex flex-column min-vh-100 min-vw-100">
+<section class="d-flex flex-column min-vh-100 min-vw-100">
     <div id="basicInformation" class="container restrictWidth">
         <div id="surveyName" class="row my-4">
             <div class="col d-flex flex-column">
@@ -30,8 +30,29 @@
         </div>
         <hr>
     </div>
-    <div id="addQuestionsForm" class="container restrictWidth">
-        <h3>Fügen Sie Ihrer Umfrage Fragen hinzu:</h3>
+    <div id="addQuestions" class="container restrictWidth">
+        <h3>Fügen Sie Ihrer Umfrage einen Frageblock hinzu:</h3>
+        <form id="addQuestionGroup" th:object="${newQuestionGroup}"
+              th:action="@{'/createSurvey/questions/addGroup/{id}' (id=${survey.id})}"
+              th:method="POST">
+            <div class="input-group my-4">
+                <input class="form-control" type="text" placeholder="Name/Beschreibung/Frage/..."
+                       aria-label="Description QuestionGroup" aria-describedby="submitQuestionGroup"
+                       th:field="${newQuestionGroup.description}" required>
+                <button class="btn btn-outline-secondary" type="submit" id="submitQuestionGroup">Hinzufügen</button>
+            </div>
+        </form>
+        <hr>
+    </div>
+    <div id="addedQuestion" class="container restrictWidth">
+        <div id="noQuestionGroups" class="row">
+            <span class="alert alert-secondary my-2" th:if="${survey.questionGroups.isEmpty()}">
+                Es wurden bisher keine Fragen(-blöcke) hinzugefügt.
+            </span>
+        </div>
+        <ul th:each="questionGroup : ${survey.questionGroups}">
+            <li th:each="question : ${questionGroup.questions}"></li>
+        </ul>
     </div>
 </section>
 </body>
