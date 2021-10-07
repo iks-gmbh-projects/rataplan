@@ -17,6 +17,8 @@ public class Question {
     private String question;
     @NotNull
     private boolean required;
+    @NotNull
+    private boolean hasTextField;
 
     @ManyToOne
     @JoinColumn(name = "question_group_id")
