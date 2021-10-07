@@ -12,8 +12,9 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<section id="SurveyCreation" class="d-flex flex-row min-vh-100 min-vw-100 justify-content-center">
-    <form id="surveyInput" class="container" th:object="${newSurvey}" th:action="@{/createSurvey}" th:method="POST">
+<section id="surveyCreation" class="d-flex flex-column min-vh-100 min-vw-100">
+    <form id="surveyInput" class="container restrictWidth" th:object="${newSurvey}" th:action="@{/createSurvey}"
+          th:method="POST">
         <h1 class="my-4">
             Erstellen Sie Ihre Umfrage:
         </h1>
