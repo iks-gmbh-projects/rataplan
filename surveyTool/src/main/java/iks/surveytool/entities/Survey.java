@@ -20,6 +20,7 @@ public class Survey {
     private String name;
     private String description;
 
+    // TODO: NotNull error message for both dates
     @Column(name = "startDate")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDate;
