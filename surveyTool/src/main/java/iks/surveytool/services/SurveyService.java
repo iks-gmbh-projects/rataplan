@@ -24,7 +24,8 @@ public class SurveyService {
         return savedSurvey.getId();
     }
 
-    public void addQuestionGroupToSurvey(QuestionGroup questionGroup, Survey survey) {
+    public void addQuestionGroupToSurvey(QuestionGroup questionGroup, Long surveyID) {
+        Survey survey = surveyRepository.findSurveyById(surveyID);
         questionGroup.setSurvey(survey);
         questionGroupRepository.save(questionGroup);
     }

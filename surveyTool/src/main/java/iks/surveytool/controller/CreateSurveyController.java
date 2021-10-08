@@ -57,8 +57,7 @@ public class CreateSurveyController {
     public String addQuestionGroup(@ModelAttribute("newQuestionGroup") QuestionGroup questionGroup,
                                    @PathVariable("surveyID") Long surveyID,
                                    RedirectAttributes redirectAttributes) {
-        Survey survey = surveyService.findById(surveyID);
-        surveyService.addQuestionGroupToSurvey(questionGroup, survey);
+        surveyService.addQuestionGroupToSurvey(questionGroup, surveyID);
 
         redirectAttributes.addAttribute("surveyID", surveyID);
 
@@ -70,8 +69,8 @@ public class CreateSurveyController {
                                      @PathVariable("surveyID") Long surveyID,
                                      @PathVariable("questionGroupID") Long questionGroupID,
                                      RedirectAttributes redirectAttributes) {
-
         surveyService.addQuestionToQuestionGroup(question, questionGroupID);
+
         redirectAttributes.addAttribute("surveyID", surveyID);
 
         return "redirect:/createSurvey/questions";
