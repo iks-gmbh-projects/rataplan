@@ -49,7 +49,7 @@ public class SurveyService {
         return endDate.isAfter(startDate);
     }
 
-    public Survey findById(Long surveyID) {
+    public Survey findSurveyById(Long surveyID) {
         return surveyRepository.findSurveyById(surveyID);
     }
 }

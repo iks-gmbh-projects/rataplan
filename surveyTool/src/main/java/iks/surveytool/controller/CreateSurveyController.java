@@ -47,7 +47,7 @@ public class CreateSurveyController {
 
     @GetMapping("/questions")
     public String addQuestions(@RequestParam Long surveyID, Model model) {
-        Survey survey = surveyService.findById(surveyID);
+        Survey survey = surveyService.findSurveyById(surveyID);
         model.addAttribute("survey", survey);
         model.addAttribute("newQuestionGroup", new QuestionGroup());
         model.addAttribute("newQuestion", new Question());
