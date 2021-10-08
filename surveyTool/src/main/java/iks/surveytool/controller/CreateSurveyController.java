@@ -72,10 +72,7 @@ public class CreateSurveyController {
                                      @PathVariable("surveyID") Long surveyID,
                                      @PathVariable("questionGroupID") Long questionGroupID,
                                      RedirectAttributes redirectAttributes) {
-        surveyService.addQuestionToQuestionGroup(question, questionGroupID);
-        if (question.isHasCheckbox()) {
-            surveyService.addCheckboxGroupToQuestion(checkboxGroup, question);
-        }
+        surveyService.addQuestionToQuestionGroup(question, checkboxGroup, questionGroupID);
 
         redirectAttributes.addAttribute("surveyID", surveyID);
 

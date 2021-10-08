@@ -33,10 +33,16 @@ public class SurveyService {
         questionGroupRepository.save(questionGroup);
     }
 
-    public void addQuestionToQuestionGroup(Question question, Long questionGroupID) {
+    public void addQuestionToQuestionGroup(Question question, CheckboxGroup checkboxGroup, Long questionGroupID) {
         QuestionGroup questionGroup = questionGroupRepository.findQuestionGroupById(questionGroupID);
         question.setQuestionGroup(questionGroup);
+
         questionRepository.save(question);
+
+        if (question.isHasCheckbox()) {
+            checkboxGroup.setQuestion(question);
+            checkboxGroupRepository.save(checkboxGroup);
+        }
     }
 
     public boolean validateDates(LocalDateTime startDate, LocalDateTime endDate) {
@@ -45,10 +51,5 @@ public class SurveyService {
 
     public Survey findById(Long surveyID) {
         return surveyRepository.findSurveyById(surveyID);
-    }
-
-    public void addCheckboxGroupToQuestion(CheckboxGroup checkboxGroup, Question question) {
-        checkboxGroup.setQuestion(question);
-        checkboxGroupRepository.save(checkboxGroup);
     }
 }
