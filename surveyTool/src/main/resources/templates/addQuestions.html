@@ -71,7 +71,7 @@
                                 <div class="col">
                                     <label for="question" class="form-label">Frage</label>
                                     <input id="question" class="form-control" type="text"
-                                           th:field="${newQuestion.question}">
+                                           th:field="${newQuestion.text}">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -104,10 +104,41 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="collapse" th:id="'checkboxGroupForm' + ${questionGroup.id}">
+                            <div class="mb-3">
+                                <div class="container collapse" th:id="'checkboxGroupForm' + ${questionGroup.id}">
                                     <div class="card card-body">
-                                        TODO
+                                        <div class="container">
+                                            <div class="row mb-3">
+                                                <div class="col">
+                                                    <label for="multipleSelect" class="form-check-label">
+                                                        Mehrfachauswahl?
+                                                    </label>
+                                                    <input id="multipleSelect" class="form-check-input"
+                                                           type="checkbox" value="1"
+                                                           th:field="${newCheckboxGroup.multipleSelect}"
+                                                           th:onchange="document.getElementById('minSelect' + [[${questionGroup.id}]]).disabled = !this.checked;
+                                                                     document.getElementById('maxSelect' + [[${questionGroup.id}]]).disabled = !this.checked;">
+                                                </div>
+                                                <div class="col">
+                                                    <label th:for="'minSelect' + ${questionGroup.id}"
+                                                           class="form-label">
+                                                        Minimum:
+                                                    </label>
+                                                    <input th:id="'minSelect' + ${questionGroup.id}"
+                                                           class="form-control" type="number"
+                                                           th:field="${newCheckboxGroup.minSelect}" disabled>
+                                                </div>
+                                                <div class="col">
+                                                    <label th:for="'maxSelect' + ${questionGroup.id}"
+                                                           class="form-label">
+                                                        Maximal:
+                                                    </label>
+                                                    <input th:id="'maxSelect' + ${questionGroup.id}"
+                                                           class="form-control" type="number"
+                                                           th:field="${newCheckboxGroup.maxSelect}" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
