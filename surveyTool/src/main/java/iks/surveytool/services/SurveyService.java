@@ -1,8 +1,10 @@
 package iks.surveytool.services;
 
+import iks.surveytool.entities.CheckboxGroup;
 import iks.surveytool.entities.Question;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
+import iks.surveytool.repositories.CheckboxGroupRepository;
 import iks.surveytool.repositories.QuestionGroupRepository;
 import iks.surveytool.repositories.QuestionRepository;
 import iks.surveytool.repositories.SurveyRepository;
@@ -18,6 +20,7 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final QuestionGroupRepository questionGroupRepository;
     private final QuestionRepository questionRepository;
+    private final CheckboxGroupRepository checkboxGroupRepository;
 
     public Long addSurvey(Survey survey) {
         Survey savedSurvey = surveyRepository.save(survey);
@@ -42,5 +45,10 @@ public class SurveyService {
 
     public Survey findById(Long surveyID) {
         return surveyRepository.findSurveyById(surveyID);
+    }
+
+    public void addCheckboxGroupToQuestion(CheckboxGroup checkboxGroup, Question question) {
+        checkboxGroup.setQuestion(question);
+        checkboxGroupRepository.save(checkboxGroup);
     }
 }
