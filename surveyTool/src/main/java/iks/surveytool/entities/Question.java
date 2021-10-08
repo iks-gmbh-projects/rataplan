@@ -18,7 +18,7 @@ public class Question {
     @NotNull
     private boolean required;
     @NotNull
-    private boolean hasTextField;
+    private boolean hasCheckbox;
 
     @ManyToOne
     @JoinColumn(name = "question_group_id")
