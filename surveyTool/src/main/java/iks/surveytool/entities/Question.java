@@ -14,7 +14,7 @@ public class Question {
     private Long id;
 
     @NotNull
-    private String question;
+    private String text;
     @NotNull
     private boolean required;
     @NotNull
