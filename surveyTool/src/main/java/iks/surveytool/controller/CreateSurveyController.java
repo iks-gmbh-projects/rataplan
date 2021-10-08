@@ -1,5 +1,6 @@
 package iks.surveytool.controller;
 
+import iks.surveytool.entities.Question;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.services.SurveyService;
@@ -48,17 +49,29 @@ public class CreateSurveyController {
         Survey survey = surveyService.findById(surveyID);
         model.addAttribute("survey", survey);
         model.addAttribute("newQuestionGroup", new QuestionGroup());
+        model.addAttribute("newQuestion", new Question());
         return "addQuestions";
     }
 
-    @PostMapping("/questions/addGroup/{id}")
+    @PostMapping("/questions/addGroup/{surveyID}")
     public String addQuestionGroup(@ModelAttribute("newQuestionGroup") QuestionGroup questionGroup,
-                                   @PathVariable("id") Long surveyID,
-                                   Model model,
+                                   @PathVariable("surveyID") Long surveyID,
                                    RedirectAttributes redirectAttributes) {
         Survey survey = surveyService.findById(surveyID);
         surveyService.addQuestionGroupToSurvey(questionGroup, survey);
 
+        redirectAttributes.addAttribute("surveyID", surveyID);
+
+        return "redirect:/createSurvey/questions";
+    }
+
+    @PostMapping("/questions/addQuestion/{surveyID}/{questionGroupID}")
+    public String addQuestionToGroup(@ModelAttribute("newQuestion") Question question,
+                                     @PathVariable("surveyID") Long surveyID,
+                                     @PathVariable("questionGroupID") Long questionGroupID,
+                                     RedirectAttributes redirectAttributes) {
+
+        surveyService.addQuestionToQuestionGroup(question, questionGroupID);
         redirectAttributes.addAttribute("surveyID", surveyID);
 
         return "redirect:/createSurvey/questions";
