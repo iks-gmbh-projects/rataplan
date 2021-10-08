@@ -1,5 +1,6 @@
 package iks.surveytool.controller;
 
+import iks.surveytool.entities.CheckboxGroup;
 import iks.surveytool.entities.Question;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
@@ -50,6 +51,7 @@ public class CreateSurveyController {
         model.addAttribute("survey", survey);
         model.addAttribute("newQuestionGroup", new QuestionGroup());
         model.addAttribute("newQuestion", new Question());
+        model.addAttribute("newCheckboxGroup", new CheckboxGroup());
         return "addQuestions";
     }
 
@@ -66,6 +68,7 @@ public class CreateSurveyController {
 
     @PostMapping("/questions/addQuestion/{surveyID}/{questionGroupID}")
     public String addQuestionToGroup(@ModelAttribute("newQuestion") Question question,
+                                     @ModelAttribute("newCheckboxGroup") CheckboxGroup checkboxGroup,
                                      @PathVariable("surveyID") Long surveyID,
                                      @PathVariable("questionGroupID") Long questionGroupID,
                                      RedirectAttributes redirectAttributes) {
