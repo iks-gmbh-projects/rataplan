@@ -83,7 +83,8 @@
                                     <label for="checkboxText" class="form-label">
                                         Neue Auswahlmöglichkeit:
                                     </label>
-                                    <input id="checkboxText" class="form-control mb-2" th:field="${newCheckbox.text}">
+                                    <input id="checkboxText" class="form-control mb-2" th:field="${newCheckbox.text}"
+                                           required>
                                     <button type="submit" class="btn btn-primary">Hinzufügen</button>
                                 </form>
                             </div>
@@ -105,7 +106,7 @@
                                 <div class="col">
                                     <label for="question" class="form-label">Frage</label>
                                     <input id="question" class="form-control" type="text"
-                                           th:field="${newQuestion.text}">
+                                           th:field="${newQuestion.text}" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -191,7 +192,7 @@
     </div>
     <div class="container restrictWidth">
         <form th:action="@{/createSurvey/save}" th:method="POST">
-            <button type="submit" class="btn btn-success">
+            <button type="submit" class="btn btn-success mt-3 float-end">
                 Speichern
             </button>
         </form>
