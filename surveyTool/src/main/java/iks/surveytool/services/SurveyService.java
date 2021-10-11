@@ -1,9 +1,6 @@
 package iks.surveytool.services;
 
-import iks.surveytool.entities.CheckboxGroup;
-import iks.surveytool.entities.Question;
-import iks.surveytool.entities.QuestionGroup;
-import iks.surveytool.entities.Survey;
+import iks.surveytool.entities.*;
 import iks.surveytool.repositories.CheckboxGroupRepository;
 import iks.surveytool.repositories.QuestionGroupRepository;
 import iks.surveytool.repositories.QuestionRepository;
@@ -23,6 +20,10 @@ public class SurveyService {
     private final QuestionRepository questionRepository;
     private final CheckboxGroupRepository checkboxGroupRepository;
 
+    public Survey findSurveyById(Long surveyID) {
+        return surveyRepository.findSurveyById(surveyID);
+    }
+
     public Long addSurvey(Survey survey) {
         Survey savedSurvey = surveyRepository.save(survey);
         return savedSurvey.getId();
@@ -33,10 +34,6 @@ public class SurveyService {
             survey.setQuestionGroups(new ArrayList<>());
         }
         survey.getQuestionGroups().add(questionGroup);
-    }
-
-    public Survey findSurveyById(Long surveyID) {
-        return surveyRepository.findSurveyById(surveyID);
     }
 
     public void addQuestionToQuestionGroup(Survey survey,
@@ -55,7 +52,22 @@ public class SurveyService {
         questionGroup.getQuestions().add(question);
     }
 
+    public void addCheckboxToQuestion(Survey survey, int questionGroupIndex, int questionIndex, Checkbox checkbox) {
+        CheckboxGroup checkboxGroup = survey.getQuestionGroups()
+                .get(questionGroupIndex)
+                .getQuestions()
+                .get(questionIndex)
+                .getCheckboxGroup();
+        
+        if (checkboxGroup.getCheckboxes() == null) {
+            checkboxGroup.setCheckboxes(new ArrayList<>());
+        }
+
+        checkboxGroup.getCheckboxes().add(checkbox);
+    }
+
     public boolean validateDates(LocalDateTime startDate, LocalDateTime endDate) {
         return endDate.isAfter(startDate);
     }
+
 }

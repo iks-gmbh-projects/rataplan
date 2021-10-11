@@ -65,6 +65,28 @@
                         <li th:each="question : ${questionGroup.questions}">
                             <span th:text="${question.text}">
                             </span>
+                            <div th:if="${question.isHasCheckbox()}">
+                                <div id="noCheckboxes" class="row">
+                                    <span class="alert alert-secondary my-2"
+                                          th:if="${question.checkboxGroup.checkboxes == null}">
+                                        Keine Auswahlmöglichkeiten gegeben.
+                                    </span>
+                                </div>
+                                <ul>
+                                    <li th:each="checkbox : ${question.checkboxGroup.checkboxes}">
+                                        <span th:text="${checkbox.text}"></span>
+                                    </li>
+                                </ul>
+                                <form id="addCheckbox" th:object="${newCheckbox}"
+                                      th:action="@{'/createSurvey/questions/addQuestion/{questionGroupIndex}/{questionIndex}' (questionGroupIndex=${questionGroupStat.index}, questionIndex=${questionStat.index})}"
+                                      th:method="POST" class="container">
+                                    <label for="checkboxText" class="form-label">
+                                        Neue Auswahlmöglichkeit:
+                                    </label>
+                                    <input id="checkboxText" class="form-control mb-2" th:field="${newCheckbox.text}">
+                                    <button type="submit" class="btn btn-primary">Hinzufügen</button>
+                                </form>
+                            </div>
                         </li>
                     </ol>
                 </div>

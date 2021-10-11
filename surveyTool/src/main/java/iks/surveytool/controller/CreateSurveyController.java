@@ -1,9 +1,6 @@
 package iks.surveytool.controller;
 
-import iks.surveytool.entities.CheckboxGroup;
-import iks.surveytool.entities.Question;
-import iks.surveytool.entities.QuestionGroup;
-import iks.surveytool.entities.Survey;
+import iks.surveytool.entities.*;
 import iks.surveytool.services.SurveyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,6 +52,7 @@ public class CreateSurveyController {
         model.addAttribute("newQuestionGroup", new QuestionGroup());
         model.addAttribute("newQuestion", new Question());
         model.addAttribute("newCheckboxGroup", new CheckboxGroup());
+        model.addAttribute("newCheckbox", new Checkbox());
         return "addQuestions";
     }
 
@@ -76,6 +74,19 @@ public class CreateSurveyController {
                                      @PathVariable("questionGroupIndex") int questionGroupIndex,
                                      RedirectAttributes redirectAttributes) {
         surveyService.addQuestionToQuestionGroup(survey, questionGroupIndex, question, checkboxGroup);
+
+        redirectAttributes.addFlashAttribute("survey", survey);
+
+        return "redirect:/createSurvey/questions";
+    }
+
+    @PostMapping("/questions/addQuestion/{questionGroupIndex}/{questionIndex}")
+    public String addCheckboxToQuestion(@ModelAttribute("survey") Survey survey,
+                                        @ModelAttribute("newCheckbox") Checkbox checkbox,
+                                        @PathVariable("questionGroupIndex") int questionGroupIndex,
+                                        @PathVariable("questionIndex") int questionIndex,
+                                        RedirectAttributes redirectAttributes) {
+        surveyService.addCheckboxToQuestion(survey, questionGroupIndex, questionIndex, checkbox);
 
         redirectAttributes.addFlashAttribute("survey", survey);
 
