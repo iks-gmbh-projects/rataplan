@@ -69,15 +69,15 @@ public class CreateSurveyController {
         return "redirect:/createSurvey/questions";
     }
 
-    @PostMapping("/questions/addQuestion/{surveyID}/{questionGroupID}")
-    public String addQuestionToGroup(@ModelAttribute("newQuestion") Question question,
+    @PostMapping("/questions/addQuestion/{questionGroupIndex}")
+    public String addQuestionToGroup(@ModelAttribute("survey") Survey survey,
+                                     @ModelAttribute("newQuestion") Question question,
                                      @ModelAttribute("newCheckboxGroup") CheckboxGroup checkboxGroup,
-                                     @PathVariable("surveyID") Long surveyID,
-                                     @PathVariable("questionGroupID") Long questionGroupID,
+                                     @PathVariable("questionGroupIndex") int questionGroupIndex,
                                      RedirectAttributes redirectAttributes) {
-        surveyService.addQuestionToQuestionGroup(question, checkboxGroup, questionGroupID);
+        surveyService.addQuestionToQuestionGroup(survey, questionGroupIndex, question, checkboxGroup);
 
-        redirectAttributes.addAttribute("surveyID", surveyID);
+        redirectAttributes.addFlashAttribute("survey", survey);
 
         return "redirect:/createSurvey/questions";
     }

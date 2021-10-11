@@ -35,23 +35,27 @@ public class SurveyService {
         survey.getQuestionGroups().add(questionGroup);
     }
 
-    public void addQuestionToQuestionGroup(Question question, CheckboxGroup checkboxGroup, Long questionGroupID) {
-        QuestionGroup questionGroup = questionGroupRepository.findQuestionGroupById(questionGroupID);
-        question.setQuestionGroup(questionGroup);
+    public Survey findSurveyById(Long surveyID) {
+        return surveyRepository.findSurveyById(surveyID);
+    }
 
-        questionRepository.save(question);
-
+    public void addQuestionToQuestionGroup(Survey survey,
+                                           int questionGroupIndex,
+                                           Question question,
+                                           CheckboxGroup checkboxGroup) {
         if (question.isHasCheckbox()) {
-            checkboxGroup.setQuestion(question);
-            checkboxGroupRepository.save(checkboxGroup);
+            question.setCheckboxGroup(checkboxGroup);
         }
+
+        QuestionGroup questionGroup = survey.getQuestionGroups().get(questionGroupIndex);
+        if (questionGroup.getQuestions() == null) {
+            questionGroup.setQuestions(new ArrayList<>());
+        }
+
+        questionGroup.getQuestions().add(question);
     }
 
     public boolean validateDates(LocalDateTime startDate, LocalDateTime endDate) {
         return endDate.isAfter(startDate);
-    }
-
-    public Survey findSurveyById(Long surveyID) {
-        return surveyRepository.findSurveyById(surveyID);
     }
 }

@@ -64,7 +64,7 @@
                 <div th:id="'collapseQuestionform' + ${questionGroupStat.index}" class="collapse mb-2">
                     <div class="card card-body">
                         <form id="addQuestion" th:object="${newQuestion}"
-                              th:action="@{/createSurvey/questions/addQuestion}"
+                              th:action="@{'/createSurvey/questions/addQuestion/{questionGroupIndex}' (questionGroupIndex=${questionGroupStat.index})}"
                               th:method="POST" class="container">
                             <div class="row mb-3">
                                 <div class="col">
