@@ -92,4 +92,11 @@ public class CreateSurveyController {
 
         return "redirect:/createSurvey/questions";
     }
+
+    @PostMapping("/save")
+    public String saveSurvey(@ModelAttribute("survey") Survey survey) {
+        surveyService.addSurvey(survey);
+
+        return "redirect:/";
+    }
 }
