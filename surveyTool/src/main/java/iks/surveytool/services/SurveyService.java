@@ -24,8 +24,9 @@ public class SurveyService {
         return surveyRepository.findSurveyById(surveyID);
     }
 
-    public void addSurvey(Survey survey) {
-        surveyRepository.save(survey);
+    public Long addSurvey(Survey survey) {
+        Survey savedSurvey = surveyRepository.save(survey);
+        return savedSurvey.getId();
     }
 
     public void addQuestionGroupToSurvey(Survey survey, QuestionGroup questionGroup) {
@@ -33,8 +34,6 @@ public class SurveyService {
             survey.setQuestionGroups(new ArrayList<>());
         }
         survey.getQuestionGroups().add(questionGroup);
-
-        questionGroup.setSurvey(survey);
     }
 
     public void addQuestionToQuestionGroup(Survey survey,
@@ -43,16 +42,14 @@ public class SurveyService {
                                            CheckboxGroup checkboxGroup) {
         if (question.isHasCheckbox()) {
             question.setCheckboxGroup(checkboxGroup);
-            checkboxGroup.setQuestion(question);
         }
 
         QuestionGroup questionGroup = survey.getQuestionGroups().get(questionGroupIndex);
         if (questionGroup.getQuestions() == null) {
             questionGroup.setQuestions(new ArrayList<>());
         }
-        questionGroup.getQuestions().add(question);
 
-        question.setQuestionGroup(questionGroup);
+        questionGroup.getQuestions().add(question);
     }
 
     public void addCheckboxToQuestion(Survey survey, int questionGroupIndex, int questionIndex, Checkbox checkbox) {
@@ -61,13 +58,12 @@ public class SurveyService {
                 .getQuestions()
                 .get(questionIndex)
                 .getCheckboxGroup();
-
+        
         if (checkboxGroup.getCheckboxes() == null) {
             checkboxGroup.setCheckboxes(new ArrayList<>());
         }
-        checkboxGroup.getCheckboxes().add(checkbox);
 
-        checkbox.setCheckboxGroup(checkboxGroup);
+        checkboxGroup.getCheckboxes().add(checkbox);
     }
 
     public boolean validateDates(LocalDateTime startDate, LocalDateTime endDate) {
