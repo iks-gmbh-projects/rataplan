@@ -55,6 +55,19 @@
         <div id="questionGroupListing" class="row" th:each="questionGroup : ${survey.questionGroups}">
             <h4 th:text="${questionGroup.description}"></h4>
             <div id="addQuestionToGroup" class="container">
+                <div id="noQuestions" class="row">
+                    <span class="alert alert-secondary my-2" th:if="${questionGroup.questions == null}">
+                        Zu diesem Frageblock wurden noch keine Fragen hinzugefügt.
+                    </span>
+                </div>
+                <div id="questionList">
+                    <ol>
+                        <li th:each="question : ${questionGroup.questions}">
+                            <span th:text="${question.text}">
+                            </span>
+                        </li>
+                    </ol>
+                </div>
                 <button class="btn btn-outline-primary mb-3" type="button"
                         data-bs-toggle="collapse"
                         th:data-bs-target="'#collapseQuestionform' + ${questionGroupStat.index}" aria-expanded="false"
