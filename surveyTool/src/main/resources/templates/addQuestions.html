@@ -80,12 +80,23 @@
                                 <form id="addCheckbox" th:object="${newCheckbox}"
                                       th:action="@{'/createSurvey/questions/addQuestion/{questionGroupIndex}/{questionIndex}' (questionGroupIndex=${questionGroupStat.index}, questionIndex=${questionStat.index})}"
                                       th:method="POST" class="container">
-                                    <label for="checkboxText" class="form-label">
-                                        Neue Auswahlmöglichkeit:
-                                    </label>
-                                    <input id="checkboxText" class="form-control mb-2" th:field="${newCheckbox.text}"
-                                           required>
-                                    <button type="submit" class="btn btn-primary">Hinzufügen</button>
+                                    <div class="input-group my-2">
+                                        <div class="input-group-text">
+                                            <label th:for="'hasTextField' + ${questionStat.index} + 'group' + ${questionGroupStat.index}">
+                                                <!-- Add whitespace manually as the checkbox itself needs mt-0 to stay
+                                                     vertically centered => overwrites margin of label -->
+                                                Mit Textfeld:&nbsp;&nbsp;&nbsp;
+                                            </label>
+                                            <input th:id="'hasTextField' + ${questionStat.index} + 'group' + ${questionGroupStat.index}"
+                                                   class="form-check-input mt-0" type="checkbox"
+                                                   th:field="${newCheckbox.hasTextField}">
+                                        </div>
+                                        <input id="checkboxText" class="form-control"
+                                               placeholder="Neue Auswahlmöglichkeit"
+                                               th:field="${newCheckbox.text}"
+                                               required>
+                                        <button type="submit" class="btn btn-outline-primary">Hinzufügen</button>
+                                    </div>
                                 </form>
                             </div>
                         </li>
