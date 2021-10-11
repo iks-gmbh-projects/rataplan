@@ -29,24 +29,24 @@
 <div id="smartwizard">
     <ul class="nav">
         <li class="nav-item">
-            <a class="nav-link" href="#step-1">
+            <a class="nav-link" href="#general">
                 Allgemein
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#step-2">
+            <a class="nav-link" href="#questions">
                 Fragen
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#step-3">
+            <a class="nav-link" href="#end">
                 Abschluss
             </a>
         </li>
     </ul>
 
     <div class="tab-content">
-        <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+        <div id="general" class="tab-pane" role="tabpanel" aria-labelledby="general">
             <section id="surveyCreation" class="d-flex flex-column min-vw-100">
                 <form id="surveyInput" class="container restrictWidth" th:object="${newSurvey}"
                       th:action="@{/createSurvey}"
@@ -93,10 +93,10 @@
                 </form>
             </section>
         </div>
-        <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+        <div id="questions" class="tab-pane" role="tabpanel" aria-labelledby="questions">
             Step 2 Content
         </div>
-        <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+        <div id="end" class="tab-pane" role="tabpanel" aria-labelledby="end">
             Step 3 Content
         </div>
     </div>
