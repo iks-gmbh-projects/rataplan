@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -94,8 +95,11 @@ public class CreateSurveyController {
     }
 
     @PostMapping("/save")
-    public String saveSurvey(@ModelAttribute("survey") Survey survey) {
+    public String saveSurvey(@ModelAttribute("survey") Survey survey, SessionStatus status) {
         surveyService.addSurvey(survey);
+
+        // Remove survey as session attribute
+        status.setComplete();
 
         return "redirect:/";
     }
