@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +28,11 @@ public class SurveyService {
         return savedSurvey.getId();
     }
 
-    public void addQuestionGroupToSurvey(QuestionGroup questionGroup, Long surveyID) {
-        Survey survey = surveyRepository.findSurveyById(surveyID);
-        questionGroup.setSurvey(survey);
-        questionGroupRepository.save(questionGroup);
+    public void addQuestionGroupToSurvey(Survey survey, QuestionGroup questionGroup) {
+        if (survey.getQuestionGroups() == null) {
+            survey.setQuestionGroups(new ArrayList<>());
+        }
+        survey.getQuestionGroups().add(questionGroup);
     }
 
     public void addQuestionToQuestionGroup(Question question, CheckboxGroup checkboxGroup, Long questionGroupID) {

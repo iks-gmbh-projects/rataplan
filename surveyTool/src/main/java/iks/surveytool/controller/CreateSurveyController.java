@@ -11,8 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -32,9 +30,7 @@ public class CreateSurveyController {
     }
 
     @GetMapping("")
-    public String surveyForm(@ModelAttribute("survey") Survey survey,
-                             Model model, HttpServletRequest request,
-                             HttpSession session) {
+    public String surveyForm(@ModelAttribute("survey") Survey survey, Model model) {
         model.addAttribute("survey", survey);
         return "createSurvey";
     }
@@ -62,13 +58,13 @@ public class CreateSurveyController {
         return "addQuestions";
     }
 
-    @PostMapping("/questions/addGroup/{surveyID}")
-    public String addQuestionGroup(@ModelAttribute("newQuestionGroup") QuestionGroup questionGroup,
-                                   @PathVariable("surveyID") Long surveyID,
+    @PostMapping("/questions/addGroup")
+    public String addQuestionGroup(@ModelAttribute("survey") Survey survey,
+                                   @ModelAttribute("newQuestionGroup") QuestionGroup questionGroup,
                                    RedirectAttributes redirectAttributes) {
-        surveyService.addQuestionGroupToSurvey(questionGroup, surveyID);
+        surveyService.addQuestionGroupToSurvey(survey, questionGroup);
 
-        redirectAttributes.addAttribute("surveyID", surveyID);
+        redirectAttributes.addFlashAttribute("survey", survey);
 
         return "redirect:/createSurvey/questions";
     }
