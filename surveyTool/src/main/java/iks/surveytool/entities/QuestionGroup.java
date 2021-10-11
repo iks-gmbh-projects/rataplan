@@ -12,7 +12,7 @@ public class QuestionGroup {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String description;
+    private String title;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "survey_id")
