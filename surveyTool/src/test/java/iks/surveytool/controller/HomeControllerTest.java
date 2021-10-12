@@ -18,7 +18,7 @@ class HomeControllerTest {
     private MockMvc mvc;
 
     @Test
-    @DisplayName("Test index()")
+    @DisplayName("Testing index()")
     void index() throws Exception {
         mvc.perform(get("/"))
                 .andExpect(status().isOk())

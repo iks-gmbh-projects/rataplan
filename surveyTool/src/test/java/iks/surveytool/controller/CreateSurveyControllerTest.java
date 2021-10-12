@@ -39,7 +39,7 @@ class CreateSurveyControllerTest {
     }
 
     @Test
-    @DisplayName("Test survey as SessionAttribute")
+    @DisplayName("Testing survey as SessionAttribute")
     void getSurveyFormSessionAttribute() throws Exception {
         MvcResult result = mvc.perform(get("/createSurvey"))
                 .andExpect(model().attributeExists("survey"))
