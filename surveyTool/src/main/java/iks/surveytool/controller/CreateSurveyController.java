@@ -23,7 +23,7 @@ public class CreateSurveyController {
     }
 
     @ModelAttribute("survey")
-    public Survey survey() {
+    public Survey getNewSurvey() {
         return new Survey();
     }
 
