@@ -71,11 +71,15 @@ public class SurveyBuilder {
         return this;
     }
 
+    public SurveyBuilder addQuestionGroup(QuestionGroup questionGroup) {
+        this.questionGroups.add(questionGroup);
+        return this;
+    }
+
     public SurveyBuilder addQuestionGroup(String title) {
         QuestionGroup questionGroup = new QuestionGroup();
         questionGroup.setTitle(title);
         this.questionGroups.add(questionGroup);
-
         return this;
     }
 
