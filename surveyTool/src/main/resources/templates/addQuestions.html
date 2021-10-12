@@ -82,23 +82,32 @@
                                 <span class="fw-bolder" th:text="${question.text}"></span>
 
                                 <div th:if="${question.hasCheckbox}">
-                                    <div class="d-flex flex-row">
-                                        <span>
-                                            Mehrfachauswahl:
-                                        </span>
-                                        <span th:if="${question.checkboxGroup.multipleSelect}">Ja</span>
-                                        <span th:if="${!question.checkboxGroup.multipleSelect}">Nein</span>
+                                    <div class="d-flex flex-row my-1">
+                                        <div th:if="${question.checkboxGroup.multipleSelect}"
+                                             class="d-flex justify-content-evenly w-100">
+                                            <span>
+                                                Mehrfachauswahl: Ja
+                                            </span>
+                                            <span th:text="'Min.: ' + ${question.checkboxGroup.minSelect}"></span>
+                                            <span th:text="'Max.: ' + ${question.checkboxGroup.maxSelect}"></span>
+                                        </div>
+                                        <div th:if="${!question.checkboxGroup.multipleSelect}"
+                                             class="d-flex justify-content-evenly w-100">
+                                            <span>
+                                                Mehrfachauswahl: Nein
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <div id="noCheckboxes" class="row text-center justify-content-center">
-                                        <span class="alert alert-secondary my-2 w-75"
+                                        <span class="alert alert-secondary my-1 w-75"
                                               th:if="${question.checkboxGroup.checkboxes == null}">
                                             Keine Auswahlmöglichkeiten gegeben.
                                         </span>
                                     </div>
 
                                     <ul th:if="${question.checkboxGroup.checkboxes != null}"
-                                        class="list-group my-3">
+                                        class="list-group my-1">
                                         <li class="list-group-item"
                                             th:each="checkbox : ${question.checkboxGroup.checkboxes}">
                                         <span th:text="${checkbox.text}">
