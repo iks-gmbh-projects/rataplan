@@ -28,7 +28,7 @@ public class CreateSurveyController {
     }
 
     @GetMapping("")
-    public String surveyForm(@ModelAttribute("survey") Survey survey, Model model) {
+    public String getSurveyForm(@ModelAttribute("survey") Survey survey, Model model) {
         model.addAttribute("survey", survey);
         return "createSurvey";
     }
@@ -48,7 +48,7 @@ public class CreateSurveyController {
     }
 
     @GetMapping("/questions")
-    public String addQuestions(@ModelAttribute("survey") Survey survey, Model model) {
+    public String getAddQuestionsForm(@ModelAttribute("survey") Survey survey, Model model) {
         model.addAttribute("survey", survey);
         model.addAttribute("newQuestionGroup", new QuestionGroup());
         model.addAttribute("newQuestion", new Question());
