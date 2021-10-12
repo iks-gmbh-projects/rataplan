@@ -56,12 +56,12 @@
              th:each="questionGroup : ${survey.questionGroups}">
             <h4 th:text="${questionGroup.title}"></h4>
             <div id="addQuestionToGroup" class="container">
-                <div id="noQuestions" class="row">
-                    <span class="alert alert-secondary my-2" th:if="${questionGroup.questions == null}">
+                <div th:if="${questionGroup.questions == null}" id="noQuestions" class="row my-2">
+                    <span class="alert alert-secondary">
                         Zu diesem Frageblock wurden noch keine Fragen hinzugefügt.
                     </span>
                 </div>
-                <div id="questionList">
+                <div th:unless="${questionGroup.questions == null}" id="questionList">
                     <table class="table table-striped table-hover">
                         <thead>
                         <tr>
