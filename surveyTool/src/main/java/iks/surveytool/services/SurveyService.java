@@ -1,9 +1,6 @@
 package iks.surveytool.services;
 
 import iks.surveytool.entities.*;
-import iks.surveytool.repositories.CheckboxGroupRepository;
-import iks.surveytool.repositories.QuestionGroupRepository;
-import iks.surveytool.repositories.QuestionRepository;
 import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +13,6 @@ import java.util.ArrayList;
 public class SurveyService {
 
     private final SurveyRepository surveyRepository;
-    private final QuestionGroupRepository questionGroupRepository;
-    private final QuestionRepository questionRepository;
-    private final CheckboxGroupRepository checkboxGroupRepository;
 
     public Survey findSurveyById(Long surveyID) {
         return surveyRepository.findSurveyById(surveyID);
