@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -196,5 +198,27 @@ class SurveyServiceTest {
                 survey.getQuestionGroups().get(0).getQuestions().get(0).getCheckboxGroup().getCheckboxes().get(0));
         assertEquals(secondCheckbox,
                 survey.getQuestionGroups().get(0).getQuestions().get(0).getCheckboxGroup().getCheckboxes().get(1));
+    }
+
+    @Test
+    @DisplayName("Successful validation - startDate before endDate")
+    void startDateBeforeEndDate_Successful() {
+        LocalDateTime startDate = LocalDateTime.of(3000, 9, 1, 13, 0);
+        LocalDateTime endDate = LocalDateTime.of(3000, 10, 1, 13, 0);
+
+        boolean result = surveyService.startDateBeforeEndDate(startDate, endDate);
+
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("Failed validation - startDate before endDate")
+    void startDateBeforeEndDate_Failed() {
+        LocalDateTime startDate = LocalDateTime.of(2021, 10, 31, 13, 0);
+        LocalDateTime endDate = LocalDateTime.of(2021, 10, 1, 13, 0);
+
+        boolean result = surveyService.startDateBeforeEndDate(startDate, endDate);
+
+        assertFalse(result);
     }
 }
