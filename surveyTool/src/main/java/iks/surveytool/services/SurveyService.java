@@ -65,7 +65,7 @@ public class SurveyService {
     }
 
     public boolean startDateBeforeEndDate(LocalDateTime startDate, LocalDateTime endDate) {
-        return endDate.isAfter(startDate);
+        return startDate.isBefore(endDate);
     }
 
 }
