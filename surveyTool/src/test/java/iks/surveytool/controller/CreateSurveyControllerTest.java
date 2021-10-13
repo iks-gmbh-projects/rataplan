@@ -1,6 +1,8 @@
 package iks.surveytool.controller;
 
+import iks.surveytool.builder.QuestionBuilder;
 import iks.surveytool.builder.SurveyBuilder;
+import iks.surveytool.entities.Question;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.services.SurveyService;
 import org.junit.jupiter.api.DisplayName;
@@ -169,6 +171,37 @@ class CreateSurveyControllerTest {
                         .param("multipleSelect", String.valueOf(true))
                         .param("minSelect", String.valueOf(2))
                         .param("maxSelect", String.valueOf(4)))
+                .andExpect(status().is3xxRedirection())
+                .andReturn().getFlashMap();
+
+        MvcResult result = mvc.perform(get("/createSurvey/questions")
+                        .sessionAttrs(flashMap))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("survey"))
+                .andReturn();
+
+        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
+
+        assertEquals("Test Survey - Add Question (With Checkboxes)", survey.getName());
+    }
+
+    @Test
+    @DisplayName("Successfully adding Checkbox - Check if SessionAttribute present")
+    void addCheckbox_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
+        Question defaultQuestionWithCheckbox = new QuestionBuilder()
+                .setHasCheckbox(true)
+                .build();
+
+        Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
+                .setName("Test Survey - Add Question (With Checkboxes)")
+                .addQuestionGroup("Test Group")
+                .addQuestionToGroup(defaultQuestionWithCheckbox, 0)
+                .build();
+
+        FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0/0")
+                        .sessionAttr("survey", defaultSurveyWithQuestionGroup)
+                        .param("text", "New test checkbox")
+                        .param("hasTextField", String.valueOf(false)))
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
 
