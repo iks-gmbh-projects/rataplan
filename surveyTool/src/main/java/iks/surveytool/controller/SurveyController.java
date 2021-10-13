@@ -39,7 +39,7 @@ public class SurveyController {
                                  RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "createSurvey";
-        } else if (!surveyService.validateDates(newSurvey.getStartDate(), newSurvey.getEndDate())) {
+        } else if (!surveyService.startDateBeforeEndDate(newSurvey.getStartDate(), newSurvey.getEndDate())) {
             bindingResult.rejectValue("endDate",
                     "error.survey.endDate",
                     "Das Enddatum liegt vor dem Startdatum.");

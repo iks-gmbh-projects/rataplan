@@ -64,7 +64,7 @@ public class SurveyService {
         checkbox.setCheckboxGroup(checkboxGroup);
     }
 
-    public boolean validateDates(LocalDateTime startDate, LocalDateTime endDate) {
+    public boolean startDateBeforeEndDate(LocalDateTime startDate, LocalDateTime endDate) {
         return endDate.isAfter(startDate);
     }
 
