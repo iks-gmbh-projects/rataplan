@@ -37,11 +37,15 @@ public class SurveyController {
     public String postSurveyForm(@Valid @ModelAttribute("survey") Survey newSurvey,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes) {
-        // TODO: Validate that endDate is after startDate
-        if (!bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("survey", newSurvey);
-        } else {
+        if (bindingResult.hasErrors()) {
             return "createSurvey";
+        } else if (!surveyService.validateDates(newSurvey.getStartDate(), newSurvey.getEndDate())) {
+            bindingResult.rejectValue("endDate",
+                    "error.survey.endDate",
+                    "Das Enddatum liegt vor dem Startdatum.");
+            return "createSurvey";
+        } else {
+            redirectAttributes.addFlashAttribute("survey", newSurvey);
         }
 
         return "redirect:createSurvey/questions";
