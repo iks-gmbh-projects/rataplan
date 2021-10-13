@@ -93,7 +93,25 @@ class SurveyControllerTest {
                         .param("startDate", String.valueOf(startDate))
                         .param("endDate", String.valueOf(endDate)))
                 .andExpect(status().isOk())
-                .andExpect(model().hasErrors())
+                .andExpect(model().attributeHasFieldErrorCode("survey", "endDate", "Future"))
+                .andReturn().getFlashMap();
+
+        assertTrue(flashMap.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Failed POST of Survey - endDate is before startDate - Check if SessionAttribute not present in next GET-mapping")
+    void postSurveyFailure_EndBeforeStart_CheckIfNextGetMappingDoesNotContainSurveySessionAttribute() throws Exception {
+        LocalDateTime startDate = LocalDateTime.of(3000, 10, 1, 13, 0);
+        // endDate is in past
+        LocalDateTime endDate = LocalDateTime.of(3000, 9, 1, 13, 0);
+
+        FlashMap flashMap = mvc.perform(post("/createSurvey")
+                        .param("name", "Test Umfrage")
+                        .param("startDate", String.valueOf(startDate))
+                        .param("endDate", String.valueOf(endDate)))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrorCode("survey", "endDate", "error.survey.endDate"))
                 .andReturn().getFlashMap();
 
         assertTrue(flashMap.isEmpty());
