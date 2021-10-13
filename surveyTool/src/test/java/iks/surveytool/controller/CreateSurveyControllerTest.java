@@ -2,8 +2,7 @@ package iks.surveytool.controller;
 
 import iks.surveytool.builder.QuestionBuilder;
 import iks.surveytool.builder.SurveyBuilder;
-import iks.surveytool.entities.Question;
-import iks.surveytool.entities.Survey;
+import iks.surveytool.entities.*;
 import iks.surveytool.services.SurveyService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,10 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -117,12 +120,14 @@ class CreateSurveyControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
 
+        verify(surveyService, times(1))
+                .addQuestionGroupToSurvey(eq(defaultSurvey), any(QuestionGroup.class));
+
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("survey"))
                 .andReturn();
-
         Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
 
         assertEquals("Test Survey - Add QuestionGroup", survey.getName());
@@ -143,6 +148,12 @@ class CreateSurveyControllerTest {
                         .param("hasCheckbox", String.valueOf(false)))
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
+
+        verify(surveyService, times(1))
+                .addQuestionToQuestionGroup(eq(defaultSurveyWithQuestionGroup),
+                        eq(0),
+                        any(Question.class),
+                        any(CheckboxGroup.class));
 
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
@@ -174,6 +185,12 @@ class CreateSurveyControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
 
+        verify(surveyService, times(1))
+                .addQuestionToQuestionGroup(eq(defaultSurveyWithQuestionGroup),
+                        eq(0),
+                        any(Question.class),
+                        any(CheckboxGroup.class));
+
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
@@ -204,6 +221,12 @@ class CreateSurveyControllerTest {
                         .param("hasTextField", String.valueOf(false)))
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
+
+        verify(surveyService, times(1))
+                .addCheckboxToQuestion(eq(defaultSurveyWithQuestionGroup),
+                        eq(0),
+                        eq(0),
+                        any(Checkbox.class));
 
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
