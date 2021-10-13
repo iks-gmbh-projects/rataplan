@@ -1,5 +1,6 @@
 package iks.surveytool.builder;
 
+import iks.surveytool.entities.Question;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.entities.User;
@@ -80,6 +81,15 @@ public class SurveyBuilder {
         QuestionGroup questionGroup = new QuestionGroup();
         questionGroup.setTitle(title);
         this.questionGroups.add(questionGroup);
+        return this;
+    }
+
+    public SurveyBuilder addQuestionToGroup(Question question, int groupIndex) {
+        QuestionGroup questionGroup = questionGroups.get(groupIndex);
+        if (questionGroup.getQuestions() == null) {
+            questionGroup.setQuestions(new ArrayList<>());
+        }
+        questionGroup.getQuestions().add(question);
         return this;
     }
 
