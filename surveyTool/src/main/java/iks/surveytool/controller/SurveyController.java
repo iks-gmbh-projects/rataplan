@@ -14,11 +14,11 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/createSurvey")
 @SessionAttributes("survey")
-public class CreateSurveyController {
+public class SurveyController {
 
     private final SurveyService surveyService;
 
-    public CreateSurveyController(SurveyService surveyService) {
+    public SurveyController(SurveyService surveyService) {
         this.surveyService = surveyService;
     }
 

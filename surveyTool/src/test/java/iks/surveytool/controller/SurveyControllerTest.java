@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @DisplayName("Testing CreateSurveyController")
-class CreateSurveyControllerTest {
+class SurveyControllerTest {
 
     @Autowired
     private MockMvc mvc;
