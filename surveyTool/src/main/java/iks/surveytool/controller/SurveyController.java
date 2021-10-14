@@ -121,11 +121,21 @@ public class SurveyController {
             return "addQuestions";
         }
 
-        surveyService.addSurvey(survey);
+        Long surveyID = surveyService.addSurvey(survey);
 
         // Remove survey as session attribute
         status.setComplete();
 
-        return "redirect:/";
+        return "redirect:/createSurvey/" + surveyID + "/final";
+    }
+
+
+    @GetMapping("/{surveyID}/final")
+    public String finalizeCreation(@PathVariable("surveyID") Long surveyID, Model model) {
+        Survey survey = surveyService.findSurveyById(surveyID);
+
+        model.addAttribute("survey", survey);
+
+        return "finalizeSurvey";
     }
 }
