@@ -19,8 +19,9 @@ public class SurveyService {
         return surveyRepository.findSurveyById(surveyID);
     }
 
-    public void addSurvey(Survey survey) {
-        surveyRepository.save(survey);
+    public Long addSurvey(Survey survey) {
+        Survey savedSurvey = surveyRepository.save(survey);
+        return savedSurvey.getId();
     }
 
     public void addQuestionGroupToSurvey(Survey survey, QuestionGroup questionGroup) {
