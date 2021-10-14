@@ -237,6 +237,25 @@ class SurveyServiceTest {
     }
 
     @Test
+    @DisplayName("Failed validation - QuestionGroup missing Questions")
+    void questionGroupIsMissingQuestion_failed() {
+        Question question = new QuestionBuilder()
+                .setText("Test Question")
+                .setHasCheckbox(false)
+                .build();
+        Survey survey = new SurveyBuilder()
+                .setName("Survey with empty QuestionGroup")
+                .addQuestionGroup("QuestionGroup with Question")
+                .addQuestionToGroup(question, 0)
+                .addQuestionGroup("QuestionGroup without Question")
+                .build();
+
+        List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
+
+        assertFalse(errorMessages.isEmpty());
+    }
+
+    @Test
     @DisplayName("Successful validation - saving complete survey")
     void surveyIsComplete_Succesful() {
         Checkbox firstCheckbox = new CheckboxBuilder()
