@@ -66,9 +66,9 @@ public class SurveyController {
 
     @PostMapping("/questions/addGroup")
     public String addQuestionGroup(@ModelAttribute("newSurvey") Survey newSurvey,
-                                   @ModelAttribute("newQuestionGroup") QuestionGroup questionGroup,
+                                   @ModelAttribute("newQuestionGroup") QuestionGroup newQuestionGroup,
                                    RedirectAttributes redirectAttributes) {
-        surveyService.addQuestionGroupToSurvey(newSurvey, questionGroup);
+        surveyService.addQuestionGroupToSurvey(newSurvey, newQuestionGroup);
 
         redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
 
@@ -77,11 +77,11 @@ public class SurveyController {
 
     @PostMapping("/questions/addQuestion/{questionGroupIndex}")
     public String addQuestionToGroup(@ModelAttribute("newSurvey") Survey newSurvey,
-                                     @ModelAttribute("newQuestion") Question question,
+                                     @ModelAttribute("newQuestion") Question newQuestion,
                                      @ModelAttribute("newCheckboxGroup") CheckboxGroup checkboxGroup,
                                      @PathVariable("questionGroupIndex") int questionGroupIndex,
                                      RedirectAttributes redirectAttributes) {
-        surveyService.addQuestionToQuestionGroup(newSurvey, questionGroupIndex, question, checkboxGroup);
+        surveyService.addQuestionToQuestionGroup(newSurvey, questionGroupIndex, newQuestion, checkboxGroup);
 
         redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
 
@@ -90,11 +90,11 @@ public class SurveyController {
 
     @PostMapping("/questions/addQuestion/{questionGroupIndex}/{questionIndex}")
     public String addCheckboxToQuestion(@ModelAttribute("newSurvey") Survey newSurvey,
-                                        @ModelAttribute("newCheckbox") Checkbox checkbox,
+                                        @ModelAttribute("newCheckbox") Checkbox newCheckbox,
                                         @PathVariable("questionGroupIndex") int questionGroupIndex,
                                         @PathVariable("questionIndex") int questionIndex,
                                         RedirectAttributes redirectAttributes) {
-        surveyService.addCheckboxToQuestion(newSurvey, questionGroupIndex, questionIndex, checkbox);
+        surveyService.addCheckboxToQuestion(newSurvey, questionGroupIndex, questionIndex, newCheckbox);
 
         redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
 
