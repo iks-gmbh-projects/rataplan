@@ -253,7 +253,8 @@ class SurveyControllerTest {
 
         mvc.perform(post("/createSurvey/save")
                         .sessionAttr("survey", defaultSurveyWithQuestionGroup))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("addQuestions"));
     }
 
     @Test
