@@ -17,17 +17,17 @@
         <div id="surveyName" class="row my-4">
             <div class="col d-flex flex-column">
                 <span>Name der Umfrage:</span>
-                <span class="surveyInfo" th:text="${survey.name}"></span>
+                <span class="surveyInfo" th:text="${newSurvey.name}"></span>
             </div>
             <div class="col d-flex flex-column">
                 <span>Startdatum:</span>
-                <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'dd.MM.yyyy')}"></span>
-                <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'HH:mm')}"></span>
+                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.startDate, 'dd.MM.yyyy')}"></span>
+                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.startDate, 'HH:mm')}"></span>
             </div>
             <div class="col d-flex flex-column">
                 <span>Enddatum:</span>
-                <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'dd.MM.yyyy')}"></span>
-                <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'HH:mm')}"></span>
+                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.endDate, 'dd.MM.yyyy')}"></span>
+                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.endDate, 'HH:mm')}"></span>
             </div>
         </div>
         <hr>
@@ -48,12 +48,12 @@
     </div>
     <div id="addedQuestion" class="container restrictWidth">
         <div id="noQuestionGroups" class="row">
-            <span class="alert alert-secondary my-2" th:if="${survey.questionGroups == null}">
+            <span class="alert alert-secondary my-2" th:if="${newSurvey.questionGroups == null}">
                 Es wurde bisher kein Frageblock hinzugefügt.
             </span>
         </div>
         <div id="questionGroupListing" class="row card card-body mb-3"
-             th:each="questionGroup : ${survey.questionGroups}">
+             th:each="questionGroup : ${newSurvey.questionGroups}">
             <h4 th:text="${questionGroup.title}"></h4>
             <div id="addQuestionToGroup" class="container">
                 <div th:if="${questionGroup.questions == null}" id="noQuestions" class="row my-2">
@@ -249,7 +249,7 @@
     </div>
 
     <div class="container restrictWidth">
-        <form th:action="@{/createSurvey/save}" th:object="${survey}" th:method="POST">
+        <form th:action="@{/createSurvey/save}" th:object="${newSurvey}" th:method="POST">
             <div id="errorMessages" class="row my-2">
                 <div class="my-2 alert alert-danger" th:if="${#fields.hasGlobalErrors()}"
                      th:each="error : ${#fields.globalErrors()}">

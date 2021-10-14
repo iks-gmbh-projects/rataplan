@@ -15,7 +15,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/createSurvey")
-@SessionAttributes("survey")
+@SessionAttributes("newSurvey")
 public class SurveyController {
 
     private final SurveyService surveyService;
@@ -24,19 +24,19 @@ public class SurveyController {
         this.surveyService = surveyService;
     }
 
-    @ModelAttribute("survey")
+    @ModelAttribute("newSurvey")
     public Survey getNewSurvey() {
         return new Survey();
     }
 
     @GetMapping("")
-    public String getSurveyForm(@ModelAttribute("survey") Survey survey, Model model) {
-        model.addAttribute("survey", survey);
+    public String getSurveyForm(@ModelAttribute("newSurvey") Survey newSurvey, Model model) {
+        model.addAttribute("newSurvey", newSurvey);
         return "createSurvey";
     }
 
     @PostMapping("")
-    public String postSurveyForm(@Valid @ModelAttribute("survey") Survey newSurvey,
+    public String postSurveyForm(@Valid @ModelAttribute("newSurvey") Survey newSurvey,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -47,16 +47,16 @@ public class SurveyController {
                     "Das Enddatum liegt vor dem Startdatum.");
             return "createSurvey";
         } else {
-            redirectAttributes.addFlashAttribute("survey", newSurvey);
+            redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
         }
 
         return "redirect:createSurvey/questions";
     }
 
     @GetMapping("/questions")
-    public String getAddQuestionsForm(@Valid @ModelAttribute("survey") Survey survey,
+    public String getAddQuestionsForm(@Valid @ModelAttribute("newSurvey") Survey newSurvey,
                                       Model model) {
-        model.addAttribute("survey", survey);
+        model.addAttribute("newSurvey", newSurvey);
         model.addAttribute("newQuestionGroup", new QuestionGroup());
         model.addAttribute("newQuestion", new Question());
         model.addAttribute("newCheckboxGroup", new CheckboxGroup());
@@ -65,48 +65,48 @@ public class SurveyController {
     }
 
     @PostMapping("/questions/addGroup")
-    public String addQuestionGroup(@ModelAttribute("survey") Survey survey,
+    public String addQuestionGroup(@ModelAttribute("newSurvey") Survey newSurvey,
                                    @ModelAttribute("newQuestionGroup") QuestionGroup questionGroup,
                                    RedirectAttributes redirectAttributes) {
-        surveyService.addQuestionGroupToSurvey(survey, questionGroup);
+        surveyService.addQuestionGroupToSurvey(newSurvey, questionGroup);
 
-        redirectAttributes.addFlashAttribute("survey", survey);
+        redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
 
         return "redirect:/createSurvey/questions";
     }
 
     @PostMapping("/questions/addQuestion/{questionGroupIndex}")
-    public String addQuestionToGroup(@ModelAttribute("survey") Survey survey,
+    public String addQuestionToGroup(@ModelAttribute("newSurvey") Survey newSurvey,
                                      @ModelAttribute("newQuestion") Question question,
                                      @ModelAttribute("newCheckboxGroup") CheckboxGroup checkboxGroup,
                                      @PathVariable("questionGroupIndex") int questionGroupIndex,
                                      RedirectAttributes redirectAttributes) {
-        surveyService.addQuestionToQuestionGroup(survey, questionGroupIndex, question, checkboxGroup);
+        surveyService.addQuestionToQuestionGroup(newSurvey, questionGroupIndex, question, checkboxGroup);
 
-        redirectAttributes.addFlashAttribute("survey", survey);
+        redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
 
         return "redirect:/createSurvey/questions";
     }
 
     @PostMapping("/questions/addQuestion/{questionGroupIndex}/{questionIndex}")
-    public String addCheckboxToQuestion(@ModelAttribute("survey") Survey survey,
+    public String addCheckboxToQuestion(@ModelAttribute("newSurvey") Survey newSurvey,
                                         @ModelAttribute("newCheckbox") Checkbox checkbox,
                                         @PathVariable("questionGroupIndex") int questionGroupIndex,
                                         @PathVariable("questionIndex") int questionIndex,
                                         RedirectAttributes redirectAttributes) {
-        surveyService.addCheckboxToQuestion(survey, questionGroupIndex, questionIndex, checkbox);
+        surveyService.addCheckboxToQuestion(newSurvey, questionGroupIndex, questionIndex, checkbox);
 
-        redirectAttributes.addFlashAttribute("survey", survey);
+        redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
 
         return "redirect:/createSurvey/questions";
     }
 
     @PostMapping("/save")
-    public String saveSurvey(@ModelAttribute("survey") Survey survey,
+    public String saveSurvey(@ModelAttribute("newSurvey") Survey newSurvey,
                              SessionStatus status,
                              Model model,
                              BindingResult bindingResult) {
-        List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
+        List<String> errorMessages = surveyService.checkIfAnythingEmpty(newSurvey);
         if (!errorMessages.isEmpty()) {
             for (String errorMessage : errorMessages) {
                 ObjectError error = new ObjectError("globalError", errorMessage);
@@ -121,7 +121,7 @@ public class SurveyController {
             return "addQuestions";
         }
 
-        Long surveyID = surveyService.addSurvey(survey);
+        Long surveyID = surveyService.addSurvey(newSurvey);
 
         // Remove survey as session attribute
         status.setComplete();

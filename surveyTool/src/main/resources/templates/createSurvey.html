@@ -13,7 +13,7 @@
 </head>
 <body>
 <section id="surveyCreation" class="d-flex flex-column min-vw-100">
-    <form id="surveyInput" class="container restrictWidth" th:object="${survey}"
+    <form id="surveyInput" class="container restrictWidth" th:object="${newSurvey}"
           th:action="@{/createSurvey}"
           th:method="POST">
         <h1 class="my-4">
@@ -22,33 +22,33 @@
         <div id="surveyName" class="row mb-3">
             <div class="col">
                 <label for="name" class="form-label labelInput">Name*</label>
-                <input id="name" type="text" class="form-control" th:field="${survey.name}" required>
+                <input id="name" type="text" class="form-control" th:field="${newSurvey.name}" required>
             </div>
         </div>
         <div id="surveyDescription" class="row mb-3">
             <div class="col">
                 <label for="description" class="form-label labelInput">Beschreibung</label>
                 <textarea id="description" class="form-control"
-                          th:field="${survey.description}"></textarea>
+                          th:field="${newSurvey.description}"></textarea>
             </div>
         </div>
         <div id="surveyDates" class="row mb-3">
             <div class="col">
                 <label for="startDate" class="form-label labelInput">Startdatum*</label>
                 <input id="startDate" type="datetime-local" class="form-control" name="start"
-                       th:field="${survey.startDate}"
+                       th:field="${newSurvey.startDate}"
                        required>
             </div>
             <div class="col">
                 <label for="endDate" class="form-label labelInput">Enddatum*</label>
                 <input id="endDate" type="datetime-local" class="form-control" name="end"
-                       th:field="${survey.endDate}"
+                       th:field="${newSurvey.endDate}"
                        required>
             </div>
         </div>
         <div id="errorMessages" class="row">
             <span class="my-2 alert alert-danger" th:if="${#fields.hasErrors('endDate')}"
-                  th:errors="${survey.endDate}">
+                  th:errors="${newSurvey.endDate}">
             Das Enddatum muss in der Zukunft liegen.
             </span>
         </div>

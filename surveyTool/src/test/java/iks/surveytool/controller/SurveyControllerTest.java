@@ -47,10 +47,10 @@ class SurveyControllerTest {
     @DisplayName("Testing survey as SessionAttribute")
     void getSurveyFormSessionAttribute() throws Exception {
         MvcResult result = mvc.perform(get("/createSurvey"))
-                .andExpect(model().attributeExists("survey"))
+                .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
+        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
         assertNull(survey.getName());
     }
@@ -73,10 +73,10 @@ class SurveyControllerTest {
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("survey"))
+                .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
+        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
         assertEquals("Test Umfrage", survey.getName());
     }
@@ -93,7 +93,7 @@ class SurveyControllerTest {
                         .param("startDate", String.valueOf(startDate))
                         .param("endDate", String.valueOf(endDate)))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrorCode("survey", "endDate", "Future"))
+                .andExpect(model().attributeHasFieldErrorCode("newSurvey", "endDate", "Future"))
                 .andReturn().getFlashMap();
 
         assertTrue(flashMap.isEmpty());
@@ -111,7 +111,7 @@ class SurveyControllerTest {
                         .param("startDate", String.valueOf(startDate))
                         .param("endDate", String.valueOf(endDate)))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrorCode("survey", "endDate", "error.survey.endDate"))
+                .andExpect(model().attributeHasFieldErrorCode("newSurvey", "endDate", "error.survey.endDate"))
                 .andReturn().getFlashMap();
 
         assertTrue(flashMap.isEmpty());
@@ -126,7 +126,7 @@ class SurveyControllerTest {
                 .build();
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addGroup")
-                        .sessionAttr("survey", defaultSurvey)
+                        .sessionAttr("newSurvey", defaultSurvey)
                         .param("title", "Test QuestionGroup"))
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
@@ -137,9 +137,9 @@ class SurveyControllerTest {
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("survey"))
+                .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
+        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
         assertEquals("Test Survey - Add QuestionGroup", survey.getName());
     }
@@ -152,7 +152,7 @@ class SurveyControllerTest {
                 .build();
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0")
-                        .sessionAttr("survey", defaultSurveyWithQuestionGroup)
+                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup)
                         .param("text", "Test test?")
                         .param("required", String.valueOf(true))
                         .param("hasCheckbox", String.valueOf(false)))
@@ -168,10 +168,10 @@ class SurveyControllerTest {
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("survey"))
+                .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
+        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
         assertEquals("Test Survey - Add Question (No Checkboxes)", survey.getName());
     }
@@ -184,7 +184,7 @@ class SurveyControllerTest {
                 .build();
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0")
-                        .sessionAttr("survey", defaultSurveyWithQuestionGroup)
+                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup)
                         .param("text", "Test test Checkbox?")
                         .param("required", String.valueOf(true))
                         .param("hasCheckbox", String.valueOf(true))
@@ -203,10 +203,10 @@ class SurveyControllerTest {
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("survey"))
+                .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
+        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
         assertEquals("Test Survey - Add Question (With Checkboxes)", survey.getName());
     }
@@ -219,7 +219,7 @@ class SurveyControllerTest {
                 .build();
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0/0")
-                        .sessionAttr("survey", defaultSurveyWithQuestionGroup)
+                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup)
                         .param("text", "New test checkbox")
                         .param("hasTextField", String.valueOf(false)))
                 .andExpect(status().is3xxRedirection())
@@ -234,10 +234,10 @@ class SurveyControllerTest {
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("survey"))
+                .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
+        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
         assertEquals("Test Survey - Add Question (With Checkboxes)", survey.getName());
     }
@@ -252,7 +252,7 @@ class SurveyControllerTest {
                 .thenReturn(List.of("Eine Umfrage muss aus mind. einem Frageblock bestehen."));
 
         mvc.perform(post("/createSurvey/save")
-                        .sessionAttr("survey", defaultSurveyWithQuestionGroup))
+                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addQuestions"));
     }
@@ -266,11 +266,8 @@ class SurveyControllerTest {
         when(surveyService.checkIfAnythingEmpty(defaultSurveyWithQuestionGroup))
                 .thenReturn(List.of());
 
-        FlashMap flashMap = mvc.perform(post("/createSurvey/save")
-                        .sessionAttr("survey", defaultSurveyWithQuestionGroup))
-                .andExpect(status().is3xxRedirection())
-                .andReturn().getFlashMap();
-
-        assertTrue(flashMap.isEmpty());
+        mvc.perform(post("/createSurvey/save")
+                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup))
+                .andExpect(status().is3xxRedirection());
     }
 }
