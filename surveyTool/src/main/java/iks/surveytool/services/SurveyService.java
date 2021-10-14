@@ -68,4 +68,12 @@ public class SurveyService {
         return startDate.isBefore(endDate);
     }
 
+
+    public String checkIfAnythingEmpty(Survey survey) {
+        String errorMessage = "";
+        if (survey.getQuestionGroups() == null) {
+            errorMessage = "Eine Umfrage muss aus mind. einem Frageblock bestehen.";
+        }
+        return errorMessage;
+    }
 }

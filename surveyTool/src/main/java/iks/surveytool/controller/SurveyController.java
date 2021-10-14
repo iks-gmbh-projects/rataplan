@@ -5,6 +5,7 @@ import iks.surveytool.services.SurveyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -52,7 +53,8 @@ public class SurveyController {
     }
 
     @GetMapping("/questions")
-    public String getAddQuestionsForm(@ModelAttribute("survey") Survey survey, Model model) {
+    public String getAddQuestionsForm(@Valid @ModelAttribute("survey") Survey survey,
+                                      Model model) {
         model.addAttribute("survey", survey);
         model.addAttribute("newQuestionGroup", new QuestionGroup());
         model.addAttribute("newQuestion", new Question());
@@ -99,7 +101,23 @@ public class SurveyController {
     }
 
     @PostMapping("/save")
-    public String saveSurvey(@ModelAttribute("survey") Survey survey, SessionStatus status) {
+    public String saveSurvey(@ModelAttribute("survey") Survey survey,
+                             SessionStatus status,
+                             Model model,
+                             BindingResult bindingResult) {
+        String errorMessage = surveyService.checkIfAnythingEmpty(survey);
+        if (!errorMessage.isEmpty()) {
+            ObjectError error = new ObjectError("globalError", errorMessage);
+            bindingResult.addError(error);
+
+            model.addAttribute("newQuestionGroup", new QuestionGroup());
+            model.addAttribute("newQuestion", new Question());
+            model.addAttribute("newCheckboxGroup", new CheckboxGroup());
+            model.addAttribute("newCheckbox", new Checkbox());
+
+            return "addQuestions";
+        }
+
         surveyService.addSurvey(survey);
 
         // Remove survey as session attribute

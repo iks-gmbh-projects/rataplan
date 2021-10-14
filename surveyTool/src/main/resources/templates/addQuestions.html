@@ -247,9 +247,16 @@
             </div>
         </div>
     </div>
+
     <div class="container restrictWidth">
-        <form th:action="@{/createSurvey/save}" th:method="POST">
-            <button type="submit" class="btn btn-success mt-3 float-end">
+        <form th:action="@{/createSurvey/save}" th:object="${survey}" th:method="POST">
+            <div id="errorMessages" class="row my-2">
+                <div class="my-2 alert alert-danger" th:if="${#fields.hasGlobalErrors()}">
+                    <span th:each="error : ${#fields.globalErrors()}" th:text="${error}">
+                    </span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success mt-3">
                 Speichern
             </button>
         </form>
