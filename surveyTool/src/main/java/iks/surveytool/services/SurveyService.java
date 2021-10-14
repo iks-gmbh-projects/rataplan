@@ -71,9 +71,22 @@ public class SurveyService {
 
     public List<String> checkIfAnythingEmpty(Survey survey) {
         List<String> errorMessages = new ArrayList<>();
-        if (survey.getQuestionGroups() == null) {
-            errorMessages.add("Eine Umfrage muss aus mind. einem Frageblock bestehen.");
-        }
+        checkQuestionGroups(survey, errorMessages);
+
         return errorMessages;
+    }
+
+    private void checkQuestionGroups(Survey survey, List<String> errorMessages) {
+        List<QuestionGroup> questionGroups = survey.getQuestionGroups();
+        if (questionGroups == null) {
+            errorMessages.add("Eine Umfrage muss aus mind. einem Frageblock bestehen.");
+        } else {
+            for (QuestionGroup group : questionGroups) {
+                List<Question> questions = group.getQuestions();
+                if (questions == null) {
+                    errorMessages.add("Der Frageblock '" + group.getTitle() + "' enthält noch keine Frage.");
+                }
+            }
+        }
     }
 }
