@@ -1,6 +1,7 @@
 package iks.surveytool.entities;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ public class Survey {
 
     @NotNull
     private String name;
+    @Type(type = "text")
     private String description;
 
     // TODO: NotNull error message for both dates
