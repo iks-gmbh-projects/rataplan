@@ -11,6 +11,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/createSurvey")
@@ -105,10 +106,12 @@ public class SurveyController {
                              SessionStatus status,
                              Model model,
                              BindingResult bindingResult) {
-        String errorMessage = surveyService.checkIfAnythingEmpty(survey);
-        if (!errorMessage.isEmpty()) {
-            ObjectError error = new ObjectError("globalError", errorMessage);
-            bindingResult.addError(error);
+        List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
+        if (!errorMessages.isEmpty()) {
+            for (String errorMessage : errorMessages) {
+                ObjectError error = new ObjectError("globalError", errorMessage);
+                bindingResult.addError(error);
+            }
 
             model.addAttribute("newQuestionGroup", new QuestionGroup());
             model.addAttribute("newQuestion", new Question());

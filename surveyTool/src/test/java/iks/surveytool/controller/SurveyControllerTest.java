@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.FlashMap;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -257,7 +258,7 @@ class SurveyControllerTest {
                 .setName("Test Survey - Save")
                 .build();
         when(surveyService.checkIfAnythingEmpty(defaultSurveyWithQuestionGroup))
-                .thenReturn("Eine Umfrage muss aus mind. einem Frageblock bestehen.");
+                .thenReturn(List.of("Eine Umfrage muss aus mind. einem Frageblock bestehen."));
 
         mvc.perform(post("/createSurvey/save")
                         .sessionAttr("survey", defaultSurveyWithQuestionGroup))
@@ -271,7 +272,7 @@ class SurveyControllerTest {
                 .setName("Test Survey - Save")
                 .build();
         when(surveyService.checkIfAnythingEmpty(defaultSurveyWithQuestionGroup))
-                .thenReturn("");
+                .thenReturn(List.of());
 
         mvc.perform(post("/createSurvey/save")
                         .sessionAttr("survey", defaultSurveyWithQuestionGroup))

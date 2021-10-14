@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -68,12 +69,11 @@ public class SurveyService {
         return startDate.isBefore(endDate);
     }
 
-
-    public String checkIfAnythingEmpty(Survey survey) {
-        String errorMessage = "";
+    public List<String> checkIfAnythingEmpty(Survey survey) {
+        List<String> errorMessages = new ArrayList<>();
         if (survey.getQuestionGroups() == null) {
-            errorMessage = "Eine Umfrage muss aus mind. einem Frageblock bestehen.";
+            errorMessages.add("Eine Umfrage muss aus mind. einem Frageblock bestehen.");
         }
-        return errorMessage;
+        return errorMessages;
     }
 }
