@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Testing SurveyService")
@@ -31,6 +30,7 @@ class SurveyServiceTest {
     @DisplayName("Adding Survey")
     void addSurvey() {
         Survey survey = new SurveyBuilder().build();
+        when(surveyRepository.save(survey)).thenReturn(survey);
 
         surveyService.addSurvey(survey);
 
