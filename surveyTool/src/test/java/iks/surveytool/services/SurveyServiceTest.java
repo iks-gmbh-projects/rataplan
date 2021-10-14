@@ -256,8 +256,34 @@ class SurveyServiceTest {
     }
 
     @Test
-    @DisplayName("Successful validation - saving complete survey")
-    void surveyIsComplete_Succesful() {
+    @DisplayName("Failed validation - Not enough Checkboxes - No multipleSelect")
+    void questionNotEnoughCheckboxes_failed() {
+        Checkbox onlyCheckbox = new CheckboxBuilder()
+                .setText("First Test Checkbox")
+                .build();
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .setMultipleSelect(false)
+                .setCheckboxes(List.of(onlyCheckbox))
+                .build();
+        Question question = new QuestionBuilder()
+                .setText("Test Question")
+                .setHasCheckbox(true)
+                .setCheckboxGroup(checkboxGroup)
+                .build();
+        Survey survey = new SurveyBuilder()
+                .setName("Survey with not enough checkboxes for question")
+                .addQuestionGroup("QuestionGroup with Question")
+                .addQuestionToGroup(question, 0)
+                .build();
+
+        List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
+
+        assertFalse(errorMessages.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Failed validation - Not enough Checkboxes - With multipleSelect (max: 4)")
+    void questionNotEnoughCheckboxes_multipleSelect_failed() {
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .setText("First Test Checkbox")
                 .build();
@@ -271,9 +297,49 @@ class SurveyServiceTest {
                 .build();
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .setMultipleSelect(true)
+                .setMinSelect(2)
+                .setMaxSelect(4)
+                .setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox))
+                .build();
+        Question question = new QuestionBuilder()
+                .setText("Test Question")
+                .setHasCheckbox(true)
+                .setCheckboxGroup(checkboxGroup)
+                .build();
+        Survey survey = new SurveyBuilder()
+                .setName("Survey with not enough checkboxes for question")
+                .addQuestionGroup("QuestionGroup with Question")
+                .addQuestionToGroup(question, 0)
+                .build();
+
+        List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
+
+        assertFalse(errorMessages.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Successful validation - saving complete survey")
+    void surveyIsComplete_Succesful() {
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .setText("First Test Checkbox")
+                .build();
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .setText("Second Test Checkbox")
+                .setHasTextField(true)
+                .build();
+        Checkbox thirdCheckbox = new CheckboxBuilder()
+                .setText("Third Test Checkbox")
+                .setHasTextField(true)
+                .build();
+        Checkbox fourthCheckbox = new CheckboxBuilder()
+                .setText("Fourth Test Checkbox")
+                .setHasTextField(true)
+                .build();
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .setMultipleSelect(true)
                 .setMinSelect(1)
                 .setMaxSelect(3)
-                .setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox))
+                .setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox))
                 .build();
         Question question = new QuestionBuilder()
                 .setText("Test Question")
