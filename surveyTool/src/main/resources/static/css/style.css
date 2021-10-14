@@ -15,3 +15,7 @@
 .surveyInfo {
     color: #2A52CC;
 }
+
+.errorMessage {
+    white-space: pre-wrap;
+}

@@ -253,8 +253,7 @@
             <div id="errorMessages" class="row my-2">
                 <div class="my-2 alert alert-danger" th:if="${#fields.hasGlobalErrors()}"
                      th:each="error : ${#fields.globalErrors()}">
-                    <span th:text="${error}">
-                    </span>
+                    <span class="d-block errorMessage" th:text="${error}"></span>
                 </div>
             </div>
             <div class="row">
