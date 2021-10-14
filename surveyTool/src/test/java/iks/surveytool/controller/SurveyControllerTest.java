@@ -1,6 +1,5 @@
 package iks.surveytool.controller;
 
-import iks.surveytool.builder.QuestionBuilder;
 import iks.surveytool.builder.SurveyBuilder;
 import iks.surveytool.entities.*;
 import iks.surveytool.services.SurveyService;
@@ -150,7 +149,6 @@ class SurveyControllerTest {
     void addQuestionNoCheckboxes_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
         Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
                 .setName("Test Survey - Add Question (No Checkboxes)")
-                .addQuestionGroup("Test Group")
                 .build();
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0")
@@ -183,7 +181,6 @@ class SurveyControllerTest {
     void addQuestionWithCheckboxes_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
         Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
                 .setName("Test Survey - Add Question (With Checkboxes)")
-                .addQuestionGroup("Test Group")
                 .build();
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0")
@@ -217,14 +214,8 @@ class SurveyControllerTest {
     @Test
     @DisplayName("Successfully adding Checkbox - Check if SessionAttribute present")
     void addCheckbox_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
-        Question defaultQuestionWithCheckbox = new QuestionBuilder()
-                .setHasCheckbox(true)
-                .build();
-
         Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
                 .setName("Test Survey - Add Question (With Checkboxes)")
-                .addQuestionGroup("Test Group")
-                .addQuestionToGroup(defaultQuestionWithCheckbox, 0)
                 .build();
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0/0")
