@@ -19,8 +19,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -118,13 +117,6 @@ class SurveyControllerTest {
         assertTrue(flashMap.isEmpty());
     }
 
-    @Test
-    @DisplayName("Testing getAddQuestionsForm()")
-    void getAddQuestionsForm() throws Exception {
-        mvc.perform(get("/createSurvey/questions"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("addQuestions"));
-    }
 
     @Test
     @DisplayName("Successfully adding QuestionGroup - Check if SessionAttribute present")
@@ -256,5 +248,33 @@ class SurveyControllerTest {
         Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("survey");
 
         assertEquals("Test Survey - Add Question (With Checkboxes)", survey.getName());
+    }
+
+    @Test
+    @DisplayName("Failed saving of survey - no QuestionGroups")
+    void failedSavingOfSurveyNoQuestiongroups_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
+        Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
+                .setName("Test Survey - Save")
+                .build();
+        when(surveyService.checkIfAnythingEmpty(defaultSurveyWithQuestionGroup))
+                .thenReturn("Eine Umfrage muss aus mind. einem Frageblock bestehen.");
+
+        mvc.perform(post("/createSurvey/save")
+                        .sessionAttr("survey", defaultSurveyWithQuestionGroup))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Successfully save survey")
+    void successfulSavingOfSurvey() throws Exception {
+        Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
+                .setName("Test Survey - Save")
+                .build();
+        when(surveyService.checkIfAnythingEmpty(defaultSurveyWithQuestionGroup))
+                .thenReturn("");
+
+        mvc.perform(post("/createSurvey/save")
+                        .sessionAttr("survey", defaultSurveyWithQuestionGroup))
+                .andExpect(status().is3xxRedirection());
     }
 }
