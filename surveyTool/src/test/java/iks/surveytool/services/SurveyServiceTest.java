@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
@@ -187,7 +188,7 @@ class SurveyServiceTest {
                 .setText("First Test Checkbox")
                 .build();
         Checkbox secondCheckbox = new CheckboxBuilder()
-                .setText("SecondTest Checkbox")
+                .setText("Second Test Checkbox")
                 .setHasTextField(true)
                 .build();
 
@@ -220,5 +221,40 @@ class SurveyServiceTest {
         boolean result = surveyService.startDateBeforeEndDate(startDate, endDate);
 
         assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("Complete survey - successful")
+    void surveyIsComplete_Succesful() {
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .setText("First Test Checkbox")
+                .build();
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .setText("Second Test Checkbox")
+                .setHasTextField(true)
+                .build();
+        Checkbox thirdCheckbox = new CheckboxBuilder()
+                .setText("Third Test Checkbox")
+                .setHasTextField(true)
+                .build();
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .setMultipleSelect(true)
+                .setMinSelect(1)
+                .setMaxSelect(3)
+                .setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox))
+                .build();
+        Question question = new QuestionBuilder()
+                .setText("Add Question")
+                .setHasCheckbox(true)
+                .setCheckboxGroup(checkboxGroup)
+                .build();
+        Survey survey = new SurveyBuilder()
+                .addQuestionGroup("Test group for adding checkboxes to question")
+                .addQuestionToGroup(question, 0)
+                .build();
+
+        List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
+
+        assertTrue(errorMessages.isEmpty());
     }
 }
