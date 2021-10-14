@@ -266,8 +266,11 @@ class SurveyControllerTest {
         when(surveyService.checkIfAnythingEmpty(defaultSurveyWithQuestionGroup))
                 .thenReturn(List.of());
 
-        mvc.perform(post("/createSurvey/save")
+        FlashMap flashMap = mvc.perform(post("/createSurvey/save")
                         .sessionAttr("survey", defaultSurveyWithQuestionGroup))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andReturn().getFlashMap();
+
+        assertTrue(flashMap.isEmpty());
     }
 }
