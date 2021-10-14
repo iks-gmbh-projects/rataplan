@@ -256,6 +256,29 @@ class SurveyServiceTest {
     }
 
     @Test
+    @DisplayName("Failed validation - No Checkboxes - No multipleSelect")
+    void questionNoCheckboxes_failed() {
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .setMultipleSelect(false)
+                .setCheckboxes(null)
+                .build();
+        Question question = new QuestionBuilder()
+                .setText("Test Question")
+                .setHasCheckbox(true)
+                .setCheckboxGroup(checkboxGroup)
+                .build();
+        Survey survey = new SurveyBuilder()
+                .setName("Survey with not enough checkboxes for question")
+                .addQuestionGroup("QuestionGroup with Question")
+                .addQuestionToGroup(question, 0)
+                .build();
+
+        List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
+
+        assertFalse(errorMessages.isEmpty());
+    }
+
+    @Test
     @DisplayName("Failed validation - Not enough Checkboxes - No multipleSelect")
     void questionNotEnoughCheckboxes_failed() {
         Checkbox onlyCheckbox = new CheckboxBuilder()
