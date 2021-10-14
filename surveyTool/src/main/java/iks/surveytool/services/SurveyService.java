@@ -72,7 +72,6 @@ public class SurveyService {
     public List<String> checkIfAnythingEmpty(Survey survey) {
         List<String> errorMessages = new ArrayList<>();
         checkQuestionGroups(survey, errorMessages);
-
         return errorMessages;
     }
 
@@ -81,10 +80,36 @@ public class SurveyService {
         if (questionGroups == null) {
             errorMessages.add("Eine Umfrage muss aus mind. einem Frageblock bestehen.");
         } else {
-            for (QuestionGroup group : questionGroups) {
-                List<Question> questions = group.getQuestions();
+            for (QuestionGroup questionGroup : questionGroups) {
+                List<Question> questions = questionGroup.getQuestions();
                 if (questions == null) {
-                    errorMessages.add("Der Frageblock '" + group.getTitle() + "' enthält noch keine Frage.");
+                    errorMessages.add("Der Frageblock '" + questionGroup.getTitle() + "' enthält noch keine Frage.");
+                } else {
+                    checkQuestions(questionGroup, errorMessages);
+                }
+            }
+        }
+    }
+
+    private void checkQuestions(QuestionGroup questionGroup, List<String> errorMessages) {
+        List<Question> questions = questionGroup.getQuestions();
+        for (Question question : questions) {
+            if (question.isHasCheckbox()) {
+                CheckboxGroup checkboxGroup = question.getCheckboxGroup();
+                if (checkboxGroup.getCheckboxes() == null) {
+                    errorMessages.add("Frageblock: '" + questionGroup.getTitle() + "', Frage: '" + question.getText()
+                            + "'\nDiese Frage enthält noch keine Antwortmöglichkeiten.");
+                } else {
+                    int numberOfCheckboxes = checkboxGroup.getCheckboxes().size();
+                    if (!checkboxGroup.isMultipleSelect() && numberOfCheckboxes < 2) {
+                        errorMessages.add("Frageblock: '" + questionGroup.getTitle() + "', Frage: '" + question.getText()
+                                + "'\nBei einer Frage mit Auswahlmöglichkeiten müssen mind. 2 Antworten gegeben sein.");
+                    } else if (checkboxGroup.isMultipleSelect() &&
+                            numberOfCheckboxes < checkboxGroup.getMaxSelect()) {
+                        errorMessages.add("Frageblock: '" + questionGroup.getTitle() + "', Frage: '" + question.getText()
+                                + "'\nBei einer Frage mit Auswahlmöglichkeiten müssen mind. 2 Antworten gegeben sein, " +
+                                "bzw. mind. so viele Antworten wie bei der Mehrfachauswahl maximal erlaubt sind.");
+                    }
                 }
             }
         }
