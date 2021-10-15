@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -16,7 +17,7 @@ public class SurveyService {
 
     private final SurveyRepository surveyRepository;
 
-    public Survey findSurveyById(Long surveyID) {
+    public Optional<Survey> findSurveyById(Long surveyID) {
         return surveyRepository.findSurveyById(surveyID);
     }
 
