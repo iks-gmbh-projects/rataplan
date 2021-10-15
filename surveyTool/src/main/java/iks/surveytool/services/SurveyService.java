@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,19 @@ public class SurveyService {
 
     public Long addSurvey(Survey survey) {
         Survey savedSurvey = surveyRepository.save(survey);
+        generateAccessID(savedSurvey);
+        // TODO: Create link to invite users
+        // generateLink(savedSurvey);
+        savedSurvey = surveyRepository.save(survey);
         return savedSurvey.getId();
+    }
+
+    // Temporary:
+    public void generateAccessID(Survey survey) {
+        Random random = new Random();
+        String accessID = "";
+        accessID += survey.getStartDate().getYear() + "-" + random.nextInt(10) + "-" + survey.getId();
+        survey.setAccessID(accessID);
     }
 
     public void addQuestionGroupToSurvey(Survey survey, QuestionGroup questionGroup) {
