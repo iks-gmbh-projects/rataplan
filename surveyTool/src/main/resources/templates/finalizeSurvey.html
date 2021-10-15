@@ -14,8 +14,8 @@
 <body>
 <section id="surveyOverview" class="d-flex flex-column min-vw-100">
 
-    <div id="surveyNotAvailable" class="container restrictWidth mt-5">
-        <div id="errorMessages" class="my-2" th:if="${notAvailable != null}">
+    <div id="surveyNotAvailable" class="container restrictWidth mt-5" th:if="${notAvailable != null}">
+        <div id="errorMessages" class="my-2">
             <div class="my-2 alert alert-danger">
                 <span class="d-block errorMessage" th:text="${notAvailable}"></span>
             </div>
