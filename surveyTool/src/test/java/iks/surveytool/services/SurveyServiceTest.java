@@ -82,10 +82,7 @@ class SurveyServiceTest {
                 .addQuestionGroup("Test group for adding questions")
                 .build();
         Question question = new QuestionBuilder()
-                .setText("Add Question")
-                .setHasCheckbox(false)
-                .setCheckboxGroup(null)
-                .build();
+                .createQuestion(1L, "Add Question", false, false);
         CheckboxGroup checkboxGroup = new CheckboxGroup();
 
         surveyService.addQuestionToQuestionGroup(survey, 0, question, checkboxGroup);
@@ -101,15 +98,9 @@ class SurveyServiceTest {
                 .addQuestionGroup("Test group for adding questions")
                 .build();
         Question firstQuestion = new QuestionBuilder()
-                .setText("Add first Question")
-                .setHasCheckbox(false)
-                .setCheckboxGroup(null)
-                .build();
+                .createQuestion(1L, "Add First Question", false, false);
         Question secondQuestion = new QuestionBuilder()
-                .setText("Add second Question")
-                .setHasCheckbox(true)
-                .setCheckboxGroup(null)
-                .build();
+                .createQuestion(2L, "Add Second Question", true, true);
         CheckboxGroup firstCheckboxGroup = new CheckboxGroup();
         CheckboxGroup secondCheckboxGroup = new CheckboxGroup();
 
@@ -130,10 +121,7 @@ class SurveyServiceTest {
                 .addQuestionGroup("Second test group for adding questions")
                 .build();
         Question question = new QuestionBuilder()
-                .setText("Add Question")
-                .setHasCheckbox(false)
-                .setCheckboxGroup(null)
-                .build();
+                .createQuestion(1L, "Add Question", false, false);
         CheckboxGroup checkboxGroup = new CheckboxGroup();
 
         surveyService.addQuestionToQuestionGroup(survey, 1, question, checkboxGroup);
@@ -148,10 +136,9 @@ class SurveyServiceTest {
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, false, 0, 0);
         Question question = new QuestionBuilder()
-                .setText("Add Question")
-                .setHasCheckbox(true)
-                .setCheckboxGroup(checkboxGroup)
-                .build();
+                .createQuestion(1L, "Add Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
         Survey survey = new SurveyBuilder()
                 .addQuestionGroup("Test group for adding checkboxes to question")
                 .addQuestionToGroup(question, 0)
@@ -171,10 +158,9 @@ class SurveyServiceTest {
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, false, 0, 0);
         Question question = new QuestionBuilder()
-                .setText("Add Question")
-                .setHasCheckbox(true)
-                .setCheckboxGroup(checkboxGroup)
-                .build();
+                .createQuestion(1L, "Add Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
         Survey survey = new SurveyBuilder()
                 .addQuestionGroup("Test group for adding checkboxes to question")
                 .addQuestionToGroup(question, 0)
@@ -232,9 +218,7 @@ class SurveyServiceTest {
     @DisplayName("Failed validation - QuestionGroup missing Questions")
     void questionGroupIsMissingQuestion_failed() {
         Question question = new QuestionBuilder()
-                .setText("Test Question")
-                .setHasCheckbox(false)
-                .build();
+                .createQuestion(1L, "Test Question", false, false);
         Survey survey = new SurveyBuilder()
                 .setName("Survey with empty QuestionGroup")
                 .addQuestionGroup("QuestionGroup with Question")
@@ -253,10 +237,9 @@ class SurveyServiceTest {
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, false, 0, 0);
         Question question = new QuestionBuilder()
-                .setText("Test Question")
-                .setHasCheckbox(true)
-                .setCheckboxGroup(checkboxGroup)
-                .build();
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
         Survey survey = new SurveyBuilder()
                 .setName("Survey with not enough checkboxes for question")
                 .addQuestionGroup("QuestionGroup with Question")
@@ -279,10 +262,9 @@ class SurveyServiceTest {
         checkboxGroup.setCheckboxes(List.of(onlyCheckbox));
 
         Question question = new QuestionBuilder()
-                .setText("Test Question")
-                .setHasCheckbox(true)
-                .setCheckboxGroup(checkboxGroup)
-                .build();
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
         Survey survey = new SurveyBuilder()
                 .setName("Survey with not enough checkboxes for question")
                 .addQuestionGroup("QuestionGroup with Question")
@@ -309,10 +291,9 @@ class SurveyServiceTest {
         checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
 
         Question question = new QuestionBuilder()
-                .setText("Test Question")
-                .setHasCheckbox(true)
-                .setCheckboxGroup(checkboxGroup)
-                .build();
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
         Survey survey = new SurveyBuilder()
                 .setName("Survey with not enough checkboxes for question")
                 .addQuestionGroup("QuestionGroup with Question")
@@ -340,10 +321,9 @@ class SurveyServiceTest {
         checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox));
 
         Question question = new QuestionBuilder()
-                .setText("Test Question")
-                .setHasCheckbox(true)
-                .setCheckboxGroup(checkboxGroup)
-                .build();
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+        
         Survey survey = new SurveyBuilder()
                 .setName("Complete Survey")
                 .addQuestionGroup("QuestionGroup with Question")
