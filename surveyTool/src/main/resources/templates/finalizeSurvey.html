@@ -18,17 +18,19 @@
             Übersicht
         </h1>
         <hr>
-        <h2 class="surveyInfo" th:text="${survey.name}"></h2>
+        <div>
+            <h2 id="surveyName" class="surveyInfo" th:text="${survey.name}"></h2>
+        </div>
         <hr>
-        <div class="container">
+        <div id="surveyDescription" class="container" th:if="${!survey.description.isEmpty()}">
             <h3>
-                Description:
+                Beschreibung:
             </h3>
             <p class="mx-2" th:text="${survey.description}"></p>
         </div>
-        <hr>
-        <div class="my-4 row w-100 basicInformation justify-content-evenly">
-            <div class="col-2 d-flex flex-column">
+        <hr th:if="${!survey.description.isEmpty()}">
+        <div id="surveyDates" class="my-4 row w-100 basicInformation justify-content-evenly">
+            <div class="col-1 d-flex flex-column">
                 <span>Startdatum:</span>
                 <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'dd.MM.yyyy')}"></span>
                 <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'HH:mm')}"></span>
@@ -37,6 +39,38 @@
                 <span>Enddatum:</span>
                 <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'dd.MM.yyyy')}"></span>
                 <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'HH:mm')}"></span>
+            </div>
+        </div>
+        <hr>
+        <div id="surveyAccessID" class="container">
+            <div class="row">
+                <h3>
+                    Zugangs-ID:
+                </h3>
+            </div>
+            <div class="row mb-2 text-center">
+                <span id="accessID" class="surveyInfo text-center" th:text="${survey.accessID}"></span>
+            </div>
+            <div class="row text-center">
+                <p>
+                    Mit dieser ID können Sie jederzeit die Ergebnisse ihrer Umfrage einsehen.
+                </p>
+            </div>
+        </div>
+        <hr>
+        <div id="surveyLink" class="container">
+            <div class="row">
+                <h3>
+                    Link:
+                </h3>
+            </div>
+            <div class="row mb-2 text-center">
+                <span id="link" class="surveyInfo text-center" th:text="${survey.link}"></span>
+            </div>
+            <div class="row text-center">
+                <p>
+                    Mit diesem Link können andere Nutzer an ihrer Umfrage teilnehmen.
+                </p>
             </div>
         </div>
         <hr>
