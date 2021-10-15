@@ -146,9 +146,7 @@ class SurveyServiceTest {
     @DisplayName("Adding Checkbox to Question")
     void addCheckboxToQuestion() {
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .setMultipleSelect(false)
-                .setCheckboxes(null)
-                .build();
+                .createCheckboxGroup(1L, false, 0, 0);
         Question question = new QuestionBuilder()
                 .setText("Add Question")
                 .setHasCheckbox(true)
@@ -171,9 +169,7 @@ class SurveyServiceTest {
     @DisplayName("Adding multiple Checkboxes to Question")
     void addMultipleCheckboxesToQuestion() {
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .setMultipleSelect(false)
-                .setCheckboxes(null)
-                .build();
+                .createCheckboxGroup(1L, false, 0, 0);
         Question question = new QuestionBuilder()
                 .setText("Add Question")
                 .setHasCheckbox(true)
@@ -255,9 +251,7 @@ class SurveyServiceTest {
     @DisplayName("Failed validation - No Checkboxes - No multipleSelect")
     void questionNoCheckboxes_failed() {
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .setMultipleSelect(false)
-                .setCheckboxes(null)
-                .build();
+                .createCheckboxGroup(1L, false, 0, 0);
         Question question = new QuestionBuilder()
                 .setText("Test Question")
                 .setHasCheckbox(true)
@@ -279,10 +273,11 @@ class SurveyServiceTest {
     void questionNotEnoughCheckboxes_failed() {
         Checkbox onlyCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
+
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .setMultipleSelect(false)
-                .setCheckboxes(List.of(onlyCheckbox))
-                .build();
+                .createCheckboxGroup(1L, false, 0, 0);
+        checkboxGroup.setCheckboxes(List.of(onlyCheckbox));
+
         Question question = new QuestionBuilder()
                 .setText("Test Question")
                 .setHasCheckbox(true)
@@ -308,12 +303,11 @@ class SurveyServiceTest {
                 .createCheckbox(2L, "Second Test Checkbox", true);
         Checkbox thirdCheckbox = new CheckboxBuilder()
                 .createCheckbox(3L, "Third Test Checkbox", true);
+
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .setMultipleSelect(true)
-                .setMinSelect(2)
-                .setMaxSelect(4)
-                .setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox))
-                .build();
+                .createCheckboxGroup(1L, true, 2, 4);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+
         Question question = new QuestionBuilder()
                 .setText("Test Question")
                 .setHasCheckbox(true)
@@ -342,11 +336,9 @@ class SurveyServiceTest {
         Checkbox fourthCheckbox = new CheckboxBuilder()
                 .createCheckbox(4L, "Fourth Test Checkbox", false);
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .setMultipleSelect(true)
-                .setMinSelect(1)
-                .setMaxSelect(3)
-                .setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox))
-                .build();
+                .createCheckboxGroup(1L, true, 1, 3);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox));
+
         Question question = new QuestionBuilder()
                 .setText("Test Question")
                 .setHasCheckbox(true)
