@@ -34,7 +34,7 @@ class SurveyServiceTest {
 
         surveyService.addSurvey(survey);
 
-        verify(surveyRepository, times(1)).save(survey);
+        verify(surveyRepository, times(2)).save(survey);
     }
 
     @Test
@@ -159,8 +159,7 @@ class SurveyServiceTest {
                 .addQuestionToGroup(question, 0)
                 .build();
         Checkbox checkbox = new CheckboxBuilder()
-                .setText("Test Checkbox")
-                .build();
+                .createCheckbox(1L, "Test Checkbox", false);
 
         surveyService.addCheckboxToQuestion(survey, 0, 0, checkbox);
 
@@ -185,12 +184,9 @@ class SurveyServiceTest {
                 .addQuestionToGroup(question, 0)
                 .build();
         Checkbox firstCheckbox = new CheckboxBuilder()
-                .setText("First Test Checkbox")
-                .build();
+                .createCheckbox(1L, "First Test Checkbox", false);
         Checkbox secondCheckbox = new CheckboxBuilder()
-                .setText("Second Test Checkbox")
-                .setHasTextField(true)
-                .build();
+                .createCheckbox(2L, "Second Test Checkbox", true);
 
         surveyService.addCheckboxToQuestion(survey, 0, 0, firstCheckbox);
         surveyService.addCheckboxToQuestion(survey, 0, 0, secondCheckbox);
@@ -282,8 +278,7 @@ class SurveyServiceTest {
     @DisplayName("Failed validation - Not enough Checkboxes - No multipleSelect")
     void questionNotEnoughCheckboxes_failed() {
         Checkbox onlyCheckbox = new CheckboxBuilder()
-                .setText("First Test Checkbox")
-                .build();
+                .createCheckbox(1L, "First Test Checkbox", false);
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .setMultipleSelect(false)
                 .setCheckboxes(List.of(onlyCheckbox))
@@ -308,16 +303,11 @@ class SurveyServiceTest {
     @DisplayName("Failed validation - Not enough Checkboxes - With multipleSelect (max: 4)")
     void questionNotEnoughCheckboxes_multipleSelect_failed() {
         Checkbox firstCheckbox = new CheckboxBuilder()
-                .setText("First Test Checkbox")
-                .build();
+                .createCheckbox(1L, "First Test Checkbox", false);
         Checkbox secondCheckbox = new CheckboxBuilder()
-                .setText("Second Test Checkbox")
-                .setHasTextField(true)
-                .build();
+                .createCheckbox(2L, "Second Test Checkbox", true);
         Checkbox thirdCheckbox = new CheckboxBuilder()
-                .setText("Third Test Checkbox")
-                .setHasTextField(true)
-                .build();
+                .createCheckbox(3L, "Third Test Checkbox", true);
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .setMultipleSelect(true)
                 .setMinSelect(2)
@@ -344,20 +334,13 @@ class SurveyServiceTest {
     @DisplayName("Successful validation - saving complete survey")
     void surveyIsComplete_Succesful() {
         Checkbox firstCheckbox = new CheckboxBuilder()
-                .setText("First Test Checkbox")
-                .build();
+                .createCheckbox(1L, "First Test Checkbox", false);
         Checkbox secondCheckbox = new CheckboxBuilder()
-                .setText("Second Test Checkbox")
-                .setHasTextField(true)
-                .build();
+                .createCheckbox(2L, "Second Test Checkbox", true);
         Checkbox thirdCheckbox = new CheckboxBuilder()
-                .setText("Third Test Checkbox")
-                .setHasTextField(true)
-                .build();
+                .createCheckbox(3L, "Third Test Checkbox", true);
         Checkbox fourthCheckbox = new CheckboxBuilder()
-                .setText("Fourth Test Checkbox")
-                .setHasTextField(true)
-                .build();
+                .createCheckbox(4L, "Fourth Test Checkbox", false);
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .setMultipleSelect(true)
                 .setMinSelect(1)
