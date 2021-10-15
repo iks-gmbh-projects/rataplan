@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -133,10 +134,14 @@ public class SurveyController {
 
 
     @GetMapping("/{surveyID}/final")
-    public String finalizeCreation(@Valid @PathVariable("surveyID") Long surveyID, Model model) {
+    public String finalizeCreation(@Valid @PathVariable("surveyID") Long surveyID, Model model) throws MalformedURLException {
         Optional<Survey> surveyOptional = surveyService.findSurveyById(surveyID);
         if (surveyOptional.isPresent()) {
-            model.addAttribute("survey", surveyOptional.get());
+            Survey survey = surveyOptional.get();
+            model.addAttribute("survey", survey);
+            
+            URL url = new URL("http", "localhost", 8080, "/answer?surveyUUID=" + survey.getUuid());
+            model.addAttribute("url", url);
         } else {
             model.addAttribute("notAvailable",
                     "Eine Umfrage mit der ID '" + surveyID + "' ist leider nicht vorhanden.");
