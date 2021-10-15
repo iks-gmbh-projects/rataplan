@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/createSurvey")
@@ -131,10 +132,14 @@ public class SurveyController {
 
 
     @GetMapping("/{surveyID}/final")
-    public String finalizeCreation(@PathVariable("surveyID") Long surveyID, Model model) {
-        Survey survey = surveyService.findSurveyById(surveyID);
-
-        model.addAttribute("survey", survey);
+    public String finalizeCreation(@Valid @PathVariable("surveyID") Long surveyID, Model model) {
+        Optional<Survey> surveyOptional = surveyService.findSurveyById(surveyID);
+        if (surveyOptional.isPresent()) {
+            model.addAttribute("survey", surveyOptional.get());
+        } else {
+            model.addAttribute("notAvailable",
+                    "Eine Umfrage mit der ID '" + surveyID + "' ist leider nicht vorhanden.");
+        }
 
         return "finalizeSurvey";
     }
