@@ -277,4 +277,19 @@ class SurveyControllerTest {
 
         assertTrue(flashMap.isEmpty());
     }
+
+    @Test
+    @DisplayName("Successful fetching of Survey")
+    void getFinalOverviewOfSurvey_Successful() throws Exception {
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithDefaultDate(1L, "Test Survey - Save");
+
+        when(surveyService.findSurveyById(any(Long.class))).thenReturn(java.util.Optional.of(survey));
+
+        mvc.perform(get("/createSurvey/1/final"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("finalizeSurvey"))
+                .andExpect(model().attributeExists("survey"))
+                .andExpect(model().attributeExists("url"));
+    }
 }
