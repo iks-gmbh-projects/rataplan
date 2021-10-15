@@ -19,3 +19,7 @@
 .errorMessage {
     white-space: pre-wrap;
 }
+
+#accessID {
+    font-size: 30px;
+}
