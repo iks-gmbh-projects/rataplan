@@ -63,6 +63,9 @@ class SurveyControllerTest {
         // endDate is in distant future
         LocalDateTime endDate = LocalDateTime.of(3000, 10, 1, 13, 0);
 
+        when(surveyService.startDateBeforeEndDate(any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(true);
+
         FlashMap flashMap = mvc.perform(post("/createSurvey")
                         .param("name", "Test Umfrage")
                         .param("startDate", String.valueOf(startDate))
@@ -105,6 +108,9 @@ class SurveyControllerTest {
         LocalDateTime startDate = LocalDateTime.of(3000, 10, 1, 13, 0);
         // endDate is in past
         LocalDateTime endDate = LocalDateTime.of(3000, 9, 1, 13, 0);
+
+        when(surveyService.startDateBeforeEndDate(any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(false);
 
         FlashMap flashMap = mvc.perform(post("/createSurvey")
                         .param("name", "Test Umfrage")
