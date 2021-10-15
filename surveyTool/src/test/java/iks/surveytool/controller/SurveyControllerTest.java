@@ -50,12 +50,11 @@ class SurveyControllerTest {
                 .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
+        Survey newSurvey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
-        assertNull(survey.getName());
+        assertNull(newSurvey.getName());
     }
 
-    // TODO: Find out why the Test thinks that 10 < 9
     @Test
     @DisplayName("Successful POST of Survey - Check if SessionAttribute present")
     void postSurveySuccess_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
@@ -79,9 +78,9 @@ class SurveyControllerTest {
                 .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
+        Survey newSurvey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
-        assertEquals("Test Umfrage", survey.getName());
+        assertEquals("Test Umfrage", newSurvey.getName());
     }
 
     @Test
@@ -127,38 +126,36 @@ class SurveyControllerTest {
     @Test
     @DisplayName("Successfully adding QuestionGroup - Check if SessionAttribute present")
     void addQuestionGroup_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
-        Survey defaultSurvey = new SurveyBuilder()
-                .setName("Test Survey - Add QuestionGroup")
-                .build();
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithDefaultDate(1L, "Test Survey - Add QuestionGroup");
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addGroup")
-                        .sessionAttr("newSurvey", defaultSurvey)
+                        .sessionAttr("newSurvey", survey)
                         .param("title", "Test QuestionGroup"))
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
 
         verify(surveyService, times(1))
-                .addQuestionGroupToSurvey(eq(defaultSurvey), any(QuestionGroup.class));
+                .addQuestionGroupToSurvey(eq(survey), any(QuestionGroup.class));
 
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
+        Survey newSurvey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
-        assertEquals("Test Survey - Add QuestionGroup", survey.getName());
+        assertEquals("Test Survey - Add QuestionGroup", newSurvey.getName());
     }
 
     @Test
     @DisplayName("Successfully adding Question - No CheckboxGroup - Check if SessionAttribute present")
     void addQuestionNoCheckboxes_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
-        Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
-                .setName("Test Survey - Add Question (No Checkboxes)")
-                .build();
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithDefaultDate(1L, "Test Survey - Add Question (No Checkboxes)");
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0")
-                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup)
+                        .sessionAttr("newSurvey", survey)
                         .param("text", "Test test?")
                         .param("required", String.valueOf(true))
                         .param("hasCheckbox", String.valueOf(false)))
@@ -166,7 +163,7 @@ class SurveyControllerTest {
                 .andReturn().getFlashMap();
 
         verify(surveyService, times(1))
-                .addQuestionToQuestionGroup(eq(defaultSurveyWithQuestionGroup),
+                .addQuestionToQuestionGroup(eq(survey),
                         eq(0),
                         any(Question.class),
                         any(CheckboxGroup.class));
@@ -177,20 +174,19 @@ class SurveyControllerTest {
                 .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
+        Survey newSurvey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
-        assertEquals("Test Survey - Add Question (No Checkboxes)", survey.getName());
+        assertEquals("Test Survey - Add Question (No Checkboxes)", newSurvey.getName());
     }
 
     @Test
     @DisplayName("Successfully adding Question - With CheckboxGroup - Check if SessionAttribute present")
     void addQuestionWithCheckboxes_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
-        Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
-                .setName("Test Survey - Add Question (With Checkboxes)")
-                .build();
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithDefaultDate(1L, "Test Survey - Add Question (With Checkboxes)");
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0")
-                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup)
+                        .sessionAttr("newSurvey", survey)
                         .param("text", "Test test Checkbox?")
                         .param("required", String.valueOf(true))
                         .param("hasCheckbox", String.valueOf(true))
@@ -201,7 +197,7 @@ class SurveyControllerTest {
                 .andReturn().getFlashMap();
 
         verify(surveyService, times(1))
-                .addQuestionToQuestionGroup(eq(defaultSurveyWithQuestionGroup),
+                .addQuestionToQuestionGroup(eq(survey),
                         eq(0),
                         any(Question.class),
                         any(CheckboxGroup.class));
@@ -212,27 +208,26 @@ class SurveyControllerTest {
                 .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
+        Survey newSurvey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
-        assertEquals("Test Survey - Add Question (With Checkboxes)", survey.getName());
+        assertEquals("Test Survey - Add Question (With Checkboxes)", newSurvey.getName());
     }
 
     @Test
     @DisplayName("Successfully adding Checkbox - Check if SessionAttribute present")
     void addCheckbox_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
-        Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
-                .setName("Test Survey - Add Question (With Checkboxes)")
-                .build();
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithDefaultDate(1L, "Test Survey - Add Checkboxes");
 
         FlashMap flashMap = mvc.perform(post("/createSurvey/questions/addQuestion/0/0")
-                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup)
+                        .sessionAttr("newSurvey", survey)
                         .param("text", "New test checkbox")
                         .param("hasTextField", String.valueOf(false)))
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
 
         verify(surveyService, times(1))
-                .addCheckboxToQuestion(eq(defaultSurveyWithQuestionGroup),
+                .addCheckboxToQuestion(eq(survey),
                         eq(0),
                         eq(0),
                         any(Checkbox.class));
@@ -243,37 +238,43 @@ class SurveyControllerTest {
                 .andExpect(model().attributeExists("newSurvey"))
                 .andReturn();
 
-        Survey survey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
+        Survey newSurvey = (Survey) Objects.requireNonNull(result.getModelAndView()).getModel().get("newSurvey");
 
-        assertEquals("Test Survey - Add Question (With Checkboxes)", survey.getName());
+        assertEquals("Test Survey - Add Checkboxes", newSurvey.getName());
     }
 
     @Test
     @DisplayName("Failed saving of survey - no QuestionGroups")
     void failedSavingOfSurveyNoQuestiongroups_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
-        Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
-                .setName("Test Survey - Save")
-                .build();
-        when(surveyService.checkIfAnythingEmpty(defaultSurveyWithQuestionGroup))
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithDefaultDate(1L, "Test Survey - Save");
+
+        when(surveyService.checkIfAnythingEmpty(survey))
                 .thenReturn(List.of("Eine Umfrage muss aus mind. einem Frageblock bestehen."));
 
-        mvc.perform(post("/createSurvey/save")
-                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup))
+        FlashMap flashMap = mvc.perform(post("/createSurvey/save")
+                        .sessionAttr("newSurvey", survey))
                 .andExpect(status().isOk())
-                .andExpect(view().name("addQuestions"));
+                .andExpect(view().name("addQuestions"))
+                .andReturn().getFlashMap();
+
+        assertTrue(flashMap.isEmpty());
     }
 
     @Test
     @DisplayName("Successfully save survey")
     void successfulSavingOfSurvey() throws Exception {
-        Survey defaultSurveyWithQuestionGroup = new SurveyBuilder()
-                .setName("Test Survey - Save")
-                .build();
-        when(surveyService.checkIfAnythingEmpty(defaultSurveyWithQuestionGroup))
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithDefaultDate(1L, "Test Survey - Save");
+
+        when(surveyService.checkIfAnythingEmpty(survey))
                 .thenReturn(List.of());
 
-        mvc.perform(post("/createSurvey/save")
-                        .sessionAttr("newSurvey", defaultSurveyWithQuestionGroup))
-                .andExpect(status().is3xxRedirection());
+        FlashMap flashMap = mvc.perform(post("/createSurvey/save")
+                        .sessionAttr("newSurvey", survey))
+                .andExpect(status().is3xxRedirection())
+                .andReturn().getFlashMap();
+
+        assertTrue(flashMap.isEmpty());
     }
 }
