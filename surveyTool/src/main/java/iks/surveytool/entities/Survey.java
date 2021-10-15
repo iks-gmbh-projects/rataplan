@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class Survey {
     // ID for creator of survey to view results. May get changed to UUID:
     private String accessID;
     // Link for users to submit their answers:
-    private String link;
+    private URL link;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

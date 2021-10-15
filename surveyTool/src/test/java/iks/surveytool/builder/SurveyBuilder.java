@@ -2,6 +2,7 @@ package iks.surveytool.builder;
 
 import iks.surveytool.entities.Survey;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 
 public class SurveyBuilder {
@@ -11,7 +12,7 @@ public class SurveyBuilder {
     LocalDateTime endDate = startDate.plusWeeks(1L);
     boolean open = false;
     String accessID = "Test ID";
-    String link = "Eine URL";
+    URL link;
 
     public Survey createSurveyWithDefaultDate(Long id,
                                               String name) {
@@ -23,7 +24,6 @@ public class SurveyBuilder {
         newSurvey.setEndDate(endDate);
         newSurvey.setOpen(open);
         newSurvey.setAccessID(accessID);
-        newSurvey.setLink(link);
         return newSurvey;
     }
 }

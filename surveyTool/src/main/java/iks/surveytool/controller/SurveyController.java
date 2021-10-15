@@ -11,6 +11,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,7 +107,7 @@ public class SurveyController {
     public String saveSurvey(@ModelAttribute("newSurvey") Survey newSurvey,
                              SessionStatus status,
                              Model model,
-                             BindingResult bindingResult) {
+                             BindingResult bindingResult) throws MalformedURLException {
         List<String> errorMessages = surveyService.checkIfAnythingEmpty(newSurvey);
         if (!errorMessages.isEmpty()) {
             for (String errorMessage : errorMessages) {

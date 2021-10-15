@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.MalformedURLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +29,7 @@ class SurveyServiceTest {
 
     @Test
     @DisplayName("Adding Survey")
-    void addSurvey() {
+    void addSurvey() throws MalformedURLException {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithDefaultDate(1L, "Test Umfrage");
         when(surveyRepository.save(survey)).thenReturn(survey);
