@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -20,11 +19,14 @@ public class SurveyService {
         return surveyRepository.findSurveyById(surveyID);
     }
 
+    public Optional<Survey> findSurveyByUUID(UUID uuid) {
+        return surveyRepository.findSurveyByUuid(uuid);
+    }
+
     public Long addSurvey(Survey survey) throws MalformedURLException {
         Survey savedSurvey = surveyRepository.save(survey);
         generateAccessID(savedSurvey);
-        // TODO: Create link to invite users
-        generateLink(savedSurvey);
+        generateUUID(savedSurvey);
         savedSurvey = surveyRepository.save(survey);
         return savedSurvey.getId();
     }
@@ -37,10 +39,9 @@ public class SurveyService {
         survey.setAccessID(accessID);
     }
 
-    private void generateLink(Survey survey) throws MalformedURLException {
+    private void generateUUID(Survey survey) {
         UUID uuid = UUID.randomUUID();
-        URL url = new URL("http", "localhost", 8080, "/answer?surveyUUID=" + uuid);
-        survey.setLink(url);
+        survey.setUuid(uuid);
     }
 
     public void addQuestionGroupToSurvey(Survey survey, QuestionGroup questionGroup) {
