@@ -44,9 +44,7 @@ class SurveyServiceTest {
                 .setQuestionGroups(null)
                 .build();
         QuestionGroup questionGroup = new QuestionGroupBuilder()
-                .setTitle("Add test group")
-                .setSurvey(null)
-                .build();
+                .createQuestionGroup(1L, "Add test group");
 
         surveyService.addQuestionGroupToSurvey(survey, questionGroup);
 
@@ -60,13 +58,9 @@ class SurveyServiceTest {
                 .setQuestionGroups(null)
                 .build();
         QuestionGroup questionGroup1 = new QuestionGroupBuilder()
-                .setTitle("Add testGroup1")
-                .setSurvey(null)
-                .build();
+                .createQuestionGroup(1L, "Add first test group");
         QuestionGroup questionGroup2 = new QuestionGroupBuilder()
-                .setTitle("Add testGroup2")
-                .setSurvey(null)
-                .build();
+                .createQuestionGroup(2L, "Add second test group");
 
         surveyService.addQuestionGroupToSurvey(survey, questionGroup1);
         surveyService.addQuestionGroupToSurvey(survey, questionGroup2);
@@ -78,9 +72,13 @@ class SurveyServiceTest {
     @Test
     @DisplayName("Adding Question to QuestionGroup - No Checkbox")
     void addQuestionToQuestionGroup_NoCheckbox() {
+        QuestionGroup questionGroup = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "Test group for adding questions");
+
         Survey survey = new SurveyBuilder()
-                .addQuestionGroup("Test group for adding questions")
                 .build();
+        survey.setQuestionGroups(List.of(questionGroup));
+
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Add Question", false, false);
         CheckboxGroup checkboxGroup = new CheckboxGroup();
@@ -94,9 +92,13 @@ class SurveyServiceTest {
     @Test
     @DisplayName("Adding multiple Questions to QuestionGroup")
     void addMultipleQuestionsToQuestionGroup() {
+        QuestionGroup questionGroup = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "Test group for adding questions");
+
         Survey survey = new SurveyBuilder()
-                .addQuestionGroup("Test group for adding questions")
                 .build();
+        survey.setQuestionGroups(List.of(questionGroup));
+
         Question firstQuestion = new QuestionBuilder()
                 .createQuestion(1L, "Add First Question", false, false);
         Question secondQuestion = new QuestionBuilder()
@@ -116,10 +118,15 @@ class SurveyServiceTest {
     @Test
     @DisplayName("Adding Question to second QuestionGroup - No Checkbox")
     void addQuestionToSecondQuestionGroup_NoCheckbox() {
+        QuestionGroup questionGroup1 = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "First test group for adding questions");
+        QuestionGroup questionGroup2 = new QuestionGroupBuilder()
+                .createQuestionGroup(2L, "Second test group for adding questions");
+
         Survey survey = new SurveyBuilder()
-                .addQuestionGroup("First test group for adding questions")
-                .addQuestionGroup("Second test group for adding questions")
                 .build();
+        survey.setQuestionGroups(List.of(questionGroup1, questionGroup2));
+
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Add Question", false, false);
         CheckboxGroup checkboxGroup = new CheckboxGroup();
@@ -139,10 +146,14 @@ class SurveyServiceTest {
                 .createQuestion(1L, "Add Question", false, true);
         question.setCheckboxGroup(checkboxGroup);
 
+        QuestionGroup questionGroup = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "Test group for adding checkboxes to question");
+        questionGroup.setQuestions(List.of(question));
+
         Survey survey = new SurveyBuilder()
-                .addQuestionGroup("Test group for adding checkboxes to question")
-                .addQuestionToGroup(question, 0)
                 .build();
+        survey.setQuestionGroups(List.of(questionGroup));
+
         Checkbox checkbox = new CheckboxBuilder()
                 .createCheckbox(1L, "Test Checkbox", false);
 
@@ -161,10 +172,14 @@ class SurveyServiceTest {
                 .createQuestion(1L, "Add Question", false, true);
         question.setCheckboxGroup(checkboxGroup);
 
+        QuestionGroup questionGroup = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "Test group for adding checkboxes to question");
+        questionGroup.setQuestions(List.of(question));
+
         Survey survey = new SurveyBuilder()
-                .addQuestionGroup("Test group for adding checkboxes to question")
-                .addQuestionToGroup(question, 0)
                 .build();
+        survey.setQuestionGroups(List.of(questionGroup));
+
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
         Checkbox secondCheckbox = new CheckboxBuilder()
@@ -219,12 +234,18 @@ class SurveyServiceTest {
     void questionGroupIsMissingQuestion_failed() {
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, false);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        QuestionGroup questionGroupWithoutQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(2L, "QuestionGroup without Question");
+
         Survey survey = new SurveyBuilder()
                 .setName("Survey with empty QuestionGroup")
-                .addQuestionGroup("QuestionGroup with Question")
-                .addQuestionToGroup(question, 0)
-                .addQuestionGroup("QuestionGroup without Question")
                 .build();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion, questionGroupWithoutQuestion));
 
         List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
 
@@ -240,11 +261,14 @@ class SurveyServiceTest {
                 .createQuestion(1L, "Test Question", false, true);
         question.setCheckboxGroup(checkboxGroup);
 
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
         Survey survey = new SurveyBuilder()
-                .setName("Survey with not enough checkboxes for question")
-                .addQuestionGroup("QuestionGroup with Question")
-                .addQuestionToGroup(question, 0)
+                .setName("Survey with no checkboxes for question")
                 .build();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
 
@@ -265,11 +289,14 @@ class SurveyServiceTest {
                 .createQuestion(1L, "Test Question", false, true);
         question.setCheckboxGroup(checkboxGroup);
 
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
         Survey survey = new SurveyBuilder()
                 .setName("Survey with not enough checkboxes for question")
-                .addQuestionGroup("QuestionGroup with Question")
-                .addQuestionToGroup(question, 0)
                 .build();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
 
@@ -294,11 +321,14 @@ class SurveyServiceTest {
                 .createQuestion(1L, "Test Question", false, true);
         question.setCheckboxGroup(checkboxGroup);
 
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
         Survey survey = new SurveyBuilder()
                 .setName("Survey with not enough checkboxes for question")
-                .addQuestionGroup("QuestionGroup with Question")
-                .addQuestionToGroup(question, 0)
                 .build();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
 
@@ -323,12 +353,15 @@ class SurveyServiceTest {
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, true);
         question.setCheckboxGroup(checkboxGroup);
-        
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
         Survey survey = new SurveyBuilder()
                 .setName("Complete Survey")
-                .addQuestionGroup("QuestionGroup with Question")
-                .addQuestionToGroup(question, 0)
                 .build();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         List<String> errorMessages = surveyService.checkIfAnythingEmpty(survey);
 
