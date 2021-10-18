@@ -19,7 +19,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/createSurvey")
 @CrossOrigin(origins = "http://localhost:4200")
-@SessionAttributes("newSurvey")
 public class SurveyController {
 
     private final SurveyService surveyService;
@@ -28,33 +27,23 @@ public class SurveyController {
         this.surveyService = surveyService;
     }
 
-    @ModelAttribute("newSurvey")
-    public Survey getNewSurvey() {
+    @GetMapping("")
+    public Survey getSurveyForm() {
         return new Survey();
     }
 
-    @GetMapping("")
-    public String getSurveyForm(@ModelAttribute("newSurvey") Survey newSurvey, Model model) {
-        model.addAttribute("newSurvey", newSurvey);
-        return "createSurvey";
-    }
-
     @PostMapping("")
-    public String postSurveyForm(@Valid @ModelAttribute("newSurvey") Survey newSurvey,
-                                 BindingResult bindingResult,
-                                 RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            return "createSurvey";
-        } else if (!surveyService.startDateBeforeEndDate(newSurvey.getStartDate(), newSurvey.getEndDate())) {
-            bindingResult.rejectValue("endDate",
-                    "error.survey.endDate",
-                    "Das Enddatum liegt vor dem Startdatum.");
-            return "createSurvey";
-        } else {
-            redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
-        }
-
-        return "redirect:createSurvey/questions";
+    public void postSurveyForm(@RequestBody Survey survey) throws MalformedURLException {
+//        if (bindingResult.hasErrors()) {
+//            return "createSurvey";
+//        } else if (!surveyService.startDateBeforeEndDate(newSurvey.getStartDate(), newSurvey.getEndDate())) {
+//            bindingResult.rejectValue("endDate",
+//                    "error.survey.endDate",
+//                    "Das Enddatum liegt vor dem Startdatum.");
+//            return "createSurvey";
+//        } else {
+//            redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
+//        }
     }
 
     @GetMapping("/questions")
