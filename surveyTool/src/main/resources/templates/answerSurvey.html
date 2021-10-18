@@ -20,6 +20,39 @@
             </div>
         </div>
     </div>
+
+    <div id="information" class="container restrictWidth" th:if="${survey != null}">
+        <div class="mt-3">
+            <h2 id="surveyName" class="surveyInfo" th:text="${survey.name}"></h2>
+        </div>
+        <hr>
+        <div id="surveyDescription" class="container" th:if="${!survey.description.isEmpty()}">
+            <h3>
+                Beschreibung:
+            </h3>
+            <p class="mx-2" th:text="${survey.description}"></p>
+        </div>
+        <hr th:if="${!survey.description.isEmpty()}">
+        <div id="surveyDates" class="my-4 row w-100 basicInformation justify-content-evenly">
+            <div class="col-1 d-flex flex-column">
+                <span>Startdatum:</span>
+                <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'dd.MM.yyyy')}"></span>
+                <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'HH:mm')}"></span>
+            </div>
+            <div class="col-1 d-flex flex-column">
+                <span>Enddatum:</span>
+                <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'dd.MM.yyyy')}"></span>
+                <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'HH:mm')}"></span>
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    <!--    <div id="questions">-->
+    <!--        <div id="questionGroup" th:each="questionGroup : ${survey.questionGroups}">-->
+    <!--            <h3 th:text="${questionGroup.title}"></h3>-->
+    <!--        </div>-->
+    <!--    </div>-->
 </section>
 </body>
 </html>
