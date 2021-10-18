@@ -57,8 +57,8 @@ class SurveyControllerTest {
     }
 
     @Test
-    @DisplayName("Successful POST of Survey - Check if SessionAttribute present")
-    void postSurveySuccess_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
+    @DisplayName("Successful POST of Survey")
+    void postSurveySuccess() throws Exception {
         LocalDateTime startDate = LocalDateTime.of(3000, 9, 1, 13, 0);
         // endDate is in distant future
         LocalDateTime endDate = LocalDateTime.of(3000, 10, 1, 13, 0);
@@ -73,6 +73,7 @@ class SurveyControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andReturn().getFlashMap();
 
+        // Check if Survey is present as SessionAttribute:
         MvcResult result = mvc.perform(get("/createSurvey/questions")
                         .sessionAttrs(flashMap))
                 .andExpect(status().isOk())
@@ -85,12 +86,13 @@ class SurveyControllerTest {
     }
 
     @Test
-    @DisplayName("Failed POST of Survey - End date in past - Check if SessionAttribute not present in next GET-mapping")
-    void postSurveyFailure_DateInPast_CheckIfNextGetMappingDoesNotContainSurveySessionAttribute() throws Exception {
+    @DisplayName("Failed POST of Survey - End date in past")
+    void postSurveyFailure_DateInPast() throws Exception {
         LocalDateTime startDate = LocalDateTime.of(1000, 10, 1, 13, 0);
         // endDate is in past
         LocalDateTime endDate = LocalDateTime.of(1000, 11, 1, 13, 0);
 
+        // Check if Survey is NOT present as SessionAttribute:
         FlashMap flashMap = mvc.perform(post("/createSurvey")
                         .param("name", "Test Umfrage")
                         .param("startDate", String.valueOf(startDate))
@@ -103,8 +105,8 @@ class SurveyControllerTest {
     }
 
     @Test
-    @DisplayName("Failed POST of Survey - endDate is before startDate - Check if SessionAttribute not present in next GET-mapping")
-    void postSurveyFailure_EndBeforeStart_CheckIfNextGetMappingDoesNotContainSurveySessionAttribute() throws Exception {
+    @DisplayName("Failed POST of Survey - endDate is before startDate")
+    void postSurveyFailure_EndBeforeStart() throws Exception {
         LocalDateTime startDate = LocalDateTime.of(3000, 10, 1, 13, 0);
         // endDate is in past
         LocalDateTime endDate = LocalDateTime.of(3000, 9, 1, 13, 0);
@@ -125,8 +127,8 @@ class SurveyControllerTest {
 
 
     @Test
-    @DisplayName("Successfully adding QuestionGroup - Check if SessionAttribute present")
-    void addQuestionGroup_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
+    @DisplayName("Successfully adding QuestionGroup")
+    void addQuestionGroup() throws Exception {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithDefaultDate(1L, "Test Survey - Add QuestionGroup");
 
@@ -150,8 +152,8 @@ class SurveyControllerTest {
     }
 
     @Test
-    @DisplayName("Successfully adding Question - No CheckboxGroup - Check if SessionAttribute present")
-    void addQuestionNoCheckboxes_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
+    @DisplayName("Successfully adding Question - No CheckboxGroup")
+    void addQuestionNoCheckboxes() throws Exception {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithDefaultDate(1L, "Test Survey - Add Question (No Checkboxes)");
 
@@ -181,8 +183,8 @@ class SurveyControllerTest {
     }
 
     @Test
-    @DisplayName("Successfully adding Question - With CheckboxGroup - Check if SessionAttribute present")
-    void addQuestionWithCheckboxes_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
+    @DisplayName("Successfully adding Question - With CheckboxGroup")
+    void addQuestionWithCheckboxes() throws Exception {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithDefaultDate(1L, "Test Survey - Add Question (With Checkboxes)");
 
@@ -215,8 +217,8 @@ class SurveyControllerTest {
     }
 
     @Test
-    @DisplayName("Successfully adding Checkbox - Check if SessionAttribute present")
-    void addCheckbox_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
+    @DisplayName("Successfully adding Checkbox")
+    void addCheckbox() throws Exception {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithDefaultDate(1L, "Test Survey - Add Checkboxes");
 
@@ -246,7 +248,7 @@ class SurveyControllerTest {
 
     @Test
     @DisplayName("Failed saving of survey - no QuestionGroups")
-    void failedSavingOfSurveyNoQuestiongroups_CheckIfNextGetMappingContainsSurveySessionAttribute() throws Exception {
+    void failedSavingOfSurveyNoQuestiongroups() throws Exception {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithDefaultDate(1L, "Test Survey - Save");
 
@@ -298,9 +300,6 @@ class SurveyControllerTest {
     @Test
     @DisplayName("Failed fetching of Survey")
     void getFinalOverviewOfSurvey_Failed() throws Exception {
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "Test Survey - Save");
-
         when(surveyService.findSurveyById(any(Long.class))).thenReturn(Optional.empty());
 
         mvc.perform(get("/createSurvey/1/final"))
