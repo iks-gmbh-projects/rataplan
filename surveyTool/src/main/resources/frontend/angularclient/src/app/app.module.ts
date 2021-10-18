@@ -6,6 +6,8 @@ import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "./components/home/home.component";
 import {SurveyCreationComponent} from "./components/survey-creation/survey-creation.component";
 import {QuestionAddingComponent} from "./components/question-adding/question-adding.component";
+import {HttpClientModule} from "@angular/common/http";
+import {FormsModule} from "@angular/forms";
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -22,7 +24,9 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot(appRoutes)
+    HttpClientModule,
+    RouterModule.forRoot(appRoutes),
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
