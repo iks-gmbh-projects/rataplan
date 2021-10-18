@@ -15,6 +15,7 @@ import org.springframework.web.servlet.FlashMap;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -290,6 +291,23 @@ class SurveyControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("finalizeSurvey"))
                 .andExpect(model().attributeExists("survey"))
-                .andExpect(model().attributeExists("url"));
+                .andExpect(model().attributeExists("url"))
+                .andExpect(model().attributeDoesNotExist("notAvailable"));
+    }
+
+    @Test
+    @DisplayName("Failed fetching of Survey")
+    void getFinalOverviewOfSurvey_Failed() throws Exception {
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithDefaultDate(1L, "Test Survey - Save");
+
+        when(surveyService.findSurveyById(any(Long.class))).thenReturn(Optional.empty());
+
+        mvc.perform(get("/createSurvey/1/final"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("finalizeSurvey"))
+                .andExpect(model().attributeExists("notAvailable"))
+                .andExpect(model().attributeDoesNotExist("survey"))
+                .andExpect(model().attributeDoesNotExist("url"));
     }
 }
