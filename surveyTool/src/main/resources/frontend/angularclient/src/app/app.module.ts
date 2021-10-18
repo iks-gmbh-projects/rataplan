@@ -3,9 +3,9 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
 import {RouterModule, Routes} from "@angular/router";
-import {HomeComponent} from "./home/home.component";
-import {SurveyCreationComponent} from "./survey-creation/survey-creation.component";
-import {QuestionAddingComponent} from "./question-adding/question-adding.component";
+import {HomeComponent} from "./components/home/home.component";
+import {SurveyCreationComponent} from "./components/survey-creation/survey-creation.component";
+import {QuestionAddingComponent} from "./components/question-adding/question-adding.component";
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
