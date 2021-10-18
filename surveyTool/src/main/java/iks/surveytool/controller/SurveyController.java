@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/createSurvey")
+@CrossOrigin(origins = "http://localhost:4200")
 @SessionAttributes("newSurvey")
 public class SurveyController {
 
@@ -139,7 +140,7 @@ public class SurveyController {
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
             model.addAttribute("survey", survey);
-            
+
             URL url = new URL("http", "localhost", 8080, "/answer?surveyUUID=" + survey.getUuid());
             model.addAttribute("url", url);
         } else {
