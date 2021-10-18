@@ -14,7 +14,7 @@ export class SurveyService {
   }
 
   public createSurvey(survey: Survey) {
-    return this.http.post<Survey>(this.surveyUrl, survey);
+    return this.http.post(this.surveyUrl, survey, {responseType: 'text'});
   }
 
 }

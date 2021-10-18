@@ -12,7 +12,7 @@ import {FormsModule} from "@angular/forms";
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'createSurvey', component: SurveyCreationComponent},
-  {path: 'createSurvey/addQuestions', component: QuestionAddingComponent}
+  {path: 'createSurvey/questions', component: QuestionAddingComponent}
 ]
 
 @NgModule({
