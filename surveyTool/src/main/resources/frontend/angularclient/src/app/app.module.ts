@@ -5,17 +5,20 @@ import {AppComponent} from './app.component';
 import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "./home/home.component";
 import {SurveyCreationComponent} from "./survey-creation/survey-creation.component";
+import {QuestionAddingComponent} from "./question-adding/question-adding.component";
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
-  {path: 'createSurvey', component: SurveyCreationComponent}
+  {path: 'createSurvey', component: SurveyCreationComponent},
+  {path: 'createSurvey/addQuestions', component: QuestionAddingComponent}
 ]
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    SurveyCreationComponent
+    SurveyCreationComponent,
+    QuestionAddingComponent
   ],
   imports: [
     BrowserModule,
