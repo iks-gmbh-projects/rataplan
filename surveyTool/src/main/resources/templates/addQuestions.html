@@ -1,294 +1,294 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>IKS - Umfragetool</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <link th:href="@{/css/style.css}" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
-            crossorigin="anonymous"></script>
-</head>
-<body>
-<section class="d-flex flex-column min-vh-100 min-vw-100">
-    <div class="container restrictWidth basicInformation">
-        <div class="row my-4">
-            <div class="col d-flex flex-column">
-                <span>Name der Umfrage:</span>
-                <span class="surveyInfo" th:text="${newSurvey.name}"></span>
-            </div>
-            <div class="col d-flex flex-column">
-                <span>Startdatum:</span>
-                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.startDate, 'dd.MM.yyyy')}"></span>
-                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.startDate, 'HH:mm')}"></span>
-            </div>
-            <div class="col d-flex flex-column">
-                <span>Enddatum:</span>
-                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.endDate, 'dd.MM.yyyy')}"></span>
-                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.endDate, 'HH:mm')}"></span>
-            </div>
-        </div>
-        <hr>
-    </div>
-    <div id="addQuestions" class="container restrictWidth">
-        <h3>Fügen Sie Ihrer Umfrage einen Frageblock hinzu:</h3>
-        <form id="addQuestionGroup" th:object="${newQuestionGroup}"
-              th:action="@{/createSurvey/questions/addGroup}"
-              th:method="POST">
-            <div class="input-group my-4">
-                <input class="form-control" type="text" placeholder="Name/Beschreibung/Frage/..."
-                       aria-label="Description QuestionGroup" aria-describedby="submitQuestionGroup"
-                       th:field="${newQuestionGroup.title}" required>
-                <button class="btn btn-primary" type="submit" id="submitQuestionGroup">Hinzufügen</button>
-            </div>
-        </form>
-        <hr>
-    </div>
-    <div id="addedQuestion" class="container restrictWidth">
-        <div id="noQuestionGroups" class="row">
-            <span class="alert alert-secondary my-2" th:if="${newSurvey.questionGroups == null}">
-                Es wurde bisher kein Frageblock hinzugefügt.
-            </span>
-        </div>
-        <div id="questionGroupListing" class="row card card-body mb-3"
-             th:each="questionGroup : ${newSurvey.questionGroups}">
-            <h4 th:text="${questionGroup.title}"></h4>
-            <div id="addQuestionToGroup" class="container">
-                <div th:if="${questionGroup.questions == null}" id="noQuestions" class="row my-2">
-                    <span class="alert alert-secondary">
-                        Zu diesem Frageblock wurden noch keine Fragen hinzugefügt.
-                    </span>
-                </div>
-                <div th:unless="${questionGroup.questions == null}" id="questionList">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Typ</th>
-                            <th>Frage</th>
-                            <th class="text-center">*</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="question : ${questionGroup.questions}">
-                            <td th:text="${questionStat.index + 1}"></td>
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+<!--    <title>IKS - Umfragetool</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"-->
+<!--          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">-->
+<!--    <link th:href="@{/css/style.css}" rel="stylesheet">-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"-->
+<!--            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"-->
+<!--            crossorigin="anonymous"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<section class="d-flex flex-column min-vh-100 min-vw-100">-->
+<!--    <div class="container restrictWidth basicInformation">-->
+<!--        <div class="row my-4">-->
+<!--            <div class="col d-flex flex-column">-->
+<!--                <span>Name der Umfrage:</span>-->
+<!--                <span class="surveyInfo" th:text="${newSurvey.name}"></span>-->
+<!--            </div>-->
+<!--            <div class="col d-flex flex-column">-->
+<!--                <span>Startdatum:</span>-->
+<!--                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.startDate, 'dd.MM.yyyy')}"></span>-->
+<!--                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.startDate, 'HH:mm')}"></span>-->
+<!--            </div>-->
+<!--            <div class="col d-flex flex-column">-->
+<!--                <span>Enddatum:</span>-->
+<!--                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.endDate, 'dd.MM.yyyy')}"></span>-->
+<!--                <span class="surveyInfo" th:text="${#temporals.format(newSurvey.endDate, 'HH:mm')}"></span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <hr>-->
+<!--    </div>-->
+<!--    <div id="addQuestions" class="container restrictWidth">-->
+<!--        <h3>Fügen Sie Ihrer Umfrage einen Frageblock hinzu:</h3>-->
+<!--        <form id="addQuestionGroup" th:object="${newQuestionGroup}"-->
+<!--              th:action="@{/createSurvey/questions/addGroup}"-->
+<!--              th:method="POST">-->
+<!--            <div class="input-group my-4">-->
+<!--                <input class="form-control" type="text" placeholder="Name/Beschreibung/Frage/..."-->
+<!--                       aria-label="Description QuestionGroup" aria-describedby="submitQuestionGroup"-->
+<!--                       th:field="${newQuestionGroup.title}" required>-->
+<!--                <button class="btn btn-primary" type="submit" id="submitQuestionGroup">Hinzufügen</button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--        <hr>-->
+<!--    </div>-->
+<!--    <div id="addedQuestion" class="container restrictWidth">-->
+<!--        <div id="noQuestionGroups" class="row">-->
+<!--            <span class="alert alert-secondary my-2" th:if="${newSurvey.questionGroups == null}">-->
+<!--                Es wurde bisher kein Frageblock hinzugefügt.-->
+<!--            </span>-->
+<!--        </div>-->
+<!--        <div id="questionGroupListing" class="row card card-body mb-3"-->
+<!--             th:each="questionGroup : ${newSurvey.questionGroups}">-->
+<!--            <h4 th:text="${questionGroup.title}"></h4>-->
+<!--            <div id="addQuestionToGroup" class="container">-->
+<!--                <div th:if="${questionGroup.questions == null}" id="noQuestions" class="row my-2">-->
+<!--                    <span class="alert alert-secondary">-->
+<!--                        Zu diesem Frageblock wurden noch keine Fragen hinzugefügt.-->
+<!--                    </span>-->
+<!--                </div>-->
+<!--                <div th:unless="${questionGroup.questions == null}" id="questionList">-->
+<!--                    <table class="table table-striped table-hover">-->
+<!--                        <thead>-->
+<!--                        <tr>-->
+<!--                            <th>#</th>-->
+<!--                            <th>Typ</th>-->
+<!--                            <th>Frage</th>-->
+<!--                            <th class="text-center">*</th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        <tr th:each="question : ${questionGroup.questions}">-->
+<!--                            <td th:text="${questionStat.index + 1}"></td>-->
 
-                            <td th:if="${question.hasCheckbox}" th:text="Auswahl"></td>
-                            <td th:if="${!question.hasCheckbox}" th:text="Freitext"></td>
+<!--                            <td th:if="${question.hasCheckbox}" th:text="Auswahl"></td>-->
+<!--                            <td th:if="${!question.hasCheckbox}" th:text="Freitext"></td>-->
 
-                            <td>
-                                <span class="fw-bolder" th:text="${question.text}"></span>
+<!--                            <td>-->
+<!--                                <span class="fw-bolder" th:text="${question.text}"></span>-->
 
-                                <div th:if="${question.hasCheckbox}">
-                                    <div class="d-flex flex-row my-1">
-                                        <div th:if="${question.checkboxGroup.multipleSelect}"
-                                             class="d-flex justify-content-evenly w-100">
-                                            <span>
-                                                Mehrfachauswahl: Ja
-                                            </span>
-                                            <span th:text="'Min.: ' + ${question.checkboxGroup.minSelect}"></span>
-                                            <span th:text="'Max.: ' + ${question.checkboxGroup.maxSelect}"></span>
-                                        </div>
-                                        <div th:if="${!question.checkboxGroup.multipleSelect}"
-                                             class="d-flex justify-content-evenly w-100">
-                                            <span>
-                                                Mehrfachauswahl: Nein
-                                            </span>
-                                        </div>
-                                    </div>
+<!--                                <div th:if="${question.hasCheckbox}">-->
+<!--                                    <div class="d-flex flex-row my-1">-->
+<!--                                        <div th:if="${question.checkboxGroup.multipleSelect}"-->
+<!--                                             class="d-flex justify-content-evenly w-100">-->
+<!--                                            <span>-->
+<!--                                                Mehrfachauswahl: Ja-->
+<!--                                            </span>-->
+<!--                                            <span th:text="'Min.: ' + ${question.checkboxGroup.minSelect}"></span>-->
+<!--                                            <span th:text="'Max.: ' + ${question.checkboxGroup.maxSelect}"></span>-->
+<!--                                        </div>-->
+<!--                                        <div th:if="${!question.checkboxGroup.multipleSelect}"-->
+<!--                                             class="d-flex justify-content-evenly w-100">-->
+<!--                                            <span>-->
+<!--                                                Mehrfachauswahl: Nein-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
-                                    <div id="noCheckboxes" class="row text-center justify-content-center">
-                                        <span class="alert alert-secondary my-1 w-75"
-                                              th:if="${question.checkboxGroup.checkboxes == null}">
-                                            Keine Auswahlmöglichkeiten gegeben.
-                                        </span>
-                                    </div>
+<!--                                    <div id="noCheckboxes" class="row text-center justify-content-center">-->
+<!--                                        <span class="alert alert-secondary my-1 w-75"-->
+<!--                                              th:if="${question.checkboxGroup.checkboxes == null}">-->
+<!--                                            Keine Auswahlmöglichkeiten gegeben.-->
+<!--                                        </span>-->
+<!--                                    </div>-->
 
-                                    <ul th:if="${question.checkboxGroup.checkboxes != null}"
-                                        class="list-group my-1">
-                                        <li class="list-group-item"
-                                            th:each="checkbox : ${question.checkboxGroup.checkboxes}">
-                                        <span th:text="${checkbox.text}">
-                                        </span>
-                                            <span th:if="${checkbox.hasTextField}" class="badge bg-secondary float-end">
-                                            Textfeld
-                                        </span>
-                                        </li>
-                                    </ul>
+<!--                                    <ul th:if="${question.checkboxGroup.checkboxes != null}"-->
+<!--                                        class="list-group my-1">-->
+<!--                                        <li class="list-group-item"-->
+<!--                                            th:each="checkbox : ${question.checkboxGroup.checkboxes}">-->
+<!--                                        <span th:text="${checkbox.text}">-->
+<!--                                        </span>-->
+<!--                                            <span th:if="${checkbox.hasTextField}" class="badge bg-secondary float-end">-->
+<!--                                            Textfeld-->
+<!--                                        </span>-->
+<!--                                        </li>-->
+<!--                                    </ul>-->
 
-                                    <form id="addCheckbox" th:object="${newCheckbox}"
-                                          th:action="@{'/createSurvey/questions/addQuestion/{questionGroupIndex}/{questionIndex}' (questionGroupIndex=${questionGroupStat.index}, questionIndex=${questionStat.index})}"
-                                          th:method="POST" class="container">
-                                        <div class="input-group my-2">
-                                            <div class="input-group-text">
-                                                <label th:for="'hasTextField' + ${questionStat.index} + 'group' + ${questionGroupStat.index}">
-                                                    <!-- Add whitespace manually as the checkbox itself needs mt-0 to stay
-                                                         vertically centered => overwrites margin of label -->
-                                                    Mit Textfeld:&nbsp;&nbsp;&nbsp;
-                                                </label>
-                                                <input th:id="'hasTextField' + ${questionStat.index} + 'group' + ${questionGroupStat.index}"
-                                                       class="form-check-input mt-0" type="checkbox"
-                                                       th:field="${newCheckbox.hasTextField}">
-                                            </div>
-                                            <input id="checkboxText" class="form-control"
-                                                   placeholder="Neue Auswahlmöglichkeit"
-                                                   th:field="${newCheckbox.text}"
-                                                   required>
-                                            <button type="submit" class="btn btn-primary">Hinzufügen</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </td>
+<!--                                    <form id="addCheckbox" th:object="${newCheckbox}"-->
+<!--                                          th:action="@{'/createSurvey/questions/addQuestion/{questionGroupIndex}/{questionIndex}' (questionGroupIndex=${questionGroupStat.index}, questionIndex=${questionStat.index})}"-->
+<!--                                          th:method="POST" class="container">-->
+<!--                                        <div class="input-group my-2">-->
+<!--                                            <div class="input-group-text">-->
+<!--                                                <label th:for="'hasTextField' + ${questionStat.index} + 'group' + ${questionGroupStat.index}">-->
+<!--                                                    &lt;!&ndash; Add whitespace manually as the checkbox itself needs mt-0 to stay-->
+<!--                                                         vertically centered => overwrites margin of label &ndash;&gt;-->
+<!--                                                    Mit Textfeld:&nbsp;&nbsp;&nbsp;-->
+<!--                                                </label>-->
+<!--                                                <input th:id="'hasTextField' + ${questionStat.index} + 'group' + ${questionGroupStat.index}"-->
+<!--                                                       class="form-check-input mt-0" type="checkbox"-->
+<!--                                                       th:field="${newCheckbox.hasTextField}">-->
+<!--                                            </div>-->
+<!--                                            <input id="checkboxText" class="form-control"-->
+<!--                                                   placeholder="Neue Auswahlmöglichkeit"-->
+<!--                                                   th:field="${newCheckbox.text}"-->
+<!--                                                   required>-->
+<!--                                            <button type="submit" class="btn btn-primary">Hinzufügen</button>-->
+<!--                                        </div>-->
+<!--                                    </form>-->
+<!--                                </div>-->
+<!--                            </td>-->
 
-                            <td th:if="${question.required}" class="text-center" th:text="Ja"></td>
-                            <td th:if="${!question.required}" class="text-center" th:text="Nein"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <button class="btn btn-outline-primary mb-3" type="button"
-                        data-bs-toggle="collapse"
-                        th:data-bs-target="'#collapseQuestionform' + ${questionGroupStat.index}" aria-expanded="false"
-                        th:aria-controls="'#collapseQuestionform' + ${questionGroupStat.index}">
-                    Frage hinzufügen
-                </button>
-                <div th:id="'collapseQuestionform' + ${questionGroupStat.index}" class="collapse mb-2">
-                    <div class="card card-body">
-                        <form id="addQuestion" th:object="${newQuestion}"
-                              th:action="@{'/createSurvey/questions/addQuestion/{questionGroupIndex}' (questionGroupIndex=${questionGroupStat.index})}"
-                              th:method="POST" class="container">
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <label for="question" class="form-label">Frage</label>
-                                    <input id="question" class="form-control" type="text"
-                                           th:field="${newQuestion.text}" required>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-4">
-                                    <input th:id="'required' + ${questionGroupStat.index}" class="form-check-input"
-                                           type="checkbox" value="1" th:field="${newQuestion.required}">
-                                    <label th:for="'required' + ${questionGroupStat.index}" class="form-check-label">
-                                        Erforderlich?
-                                    </label>
-                                </div>
-                                <div class="col-8">
-                                    <span class="me-3">Antwortmöglichkeit:</span>
-                                    <input th:id="'textQuestion' + ${questionGroupStat.index}" class="form-check-input"
-                                           name="questionType" type="radio"
-                                           th:value="false" th:field="${newQuestion.hasCheckbox}"
-                                           data-bs-toggle="collapse" aria-expanded="false"
-                                           th:data-bs-target="'#checkboxGroupForm' + ${questionGroupStat.index}"
-                                           th:aria-controls="'#checkboxGroupForm' + ${questionGroupStat.index}">
-                                    <label th:for="'textQuestion' + ${questionGroupStat.index}"
-                                           class="form-check-label me-3">
-                                        Freitext
-                                    </label>
-                                    <input th:id="'checkboxQuestion' + ${questionGroupStat.index}"
-                                           class="form-check-input"
-                                           name="questionType" type="radio"
-                                           th:value="true" th:field="${newQuestion.hasCheckbox}"
-                                           data-bs-toggle="collapse" aria-expanded="false"
-                                           th:data-bs-target="'#checkboxGroupForm' + ${questionGroupStat.index}"
-                                           th:aria-controls="'#checkboxGroupForm' + ${questionGroupStat.index}">
-                                    <label th:for="'checkboxQuestion' + ${questionGroupStat.index}"
-                                           class="form-check-label">
-                                        Auswahl
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="container collapse"
-                                     th:id="'checkboxGroupForm' + ${questionGroupStat.index}">
-                                    <div class="card card-body">
-                                        <div class="container">
-                                            <div class="row mb-3">
-                                                <div class="col">
-                                                    <label for="multipleSelect" class="form-check-label">
-                                                        Mehrfachauswahl?
-                                                    </label>
-                                                    <input id="multipleSelect" class="form-check-input"
-                                                           type="checkbox" value="1"
-                                                           th:field="${newCheckboxGroup.multipleSelect}"
-                                                           th:onchange="document.getElementById('minSelect' + [[${questionGroupStat.index}]]).disabled = !this.checked;
-                                                                     document.getElementById('maxSelect' + [[${questionGroupStat.index}]]).disabled = !this.checked;">
-                                                </div>
-                                                <div class="col">
-                                                    <label th:for="'minSelect' + ${questionGroupStat.index}"
-                                                           class="form-label">
-                                                        Minimum:
-                                                    </label>
-                                                    <input th:id="'minSelect' + ${questionGroupStat.index}"
-                                                           class="form-control" type="number"
-                                                           th:field="${newCheckboxGroup.minSelect}" disabled>
-                                                </div>
-                                                <div class="col">
-                                                    <label th:for="'maxSelect' + ${questionGroupStat.index}"
-                                                           class="form-label">
-                                                        Maximal:
-                                                    </label>
-                                                    <input th:id="'maxSelect' + ${questionGroupStat.index}"
-                                                           class="form-control" type="number" min="2"
-                                                           th:field="${newCheckboxGroup.maxSelect}" disabled>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary float-end">
-                                Hinzufügen
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!--                            <td th:if="${question.required}" class="text-center" th:text="Ja"></td>-->
+<!--                            <td th:if="${!question.required}" class="text-center" th:text="Nein"></td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--                <button class="btn btn-outline-primary mb-3" type="button"-->
+<!--                        data-bs-toggle="collapse"-->
+<!--                        th:data-bs-target="'#collapseQuestionform' + ${questionGroupStat.index}" aria-expanded="false"-->
+<!--                        th:aria-controls="'#collapseQuestionform' + ${questionGroupStat.index}">-->
+<!--                    Frage hinzufügen-->
+<!--                </button>-->
+<!--                <div th:id="'collapseQuestionform' + ${questionGroupStat.index}" class="collapse mb-2">-->
+<!--                    <div class="card card-body">-->
+<!--                        <form id="addQuestion" th:object="${newQuestion}"-->
+<!--                              th:action="@{'/createSurvey/questions/addQuestion/{questionGroupIndex}' (questionGroupIndex=${questionGroupStat.index})}"-->
+<!--                              th:method="POST" class="container">-->
+<!--                            <div class="row mb-3">-->
+<!--                                <div class="col">-->
+<!--                                    <label for="question" class="form-label">Frage</label>-->
+<!--                                    <input id="question" class="form-control" type="text"-->
+<!--                                           th:field="${newQuestion.text}" required>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="row mb-3">-->
+<!--                                <div class="col-4">-->
+<!--                                    <input th:id="'required' + ${questionGroupStat.index}" class="form-check-input"-->
+<!--                                           type="checkbox" value="1" th:field="${newQuestion.required}">-->
+<!--                                    <label th:for="'required' + ${questionGroupStat.index}" class="form-check-label">-->
+<!--                                        Erforderlich?-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                                <div class="col-8">-->
+<!--                                    <span class="me-3">Antwortmöglichkeit:</span>-->
+<!--                                    <input th:id="'textQuestion' + ${questionGroupStat.index}" class="form-check-input"-->
+<!--                                           name="questionType" type="radio"-->
+<!--                                           th:value="false" th:field="${newQuestion.hasCheckbox}"-->
+<!--                                           data-bs-toggle="collapse" aria-expanded="false"-->
+<!--                                           th:data-bs-target="'#checkboxGroupForm' + ${questionGroupStat.index}"-->
+<!--                                           th:aria-controls="'#checkboxGroupForm' + ${questionGroupStat.index}">-->
+<!--                                    <label th:for="'textQuestion' + ${questionGroupStat.index}"-->
+<!--                                           class="form-check-label me-3">-->
+<!--                                        Freitext-->
+<!--                                    </label>-->
+<!--                                    <input th:id="'checkboxQuestion' + ${questionGroupStat.index}"-->
+<!--                                           class="form-check-input"-->
+<!--                                           name="questionType" type="radio"-->
+<!--                                           th:value="true" th:field="${newQuestion.hasCheckbox}"-->
+<!--                                           data-bs-toggle="collapse" aria-expanded="false"-->
+<!--                                           th:data-bs-target="'#checkboxGroupForm' + ${questionGroupStat.index}"-->
+<!--                                           th:aria-controls="'#checkboxGroupForm' + ${questionGroupStat.index}">-->
+<!--                                    <label th:for="'checkboxQuestion' + ${questionGroupStat.index}"-->
+<!--                                           class="form-check-label">-->
+<!--                                        Auswahl-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="mb-3">-->
+<!--                                <div class="container collapse"-->
+<!--                                     th:id="'checkboxGroupForm' + ${questionGroupStat.index}">-->
+<!--                                    <div class="card card-body">-->
+<!--                                        <div class="container">-->
+<!--                                            <div class="row mb-3">-->
+<!--                                                <div class="col">-->
+<!--                                                    <label for="multipleSelect" class="form-check-label">-->
+<!--                                                        Mehrfachauswahl?-->
+<!--                                                    </label>-->
+<!--                                                    <input id="multipleSelect" class="form-check-input"-->
+<!--                                                           type="checkbox" value="1"-->
+<!--                                                           th:field="${newCheckboxGroup.multipleSelect}"-->
+<!--                                                           th:onchange="document.getElementById('minSelect' + [[${questionGroupStat.index}]]).disabled = !this.checked;-->
+<!--                                                                     document.getElementById('maxSelect' + [[${questionGroupStat.index}]]).disabled = !this.checked;">-->
+<!--                                                </div>-->
+<!--                                                <div class="col">-->
+<!--                                                    <label th:for="'minSelect' + ${questionGroupStat.index}"-->
+<!--                                                           class="form-label">-->
+<!--                                                        Minimum:-->
+<!--                                                    </label>-->
+<!--                                                    <input th:id="'minSelect' + ${questionGroupStat.index}"-->
+<!--                                                           class="form-control" type="number"-->
+<!--                                                           th:field="${newCheckboxGroup.minSelect}" disabled>-->
+<!--                                                </div>-->
+<!--                                                <div class="col">-->
+<!--                                                    <label th:for="'maxSelect' + ${questionGroupStat.index}"-->
+<!--                                                           class="form-label">-->
+<!--                                                        Maximal:-->
+<!--                                                    </label>-->
+<!--                                                    <input th:id="'maxSelect' + ${questionGroupStat.index}"-->
+<!--                                                           class="form-control" type="number" min="2"-->
+<!--                                                           th:field="${newCheckboxGroup.maxSelect}" disabled>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <button type="submit" class="btn btn-primary float-end">-->
+<!--                                Hinzufügen-->
+<!--                            </button>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
-    <div class="container restrictWidth">
-        <form th:action="@{/createSurvey/save}" th:object="${newSurvey}" th:method="POST">
-            <div id="errorMessages" class="row my-2">
-                <div class="my-2 alert alert-danger" th:if="${#fields.hasGlobalErrors()}"
-                     th:each="error : ${#fields.globalErrors()}">
-                    <span class="d-block errorMessage" th:text="${error}"></span>
-                </div>
-            </div>
-            <div class="row">
-                <div>
-                    <button type="button" class="btn btn-success mt-3 float-end"
-                            data-bs-toggle="modal" data-bs-target="#confirmSubmission">
-                        Speichern
-                    </button>
-                </div>
-            </div>
+<!--    <div class="container restrictWidth">-->
+<!--        <form th:action="@{/createSurvey/save}" th:object="${newSurvey}" th:method="POST">-->
+<!--            <div id="errorMessages" class="row my-2">-->
+<!--                <div class="my-2 alert alert-danger" th:if="${#fields.hasGlobalErrors()}"-->
+<!--                     th:each="error : ${#fields.globalErrors()}">-->
+<!--                    <span class="d-block errorMessage" th:text="${error}"></span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div>-->
+<!--                    <button type="button" class="btn btn-success mt-3 float-end"-->
+<!--                            data-bs-toggle="modal" data-bs-target="#confirmSubmission">-->
+<!--                        Speichern-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <!-- Modal -->
-            <div class="modal fade" id="confirmSubmission" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Umfrage speichern</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Sind Sie sicher? Sie können die Umfrage nachträglich nicht mehr verändern.
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
-                                Abbrechen
-                            </button>
-                            <button type="submit" class="btn btn-success">
-                                Ja, speichern.
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</section>
-</body>
-</html>
+<!--            &lt;!&ndash; Modal &ndash;&gt;-->
+<!--            <div class="modal fade" id="confirmSubmission" tabindex="-1" aria-hidden="true">-->
+<!--                <div class="modal-dialog modal-dialog-centered">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <h5 class="modal-title" id="exampleModalLabel">Umfrage speichern</h5>-->
+<!--                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body">-->
+<!--                            Sind Sie sicher? Sie können die Umfrage nachträglich nicht mehr verändern.-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">-->
+<!--                                Abbrechen-->
+<!--                            </button>-->
+<!--                            <button type="submit" class="btn btn-success">-->
+<!--                                Ja, speichern.-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</section>-->
+<!--</body>-->
+<!--</html>-->
