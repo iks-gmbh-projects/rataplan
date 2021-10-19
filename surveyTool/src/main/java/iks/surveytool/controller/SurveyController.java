@@ -4,17 +4,14 @@ import iks.surveytool.entities.Survey;
 import iks.surveytool.services.SurveyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/createSurvey")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class SurveyController {
 
     private final SurveyService surveyService;
@@ -30,23 +27,18 @@ public class SurveyController {
         return savedSurvey.map(ResponseEntity::ok).orElse(null);
     }
 
-//    @GetMapping("/questions/{id}")
-//    public ResponseEntity<Survey> getSurveyAddQuestions(@PathVariable("id") Long id) {
-//        Optional<Survey> surveyOptional = surveyService.findSurveyById(id);
-//        Survey survey = surveyOptional.orElse(null);
+    @GetMapping("/questions")
+    public ResponseEntity<Survey> getSurveyAddQuestions(Survey survey) {
+        return ResponseEntity.ok(survey);
+    }
+
+//    @PostMapping("/questions/addGroup")
+//    public ResponseEntity<Survey> addQuestionGroup(@RequestBody QuestionGroup newQuestionGroup,
+//                                                   Survey survey) {
+//        surveyService.addQuestionGroupToSurvey(survey, newQuestionGroup);
 //        return ResponseEntity.ok(survey);
 //    }
 
-//    @PostMapping("/questions/addGroup")
-//    public String addQuestionGroup(@ModelAttribute("newSurvey") Survey newSurvey,
-//                                   @ModelAttribute("newQuestionGroup") QuestionGroup newQuestionGroup,
-//                                   RedirectAttributes redirectAttributes) {
-//        surveyService.addQuestionGroupToSurvey(newSurvey, newQuestionGroup);
-//
-//        redirectAttributes.addFlashAttribute("newSurvey", newSurvey);
-//
-//        return "redirect:/createSurvey/questions";
-//    }
 //
 //    @PostMapping("/questions/addQuestion/{questionGroupIndex}")
 //    public String addQuestionToGroup(@ModelAttribute("newSurvey") Survey newSurvey,
