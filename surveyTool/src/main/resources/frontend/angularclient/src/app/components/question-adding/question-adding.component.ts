@@ -10,7 +10,7 @@ import {SurveyService} from "../../services/survey.service";
 
 export class QuestionAddingComponent implements OnInit {
 
-  survey!: Survey;
+  survey: Survey;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,

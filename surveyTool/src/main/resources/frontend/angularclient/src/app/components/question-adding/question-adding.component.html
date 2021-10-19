@@ -8,16 +8,18 @@
       <div class="col d-flex flex-column">
         <span>Startdatum:</span>
         <span class="surveyInfo">{{ survey.startDate | date: 'dd.MM.yyyy' }}</span>
-        <span class="surveyInfo">{{ survey.startDate | date: 'hh:mm' }}</span>
+        <span class="surveyInfo">{{ survey.startDate | date: 'HH:mm' }}</span>
       </div>
       <div class="col d-flex flex-column">
         <span>Enddatum:</span>
         <span class="surveyInfo">{{ survey.endDate | date: 'dd.MM.yyyy' }}</span>
-        <span class="surveyInfo">{{ survey.endDate | date: 'hh:mm' }}</span>
+        <span class="surveyInfo">{{ survey.endDate | date: 'HH:mm' }}</span>
       </div>
     </div>
     <hr>
   </div>
+
+  <question-group-form></question-group-form>
   <!--  <div id="addQuestions" class="container restrictWidth">-->
   <!--    <h3>Fügen Sie Ihrer Umfrage einen Frageblock hinzu:</h3>-->
   <!--    <form id="addQuestionGroup" th:object="${newQuestionGroup}"-->
@@ -34,18 +36,18 @@
   <!--  </div>-->
   <!--  <div id="addedQuestion" class="container restrictWidth">-->
   <!--    <div id="noQuestionGroups" class="row">-->
-  <!--            <span class="alert alert-secondary my-2" th:if="${newSurvey.questionGroups == null}">-->
-  <!--                Es wurde bisher kein Frageblock hinzugefügt.-->
-  <!--            </span>-->
+  <!--              <span class="alert alert-secondary my-2" th:if="${newSurvey.questionGroups == null}">-->
+  <!--                  Es wurde bisher kein Frageblock hinzugefügt.-->
+  <!--              </span>-->
   <!--    </div>-->
   <!--    <div id="questionGroupListing" class="row card card-body mb-3"-->
   <!--         th:each="questionGroup : ${newSurvey.questionGroups}">-->
   <!--      <h4 th:text="${questionGroup.title}"></h4>-->
   <!--      <div id="addQuestionToGroup" class="container">-->
   <!--        <div th:if="${questionGroup.questions == null}" id="noQuestions" class="row my-2">-->
-  <!--                    <span class="alert alert-secondary">-->
-  <!--                        Zu diesem Frageblock wurden noch keine Fragen hinzugefügt.-->
-  <!--                    </span>-->
+  <!--                      <span class="alert alert-secondary">-->
+  <!--                          Zu diesem Frageblock wurden noch keine Fragen hinzugefügt.-->
+  <!--                      </span>-->
   <!--        </div>-->
   <!--        <div th:unless="${questionGroup.questions == null}" id="questionList">-->
   <!--          <table class="table table-striped table-hover">-->
@@ -71,36 +73,36 @@
   <!--                  <div class="d-flex flex-row my-1">-->
   <!--                    <div th:if="${question.checkboxGroup.multipleSelect}"-->
   <!--                         class="d-flex justify-content-evenly w-100">-->
-  <!--                                            <span>-->
-  <!--                                                Mehrfachauswahl: Ja-->
-  <!--                                            </span>-->
+  <!--                                              <span>-->
+  <!--                                                  Mehrfachauswahl: Ja-->
+  <!--                                              </span>-->
   <!--                      <span th:text="'Min.: ' + ${question.checkboxGroup.minSelect}"></span>-->
   <!--                      <span th:text="'Max.: ' + ${question.checkboxGroup.maxSelect}"></span>-->
   <!--                    </div>-->
   <!--                    <div th:if="${!question.checkboxGroup.multipleSelect}"-->
   <!--                         class="d-flex justify-content-evenly w-100">-->
-  <!--                                            <span>-->
-  <!--                                                Mehrfachauswahl: Nein-->
-  <!--                                            </span>-->
+  <!--                                              <span>-->
+  <!--                                                  Mehrfachauswahl: Nein-->
+  <!--                                              </span>-->
   <!--                    </div>-->
   <!--                  </div>-->
 
   <!--                  <div id="noCheckboxes" class="row text-center justify-content-center">-->
-  <!--                                        <span class="alert alert-secondary my-1 w-75"-->
-  <!--                                              th:if="${question.checkboxGroup.checkboxes == null}">-->
-  <!--                                            Keine Auswahlmöglichkeiten gegeben.-->
-  <!--                                        </span>-->
+  <!--                                          <span class="alert alert-secondary my-1 w-75"-->
+  <!--                                                th:if="${question.checkboxGroup.checkboxes == null}">-->
+  <!--                                              Keine Auswahlmöglichkeiten gegeben.-->
+  <!--                                          </span>-->
   <!--                  </div>-->
 
   <!--                  <ul th:if="${question.checkboxGroup.checkboxes != null}"-->
   <!--                      class="list-group my-1">-->
   <!--                    <li class="list-group-item"-->
   <!--                        th:each="checkbox : ${question.checkboxGroup.checkboxes}">-->
-  <!--                                        <span th:text="${checkbox.text}">-->
-  <!--                                        </span>-->
+  <!--                                          <span th:text="${checkbox.text}">-->
+  <!--                                          </span>-->
   <!--                      <span th:if="${checkbox.hasTextField}" class="badge bg-secondary float-end">-->
-  <!--                                            Textfeld-->
-  <!--                                        </span>-->
+  <!--                                              Textfeld-->
+  <!--                                          </span>-->
   <!--                    </li>-->
   <!--                  </ul>-->
 
@@ -199,7 +201,7 @@
   <!--                                 type="checkbox" value="1"-->
   <!--                                 th:field="${newCheckboxGroup.multipleSelect}"-->
   <!--                                 th:onchange="document.getElementById('minSelect' + [[${questionGroupStat.index}]]).disabled = !this.checked;-->
-  <!--                                                                     document.getElementById('maxSelect' + [[${questionGroupStat.index}]]).disabled = !this.checked;">-->
+  <!--                                                                       document.getElementById('maxSelect' + [[${questionGroupStat.index}]]).disabled = !this.checked;">-->
   <!--                        </div>-->
   <!--                        <div class="col">-->
   <!--                          <label th:for="'minSelect' + ${questionGroupStat.index}"-->
