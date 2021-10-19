@@ -1,7 +1,12 @@
 export class Survey {
-  id: string | undefined;
+  id: number | undefined;
   name: string | undefined;
   description: string | undefined;
   startDate: string | undefined;
   endDate: string | undefined;
+  open: boolean | undefined;
+  accessID: string | undefined;
+  uuid: string | undefined;
+  user: Object | undefined;
+  questionGroups: Object | undefined;
 }
