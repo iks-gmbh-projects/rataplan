@@ -14,6 +14,7 @@ export class SurveyService {
   }
 
   public createSurvey(survey: Survey) {
+    sessionStorage.setItem('newSurvey', JSON.stringify(survey));
     return this.http.post(this.surveyUrl, survey, {responseType: 'text'});
   }
 

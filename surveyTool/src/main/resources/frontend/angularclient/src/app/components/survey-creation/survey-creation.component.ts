@@ -26,6 +26,7 @@ export class SurveyCreationComponent implements OnInit {
   }
 
   gotoAddQuestions() {
-    this.router.navigate(['/createSurvey/questions'], {state: {survey: this.survey}});
+    // this.router.navigate(['/createSurvey/questions'], {state: {survey: this.survey}});
+    this.router.navigate(['/createSurvey/questions']);
   }
 }

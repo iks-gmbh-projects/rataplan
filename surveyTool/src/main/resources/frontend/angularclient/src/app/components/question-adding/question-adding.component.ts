@@ -15,9 +15,10 @@ export class QuestionAddingComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private surveyService: SurveyService) {
+    // this.survey = history.state.survey;
+    this.survey = JSON.parse(<string>sessionStorage.getItem('newSurvey'));
   }
 
   ngOnInit() {
-    this.survey = history.state.survey;
   }
 }
