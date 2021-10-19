@@ -8,6 +8,7 @@ import {SurveyCreationComponent} from "./components/survey-creation/survey-creat
 import {QuestionAddingComponent} from "./components/question-adding/question-adding.component";
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
+import {QuestionGroupFormComponent} from "./components/questionGroup-form/question-group-form.component";
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -20,7 +21,8 @@ const appRoutes: Routes = [
     AppComponent,
     HomeComponent,
     SurveyCreationComponent,
-    QuestionAddingComponent
+    QuestionAddingComponent,
+    QuestionGroupFormComponent
   ],
   imports: [
     BrowserModule,
