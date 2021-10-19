@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {SurveyService} from "../../services/survey-service";
+import {SurveyService} from "../../services/survey.service";
 import {Survey} from "../../model/survey";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -10,9 +10,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 export class SurveyCreationComponent implements OnInit {
 
-  survey: Survey;
+  survey!: Survey;
 
-  constructor(private route: ActivatedRoute,
+  constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private surveyService: SurveyService) {
     this.survey = new Survey();
@@ -22,10 +22,10 @@ export class SurveyCreationComponent implements OnInit {
   }
 
   onSubmit() {
-    this.surveyService.createSurvey(this.survey).subscribe(result => this.gotoAddQuestions());
+    this.surveyService.createSurvey(this.survey).subscribe(() => this.gotoAddQuestions());
   }
 
   gotoAddQuestions() {
-    this.router.navigate(['createSurvey/questions']);
+    this.router.navigate(['/createSurvey/questions'], {state: {survey: this.survey}});
   }
 }

@@ -1,4 +1,7 @@
 import {Component, OnInit} from '@angular/core';
+import {Survey} from "../../model/survey";
+import {ActivatedRoute, Router} from "@angular/router";
+import {SurveyService} from "../../services/survey.service";
 
 @Component({
   selector: 'question-adding',
@@ -6,9 +9,15 @@ import {Component, OnInit} from '@angular/core';
 })
 
 export class QuestionAddingComponent implements OnInit {
-  constructor() {
+
+  survey!: Survey;
+
+  constructor(private activatedRoute: ActivatedRoute,
+              private router: Router,
+              private surveyService: SurveyService) {
   }
 
   ngOnInit() {
+    this.survey = history.state.survey;
   }
 }
