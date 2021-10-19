@@ -1,0 +1,13 @@
+<div id="addQuestions" class="container restrictWidth">
+  <h3>Fügen Sie Ihrer Umfrage einen Frageblock hinzu:</h3>
+  <form id="addQuestionGroup"
+        #questionGroupForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="input-group my-4">
+      <input class="form-control" name="title" type="text" placeholder="Name/Beschreibung/Frage/..."
+             aria-label="Description QuestionGroup" aria-describedby="submitQuestionGroup"
+             [(ngModel)]="questionGroup.title" #name="ngModel" required>
+      <button class="btn btn-primary" type="submit" id="submitQuestionGroup">Hinzufügen</button>
+    </div>
+  </form>
+  <hr>
+</div>
