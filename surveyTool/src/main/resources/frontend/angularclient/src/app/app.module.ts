@@ -5,7 +5,7 @@ import {AppComponent} from './app.component';
 import {RouterModule, Routes} from "@angular/router";
 import {HomeComponent} from "./components/home/home.component";
 import {SurveyCreationComponent} from "./components/survey-creation/survey-creation.component";
-import {QuestionAddingComponent} from "./components/question-adding/question-adding.component";
+import {SurveyCompletionComponent} from "./components/survey-completion/survey-completion.component";
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {QuestionGroupFormComponent} from "./components/question-group-form/question-group-form.component";
@@ -14,7 +14,7 @@ import {QuestionGroupListComponent} from "./components/question-group-list/quest
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'createSurvey', component: SurveyCreationComponent},
-  {path: 'createSurvey/questions', component: QuestionAddingComponent}
+  {path: 'createSurvey/questions', component: SurveyCompletionComponent}
 ]
 
 @NgModule({
@@ -22,7 +22,7 @@ const appRoutes: Routes = [
     AppComponent,
     HomeComponent,
     SurveyCreationComponent,
-    QuestionAddingComponent,
+    SurveyCompletionComponent,
     QuestionGroupFormComponent,
     QuestionGroupListComponent
   ],

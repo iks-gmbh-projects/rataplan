@@ -5,20 +5,22 @@ import {SurveyService} from "../../services/survey.service";
 
 @Component({
   selector: 'question-adding',
-  templateUrl: 'question-adding.component.html'
+  templateUrl: 'survey-completion.component.html'
 })
 
-export class QuestionAddingComponent implements OnInit {
+export class SurveyCompletionComponent implements OnInit {
 
   survey: Survey;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private surveyService: SurveyService) {
-    // this.survey = history.state.survey;
     this.survey = JSON.parse(<string>sessionStorage.getItem('newSurvey'));
+
+    // this.survey = history.state.survey;
   }
 
   ngOnInit() {
+    console.log(this.survey);
   }
 }
