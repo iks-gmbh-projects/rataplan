@@ -13,13 +13,13 @@
           <div class="col">
             <label for="question" class="form-label">Frage</label>
             <input id="question" class="form-control" name="text" type="text"
-                   [ngModel]="question.text" required>
+                   [(ngModel)]="question.text" required>
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-4">
             <input [attr.id]="'required' + index" class="form-check-input" name="required"
-                   type="checkbox" value="1" [ngModel]="question.required">
+                   type="checkbox" value="1" [(ngModel)]="question.required">
             <label [attr.for]="'required' + index" class="form-check-label">
               Erforderlich?
             </label>
@@ -28,7 +28,7 @@
             <span class="me-3">Antwortmöglichkeit:</span>
             <!--TODO: Make button for 'Freitext' checked-->
             <input [attr.id]="'textQuestion' + index" class="form-check-input" name="questionType"
-                   type="radio" value="0" [ngModel]="question.hasCheckbox"
+                   type="radio" value="0" [(ngModel)]="question.hasCheckbox"
                    data-bs-toggle="collapse" aria-expanded="false"
                    [attr.data-bs-target]="'#checkboxGroupForm' + index"
                    [attr.aria-controls]="'#checkboxGroupForm' + index">
@@ -37,7 +37,7 @@
               Freitext
             </label>
             <input [attr.id]="'checkboxQuestion' + index" class="form-check-input" name="questionType"
-                   type="radio" value="true" [ngModel]="question.hasCheckbox"
+                   type="radio" value="true" [(ngModel)]="question.hasCheckbox"
                    data-bs-toggle="collapse" aria-expanded="false"
                    [attr.data-bs-target]="'#checkboxGroupForm' + index"
                    [attr.aria-controls]="'#checkboxGroupForm' + index">
@@ -59,7 +59,7 @@
                     </label>
                     <input id="multipleSelect" class="form-check-input" name="multipleSelect"
                            type="checkbox" value="1"
-                           [ngModel]="checkboxGroup.multipleSelect">
+                           [(ngModel)]="checkboxGroup.multipleSelect">
                     <!-- TODO: Enable minSelect/maxSelect fields on click -->
                     <!-- (change)="document.getElementById('minSelect' + index).disabled = !this.checked;-->
                     <!--           document.getElementById('maxSelect' + index).disabled = !this.checked;"-->
@@ -71,7 +71,7 @@
                     </label>
                     <input [attr.id]="'minSelect' + index" class="form-control" name="maxSelect"
                            type="number"
-                           [ngModel]="checkboxGroup.minSelect" disabled>
+                           [(ngModel)]="checkboxGroup.minSelect" disabled>
                   </div>
                   <div class="col">
                     <label [attr.for]="'maxSelect' + index"
@@ -80,7 +80,7 @@
                     </label>
                     <input [attr.id]="'maxSelect' + index" class="form-control" name="maxSelect"
                            type="number" min="2"
-                           [ngModel]="checkboxGroup.maxSelect" disabled>
+                           [(ngModel)]="checkboxGroup.maxSelect" disabled>
                   </div>
                 </div>
               </div>
