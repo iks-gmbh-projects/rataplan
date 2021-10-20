@@ -6,7 +6,7 @@
       <input class="form-control" name="title" type="text" placeholder="Name/Beschreibung/Frage/..."
              aria-label="Description QuestionGroup" aria-describedby="submitQuestionGroup"
              [(ngModel)]="questionGroup.title" #name="ngModel" required>
-      <button id="submitQuestionGroup" class="btn btn-primary" (click)="addNewQuestionGroup(questionGroup)"
+      <button id="submitQuestionGroup" class="btn btn-primary" (click)="emitQuestionGroup(questionGroup)"
               type="submit">
         Hinzufügen
       </button>

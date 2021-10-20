@@ -20,7 +20,7 @@ export class QuestionGroupFormComponent implements OnInit {
 
   }
 
-  addNewQuestionGroup(newQuestionGroup: QuestionGroup) {
+  emitQuestionGroup(newQuestionGroup: QuestionGroup) {
     this.questionGroupEventEmitter.emit(newQuestionGroup);
     this.questionGroup = this.createNewQuestionGroup();
   }
