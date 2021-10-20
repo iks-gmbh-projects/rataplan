@@ -28,7 +28,9 @@ export class SurveyCreationComponent implements OnInit {
   }
 
   gotoAddQuestions() {
-    // this.router.navigate(['/createSurvey/questions'], {state: {survey: this.survey}});
+    // TODO: Need to manually refresh the page if submitting new survey
     this.router.navigate(['/createSurvey/questions']);
+
+    // this.router.navigate(['/createSurvey/questions'], {state: {survey: this.survey}});
   }
 }
