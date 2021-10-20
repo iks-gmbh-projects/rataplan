@@ -19,7 +19,7 @@
     <hr>
   </div>
 
-  <question-group-form [survey]="survey"></question-group-form>
+  <question-group-form (questionGroupEventEmitter)="addQuestionGroup($event)"></question-group-form>
   <question-group-list [survey]="survey"></question-group-list>
   <!--  <div id="addQuestions" class="container restrictWidth">-->
   <!--    <h3>Fügen Sie Ihrer Umfrage einen Frageblock hinzu:</h3>-->

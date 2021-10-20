@@ -1,6 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {QuestionGroup} from "../../model/question-group";
-import {Survey} from "../../model/survey";
 import {SurveyService} from "../../services/survey.service";
 
 @Component({
@@ -11,23 +10,24 @@ import {SurveyService} from "../../services/survey.service";
 export class QuestionGroupFormComponent implements OnInit {
 
   questionGroup: QuestionGroup;
-  @Input() survey!: Survey;
+  @Output() questionGroupEventEmitter = new EventEmitter<QuestionGroup>();
 
   constructor(private surveyService: SurveyService) {
-    this.questionGroup = new QuestionGroup();
-    this.questionGroup.questions = [];
+    this.questionGroup = this.createNewQuestionGroup();
   }
 
   ngOnInit() {
 
   }
 
-  onSubmit() {
-    console.log(this.survey);
-    console.log(this.questionGroup);
-    this.survey.questionGroups!.push(this.questionGroup);
-    sessionStorage.setItem('newSurvey', JSON.stringify(this.survey));
-    this.questionGroup = new QuestionGroup();
-    // this.surveyService.addQuestionGroup(this.survey, this.questionGroup).subscribe();
+  addNewQuestionGroup(newQuestionGroup: QuestionGroup) {
+    this.questionGroupEventEmitter.emit(newQuestionGroup);
+    this.questionGroup = this.createNewQuestionGroup();
+  }
+
+  private createNewQuestionGroup(): QuestionGroup {
+    let newQuestionGroup = new QuestionGroup();
+    newQuestionGroup.questions = [];
+    return newQuestionGroup;
   }
 }
