@@ -1,7 +1,7 @@
 <div class="container restrictWidth">
   <div id="addedQuestion" class="container restrictWidth">
     <div id="noQuestionGroups" class="row">
-        <span class="alert alert-secondary my-2" *ngIf="survey.questionGroups!.length < 1">
+        <span class="alert alert-secondary my-2" *ngIf="survey.questionGroups!.length == 0">
             Es wurde bisher kein Frageblock hinzugefügt.
         </span>
     </div>
@@ -9,6 +9,7 @@
          *ngFor="let questionGroup of survey.questionGroups; index as i">
       <h4>{{ questionGroup.title }}</h4>
 
+      <question-list [questionGroup]="questionGroup"></question-list>
       <question-form [questionGroup]="questionGroup" [index]="i"></question-form>
 
     </div>

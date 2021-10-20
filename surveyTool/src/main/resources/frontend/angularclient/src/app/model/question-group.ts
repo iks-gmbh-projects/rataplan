@@ -1,8 +1,9 @@
 import {Survey} from "./survey";
+import {Question} from "./question";
 
 export class QuestionGroup {
   id: number | undefined;
   title: string | undefined;
   survey: Survey | undefined;
-  questions: object | undefined;
+  questions: Question[] | undefined;
 }

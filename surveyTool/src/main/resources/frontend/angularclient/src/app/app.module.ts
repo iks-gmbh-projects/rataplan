@@ -11,6 +11,7 @@ import {FormsModule} from "@angular/forms";
 import {QuestionGroupFormComponent} from "./components/question-group-form/question-group-form.component";
 import {QuestionGroupListComponent} from "./components/question-group-list/question-group-list.component";
 import {QuestionFormComponent} from "./components/question-form/question-form.component";
+import {QuestionListComponent} from "./components/question-list/question-list.component";
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -26,7 +27,8 @@ const appRoutes: Routes = [
     SurveyCompletionComponent,
     QuestionGroupFormComponent,
     QuestionGroupListComponent,
-    QuestionFormComponent
+    QuestionFormComponent,
+    QuestionListComponent
   ],
   imports: [
     BrowserModule,

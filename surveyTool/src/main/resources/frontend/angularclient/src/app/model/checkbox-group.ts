@@ -1,4 +1,5 @@
 import {Question} from "./question";
+import {Checkbox} from "./checkbox";
 
 export class CheckboxGroup {
   id: number | undefined;
@@ -6,5 +7,5 @@ export class CheckboxGroup {
   minSelect: number | undefined;
   maxSelect: number | undefined;
   question: Question | undefined;
-  checkboxes: Object | undefined;
+  checkboxes: Checkbox[] | undefined;
 }
