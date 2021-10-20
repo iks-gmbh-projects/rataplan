@@ -6,8 +6,11 @@
         </span>
     </div>
     <div id="questionGroupListing" class="row card card-body mb-3"
-         *ngFor="let questionGroup of survey.questionGroups">
+         *ngFor="let questionGroup of survey.questionGroups; index as i">
       <h4>{{ questionGroup.title }}</h4>
+
+      <question-form [questionGroup]="questionGroup" [index]="i"></question-form>
+
     </div>
   </div>
 </div>
