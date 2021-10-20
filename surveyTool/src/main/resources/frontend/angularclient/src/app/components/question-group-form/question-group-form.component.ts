@@ -15,6 +15,7 @@ export class QuestionGroupFormComponent implements OnInit {
 
   constructor(private surveyService: SurveyService) {
     this.questionGroup = new QuestionGroup();
+    this.questionGroup.questions = [];
   }
 
   ngOnInit() {
@@ -23,6 +24,7 @@ export class QuestionGroupFormComponent implements OnInit {
 
   onSubmit() {
     console.log(this.survey);
+    console.log(this.questionGroup);
     this.survey.questionGroups!.push(this.questionGroup);
     sessionStorage.setItem('newSurvey', JSON.stringify(this.survey));
     this.questionGroup = new QuestionGroup();
