@@ -26,6 +26,9 @@ export class QuestionFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.question);
+    console.log(this.checkboxGroup);
+
     if (this.question.hasCheckbox) {
       this.question.checkboxGroup = this.checkboxGroup;
       this.checkboxGroup = new CheckboxGroup();
@@ -33,9 +36,6 @@ export class QuestionFormComponent implements OnInit {
     this.survey.questionGroups![this.index].questions!.push(this.question);
 
     sessionStorage.setItem('newSurvey', JSON.stringify(this.survey));
-
-    console.log(this.question);
-    console.log(this.checkboxGroup);
 
     this.question = new Question();
   }
