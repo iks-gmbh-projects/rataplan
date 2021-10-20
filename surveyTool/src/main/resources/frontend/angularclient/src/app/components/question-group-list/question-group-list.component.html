@@ -1,0 +1,13 @@
+<div class="container restrictWidth">
+  <div id="addedQuestion" class="container restrictWidth">
+    <div id="noQuestionGroups" class="row">
+        <span class="alert alert-secondary my-2" *ngIf="survey.questionGroups!.length < 1">
+            Es wurde bisher kein Frageblock hinzugefügt.
+        </span>
+    </div>
+    <div id="questionGroupListing" class="row card card-body mb-3"
+         *ngFor="let questionGroup of survey.questionGroups">
+      <h4>{{ questionGroup.title }}</h4>
+    </div>
+  </div>
+</div>
