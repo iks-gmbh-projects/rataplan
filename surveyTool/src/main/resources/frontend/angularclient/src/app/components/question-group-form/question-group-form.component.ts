@@ -22,7 +22,10 @@ export class QuestionGroupFormComponent implements OnInit {
   }
 
   onSubmit() {
-
+    console.log(this.survey);
+    this.survey.questionGroups!.push(this.questionGroup);
+    sessionStorage.setItem('newSurvey', JSON.stringify(this.survey));
+    this.questionGroup = new QuestionGroup();
     // this.surveyService.addQuestionGroup(this.survey, this.questionGroup).subscribe();
   }
 }
