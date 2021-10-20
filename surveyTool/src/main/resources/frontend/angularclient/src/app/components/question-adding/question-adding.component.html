@@ -19,7 +19,8 @@
     <hr>
   </div>
 
-  <question-group-form></question-group-form>
+  <question-group-form [survey]="survey"></question-group-form>
+  <question-group-list [survey]="survey"></question-group-list>
   <!--  <div id="addQuestions" class="container restrictWidth">-->
   <!--    <h3>Fügen Sie Ihrer Umfrage einen Frageblock hinzu:</h3>-->
   <!--    <form id="addQuestionGroup" th:object="${newQuestionGroup}"-->
