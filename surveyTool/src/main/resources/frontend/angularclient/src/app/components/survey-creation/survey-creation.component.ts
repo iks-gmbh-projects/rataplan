@@ -22,7 +22,8 @@ export class SurveyCreationComponent implements OnInit {
   }
 
   onSubmit() {
-    this.surveyService.createSurvey(this.survey).subscribe(() => this.gotoAddQuestions());
+    this.surveyService.createSurvey(this.survey);
+    this.gotoAddQuestions();
   }
 
   gotoAddQuestions() {
