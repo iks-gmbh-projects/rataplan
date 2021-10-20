@@ -16,6 +16,7 @@ export class SurveyCreationComponent implements OnInit {
               private router: Router,
               private surveyService: SurveyService) {
     this.survey = new Survey();
+    this.survey.questionGroups = [];
   }
 
   ngOnInit() {

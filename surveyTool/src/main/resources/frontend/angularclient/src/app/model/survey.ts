@@ -1,3 +1,5 @@
+import {QuestionGroup} from "./question-group";
+
 export class Survey {
   id: number | undefined;
   name: string | undefined;
@@ -8,5 +10,5 @@ export class Survey {
   accessID: string | undefined;
   uuid: string | undefined;
   user: Object | undefined;
-  questionGroups: Object | undefined;
+  questionGroups: QuestionGroup[] | undefined;
 }
