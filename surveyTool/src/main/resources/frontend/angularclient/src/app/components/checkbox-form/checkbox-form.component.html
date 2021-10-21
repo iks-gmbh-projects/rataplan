@@ -1,0 +1,21 @@
+<form id="addCheckbox" class="container"
+      #checkboxForm="ngForm" (ngSubmit)="onSubmit()"
+      *ngIf="survey.questionGroups![indexQuestionGroup].questions![indexQuestion].checkboxGroup">
+  <div class="input-group mt-2 mb-1">
+    <div class="input-group-text">
+      <label [attr.for]="'hasTextField' + indexQuestion + 'group' + indexQuestionGroup">
+        <!-- Add whitespace manually as the checkbox itself needs mt-0 to stay
+             vertically centered => overwrites margin of label -->
+        Mit Textfeld:&nbsp;&nbsp;&nbsp;
+      </label>
+      <input [attr.id]="'hasTextField' + indexQuestion + 'group' + indexQuestionGroup"
+             class="form-check-input mt-0" name="text" type="checkbox"
+             [(ngModel)]="checkbox.hasTextField">
+    </div>
+    <input id="checkboxText" class="form-control" name="text"
+           placeholder="Neue Auswahlmöglichkeit"
+           [(ngModel)]="checkbox.text"
+           required>
+    <button type="submit" class="btn btn-primary">Hinzufügen</button>
+  </div>
+</form>
