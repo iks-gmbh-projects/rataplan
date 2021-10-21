@@ -1,11 +1,11 @@
 <div id="addQuestionToGroup" class="container">
-  <button class="btn btn-outline-primary mb-3" type="button"
+  <button class="btn btn-outline-primary mb-2" type="button"
           data-bs-toggle="collapse"
-          [attr.data-bs-target]="'#collapseQuestionform' + index" aria-expanded="false"
-          [attr.aria-controls]="'#collapseQuestionform' + index">
+          [attr.data-bs-target]="'#collapseQuestionform' + indexQuestionGroup" aria-expanded="false"
+          [attr.aria-controls]="'#collapseQuestionform' + indexQuestionGroup">
     Frage hinzufügen
   </button>
-  <div [attr.id]="'collapseQuestionform' + index" class="collapse mb-2">
+  <div [attr.id]="'collapseQuestionform' + indexQuestionGroup" class="collapse mt-2">
     <div class="card card-body">
       <form id="addQuestion" class="container"
             #questionForm="ngForm" (ngSubmit)="onSubmit()">
@@ -18,30 +18,30 @@
         </div>
         <div class="row mb-3">
           <div class="col-4">
-            <input [attr.id]="'required' + index" class="form-check-input" name="required"
+            <input [attr.id]="'required' + indexQuestionGroup" class="form-check-input" name="required"
                    type="checkbox" [value]="1" [(ngModel)]="question.required">
-            <label [attr.for]="'required' + index" class="form-check-label">
+            <label [attr.for]="'required' + indexQuestionGroup" class="form-check-label">
               Erforderlich?
             </label>
           </div>
           <div class="col-8">
             <span class="me-3">Antwortmöglichkeit:</span>
             <!--TODO: Make button for 'Freitext' checked-->
-            <input [attr.id]="'textQuestion' + index" class="form-check-input" name="questionType"
+            <input [attr.id]="'textQuestion' + indexQuestionGroup" class="form-check-input" name="questionType"
                    type="radio" [value]="0" [(ngModel)]="question.hasCheckbox"
                    data-bs-toggle="collapse" aria-expanded="false"
-                   [attr.data-bs-target]="'#checkboxGroupForm' + index"
-                   [attr.aria-controls]="'#checkboxGroupForm' + index">
-            <label [attr.for]="'textQuestion' + index"
+                   [attr.data-bs-target]="'#checkboxGroupForm' + indexQuestionGroup"
+                   [attr.aria-controls]="'#checkboxGroupForm' + indexQuestionGroup">
+            <label [attr.for]="'textQuestion' + indexQuestionGroup"
                    class="form-check-label me-3">
               Freitext
             </label>
-            <input [attr.id]="'checkboxQuestion' + index" class="form-check-input" name="questionType"
+            <input [attr.id]="'checkboxQuestion' + indexQuestionGroup" class="form-check-input" name="questionType"
                    type="radio" [value]="1" [(ngModel)]="question.hasCheckbox"
                    data-bs-toggle="collapse" aria-expanded="false"
-                   [attr.data-bs-target]="'#checkboxGroupForm' + index"
-                   [attr.aria-controls]="'#checkboxGroupForm' + index">
-            <label [attr.for]="'checkboxQuestion' + index"
+                   [attr.data-bs-target]="'#checkboxGroupForm' + indexQuestionGroup"
+                   [attr.aria-controls]="'#checkboxGroupForm' + indexQuestionGroup">
+            <label [attr.for]="'checkboxQuestion' + indexQuestionGroup"
                    class="form-check-label">
               Auswahl
             </label>
@@ -49,7 +49,7 @@
         </div>
         <div class="mb-3">
           <div class="container collapse"
-               [attr.id]="'checkboxGroupForm' + index">
+               [attr.id]="'checkboxGroupForm' + indexQuestionGroup">
             <div class="card card-body">
               <div class="container">
                 <div class="row mb-3">
@@ -65,20 +65,20 @@
                     <!--           document.getElementById('maxSelect' + index).disabled = !this.checked;"-->
                   </div>
                   <div class="col">
-                    <label [attr.for]="'minSelect' + index"
+                    <label [attr.for]="'minSelect' + indexQuestionGroup"
                            class="form-label">
                       Minimum:
                     </label>
-                    <input [attr.id]="'minSelect' + index" class="form-control" name="maxSelect"
+                    <input [attr.id]="'minSelect' + indexQuestionGroup" class="form-control" name="maxSelect"
                            type="number"
                            [(ngModel)]="checkboxGroup.minSelect" disabled>
                   </div>
                   <div class="col">
-                    <label [attr.for]="'maxSelect' + index"
+                    <label [attr.for]="'maxSelect' + indexQuestionGroup"
                            class="form-label">
                       Maximal:
                     </label>
-                    <input [attr.id]="'maxSelect' + index" class="form-control" name="maxSelect"
+                    <input [attr.id]="'maxSelect' + indexQuestionGroup" class="form-control" name="maxSelect"
                            type="number" min="2"
                            [(ngModel)]="checkboxGroup.maxSelect" disabled>
                   </div>

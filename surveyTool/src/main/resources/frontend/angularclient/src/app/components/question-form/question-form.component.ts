@@ -12,7 +12,7 @@ export class QuestionFormComponent implements OnInit {
 
   question: Question;
   checkboxGroup: CheckboxGroup;
-  @Input() index!: number;
+  @Input() indexQuestionGroup!: number;
   @Input() survey!: Survey;
 
   constructor() {
@@ -33,7 +33,7 @@ export class QuestionFormComponent implements OnInit {
       this.question.checkboxGroup = this.checkboxGroup;
       this.checkboxGroup = new CheckboxGroup();
     }
-    this.survey.questionGroups![this.index].questions!.push(this.question);
+    this.survey.questionGroups![this.indexQuestionGroup].questions!.push(this.question);
 
     sessionStorage.setItem('newSurvey', JSON.stringify(this.survey));
 
