@@ -54,15 +54,14 @@
               <div class="container">
                 <div class="row mb-3">
                   <div class="col">
-                    <label for="multipleSelect" class="form-check-label">
+                    <label [attr.for]="'multipleSelect' + indexQuestionGroup" class="form-check-label">
                       Mehrfachauswahl?
                     </label>
-                    <input id="multipleSelect" class="form-check-input" name="multipleSelect"
+                    <input [attr.id]="'multipleSelect' + indexQuestionGroup" class="form-check-input"
+                           name="multipleSelect"
                            type="checkbox" value="1"
-                           [(ngModel)]="checkboxGroup.multipleSelect">
-                    <!-- TODO: Enable minSelect/maxSelect fields on click -->
-                    <!-- (change)="document.getElementById('minSelect' + index).disabled = !this.checked;-->
-                    <!--           document.getElementById('maxSelect' + index).disabled = !this.checked;"-->
+                           [(ngModel)]="checkboxGroup.multipleSelect"
+                           (change)="enableDisableMinMaxInput()">
                   </div>
                   <div class="col">
                     <label [attr.for]="'minSelect' + indexQuestionGroup"
@@ -71,7 +70,7 @@
                     </label>
                     <input [attr.id]="'minSelect' + indexQuestionGroup" class="form-control" name="maxSelect"
                            type="number"
-                           [(ngModel)]="checkboxGroup.minSelect" disabled>
+                           [(ngModel)]="checkboxGroup.minSelect" [disabled]="!disableInput">
                   </div>
                   <div class="col">
                     <label [attr.for]="'maxSelect' + indexQuestionGroup"
@@ -80,7 +79,7 @@
                     </label>
                     <input [attr.id]="'maxSelect' + indexQuestionGroup" class="form-control" name="maxSelect"
                            type="number" min="2"
-                           [(ngModel)]="checkboxGroup.maxSelect" disabled>
+                           [(ngModel)]="checkboxGroup.maxSelect" [disabled]="disableInput">
                   </div>
                 </div>
               </div>

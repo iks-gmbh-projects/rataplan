@@ -10,12 +10,14 @@ import {Survey} from "../../../model/survey";
 
 export class QuestionFormComponent implements OnInit {
 
+  disableInput: boolean;
   question: Question;
   checkboxGroup: CheckboxGroup;
   @Input() indexQuestionGroup!: number;
   @Input() survey!: Survey;
 
   constructor() {
+    this.disableInput = true;
     this.question = new Question();
     this.checkboxGroup = new CheckboxGroup();
     this.checkboxGroup.checkboxes = [];
@@ -31,13 +33,21 @@ export class QuestionFormComponent implements OnInit {
 
     if (this.question.hasCheckbox) {
       this.question.checkboxGroup = this.checkboxGroup;
-      this.checkboxGroup = new CheckboxGroup();
-      this.checkboxGroup.checkboxes = [];
     }
     this.survey.questionGroups![this.indexQuestionGroup].questions!.push(this.question);
 
     sessionStorage.setItem('newSurvey', JSON.stringify(this.survey));
 
+    if (!this.disableInput) {
+      this.disableInput = true;
+    }
+
+    this.checkboxGroup = new CheckboxGroup();
+    this.checkboxGroup.checkboxes = [];
     this.question = new Question();
+  }
+
+  enableDisableMinMaxInput() {
+    this.disableInput = !this.disableInput;
   }
 }
