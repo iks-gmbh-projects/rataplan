@@ -1,0 +1,42 @@
+<div class="container restrictWidth">
+  <form #surveySubmission="ngForm" (ngSubmit)="onSubmit()">
+    <!--    <div id="errorMessages" class="row my-2">-->
+    <!--      <div class="my-2 alert alert-danger" th:if="${#fields.hasGlobalErrors()}"-->
+    <!--           th:each="error : ${#fields.globalErrors()}">-->
+    <!--        <span class="d-block errorMessage" th:text="${error}"></span>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+    <div class="row">
+      <div>
+        <button type="button" class="btn btn-success mt-2 mb-4 float-end"
+                data-bs-toggle="modal" data-bs-target="#confirmSubmission">
+          Speichern
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmSubmission" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Umfrage speichern</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Sind Sie sicher? Sie können die Umfrage nachträglich nicht mehr verändern.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+              Abbrechen
+            </button>
+            <button type="submit" class="btn btn-success">
+              Ja, speichern.
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

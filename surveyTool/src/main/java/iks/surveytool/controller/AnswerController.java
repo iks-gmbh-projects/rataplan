@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/answer")
+@CrossOrigin(origins = "*")
 public class AnswerController {
 
     SurveyService surveyService;
@@ -38,3 +38,4 @@ public class AnswerController {
         return "answerSurvey";
     }
 }
+

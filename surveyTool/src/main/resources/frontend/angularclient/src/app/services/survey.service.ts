@@ -15,13 +15,14 @@ export class SurveyService {
 
   public createSurvey(survey: Survey) {
     let savedSurvey: Survey;
-    this.http.post(this.surveyUrl, survey)
+    this.http.post(this.surveyUrl + '/save', survey)
       .subscribe(x => {
         savedSurvey = <Survey>x;
         sessionStorage.setItem('newSurvey', JSON.stringify(savedSurvey));
         console.log(savedSurvey);
       });
   }
+
 
   // public addQuestionGroup(survey: Survey, questionGroup: QuestionGroup) {
   //   return this.http.post(this.surveyUrl + '/questions/addGroup', {questionGroup, survey})
