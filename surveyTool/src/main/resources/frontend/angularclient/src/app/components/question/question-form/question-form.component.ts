@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Question} from "../../model/question";
-import {CheckboxGroup} from "../../model/checkbox-group";
-import {Survey} from "../../model/survey";
+import {Question} from "../../../model/question";
+import {CheckboxGroup} from "../../../model/checkbox-group";
+import {Survey} from "../../../model/survey";
 
 @Component({
   selector: 'question-form',

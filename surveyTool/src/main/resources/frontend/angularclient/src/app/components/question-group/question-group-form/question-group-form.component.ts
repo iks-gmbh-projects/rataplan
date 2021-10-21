@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {QuestionGroup} from "../../model/question-group";
-import {SurveyService} from "../../services/survey.service";
+import {QuestionGroup} from "../../../model/question-group";
+import {SurveyService} from "../../../services/survey.service";
 
 @Component({
   selector: 'question-group-form',

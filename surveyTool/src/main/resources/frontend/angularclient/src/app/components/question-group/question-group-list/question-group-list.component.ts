@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Survey} from "../../model/survey";
+import {Survey} from "../../../model/survey";
 
 @Component({
   selector: 'question-group-list',
