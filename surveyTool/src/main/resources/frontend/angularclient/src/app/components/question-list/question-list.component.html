@@ -14,8 +14,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let question of survey.questionGroups![indexQuestionGroup].questions; index as i">
-      <td>{{i + 1}}</td>
+    <tr *ngFor="let question of survey.questionGroups![indexQuestionGroup].questions; index as indexQuestion">
+      <td>{{indexQuestion + 1}}</td>
 
       <td *ngIf="question.hasCheckbox">Auswahl</td>
       <td *ngIf="!question.hasCheckbox">Freitext</td>
@@ -46,7 +46,9 @@
           </div>
         </div>
 
-        <checkbox-list [question]="question"></checkbox-list>
+        <checkbox-list [survey]="survey"
+                       [indexQuestionGroup]="indexQuestionGroup"
+                       [indexQuestion]="indexQuestion"></checkbox-list>
 
       </td>
 
