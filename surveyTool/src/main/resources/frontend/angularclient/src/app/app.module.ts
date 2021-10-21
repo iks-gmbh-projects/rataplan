@@ -14,6 +14,7 @@ import {QuestionFormComponent} from "./components/question-form/question-form.co
 import {QuestionListComponent} from "./components/question-list/question-list.component";
 import {CheckboxListComponent} from "./components/checkbox-list/checkbox-list.component";
 import {SurveySubmissionComponent} from "./components/survey-submission/survey-submission.component";
+import {CheckboxFormComponent} from './components/checkbox-form/checkbox-form.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -31,6 +32,7 @@ const appRoutes: Routes = [
     QuestionGroupListComponent,
     QuestionFormComponent,
     QuestionListComponent,
+    CheckboxFormComponent,
     CheckboxListComponent,
     SurveySubmissionComponent
   ],
