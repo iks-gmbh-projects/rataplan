@@ -32,6 +32,7 @@ export class QuestionFormComponent implements OnInit {
     if (this.question.hasCheckbox) {
       this.question.checkboxGroup = this.checkboxGroup;
       this.checkboxGroup = new CheckboxGroup();
+      this.checkboxGroup.checkboxes = [];
     }
     this.survey.questionGroups![this.indexQuestionGroup].questions!.push(this.question);
 
