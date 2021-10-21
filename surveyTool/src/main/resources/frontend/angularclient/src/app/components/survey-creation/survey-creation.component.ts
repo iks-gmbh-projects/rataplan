@@ -23,14 +23,8 @@ export class SurveyCreationComponent implements OnInit {
   }
 
   onSubmit() {
-    this.surveyService.createSurvey(this.survey);
-    this.gotoAddQuestions();
-  }
-
-  gotoAddQuestions() {
-    // TODO: Need to manually refresh the page if submitting new survey
+    sessionStorage.setItem('newSurvey', JSON.stringify(this.survey));
     this.router.navigate(['/createSurvey/questions']);
-
-    // this.router.navigate(['/createSurvey/questions'], {state: {survey: this.survey}});
   }
+
 }
