@@ -1,15 +1,15 @@
-<div id="noCheckboxes" class="row text-center justify-content-center"
+<div id="noCheckboxes" class="row"
      *ngIf="survey.questionGroups![indexQuestionGroup].questions![indexQuestion].checkboxGroup">
-  <div class="container my-3"
+  <div class="d-flex text-center justify-content-center"
        *ngIf="survey.questionGroups![indexQuestionGroup].questions![indexQuestion].checkboxGroup!.checkboxes!.length == 0">
-    <span class="alert alert-secondary">
-        Keine Auswahlmöglichkeiten gegeben.
-    </span>
+    <p class="alert alert-secondary m-0 w-75">
+      Keine Auswahlmöglichkeiten gegeben.
+    </p>
   </div>
 </div>
 
 <div id="listOfCheckboxes" *ngIf="survey.questionGroups![indexQuestionGroup].questions![indexQuestion].checkboxGroup">
-  <ul class="list-group mt-1 mb-3 p-0 container"
+  <ul class="list-group mb-2 p-0 container"
       *ngIf="survey.questionGroups![indexQuestionGroup].questions![indexQuestion].checkboxGroup!.checkboxes!.length > 0">
     <li class="list-group-item"
         *ngFor="let checkbox of survey.questionGroups![indexQuestionGroup].questions![indexQuestion].checkboxGroup!.checkboxes">
