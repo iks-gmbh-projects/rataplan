@@ -18,6 +18,6 @@ export class SurveyService {
   }
 
   getSurveyOverview(id: string | null) {
-    return this.http.get(this.surveyUrl + '/' + id + '/final');
+    return this.http.get(this.surveyUrl + '/createSurvey/' + id + '/final');
   }
 }

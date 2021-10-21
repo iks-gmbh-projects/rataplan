@@ -21,7 +21,7 @@ const appRoutes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'createSurvey', component: SurveyCreationComponent},
   {path: 'createSurvey/questions', component: SurveyCompletionComponent},
-  {path: ':id/final', component: SurveyOverviewComponent}
+  {path: 'createSurvey/:id/final', component: SurveyOverviewComponent}
 ]
 
 @NgModule({

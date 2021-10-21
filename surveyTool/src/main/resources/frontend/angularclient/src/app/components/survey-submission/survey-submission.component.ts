@@ -17,7 +17,7 @@ export class SurveySubmissionComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+
   }
 
   onSubmit() {
@@ -28,7 +28,7 @@ export class SurveySubmissionComponent implements OnInit {
       surveyID = <number>newSurvey.id;
       console.log(newSurvey);
       sessionStorage.removeItem('newSurvey');
-      this.router.navigate([surveyID, "final"]);
+      this.router.navigate(["createSurvey", surveyID, "final"]);
     });
   }
 }
