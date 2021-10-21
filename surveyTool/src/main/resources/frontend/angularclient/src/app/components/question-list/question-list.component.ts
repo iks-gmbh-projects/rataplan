@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {QuestionGroup} from "../../model/question-group";
+import {Survey} from "../../model/survey";
 
 @Component({
   selector: 'question-list',
@@ -7,7 +7,8 @@ import {QuestionGroup} from "../../model/question-group";
 })
 
 export class QuestionListComponent implements OnInit {
-  @Input() questionGroup!: QuestionGroup;
+  @Input() indexQuestionGroup!: number;
+  @Input() survey!: Survey;
 
   constructor() {
   }
