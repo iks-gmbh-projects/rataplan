@@ -10,7 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 
 export class SurveyOverviewComponent implements OnInit {
 
-  private survey!: Survey;
+  survey!: Survey;
   private id!: string | null;
 
   constructor(private activatedRoute: ActivatedRoute,
