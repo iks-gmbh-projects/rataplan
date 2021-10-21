@@ -6,11 +6,11 @@
         </span>
     </div>
     <div id="questionGroupListing" class="row card card-body mb-3"
-         *ngFor="let questionGroup of survey.questionGroups; index as i">
+         *ngFor="let questionGroup of survey.questionGroups; index as indexQuestionGroup">
       <h4>{{ questionGroup.title }}</h4>
 
-      <question-list [survey]="survey" [indexQuestionGroup]="i"></question-list>
-      <question-form [survey]="survey" [indexQuestionGroup]="i"></question-form>
+      <question-list [survey]="survey" [indexQuestionGroup]="indexQuestionGroup"></question-list>
+      <question-form [survey]="survey" [indexQuestionGroup]="indexQuestionGroup"></question-form>
 
     </div>
   </div>
