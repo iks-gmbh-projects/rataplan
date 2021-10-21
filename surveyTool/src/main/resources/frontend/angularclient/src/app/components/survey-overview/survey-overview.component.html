@@ -1,0 +1,76 @@
+<p>
+  test
+</p>
+
+<!--<section id="surveyOverview" class="d-flex flex-column min-vw-100">-->
+<!--  &lt;!&ndash;    <div id="surveyNotAvailable" class="container restrictWidth mt-5" th:if="${notAvailable != null}">&ndash;&gt;-->
+<!--  &lt;!&ndash;        <div id="errorMessages" class="my-2">&ndash;&gt;-->
+<!--  &lt;!&ndash;            <div class="my-2 alert alert-danger">&ndash;&gt;-->
+<!--  &lt;!&ndash;                <span class="d-block errorMessage" th:text="${notAvailable}"></span>&ndash;&gt;-->
+<!--  &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--  &lt;!&ndash;        </div>&ndash;&gt;-->
+<!--  &lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--  <div id="information" class="container restrictWidth" th:if="${survey != null}">-->
+<!--    <h1 class="mt-3">-->
+<!--      Übersicht-->
+<!--    </h1>-->
+<!--    <hr>-->
+<!--    <div>-->
+<!--      <h2 id="surveyName" class="surveyInfo" th:text="${survey.name}"></h2>-->
+<!--    </div>-->
+<!--    <hr>-->
+<!--    <div id="surveyDescription" class="container" th:if="${!survey.description.isEmpty()}">-->
+<!--      <h3>-->
+<!--        Beschreibung:-->
+<!--      </h3>-->
+<!--      <p class="mx-2" th:text="${survey.description}"></p>-->
+<!--    </div>-->
+<!--    <hr th:if="${!survey.description.isEmpty()}">-->
+<!--    <div id="surveyDates" class="my-4 row w-100 basicInformation justify-content-evenly">-->
+<!--      <div class="col-1 d-flex flex-column">-->
+<!--        <span>Startdatum:</span>-->
+<!--        <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'dd.MM.yyyy')}"></span>-->
+<!--        <span class="surveyInfo" th:text="${#temporals.format(survey.startDate, 'HH:mm')}"></span>-->
+<!--      </div>-->
+<!--      <div class="col-1 d-flex flex-column">-->
+<!--        <span>Enddatum:</span>-->
+<!--        <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'dd.MM.yyyy')}"></span>-->
+<!--        <span class="surveyInfo" th:text="${#temporals.format(survey.endDate, 'HH:mm')}"></span>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <hr>-->
+<!--    <div id="surveyAccessID" class="container">-->
+<!--      <div class="row">-->
+<!--        <h3>-->
+<!--          Zugangs-ID:-->
+<!--        </h3>-->
+<!--      </div>-->
+<!--      <div class="row mb-2 text-center">-->
+<!--        <span id="accessID" class="surveyInfo text-center" th:text="${survey.accessID}"></span>-->
+<!--      </div>-->
+<!--      <div class="row text-center">-->
+<!--        <p>-->
+<!--          Mit dieser ID können Sie jederzeit die Ergebnisse ihrer Umfrage einsehen.-->
+<!--        </p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <hr>-->
+<!--    <div id="surveyLink" class="container">-->
+<!--      <div class="row">-->
+<!--        <h3>-->
+<!--          Link:-->
+<!--        </h3>-->
+<!--      </div>-->
+<!--      <div class="row mb-2 text-center">-->
+<!--        <span id="link" class="surveyInfo text-center" th:text="${url}"></span>-->
+<!--      </div>-->
+<!--      <div class="row text-center">-->
+<!--        <p>-->
+<!--          Mit diesem Link können andere Nutzer an ihrer Umfrage teilnehmen.-->
+<!--        </p>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <hr>-->
+<!--  </div>-->
+<!--</section>-->

@@ -15,11 +15,13 @@ import {QuestionListComponent} from "./components/question/question-list/questio
 import {CheckboxListComponent} from "./components/checkbox/checkbox-list/checkbox-list.component";
 import {SurveySubmissionComponent} from "./components/survey-submission/survey-submission.component";
 import {CheckboxFormComponent} from './components/checkbox/checkbox-form/checkbox-form.component';
+import {SurveyOverviewComponent} from "./components/survey-overview/survey-overview.component";
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'createSurvey', component: SurveyCreationComponent},
-  {path: 'createSurvey/questions', component: SurveyCompletionComponent}
+  {path: 'createSurvey/questions', component: SurveyCompletionComponent},
+  {path: ':id/final', component: SurveyOverviewComponent}
 ]
 
 @NgModule({
@@ -34,7 +36,8 @@ const appRoutes: Routes = [
     QuestionListComponent,
     CheckboxFormComponent,
     CheckboxListComponent,
-    SurveySubmissionComponent
+    SurveySubmissionComponent,
+    SurveyOverviewComponent
   ],
   imports: [
     BrowserModule,
