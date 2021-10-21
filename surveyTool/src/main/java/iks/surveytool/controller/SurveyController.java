@@ -4,10 +4,8 @@ import iks.surveytool.entities.Survey;
 import iks.surveytool.services.SurveyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
 import java.util.Optional;
@@ -33,20 +31,20 @@ public class SurveyController {
         return null;
     }
 
-//    @GetMapping("/{surveyID}/final")
-//    public String finalizeCreation(@Valid @PathVariable("surveyID") Long surveyID, Model model) throws MalformedURLException {
-//        Optional<Survey> surveyOptional = surveyService.findSurveyById(surveyID);
-//        if (surveyOptional.isPresent()) {
-//            Survey survey = surveyOptional.get();
-//            model.addAttribute("survey", survey);
-//
+    @GetMapping("/{surveyID}/final")
+    public ResponseEntity<Survey> finalizeCreation(@PathVariable("surveyID") Long surveyID, Model model) {
+        Optional<Survey> surveyOptional = surveyService.findSurveyById(surveyID);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+
 //            URL url = new URL("http", "localhost", 8080, "/answer?surveyUUID=" + survey.getUuid());
 //            model.addAttribute("url", url);
-//        } else {
-//            model.addAttribute("notAvailable",
-//                    "Eine Umfrage mit der ID '" + surveyID + "' ist leider nicht vorhanden.");
-//        }
-//
-//        return "finalizeSurvey";
-//    }
+            return ResponseEntity.ok(survey);
+        } else {
+            model.addAttribute("notAvailable",
+                    "Eine Umfrage mit der ID '" + surveyID + "' ist leider nicht vorhanden.");
+        }
+
+        return null;
+    }
 }
