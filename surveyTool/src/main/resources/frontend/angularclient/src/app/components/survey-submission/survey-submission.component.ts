@@ -17,10 +17,18 @@ export class SurveySubmissionComponent implements OnInit {
   }
 
   ngOnInit() {
+    
   }
 
   onSubmit() {
-    this.surveyService.createSurvey(this.survey);
-    this.router.navigate(['']);
+    let newSurvey: Survey;
+    let surveyID: number;
+    this.surveyService.saveSurvey(this.survey).subscribe(savedSurvey => {
+      newSurvey = <Survey>savedSurvey;
+      surveyID = <number>newSurvey.id;
+      console.log(newSurvey);
+      sessionStorage.removeItem('newSurvey');
+      this.router.navigate([surveyID, "final"]);
+    });
   }
 }

@@ -7,25 +7,13 @@ import {Survey} from "../model/survey";
 })
 export class SurveyService {
 
-  private surveyUrl: string;
+  private readonly surveyUrl: string;
 
   constructor(private http: HttpClient) {
     this.surveyUrl = 'http://localhost:8080/createSurvey';
   }
 
-  public createSurvey(survey: Survey) {
-    let savedSurvey: Survey;
-    this.http.post(this.surveyUrl + '/save', survey)
-      .subscribe(x => {
-        savedSurvey = <Survey>x;
-        sessionStorage.setItem('newSurvey', JSON.stringify(savedSurvey));
-        console.log(savedSurvey);
-      });
+  public saveSurvey(survey: Survey) {
+    return this.http.post(this.surveyUrl + '/save', survey);
   }
-
-
-  // public addQuestionGroup(survey: Survey, questionGroup: QuestionGroup) {
-  //   return this.http.post(this.surveyUrl + '/questions/addGroup', {questionGroup, survey})
-  // }
-
 }
