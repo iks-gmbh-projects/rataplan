@@ -45,6 +45,7 @@ public class Survey {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "survey_id")
     private List<QuestionGroup> questionGroups;
 }
