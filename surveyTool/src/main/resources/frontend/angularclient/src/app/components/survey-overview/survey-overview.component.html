@@ -16,7 +16,7 @@
       <h2 id="surveyName" class="surveyInfo">{{ survey.name }}</h2>
     </div>
     <hr>
-    <div id="surveyDescription" class="container">
+    <div id="surveyDescription" class="container" *ngIf="survey.description !== null">
       <h3>
         Beschreibung:
       </h3>
