@@ -1,5 +1,6 @@
 package iks.surveytool.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,11 +14,8 @@ import java.util.UUID;
 
 @Entity
 @Data
-public class Survey {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Survey extends AbstractEntity {
+    
     @NotNull
     private String name;
     @Type(type = "text")
@@ -41,6 +39,7 @@ public class Survey {
     @Type(type = "org.hibernate.type.UUIDCharType")
     private UUID uuid;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

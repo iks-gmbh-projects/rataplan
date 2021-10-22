@@ -1,5 +1,6 @@
 package iks.surveytool.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,11 +9,8 @@ import java.util.List;
 
 @Entity
 @Data
-public class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Question extends AbstractEntity {
+    
     @NotNull
     private String text;
     @NotNull
@@ -20,11 +18,13 @@ public class Question {
     @NotNull
     private boolean hasCheckbox;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "question_group_id")
     private QuestionGroup questionGroup;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "question_id")
     private List<Answer> answers;
 
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)

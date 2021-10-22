@@ -1,5 +1,6 @@
 package iks.surveytool.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,17 +8,16 @@ import java.util.List;
 
 @Entity
 @Data
-public class QuestionGroup {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class QuestionGroup extends AbstractEntity {
 
     private String title;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "survey_id")
     private Survey survey;
 
-    @OneToMany(mappedBy = "questionGroup", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "question_group_id")
     private List<Question> questions;
 }
