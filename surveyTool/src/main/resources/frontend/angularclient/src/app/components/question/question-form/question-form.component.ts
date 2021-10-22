@@ -50,4 +50,10 @@ export class QuestionFormComponent implements OnInit {
   enableDisableMinMaxInput() {
     this.disableInput = !this.disableInput;
   }
+
+  collapseMultipleSelectContainerWhenOpen(indexQuestionGroup: number) {
+    if (document.getElementById("checkboxGroupForm" + indexQuestionGroup)!.classList.contains('show')) {
+      document.getElementById('checkboxGroupForm' + indexQuestionGroup)!.classList.remove('show');
+    }
+  }
 }

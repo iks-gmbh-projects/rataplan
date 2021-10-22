@@ -16,35 +16,23 @@
                    [(ngModel)]="question.text" required>
           </div>
         </div>
-        <div class="row mb-3">
-          <div class="col-4">
+        <div class="row mb-3 justify-content-evenly">
+          <div class="col-3">
+            <label [attr.for]="'required' + indexQuestionGroup" class="form-check-label">
+              Erforderlich?&nbsp;&nbsp;
+            </label>
             <input [attr.id]="'required' + indexQuestionGroup" class="form-check-input" name="required"
                    type="checkbox" [value]="1" [(ngModel)]="question.required">
-            <label [attr.for]="'required' + indexQuestionGroup" class="form-check-label">
-              Erforderlich?
-            </label>
           </div>
-          <div class="col-8">
-            <span class="me-3">Antwortmöglichkeit:</span>
-            <!--TODO: Make button for 'Freitext' checked-->
-            <input [attr.id]="'textQuestion' + indexQuestionGroup" class="form-check-input" name="questionType"
-                   type="radio" [value]="0" [(ngModel)]="question.hasCheckbox"
+          <div class="col-4">
+            <label [attr.for]="'checkboxes' + indexQuestionGroup" class="form-check-label">
+              Antwortmöglichkeiten?&nbsp;&nbsp;
+            </label>
+            <input [attr.id]="'checkboxes' + indexQuestionGroup" class="form-check-input" name="questionType"
+                   type="checkbox" [value]="1" [(ngModel)]="question.hasCheckbox"
                    data-bs-toggle="collapse" aria-expanded="false"
                    [attr.data-bs-target]="'#checkboxGroupForm' + indexQuestionGroup"
                    [attr.aria-controls]="'#checkboxGroupForm' + indexQuestionGroup">
-            <label [attr.for]="'textQuestion' + indexQuestionGroup"
-                   class="form-check-label me-3">
-              Freitext
-            </label>
-            <input [attr.id]="'checkboxQuestion' + indexQuestionGroup" class="form-check-input" name="questionType"
-                   type="radio" [value]="1" [(ngModel)]="question.hasCheckbox"
-                   data-bs-toggle="collapse" aria-expanded="false"
-                   [attr.data-bs-target]="'#checkboxGroupForm' + indexQuestionGroup"
-                   [attr.aria-controls]="'#checkboxGroupForm' + indexQuestionGroup">
-            <label [attr.for]="'checkboxQuestion' + indexQuestionGroup"
-                   class="form-check-label">
-              Auswahl
-            </label>
           </div>
         </div>
         <div class="mb-3">
@@ -55,7 +43,7 @@
                 <div class="row mb-3">
                   <div class="col">
                     <label [attr.for]="'multipleSelect' + indexQuestionGroup" class="form-check-label">
-                      Mehrfachauswahl?
+                      Mehrfachauswahl?&nbsp;&nbsp;
                     </label>
                     <input [attr.id]="'multipleSelect' + indexQuestionGroup" class="form-check-input"
                            name="multipleSelect"
@@ -86,7 +74,8 @@
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary float-end">
+        <button type="submit" class="btn btn-primary float-end"
+                (click)="collapseMultipleSelectContainerWhenOpen(indexQuestionGroup)">
           Hinzufügen
         </button>
       </form>
