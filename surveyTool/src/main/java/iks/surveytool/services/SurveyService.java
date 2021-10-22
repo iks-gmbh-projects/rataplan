@@ -5,7 +5,6 @@ import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.net.MalformedURLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,12 +22,24 @@ public class SurveyService {
         return surveyRepository.findSurveyByUuid(uuid);
     }
 
-    public Long addSurvey(Survey survey) throws MalformedURLException {
-        Survey savedSurvey = surveyRepository.save(survey);
+    public Long addSurvey(Survey survey) {
+        Survey surveyFixedForeignKeys = setCheckboxGroupForeignKeys(survey);
+        Survey savedSurvey = surveyRepository.save(surveyFixedForeignKeys);
         generateAccessID(savedSurvey);
         generateUUID(savedSurvey);
         savedSurvey = surveyRepository.save(survey);
         return savedSurvey.getId();
+    }
+    
+    private Survey setCheckboxGroupForeignKeys(Survey survey) {
+        for (QuestionGroup questionGroup : survey.getQuestionGroups()) {
+            for (Question question : questionGroup.getQuestions()) {
+                if (question.isHasCheckbox()) {
+                    question.getCheckboxGroup().setQuestion(question);
+                }
+            }
+        }
+        return survey;
     }
 
     // Temporary:

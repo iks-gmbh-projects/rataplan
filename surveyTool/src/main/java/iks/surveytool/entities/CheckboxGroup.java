@@ -1,13 +1,16 @@
 package iks.surveytool.entities;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class CheckboxGroup extends AbstractEntity {
 
     @NotNull
@@ -16,6 +19,7 @@ public class CheckboxGroup extends AbstractEntity {
     private int minSelect;
     private int maxSelect;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id")
     private Question question;
