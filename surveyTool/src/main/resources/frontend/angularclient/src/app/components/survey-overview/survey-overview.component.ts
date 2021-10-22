@@ -20,6 +20,7 @@ export class SurveyOverviewComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.activatedRoute!.snapshot.paramMap.get('id');
+
     this.surveyService.getSurveyOverview(this.id).subscribe(x => {
       this.survey = <Survey>x;
       console.log(this.survey);

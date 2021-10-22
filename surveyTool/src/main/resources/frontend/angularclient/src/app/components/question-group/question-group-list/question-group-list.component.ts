@@ -7,6 +7,7 @@ import {Survey} from "../../../model/survey";
 })
 
 export class QuestionGroupListComponent implements OnInit {
+
   @Input() survey!: Survey;
 
   constructor() {

@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {SurveyService} from "../../services/survey.service";
 import {Survey} from "../../model/survey";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -13,8 +12,7 @@ export class SurveyCreationComponent implements OnInit {
   survey!: Survey;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private router: Router,
-              private surveyService: SurveyService) {
+              private router: Router) {
     this.survey = new Survey();
     this.survey.questionGroups = [];
   }
