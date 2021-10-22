@@ -16,6 +16,7 @@ import {CheckboxListComponent} from "./components/checkbox/checkbox-list/checkbo
 import {SurveySubmissionComponent} from "./components/survey-submission/survey-submission.component";
 import {CheckboxFormComponent} from './components/checkbox/checkbox-form/checkbox-form.component';
 import {SurveyOverviewComponent} from "./components/survey-overview/survey-overview.component";
+import {DateValidatorDirective} from "./directives/validators/date-validator.directive";
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -37,7 +38,8 @@ const appRoutes: Routes = [
     CheckboxFormComponent,
     CheckboxListComponent,
     SurveySubmissionComponent,
-    SurveyOverviewComponent
+    SurveyOverviewComponent,
+    DateValidatorDirective
   ],
   imports: [
     BrowserModule,

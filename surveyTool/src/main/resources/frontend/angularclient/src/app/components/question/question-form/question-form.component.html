@@ -11,9 +11,15 @@
             #questionForm="ngForm" (ngSubmit)="onSubmit()">
         <div class="row mb-3">
           <div class="col">
-            <label for="question" class="form-label">Frage</label>
+            <label for="question" class="form-label">Frage*</label>
             <input id="question" class="form-control" name="text" type="text"
-                   [(ngModel)]="question.text" required>
+                   [(ngModel)]="question.text" #text="ngModel" required>
+            <div *ngIf="text.invalid && (text.dirty || text.touched)"
+                 class="alert alert-danger p-2 mt-1 mb-0">
+              <div *ngIf="text.errors?.required">
+                Eine Frage benötigt einen Fragentext.
+              </div>
+            </div>
           </div>
         </div>
         <div class="row mb-3 justify-content-evenly">
@@ -22,7 +28,7 @@
               Erforderlich?&nbsp;&nbsp;
             </label>
             <input [attr.id]="'required' + indexQuestionGroup" class="form-check-input" name="required"
-                   type="checkbox" [value]="1" [(ngModel)]="question.required">
+                   type="checkbox" [value]="1" [(ngModel)]="question.required" #required="ngModel">
           </div>
           <div class="col-4">
             <label [attr.for]="'checkboxes' + indexQuestionGroup" class="form-check-label">
@@ -30,7 +36,7 @@
             </label>
             <input [attr.id]="'checkboxes' + indexQuestionGroup" class="form-check-input" name="questionType"
                    type="checkbox" [value]="1" [(ngModel)]="question.hasCheckbox"
-                   data-bs-toggle="collapse" aria-expanded="false"
+                   data-bs-toggle="collapse" aria-expanded="false" #checkbox="ngModel"
                    [attr.data-bs-target]="'#checkboxGroupForm' + indexQuestionGroup"
                    [attr.aria-controls]="'#checkboxGroupForm' + indexQuestionGroup">
           </div>
@@ -46,9 +52,8 @@
                       Mehrfachauswahl?&nbsp;&nbsp;
                     </label>
                     <input [attr.id]="'multipleSelect' + indexQuestionGroup" class="form-check-input"
-                           name="multipleSelect"
-                           type="checkbox" value="1"
-                           [(ngModel)]="checkboxGroup.multipleSelect"
+                           name="multipleSelect" type="checkbox" value="1"
+                           [(ngModel)]="checkboxGroup.multipleSelect" #multipleSelect="ngModel"
                            (change)="enableDisableMinMaxInput()">
                   </div>
                   <div class="col">
@@ -57,8 +62,14 @@
                       Minimum:
                     </label>
                     <input [attr.id]="'minSelect' + indexQuestionGroup" class="form-control" name="maxSelect"
-                           type="number"
-                           [(ngModel)]="checkboxGroup.minSelect" [disabled]="!disableInput">
+                           type="number" min="0" [disabled]="!disableInput"
+                           [(ngModel)]="checkboxGroup.minSelect" #minSelect="ngModel">
+                    <div *ngIf="minSelect.invalid && (minSelect.dirty || minSelect.touched)"
+                         class="alert alert-danger p-2 mt-1 mb-0">
+                      <div *ngIf="minSelect.errors?.min">
+                        Das Minimum muss mind. 0 sein.
+                      </div>
+                    </div>
                   </div>
                   <div class="col">
                     <label [attr.for]="'maxSelect' + indexQuestionGroup"
@@ -66,15 +77,21 @@
                       Maximal:
                     </label>
                     <input [attr.id]="'maxSelect' + indexQuestionGroup" class="form-control" name="maxSelect"
-                           type="number" min="2"
-                           [(ngModel)]="checkboxGroup.maxSelect" [disabled]="disableInput">
+                           type="number" min="2" [disabled]="disableInput"
+                           [(ngModel)]="checkboxGroup.maxSelect" #maxSelect="ngModel">
+                    <div *ngIf="maxSelect.invalid && (maxSelect.dirty || maxSelect.touched)"
+                         class="alert alert-danger p-2 mt-1 mb-0">
+                      <div *ngIf="maxSelect.errors?.min">
+                        Das Maximum muss mind. 2 sein.
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary float-end"
+        <button type="submit" class="btn btn-primary float-end" [disabled]="questionForm.invalid"
                 (click)="collapseMultipleSelectContainerWhenOpen(indexQuestionGroup)">
           Hinzufügen
         </button>
