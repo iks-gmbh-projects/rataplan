@@ -4,14 +4,13 @@ import iks.surveytool.entities.Survey;
 import iks.surveytool.services.SurveyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
-@RequestMapping("/createSurvey")
 @CrossOrigin(origins = "*")
 public class SurveyController {
 
@@ -21,7 +20,7 @@ public class SurveyController {
         this.surveyService = surveyService;
     }
 
-    @PostMapping("/save")
+    @PostMapping("/createSurvey/save")
     public ResponseEntity<Survey> saveSurvey(@RequestBody Survey newSurvey) throws MalformedURLException {
         Long id = surveyService.addSurvey(newSurvey);
         Optional<Survey> savedSurvey = surveyService.findSurveyById(id);
@@ -31,17 +30,23 @@ public class SurveyController {
         return null;
     }
 
-    @GetMapping("/{surveyID}/final")
-    public ResponseEntity<Survey> finalizeCreation(@PathVariable("surveyID") Long surveyID, Model model) {
+    @GetMapping("/createSurvey/{surveyID}/final")
+    public ResponseEntity<Survey> finalizeCreation(@PathVariable("surveyID") Long surveyID) {
         Optional<Survey> surveyOptional = surveyService.findSurveyById(surveyID);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
             return ResponseEntity.ok(survey);
-        } else {
-            model.addAttribute("notAvailable",
-                    "Eine Umfrage mit der ID '" + surveyID + "' ist leider nicht vorhanden.");
         }
+        return null;
+    }
 
+    @GetMapping("/answers")
+    public ResponseEntity<Survey> getSurveyForAnswering(@RequestParam UUID uuid) {
+        Optional<Survey> surveyOptional = surveyService.findSurveyByUUID(uuid);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+            return ResponseEntity.ok(survey);
+        }
         return null;
     }
 }
