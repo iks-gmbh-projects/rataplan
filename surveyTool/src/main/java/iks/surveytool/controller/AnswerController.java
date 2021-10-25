@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/answer")
+@RequestMapping("/answers")
 @CrossOrigin(origins = "*")
 public class AnswerController {
 
