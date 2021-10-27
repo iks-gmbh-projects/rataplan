@@ -25,7 +25,6 @@ public class Answer extends AbstractEntity {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "checkbox_id")
     private Checkbox checkbox;
