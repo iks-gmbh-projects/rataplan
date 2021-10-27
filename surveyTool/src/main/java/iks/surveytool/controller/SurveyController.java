@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,7 +20,7 @@ public class SurveyController {
     }
 
     @PostMapping("/createSurvey/save")
-    public ResponseEntity<Survey> saveSurvey(@RequestBody Survey newSurvey) throws MalformedURLException {
+    public ResponseEntity<Survey> saveSurvey(@RequestBody Survey newSurvey) {
         Long id = surveyService.addSurvey(newSurvey);
         Optional<Survey> savedSurvey = surveyService.findSurveyById(id);
         if (savedSurvey.isPresent()) {
