@@ -25,6 +25,7 @@ public class Question extends AbstractEntity {
     @JoinColumn(name = "question_group_id")
     private QuestionGroup questionGroup;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id")
     private List<Answer> answers;
