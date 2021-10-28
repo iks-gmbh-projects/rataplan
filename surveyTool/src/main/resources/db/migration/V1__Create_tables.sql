@@ -1,99 +1,99 @@
-DROP TABLE if EXISTS answer;
-DROP TABLE if EXISTS checkbox;
-DROP TABLE if EXISTS checkbox_group;
-DROP TABLE if EXISTS question;
-DROP TABLE if EXISTS question_group;
-DROP TABLE if EXISTS survey;
-DROP TABLE if EXISTS USER;
+DROP TABLE IF EXISTS Answer;
+DROP TABLE IF EXISTS Checkbox;
+DROP TABLE IF EXISTS Checkbox_Group;
+DROP TABLE IF EXISTS Question;
+DROP TABLE IF EXISTS Question_Group;
+DROP TABLE IF EXISTS Survey;
+DROP TABLE IF EXISTS User;
 
-CREATE TABLE user
+CREATE TABLE User
 (
-    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    creation_time DATETIME NULL,
-    last_updated  DATETIME NULL,
-    version       INT NULL,
-    name          VARCHAR(255) NULL
+    Id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Creation_Time DATETIME     NULL,
+    Last_Updated  DATETIME     NULL,
+    Version       INT          NULL,
+    Name          VARCHAR(255) NULL
 );
 
-CREATE TABLE survey
+CREATE TABLE Survey
 (
-    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    creation_time DATETIME NULL,
-    last_updated  DATETIME NULL,
-    version       INT NULL,
-    accessid      VARCHAR(255) NULL,
-    description   LONGTEXT NULL,
-    end_date      DATETIME(6) NULL,
-    name          VARCHAR(255) NOT NULL,
-    open          BOOLEAN      NOT NULL,
-    start_date    DATETIME(6) NULL,
-    uuid          VARCHAR(255) NULL,
-    user_id       BIGINT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id)
+    Id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Creation_Time DATETIME     NULL,
+    Last_Updated  DATETIME     NULL,
+    Version       INT          NULL,
+    Accessid      VARCHAR(255) NULL,
+    Description   LONGTEXT     NULL,
+    End_Date      DATETIME(6)  NULL,
+    Name          VARCHAR(255) NOT NULL,
+    Open          BOOLEAN      NOT NULL,
+    Start_Date    DATETIME(6)  NULL,
+    Uuid          VARCHAR(255) NULL,
+    User_Id       BIGINT       NULL,
+    FOREIGN KEY (User_Id) REFERENCES User (Id)
 );
 
-CREATE TABLE question_group
+CREATE TABLE Question_Group
 (
-    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    creation_time DATETIME NULL,
-    last_updated  DATETIME NULL,
-    version       INT NULL,
-    title         VARCHAR(255) NULL,
-    survey_id     BIGINT NULL,
-    FOREIGN KEY (survey_id) REFERENCES survey (id)
+    Id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Creation_Time DATETIME     NULL,
+    Last_Updated  DATETIME     NULL,
+    Version       INT          NULL,
+    Title         VARCHAR(255) NULL,
+    Survey_Id     BIGINT       NULL,
+    FOREIGN KEY (Survey_Id) REFERENCES Survey (Id)
 );
 
-CREATE TABLE question
+CREATE TABLE Question
 (
-    id                BIGINT AUTO_INCREMENT PRIMARY KEY,
-    creation_time     DATETIME NULL,
-    last_updated      DATETIME NULL,
-    version           INT NULL,
-    has_checkbox      BOOLEAN      NOT NULL,
-    required          BOOLEAN      NOT NULL,
-    text              VARCHAR(255) NOT NULL,
-    question_group_id BIGINT NULL,
-    FOREIGN KEY (question_group_id) REFERENCES question_group (id)
+    Id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Creation_Time     DATETIME     NULL,
+    Last_Updated      DATETIME     NULL,
+    Version           INT          NULL,
+    Has_Checkbox      BOOLEAN      NOT NULL,
+    Required          BOOLEAN      NOT NULL,
+    Text              VARCHAR(255) NOT NULL,
+    Question_Group_Id BIGINT       NULL,
+    FOREIGN KEY (Question_Group_Id) REFERENCES Question_Group (Id)
 );
 
-CREATE TABLE checkbox_group
+CREATE TABLE Checkbox_Group
 (
-    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    creation_time   DATETIME NULL,
-    last_updated    DATETIME NULL,
-    version         INT NULL,
-    max_select      INT     NOT NULL,
-    min_select      INT     NOT NULL,
-    multiple_select BOOLEAN NOT NULL,
-    question_id     BIGINT NULL,
-    FOREIGN KEY (question_id) REFERENCES question (id)
+    Id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Creation_Time   DATETIME NULL,
+    Last_Updated    DATETIME NULL,
+    Version         INT      NULL,
+    Max_Select      INT      NOT NULL,
+    Min_Select      INT      NOT NULL,
+    Multiple_Select BOOLEAN  NOT NULL,
+    Question_Id     BIGINT   NULL,
+    FOREIGN KEY (Question_Id) REFERENCES Question (Id)
 );
 
-CREATE TABLE checkbox
+CREATE TABLE Checkbox
 (
-    id                BIGINT AUTO_INCREMENT PRIMARY KEY,
-    creation_time     DATETIME NULL,
-    last_updated      DATETIME NULL,
-    version           INT NULL,
-    has_text_field    BOOLEAN      NOT NULL,
-    text              VARCHAR(255) NOT NULL,
-    checkbox_group_id BIGINT NULL,
-    FOREIGN KEY (checkbox_group_id) REFERENCES checkbox_group (id)
+    Id                BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Creation_Time     DATETIME     NULL,
+    Last_Updated      DATETIME     NULL,
+    Version           INT          NULL,
+    Has_Text_Field    BOOLEAN      NOT NULL,
+    Text              VARCHAR(255) NOT NULL,
+    Checkbox_Group_Id BIGINT       NULL,
+    FOREIGN KEY (Checkbox_Group_Id) REFERENCES Checkbox_Group (Id)
 );
 
-CREATE TABLE answer
+CREATE TABLE Answer
 (
-    id            BIGINT auto_increment PRIMARY KEY,
-    creation_time DATETIME NULL,
-    last_updated  DATETIME NULL,
-    version       INT NULL,
-    text          VARCHAR(255) NULL,
-    checkbox_id   BIGINT NULL,
-    question_id   BIGINT NULL,
-    user_id       BIGINT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id),
-    FOREIGN KEY (question_id) REFERENCES question (id),
-    FOREIGN KEY (checkbox_id) REFERENCES checkbox (id)
+    Id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Creation_Time DATETIME NULL,
+    Last_Updated  DATETIME NULL,
+    Version       INT      NULL,
+    Text          LONGTEXT NULL,
+    Checkbox_Id   BIGINT   NULL,
+    Question_Id   BIGINT   NULL,
+    User_Id       BIGINT   NULL,
+    FOREIGN KEY (User_Id) REFERENCES User (Id),
+    FOREIGN KEY (Question_Id) REFERENCES Question (Id),
+    FOREIGN KEY (Checkbox_Id) REFERENCES Checkbox (Id)
 );
 
 
