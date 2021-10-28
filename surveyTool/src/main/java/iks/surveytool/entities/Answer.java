@@ -1,6 +1,5 @@
 package iks.surveytool.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
@@ -14,11 +13,10 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 public class Answer extends AbstractEntity {
-    
+
     @Type(type = "text")
     private String text;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
