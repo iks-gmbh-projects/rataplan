@@ -24,35 +24,44 @@ public class AnswerService {
 
     public void saveListOfAnswers(List<Answer> answerList) {
         for (Answer answer : answerList) {
-            // Need to fetch question from db for hibernate to recognize it
-
-            Long questionID = answer.getQuestion().getId();
-            Optional<Question> questionOptional = questionRepository.findById(questionID);
-
-            if (questionOptional.isPresent()) {
-                Question question = questionOptional.get();
-                answer.setQuestion(question);
-
-                if (question.isHasCheckbox()) {
-                    Long checkboxID = answer.getCheckbox().getId();
-                    Optional<Checkbox> checkboxOptional = checkboxRepository.findById(checkboxID);
-
-                    if (checkboxOptional.isPresent()) {
-                        Checkbox checkbox = checkboxOptional.get();
-                        answer.setCheckbox(checkbox);
-                    }
-                }
-            }
-
-            // Need to fetch user from db for hibernate to recognize it
-            Long userID = answer.getUser().getId();
-            Optional<User> userOptional = userRepository.findById(userID);
-
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                answer.setUser(user);
-            }
+            // Need to fetch question/checkbox/user from db for hibernate to recognize it
+            setQuestion(answer);
+            setUser(answer);
         }
         answerRepository.saveAll(answerList);
+    }
+
+    private void setQuestion(Answer answer) {
+        Long questionID = answer.getQuestion().getId();
+        Optional<Question> questionOptional = questionRepository.findById(questionID);
+
+        if (questionOptional.isPresent()) {
+            Question question = questionOptional.get();
+            answer.setQuestion(question);
+
+            if (question.isHasCheckbox()) {
+                setCheckbox(answer);
+            }
+        }
+    }
+
+    private void setCheckbox(Answer answer) {
+        Long checkboxID = answer.getCheckbox().getId();
+        Optional<Checkbox> checkboxOptional = checkboxRepository.findById(checkboxID);
+
+        if (checkboxOptional.isPresent()) {
+            Checkbox checkbox = checkboxOptional.get();
+            answer.setCheckbox(checkbox);
+        }
+    }
+
+    private void setUser(Answer answer) {
+        Long userID = answer.getUser().getId();
+        Optional<User> userOptional = userRepository.findById(userID);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            answer.setUser(user);
+        }
     }
 }
