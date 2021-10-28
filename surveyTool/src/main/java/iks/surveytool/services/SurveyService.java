@@ -22,7 +22,11 @@ public class SurveyService {
         return surveyRepository.findSurveyByUuid(uuid);
     }
 
-    public Long addSurvey(Survey survey) {
+    public Optional<Survey> findSurveyByAccessId(String accessId) {
+        return surveyRepository.findSurveyByAccessID(accessId);
+    }
+
+    public Long saveSurvey(Survey survey) {
         Survey surveyFixedForeignKeys = setCheckboxGroupForeignKeys(survey);
         Survey savedSurvey = surveyRepository.save(surveyFixedForeignKeys);
         generateAccessID(savedSurvey);
@@ -30,7 +34,7 @@ public class SurveyService {
         savedSurvey = surveyRepository.save(survey);
         return savedSurvey.getId();
     }
-    
+
     private Survey setCheckboxGroupForeignKeys(Survey survey) {
         for (QuestionGroup questionGroup : survey.getQuestionGroups()) {
             for (Question question : questionGroup.getQuestions()) {

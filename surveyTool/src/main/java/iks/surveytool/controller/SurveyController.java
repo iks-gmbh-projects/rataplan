@@ -21,7 +21,7 @@ public class SurveyController {
 
     @PostMapping("/createSurvey/save")
     public ResponseEntity<Survey> saveSurvey(@RequestBody Survey newSurvey) {
-        Long id = surveyService.addSurvey(newSurvey);
+        Long id = surveyService.saveSurvey(newSurvey);
         Optional<Survey> savedSurvey = surveyService.findSurveyById(id);
         if (savedSurvey.isPresent()) {
             return ResponseEntity.ok(savedSurvey.get());
@@ -42,6 +42,16 @@ public class SurveyController {
     @GetMapping("/answers")
     public ResponseEntity<Survey> getSurveyForAnswering(@RequestParam UUID uuid) {
         Optional<Survey> surveyOptional = surveyService.findSurveyByUUID(uuid);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+            return ResponseEntity.ok(survey);
+        }
+        return null;
+    }
+
+    @GetMapping("/results")
+    public ResponseEntity<Survey> getSurveyForResults(@RequestParam String accessId) {
+        Optional<Survey> surveyOptional = surveyService.findSurveyByAccessId(accessId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
             return ResponseEntity.ok(survey);

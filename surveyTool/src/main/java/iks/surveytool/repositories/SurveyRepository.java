@@ -10,4 +10,7 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Optional<Survey> findSurveyById(Long id);
 
     Optional<Survey> findSurveyByUuid(UUID uuid);
+
+    Optional<Survey> findSurveyByAccessID(String accessId);
+
 }

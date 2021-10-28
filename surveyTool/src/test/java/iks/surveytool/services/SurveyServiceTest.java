@@ -34,7 +34,7 @@ class SurveyServiceTest {
                 .createSurveyWithDefaultDate(1L, "Test Umfrage");
         when(surveyRepository.save(survey)).thenReturn(survey);
 
-        surveyService.addSurvey(survey);
+        surveyService.saveSurvey(survey);
 
         verify(surveyRepository, times(2)).save(survey);
     }
