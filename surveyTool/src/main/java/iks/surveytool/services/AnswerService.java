@@ -22,6 +22,10 @@ public class AnswerService {
     private final CheckboxRepository checkboxRepository;
     private final UserRepository userRepository;
 
+    public List<Answer> findAnswersByQuestionId(Long questionId) {
+        return answerRepository.findAllByQuestion_Id(questionId);
+    }
+
     public void saveListOfAnswers(List<Answer> answerList) {
         for (Answer answer : answerList) {
             // Need to fetch question/checkbox/user from db for hibernate to recognize it
