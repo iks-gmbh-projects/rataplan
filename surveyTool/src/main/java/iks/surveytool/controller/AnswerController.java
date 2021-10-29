@@ -26,7 +26,7 @@ public class AnswerController {
         return ResponseEntity.ok(answerList);
     }
 
-    @GetMapping("/getAnswers")
+    @GetMapping("/getAnswersByQuestionId")
     public ResponseEntity<List<Answer>> getAnswersByQuestionId(@RequestParam Long questionId) {
         List<Answer> answers = answerService.findAnswersByQuestionId(questionId);
         return ResponseEntity.ok(answers);
