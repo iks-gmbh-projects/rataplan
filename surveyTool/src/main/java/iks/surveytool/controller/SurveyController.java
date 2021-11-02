@@ -30,7 +30,7 @@ public class SurveyController {
     }
 
     @GetMapping("/createSurvey/{surveyID}/final")
-    public ResponseEntity<Survey> finalizeCreation(@PathVariable("surveyID") Long surveyID) {
+    public ResponseEntity<Survey> getSurveyForOverviewAfterSubmission(@PathVariable("surveyID") Long surveyID) {
         Optional<Survey> surveyOptional = surveyService.findSurveyById(surveyID);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
