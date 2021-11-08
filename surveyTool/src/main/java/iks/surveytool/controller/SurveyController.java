@@ -35,8 +35,9 @@ public class SurveyController {
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
             return ResponseEntity.ok(survey);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return null;
     }
 
     @GetMapping("/answers")
@@ -45,8 +46,9 @@ public class SurveyController {
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
             return ResponseEntity.ok(survey);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return null;
     }
 
     @GetMapping("/results")
@@ -55,7 +57,8 @@ public class SurveyController {
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
             return ResponseEntity.ok(survey);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return null;
     }
 }
