@@ -2,10 +2,12 @@ package iks.surveytool.controller;
 
 import iks.surveytool.entities.Survey;
 import iks.surveytool.services.SurveyService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,7 +38,7 @@ public class SurveyController {
             Survey survey = surveyOptional.get();
             return ResponseEntity.ok(survey);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -45,9 +47,19 @@ public class SurveyController {
         Optional<Survey> surveyOptional = surveyService.findSurveyByUUID(uuid);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
-            return ResponseEntity.ok(survey);
+            LocalDateTime surveyStartDate = survey.getStartDate();
+            LocalDateTime surveyEndDate = survey.getEndDate();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            if (currentDateTime.isAfter(surveyStartDate) && currentDateTime.isBefore(surveyEndDate)) {
+                return ResponseEntity.ok(survey);
+            } else {
+                // If current time is not within start- and endDate: return survey without questions to fill information
+                // in front-end
+                survey.setQuestionGroups(null);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(survey);
+            }
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -58,7 +70,7 @@ public class SurveyController {
             Survey survey = surveyOptional.get();
             return ResponseEntity.ok(survey);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }
