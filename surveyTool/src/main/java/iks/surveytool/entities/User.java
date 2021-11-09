@@ -22,6 +22,7 @@ public class User extends AbstractEntity {
     @JoinColumn(name = "user_id")
     private List<Answer> answers;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Survey> surveys;

@@ -1,6 +1,5 @@
 package iks.surveytool.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
@@ -41,7 +40,6 @@ public class Survey extends AbstractEntity {
     @Type(type = "org.hibernate.type.UUIDCharType")
     private UUID uuid;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
