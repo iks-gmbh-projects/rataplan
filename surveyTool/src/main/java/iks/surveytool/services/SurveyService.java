@@ -3,7 +3,9 @@ package iks.surveytool.services;
 import iks.surveytool.entities.Question;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
+import iks.surveytool.entities.User;
 import iks.surveytool.repositories.SurveyRepository;
+import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.UUID;
 public class SurveyService {
 
     private final SurveyRepository surveyRepository;
+    private final UserRepository userRepository;
 
     public Optional<Survey> findSurveyById(Long surveyID) {
         return surveyRepository.findSurveyById(surveyID);
@@ -30,15 +33,28 @@ public class SurveyService {
     }
 
     public Long saveSurvey(Survey survey) {
-        Survey surveyFixedForeignKeys = setCheckboxGroupForeignKeys(survey);
-        Survey savedSurvey = surveyRepository.save(surveyFixedForeignKeys);
+        setCheckboxGroupForeignKeys(survey);
+        // Need to fetch user from db for hibernate to recognize it
+        setUser(survey);
+
+        Survey savedSurvey = surveyRepository.save(survey);
         generateAccessID(savedSurvey);
         generateUUID(savedSurvey);
-        savedSurvey = surveyRepository.save(survey);
+        savedSurvey = surveyRepository.save(savedSurvey);
         return savedSurvey.getId();
     }
 
-    private Survey setCheckboxGroupForeignKeys(Survey survey) {
+    private void setUser(Survey survey) {
+        Long userID = survey.getUser().getId();
+        Optional<User> userOptional = userRepository.findById(userID);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            survey.setUser(user);
+        }
+    }
+
+    private void setCheckboxGroupForeignKeys(Survey survey) {
         for (QuestionGroup questionGroup : survey.getQuestionGroups()) {
             for (Question question : questionGroup.getQuestions()) {
                 if (question.isHasCheckbox()) {
@@ -46,7 +62,6 @@ public class SurveyService {
                 }
             }
         }
-        return survey;
     }
 
     // Temporary:
