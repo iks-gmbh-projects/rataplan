@@ -9,6 +9,7 @@ import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -30,6 +31,10 @@ public class SurveyService {
 
     public Optional<Survey> findSurveyByAccessId(String accessId) {
         return surveyRepository.findSurveyByAccessID(accessId);
+    }
+
+    public List<Survey> findSurveysByOpenIsTrue() {
+        return surveyRepository.findSurveysByOpenIsTrue();
     }
 
     public Long saveSurvey(Survey survey) {

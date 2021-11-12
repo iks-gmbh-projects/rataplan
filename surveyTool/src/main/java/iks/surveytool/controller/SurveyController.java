@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -72,5 +73,11 @@ public class SurveyController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/openAccess")
+    public ResponseEntity<List<Survey>> getOpenAccessSurveys() {
+        List<Survey> openAccessSurveys = surveyService.findSurveysByOpenIsTrue();
+        return ResponseEntity.ok(openAccessSurveys);
     }
 }
