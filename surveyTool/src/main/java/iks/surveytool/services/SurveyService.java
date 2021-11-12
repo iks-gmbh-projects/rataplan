@@ -9,6 +9,7 @@ import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -34,7 +35,8 @@ public class SurveyService {
     }
 
     public List<Survey> findSurveysByOpenIsTrue() {
-        return surveyRepository.findSurveysByOpenIsTrue();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        return surveyRepository.findSurveysByOpenIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
     }
 
     public Long saveSurvey(Survey survey) {
