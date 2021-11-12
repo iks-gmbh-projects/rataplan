@@ -5,6 +5,7 @@ import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,5 +20,9 @@ public class UserService {
 
     public Optional<User> findUserById(Long id) {
         return userRepository.findById(id);
+    }
+
+    public List<User> findParticipatingUsersBySurveyId(Long surveyId) {
+        return userRepository.findParticipatingUsersBySurveyId(surveyId);
     }
 }
