@@ -23,7 +23,7 @@ public class SurveyController {
     }
 
     @PostMapping("/createSurvey/save")
-    public ResponseEntity<Survey> saveSurvey(@RequestBody Survey newSurvey) {
+    public ResponseEntity<Survey> postSurvey(@RequestBody Survey newSurvey) {
         Long id = surveyService.saveSurvey(newSurvey);
         Optional<Survey> savedSurvey = surveyService.findSurveyById(id);
         if (savedSurvey.isPresent()) {

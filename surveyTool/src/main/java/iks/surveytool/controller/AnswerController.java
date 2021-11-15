@@ -20,7 +20,7 @@ public class AnswerController {
     }
 
     @PostMapping("/postAnswers")
-    public ResponseEntity<List<Answer>> saveAnswersForQuestionGroup(@RequestBody Answer[] answers) {
+    public ResponseEntity<List<Answer>> postAnswers(@RequestBody Answer[] answers) {
         List<Answer> answerList = Arrays.asList(answers);
         answerService.saveListOfAnswers(answerList);
         return ResponseEntity.ok(answerList);
