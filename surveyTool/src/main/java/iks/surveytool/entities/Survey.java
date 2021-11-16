@@ -19,7 +19,6 @@ public class Survey extends AbstractEntity {
 
     @NotNull
     private String name;
-    @Type(type = "text")
     private String description;
 
     @Column(name = "startDate")

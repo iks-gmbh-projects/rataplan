@@ -2,7 +2,6 @@ package iks.surveytool.entities;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -14,7 +13,6 @@ import javax.persistence.ManyToOne;
 @Setter
 public class Answer extends AbstractEntity {
 
-    @Type(type = "text")
     private String text;
 
     @ManyToOne(cascade = CascadeType.ALL)
