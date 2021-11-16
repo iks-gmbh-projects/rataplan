@@ -22,7 +22,6 @@ public class Survey extends AbstractEntity {
     @Type(type = "text")
     private String description;
 
-    // TODO: NotNull error message for both dates
     @Column(name = "startDate")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDate;
