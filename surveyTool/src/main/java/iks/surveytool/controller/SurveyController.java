@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -24,13 +23,11 @@ public class SurveyController {
     }
 
     @PostMapping("/createSurvey/save")
-    public ResponseEntity<Survey> postSurvey(@RequestBody Survey newSurvey) {
-        Long id = surveyService.saveSurvey(newSurvey);
-        Optional<Survey> savedSurvey = surveyService.findSurveyById(id);
-        if (savedSurvey.isPresent()) {
-            return ResponseEntity.ok(savedSurvey.get());
-        }
-        return null;
+    public ResponseEntity<SurveyOverviewDTO> postSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
+        Survey newSurvey = surveyService.createSurveyFromDto(surveyDTO);
+        Survey savedSurvey = surveyService.saveSurvey(newSurvey);
+        SurveyOverviewDTO completeSurveyDTO = surveyService.createSurveyDtoFromSurvey(savedSurvey);
+        return ResponseEntity.ok(completeSurveyDTO);
     }
 
     @GetMapping("/createSurvey/{surveyID}/final")

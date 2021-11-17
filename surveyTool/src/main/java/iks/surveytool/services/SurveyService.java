@@ -1,6 +1,7 @@
 package iks.surveytool.services;
 
 import iks.surveytool.components.Mapper;
+import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Question;
 import iks.surveytool.entities.QuestionGroup;
@@ -40,6 +41,24 @@ public class SurveyService {
     public List<Survey> findSurveysByOpenIsTrue() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return surveyRepository.findSurveysByOpenIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
+    }
+
+    public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
+        Survey newSurvey = mapper.createSurveyFromDto(surveyDTO);
+
+        // Need to fetch user from db for hibernate to recognize it
+        Long userID = surveyDTO.getUserID();
+        Optional<User> userOptional = userRepository.findById(userID);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            newSurvey.setUser(user);
+        }
+
+        return newSurvey;
+    }
+
+    public SurveyOverviewDTO createSurveyDtoFromSurvey(Survey savedSurvey) {
+        return mapper.toSurveyDto(savedSurvey, true);
     }
 
     public SurveyOverviewDTO createSurveyDtoById(Long surveyID, boolean complete) {
@@ -85,16 +104,13 @@ public class SurveyService {
 
     }
 
-    public Long saveSurvey(Survey survey) {
+    public Survey saveSurvey(Survey survey) {
         setCheckboxGroupForeignKeys(survey);
-        // Need to fetch user from db for hibernate to recognize it
-        setUser(survey);
-
         Survey savedSurvey = surveyRepository.save(survey);
         generateAccessID(savedSurvey);
         generateUUID(savedSurvey);
         savedSurvey = surveyRepository.save(savedSurvey);
-        return savedSurvey.getId();
+        return savedSurvey;
     }
 
     private void setUser(Survey survey) {
@@ -118,7 +134,6 @@ public class SurveyService {
     }
 
     // Temporary:
-
     public void generateAccessID(Survey survey) {
         Random random = new Random();
         String accessID = "";

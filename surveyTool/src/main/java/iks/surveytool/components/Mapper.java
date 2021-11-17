@@ -30,14 +30,19 @@ public class Mapper {
         UUID uuid = survey.getUuid();
 
         User user = survey.getUser();
-        UserDTO userDTO = toUserDto(user);
+        Long userID;
+        if (user != null) {
+            userID = user.getId();
+        } else {
+            userID = null;
+        }
 
         if (!complete) {
-            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessID, uuid, userDTO);
+            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID);
         } else {
             List<QuestionGroup> questionGroups = survey.getQuestionGroups();
             List<QuestionGroupDTO> questionGroupDTOs = toQuestionGroupDtos(questionGroups);
-            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, uuid, userDTO,
+            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID,
                     questionGroupDTOs);
         }
     }
@@ -51,7 +56,7 @@ public class Mapper {
         return userDTOs;
     }
 
-    private UserDTO toUserDto(User user) {
+    public UserDTO toUserDto(User user) {
         Long userId;
         String userName;
         if (user != null) {
@@ -143,5 +148,75 @@ public class Mapper {
             }
         }
         return answerDTOs;
+    }
+
+    public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
+        List<QuestionGroup> questionGroups = createQuestionGroupsFromDtos(surveyDTO.getQuestionGroups());
+
+        String name = surveyDTO.getName();
+        String description = surveyDTO.getDescription();
+        LocalDateTime startDate = surveyDTO.getStartDate();
+        LocalDateTime endDate = surveyDTO.getEndDate();
+        boolean open = surveyDTO.isOpen();
+        String accessID = surveyDTO.getAccessID();
+        UUID uuid = surveyDTO.getUuid();
+
+        return new Survey(name, description, startDate, endDate, open, accessID, uuid, questionGroups);
+    }
+
+    private List<QuestionGroup> createQuestionGroupsFromDtos(List<QuestionGroupDTO> questionGroupDTOs) {
+        List<QuestionGroup> questionGroups = new ArrayList<>();
+        for (QuestionGroupDTO questionGroupDTO : questionGroupDTOs) {
+            String title = questionGroupDTO.getTitle();
+            List<Question> questions = createQuestionsFromDtos(questionGroupDTO.getQuestions());
+
+            questionGroups.add(new QuestionGroup(title, questions));
+        }
+        return questionGroups;
+    }
+
+    private List<Question> createQuestionsFromDtos(List<QuestionDTO> questionDTOs) {
+        List<Question> questions = new ArrayList<>();
+        for (QuestionDTO questionDTO : questionDTOs) {
+            String text = questionDTO.getText();
+            boolean required = questionDTO.isRequired();
+            boolean hasCheckbox = questionDTO.isHasCheckbox();
+
+            if (hasCheckbox) {
+                CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
+                CheckboxGroup checkboxGroup = createCheckboxGroupFromDtos(checkboxGroupDTO);
+                questions.add(new Question(text, required, hasCheckbox, checkboxGroup));
+            } else {
+                questions.add(new Question(text, required, hasCheckbox));
+            }
+        }
+        return questions;
+    }
+
+    private CheckboxGroup createCheckboxGroupFromDtos(CheckboxGroupDTO checkboxGroupDTO) {
+        boolean multipleSelect = checkboxGroupDTO.isMultipleSelect();
+        int minSelect = checkboxGroupDTO.getMinSelect();
+        int maxSelect = checkboxGroupDTO.getMaxSelect();
+
+        List<CheckboxDTO> checkboxDTOs = checkboxGroupDTO.getCheckboxes();
+        List<Checkbox> checkboxes = createCheckboxesFromDtos(checkboxDTOs);
+
+        return new CheckboxGroup(multipleSelect, minSelect, maxSelect, checkboxes);
+    }
+
+    private List<Checkbox> createCheckboxesFromDtos(List<CheckboxDTO> checkboxDTOs) {
+        List<Checkbox> checkboxes = new ArrayList<>();
+        for (CheckboxDTO checkboxDTO : checkboxDTOs) {
+            Checkbox checkbox = createCheckboxFromDto(checkboxDTO);
+            checkboxes.add(checkbox);
+        }
+        return checkboxes;
+    }
+
+    private Checkbox createCheckboxFromDto(CheckboxDTO checkboxDTO) {
+        String text = checkboxDTO.getText();
+        boolean hasTextField = checkboxDTO.isHasTextField();
+
+        return new Checkbox(text, hasTextField);
     }
 }
