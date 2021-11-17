@@ -33,4 +33,13 @@ public class UserService {
         List<User> users = findParticipatingUsersBySurveyId(surveyId);
         return mapper.toParticipatingUserDtos(users);
     }
+
+    public UserDTO createUserDtoById(Long userId) {
+        Optional<User> userOptional = findUserById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return mapper.toUserDto(user);
+        }
+        return null;
+    }
 }
