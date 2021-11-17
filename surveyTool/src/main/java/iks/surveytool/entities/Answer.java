@@ -1,6 +1,7 @@
 package iks.surveytool.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -11,6 +12,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Answer extends AbstractEntity {
 
     private String text;
@@ -26,4 +28,8 @@ public class Answer extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "checkbox_id")
     private Checkbox checkbox;
+
+    public Answer(String text) {
+        this.text = text;
+    }
 }
