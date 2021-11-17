@@ -1,6 +1,7 @@
 package iks.surveytool.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class CheckboxGroup extends AbstractEntity {
 
     @NotNull
@@ -25,4 +27,11 @@ public class CheckboxGroup extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "checkbox_group_id")
     private List<Checkbox> checkboxes;
+
+    public CheckboxGroup(boolean multipleSelect, int minSelect, int maxSelect, List<Checkbox> checkboxes) {
+        this.multipleSelect = multipleSelect;
+        this.minSelect = minSelect;
+        this.maxSelect = maxSelect;
+        this.checkboxes = checkboxes;
+    }
 }

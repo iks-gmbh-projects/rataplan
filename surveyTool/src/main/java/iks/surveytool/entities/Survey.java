@@ -1,6 +1,7 @@
 package iks.surveytool.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Survey extends AbstractEntity {
 
     @NotNull
@@ -45,4 +47,22 @@ public class Survey extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "survey_id")
     private List<QuestionGroup> questionGroups;
+    
+    public Survey(String name,
+                  String description,
+                  LocalDateTime startDate,
+                  LocalDateTime endDate,
+                  boolean open,
+                  String accessID,
+                  UUID uuid,
+                  List<QuestionGroup> questionGroups) {
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.open = open;
+        this.accessID = accessID;
+        this.uuid = uuid;
+        this.questionGroups = questionGroups;
+    }
 }

@@ -2,6 +2,7 @@ package iks.surveytool.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Question extends AbstractEntity {
 
     @NotNull
@@ -31,4 +33,17 @@ public class Question extends AbstractEntity {
 
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
     private CheckboxGroup checkboxGroup;
+
+    public Question(String text, boolean required, boolean hasCheckbox) {
+        this.text = text;
+        this.required = required;
+        this.hasCheckbox = hasCheckbox;
+    }
+
+    public Question(String text, boolean required, boolean hasCheckbox, CheckboxGroup checkboxGroup) {
+        this.text = text;
+        this.required = required;
+        this.hasCheckbox = hasCheckbox;
+        this.checkboxGroup = checkboxGroup;
+    }
 }
