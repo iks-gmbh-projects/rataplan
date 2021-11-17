@@ -18,7 +18,6 @@ public class Checkbox extends AbstractEntity {
     @NotNull
     private boolean hasTextField;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "checkbox_group_id")
     private CheckboxGroup checkboxGroup;
