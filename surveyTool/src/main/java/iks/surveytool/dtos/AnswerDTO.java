@@ -1,28 +1,31 @@
 package iks.surveytool.dtos;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class AnswerDTO {
 
     private Long id;
     private String text;
 
-    private UserDTO user;
-    private CheckboxDTO checkbox;
+    private Long userID;
+    private Long checkboxID;
+    private Long questionID;
 
-    public AnswerDTO(Long id, String text, UserDTO user) {
+    public AnswerDTO(Long id, String text, Long userID) {
         this.id = id;
         this.text = text;
-        this.user = user;
+        this.userID = userID;
     }
 
-    public AnswerDTO(Long id, String text, UserDTO user, CheckboxDTO checkbox) {
+    public AnswerDTO(Long id, String text, Long userID, Long checkboxID) {
         this.id = id;
         this.text = text;
-        this.user = user;
-        this.checkbox = checkbox;
+        this.userID = userID;
+        this.checkboxID = checkboxID;
     }
 }
