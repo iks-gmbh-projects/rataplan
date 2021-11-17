@@ -11,6 +11,30 @@ import java.util.UUID;
 
 @Component
 public class Mapper {
+    // User/-DTO:
+    public List<UserDTO> toParticipatingUserDtos(List<User> users) {
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            UserDTO userDTO = toUserDto(user);
+            userDTOs.add(userDTO);
+        }
+        return userDTOs;
+    }
+
+    public UserDTO toUserDto(User user) {
+        Long userId;
+        String userName;
+        if (user != null) {
+            userId = user.getId();
+            userName = user.getName();
+        } else {
+            userId = null;
+            userName = "Anonym";
+        }
+        return new UserDTO(userId, userName);
+    }
+
+    // Survey/-DTO (and Classes that belong to Survey):
     public List<SurveyOverviewDTO> toOpenAccessSurveyDtos(List<Survey> openAccessSurveys) {
         List<SurveyOverviewDTO> openAccessSurveyDtos = new ArrayList<>();
         for (Survey survey : openAccessSurveys) {
@@ -45,28 +69,6 @@ public class Mapper {
             return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID,
                     questionGroupDTOs);
         }
-    }
-
-    public List<UserDTO> toParticipatingUserDtos(List<User> users) {
-        List<UserDTO> userDTOs = new ArrayList<>();
-        for (User user : users) {
-            UserDTO userDTO = toUserDto(user);
-            userDTOs.add(userDTO);
-        }
-        return userDTOs;
-    }
-
-    public UserDTO toUserDto(User user) {
-        Long userId;
-        String userName;
-        if (user != null) {
-            userId = user.getId();
-            userName = user.getName();
-        } else {
-            userId = null;
-            userName = "Anonym";
-        }
-        return new UserDTO(userId, userName);
     }
 
     private List<QuestionGroupDTO> toQuestionGroupDtos(List<QuestionGroup> questionGroups) {
@@ -128,26 +130,6 @@ public class Mapper {
         boolean hasTextField = checkbox.isHasTextField();
 
         return new CheckboxDTO(id, text, hasTextField);
-    }
-
-    public List<AnswerDTO> toAnswerDtos(List<Answer> answers) {
-        List<AnswerDTO> answerDTOs = new ArrayList<>();
-        for (Answer answer : answers) {
-            Long id = answer.getId();
-            String text = answer.getText();
-
-            User user = answer.getUser();
-            UserDTO userDTO = toUserDto(user);
-
-            Checkbox checkbox = answer.getCheckbox();
-            if (checkbox != null) {
-                CheckboxDTO checkboxDTO = toCheckboxDto(checkbox);
-                answerDTOs.add(new AnswerDTO(id, text, userDTO, checkboxDTO));
-            } else {
-                answerDTOs.add(new AnswerDTO(id, text, userDTO));
-            }
-        }
-        return answerDTOs;
     }
 
     public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
@@ -218,5 +200,31 @@ public class Mapper {
         boolean hasTextField = checkboxDTO.isHasTextField();
 
         return new Checkbox(text, hasTextField);
+    }
+
+    // Answer/-DTO:
+    public List<AnswerDTO> toAnswerDtos(List<Answer> answers) {
+        List<AnswerDTO> answerDTOs = new ArrayList<>();
+        for (Answer answer : answers) {
+            Long id = answer.getId();
+            String text = answer.getText();
+
+            User user = answer.getUser();
+            Long userID = user.getId();
+
+            Checkbox checkbox = answer.getCheckbox();
+            if (checkbox != null) {
+                Long checkboxID = checkbox.getId();
+                answerDTOs.add(new AnswerDTO(id, text, userID, checkboxID));
+            } else {
+                answerDTOs.add(new AnswerDTO(id, text, userID));
+            }
+        }
+        return answerDTOs;
+    }
+
+    public Answer createAnswerFromDto(AnswerDTO answerDTO) {
+        String text = answerDTO.getText();
+        return new Answer(text);
     }
 }

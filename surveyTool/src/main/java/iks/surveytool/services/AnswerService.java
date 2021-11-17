@@ -13,6 +13,7 @@ import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,18 +30,54 @@ public class AnswerService {
         return answerRepository.findAllByQuestion_Id(questionId);
     }
 
+    public List<AnswerDTO> createAnswerDtos(List<Answer> answers) {
+        return mapper.toAnswerDtos(answers);
+    }
+
     public List<AnswerDTO> createAnswerDtos(Long questionId) {
         List<Answer> answers = findAnswersByQuestionId(questionId);
         return mapper.toAnswerDtos(answers);
     }
 
-    public void saveListOfAnswers(List<Answer> answerList) {
-        for (Answer answer : answerList) {
-            // Need to fetch question/checkbox/user from db for hibernate to recognize it
-            setQuestion(answer);
-            setUser(answer);
+    public List<Answer> createAnswersFromDtos(List<AnswerDTO> answerDTOList) {
+        List<Answer> answers = new ArrayList<>();
+        for (AnswerDTO answerDTO : answerDTOList) {
+            Answer answer = mapper.createAnswerFromDto(answerDTO);
+
+            Long userID = answerDTO.getUserID();
+            Optional<User> userOptional = userRepository.findById(userID);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                answer.setUser(user);
+            }
+
+            Long questionID = answerDTO.getQuestionID();
+            Optional<Question> questionOptional = questionRepository.findById(questionID);
+            if (questionOptional.isPresent()) {
+                Question question = questionOptional.get();
+                answer.setQuestion(question);
+            }
+
+            Long checkboxID = answerDTO.getCheckboxID();
+            if (checkboxID != null) {
+                Optional<Checkbox> checkboxOptional = checkboxRepository.findById(checkboxID);
+                if (checkboxOptional.isPresent()) {
+                    Checkbox checkbox = checkboxOptional.get();
+                    answer.setCheckbox(checkbox);
+                }
+            }
+            answers.add(answer);
         }
-        answerRepository.saveAll(answerList);
+        return answers;
+    }
+
+    public List<Answer> saveListOfAnswers(List<Answer> answerList) {
+//        for (Answer answer : answerList) {
+//            // Need to fetch question/checkbox/user from db for hibernate to recognize it
+//            setQuestion(answer);
+//            setUser(answer);
+//        }
+        return answerRepository.saveAll(answerList);
     }
 
     private void setQuestion(Answer answer) {

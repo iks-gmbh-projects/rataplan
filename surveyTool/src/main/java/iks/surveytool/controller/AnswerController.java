@@ -21,10 +21,12 @@ public class AnswerController {
     }
 
     @PostMapping("/postAnswers")
-    public ResponseEntity<List<Answer>> postAnswers(@RequestBody Answer[] answers) {
-        List<Answer> answerList = Arrays.asList(answers);
-        answerService.saveListOfAnswers(answerList);
-        return ResponseEntity.ok(answerList);
+    public ResponseEntity<List<AnswerDTO>> postAnswers(@RequestBody AnswerDTO[] answerDTOs) {
+        List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
+        List<Answer> answerList = answerService.createAnswersFromDtos(answerDTOList);
+        List<Answer> savedAnswers = answerService.saveListOfAnswers(answerList);
+        List<AnswerDTO> savedAnswerDTOs = answerService.createAnswerDtos(savedAnswers);
+        return ResponseEntity.ok(savedAnswerDTOs);
     }
 
     @GetMapping("/getAnswersByQuestionId")
