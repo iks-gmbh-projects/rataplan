@@ -1,5 +1,7 @@
 package iks.surveytool.services;
 
+import iks.surveytool.components.Mapper;
+import iks.surveytool.dtos.UserDTO;
 import iks.surveytool.entities.User;
 import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final Mapper mapper;
 
     public Long saveUser(User newUser) {
         User savedUser = userRepository.save(newUser);
@@ -24,5 +27,10 @@ public class UserService {
 
     public List<User> findParticipatingUsersBySurveyId(Long surveyId) {
         return userRepository.findParticipatingUsersBySurveyId(surveyId);
+    }
+
+    public List<UserDTO> createParticipatingUserDtosBySurveyId(Long surveyId) {
+        List<User> users = findParticipatingUsersBySurveyId(surveyId);
+        return mapper.toParticipatingUserDtos(users);
     }
 }

@@ -1,5 +1,6 @@
 package iks.surveytool.controller;
 
+import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.entities.Answer;
 import iks.surveytool.services.AnswerService;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +28,9 @@ public class AnswerController {
     }
 
     @GetMapping("/getAnswersByQuestionId")
-    public ResponseEntity<List<Answer>> getAnswersByQuestionId(@RequestParam Long questionId) {
-        List<Answer> answers = answerService.findAnswersByQuestionId(questionId);
-        return ResponseEntity.ok(answers);
+    public ResponseEntity<List<AnswerDTO>> getAnswersByQuestionId(@RequestParam Long questionId) {
+        List<AnswerDTO> answerDTOs = answerService.createAnswerDtos(questionId);
+        return ResponseEntity.ok(answerDTOs);
     }
 }
 

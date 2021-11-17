@@ -1,5 +1,7 @@
 package iks.surveytool.services;
 
+import iks.surveytool.components.Mapper;
+import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.entities.Answer;
 import iks.surveytool.entities.Checkbox;
 import iks.surveytool.entities.Question;
@@ -21,9 +23,15 @@ public class AnswerService {
     private final QuestionRepository questionRepository;
     private final CheckboxRepository checkboxRepository;
     private final UserRepository userRepository;
+    private final Mapper mapper;
 
     public List<Answer> findAnswersByQuestionId(Long questionId) {
         return answerRepository.findAllByQuestion_Id(questionId);
+    }
+
+    public List<AnswerDTO> createAnswerDtos(Long questionId) {
+        List<Answer> answers = findAnswersByQuestionId(questionId);
+        return mapper.toAnswerDtos(answers);
     }
 
     public void saveListOfAnswers(List<Answer> answerList) {

@@ -1,5 +1,7 @@
 package iks.surveytool.services;
 
+import iks.surveytool.components.Mapper;
+import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Question;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
@@ -21,6 +23,7 @@ public class SurveyService {
 
     private final SurveyRepository surveyRepository;
     private final UserRepository userRepository;
+    private final Mapper mapper;
 
     public Optional<Survey> findSurveyById(Long surveyID) {
         return surveyRepository.findSurveyById(surveyID);
@@ -37,6 +40,49 @@ public class SurveyService {
     public List<Survey> findSurveysByOpenIsTrue() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return surveyRepository.findSurveysByOpenIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
+    }
+
+    public SurveyOverviewDTO createSurveyDtoById(Long surveyID, boolean complete) {
+        Optional<Survey> surveyOptional = findSurveyById(surveyID);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+            return mapper.toSurveyDto(survey, complete);
+        }
+        return null;
+    }
+
+    public SurveyOverviewDTO createSurveyDtoByAccessId(String accessId, boolean complete) {
+        Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+            return mapper.toSurveyDto(survey, complete);
+        }
+        return null;
+    }
+
+    public SurveyOverviewDTO createSurveyDtoByUUID(UUID uuid) {
+        Optional<Survey> surveyOptional = findSurveyByUUID(uuid);
+        if (surveyOptional.isPresent()) {
+            Survey survey = surveyOptional.get();
+            LocalDateTime surveyStartDate = survey.getStartDate();
+            LocalDateTime surveyEndDate = survey.getEndDate();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            if (currentDateTime.isAfter(surveyStartDate) && currentDateTime.isBefore(surveyEndDate)) {
+                return mapper.toSurveyDto(survey, true);
+            } else {
+                // If current time is not within start- and endDate: return survey without questions to fill information
+                // in front-end
+                return mapper.toSurveyDto(survey, false);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public List<SurveyOverviewDTO> createSurveyDtosByOpenIsTrue() {
+        List<Survey> openAccessSurveys = findSurveysByOpenIsTrue();
+        return mapper.toOpenAccessSurveyDtos(openAccessSurveys);
+
     }
 
     public Long saveSurvey(Survey survey) {
@@ -72,6 +118,7 @@ public class SurveyService {
     }
 
     // Temporary:
+
     public void generateAccessID(Survey survey) {
         Random random = new Random();
         String accessID = "";

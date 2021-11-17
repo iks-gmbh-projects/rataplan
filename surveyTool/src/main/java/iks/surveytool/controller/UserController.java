@@ -1,5 +1,6 @@
 package iks.surveytool.controller;
 
+import iks.surveytool.dtos.UserDTO;
 import iks.surveytool.entities.User;
 import iks.surveytool.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class UserController {
     }
 
     @GetMapping("/getParticipatingUsersBySurveyId")
-    public ResponseEntity<List<User>> getParticipatingUsersBySurveyId(@RequestParam Long surveyId) {
-        List<User> users = userService.findParticipatingUsersBySurveyId(surveyId);
+    public ResponseEntity<List<UserDTO>> getParticipatingUsersBySurveyId(@RequestParam Long surveyId) {
+        List<UserDTO> users = userService.createParticipatingUserDtosBySurveyId(surveyId);
         return ResponseEntity.ok(users);
     }
 
