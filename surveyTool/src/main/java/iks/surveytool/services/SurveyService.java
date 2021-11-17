@@ -43,20 +43,6 @@ public class SurveyService {
         return surveyRepository.findSurveysByOpenIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
     }
 
-    public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
-        Survey newSurvey = mapper.createSurveyFromDto(surveyDTO);
-
-        // Need to fetch user from db for hibernate to recognize it
-        Long userID = surveyDTO.getUserID();
-        Optional<User> userOptional = userRepository.findById(userID);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            newSurvey.setUser(user);
-        }
-
-        return newSurvey;
-    }
-
     public SurveyOverviewDTO createSurveyDtoFromSurvey(Survey savedSurvey) {
         return mapper.toSurveyDto(savedSurvey, true);
     }
@@ -102,6 +88,20 @@ public class SurveyService {
         List<Survey> openAccessSurveys = findSurveysByOpenIsTrue();
         return mapper.toOpenAccessSurveyDtos(openAccessSurveys);
 
+    }
+
+    public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
+        Survey newSurvey = mapper.createSurveyFromDto(surveyDTO);
+
+        // Need to fetch user from db for hibernate to recognize it
+        Long userID = surveyDTO.getUserID();
+        Optional<User> userOptional = userRepository.findById(userID);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            newSurvey.setUser(user);
+        }
+
+        return newSurvey;
     }
 
     public Survey saveSurvey(Survey survey) {
