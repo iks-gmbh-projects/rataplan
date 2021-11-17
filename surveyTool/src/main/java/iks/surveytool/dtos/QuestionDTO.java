@@ -13,9 +13,7 @@ public class QuestionDTO {
     private String text;
     private boolean required;
     private boolean hasCheckbox;
-
-//    private List<AnswerDTO> answers;
-
+    
     private CheckboxGroupDTO checkboxGroup;
 
     public QuestionDTO(Long id, String text, boolean required, boolean hasCheckbox) {
