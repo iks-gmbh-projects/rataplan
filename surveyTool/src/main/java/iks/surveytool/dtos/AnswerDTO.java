@@ -13,19 +13,23 @@ public class AnswerDTO {
     private String text;
 
     private Long userID;
+    private String userName;
+
     private Long checkboxID;
     private Long questionID;
 
-    public AnswerDTO(Long id, String text, Long userID) {
+    public AnswerDTO(Long id, String text, Long userID, String userName) {
         this.id = id;
         this.text = text;
         this.userID = userID;
+        this.userName = userName;
     }
 
-    public AnswerDTO(Long id, String text, Long userID, Long checkboxID) {
+    public AnswerDTO(Long id, String text, Long userID, String userName, Long checkboxID) {
         this.id = id;
         this.text = text;
         this.userID = userID;
+        this.userName = userName;
         this.checkboxID = checkboxID;
     }
 }

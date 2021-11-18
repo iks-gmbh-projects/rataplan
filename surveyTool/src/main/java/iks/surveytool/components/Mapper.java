@@ -273,15 +273,16 @@ public class Mapper {
 
         User user = answer.getUser();
         Long userID = user.getId();
+        String userName = user.getName();
 
         AnswerDTO answerDTO;
 
         Checkbox checkbox = answer.getCheckbox();
         if (checkbox != null) {
             Long checkboxID = checkbox.getId();
-            answerDTO = new AnswerDTO(id, text, userID, checkboxID);
+            answerDTO = new AnswerDTO(id, text, userID, userName, checkboxID);
         } else {
-            answerDTO = new AnswerDTO(id, text, userID);
+            answerDTO = new AnswerDTO(id, text, userID, userName);
         }
         return answerDTO;
     }
