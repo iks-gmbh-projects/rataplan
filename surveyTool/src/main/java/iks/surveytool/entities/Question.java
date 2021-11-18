@@ -39,11 +39,4 @@ public class Question extends AbstractEntity {
         this.required = required;
         this.hasCheckbox = hasCheckbox;
     }
-
-    public Question(String text, boolean required, boolean hasCheckbox, CheckboxGroup checkboxGroup) {
-        this.text = text;
-        this.required = required;
-        this.hasCheckbox = hasCheckbox;
-        this.checkboxGroup = checkboxGroup;
-    }
 }

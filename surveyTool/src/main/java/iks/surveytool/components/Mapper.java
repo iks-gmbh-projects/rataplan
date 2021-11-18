@@ -202,15 +202,16 @@ public class Mapper {
         boolean required = questionDTO.isRequired();
         boolean hasCheckbox = questionDTO.isHasCheckbox();
 
-        Question question;
+        Question question = new Question(text, required, hasCheckbox);
 
         if (hasCheckbox) {
             CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
             CheckboxGroup checkboxGroup = createCheckboxGroupFromDto(checkboxGroupDTO);
-            question = new Question(text, required, hasCheckbox, checkboxGroup);
-        } else {
-            question = new Question(text, required, hasCheckbox);
+            // Set references for the one-to-one-relationship
+            checkboxGroup.setQuestion(question);
+            question.setCheckboxGroup(checkboxGroup);
         }
+
         return question;
     }
 

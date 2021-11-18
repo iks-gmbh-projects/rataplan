@@ -3,8 +3,6 @@ package iks.surveytool.services;
 import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
-import iks.surveytool.entities.Question;
-import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.entities.User;
 import iks.surveytool.repositories.SurveyRepository;
@@ -105,22 +103,11 @@ public class SurveyService {
     }
 
     public Survey saveSurvey(Survey survey) {
-        setCheckboxGroupForeignKeys(survey);
         Survey savedSurvey = surveyRepository.save(survey);
         generateAccessID(savedSurvey);
         generateUUID(savedSurvey);
         savedSurvey = surveyRepository.save(savedSurvey);
         return savedSurvey;
-    }
-
-    private void setCheckboxGroupForeignKeys(Survey survey) {
-        for (QuestionGroup questionGroup : survey.getQuestionGroups()) {
-            for (Question question : questionGroup.getQuestions()) {
-                if (question.isHasCheckbox()) {
-                    question.getCheckboxGroup().setQuestion(question);
-                }
-            }
-        }
     }
 
     // Temporary:
