@@ -4,9 +4,7 @@ import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Survey;
-import iks.surveytool.entities.User;
 import iks.surveytool.repositories.SurveyRepository;
-import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +17,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class SurveyService {
-
     private final SurveyRepository surveyRepository;
-    private final UserRepository userRepository;
     private final Mapper mapper;
 
     public Optional<Survey> findSurveyById(Long surveyID) {
@@ -89,17 +85,7 @@ public class SurveyService {
     }
 
     public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
-        Survey newSurvey = mapper.createSurveyFromDto(surveyDTO);
-
-        // Need to fetch user from db for hibernate to recognize it
-        Long userID = surveyDTO.getUserID();
-        Optional<User> userOptional = userRepository.findById(userID);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            newSurvey.setUser(user);
-        }
-
-        return newSurvey;
+        return mapper.createSurveyFromDto(surveyDTO);
     }
 
     public Survey saveSurvey(Survey survey) {

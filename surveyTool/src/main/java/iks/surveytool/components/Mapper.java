@@ -168,7 +168,17 @@ public class Mapper {
         String accessID = surveyDTO.getAccessID();
         UUID uuid = surveyDTO.getUuid();
 
-        return new Survey(name, description, startDate, endDate, open, accessID, uuid, questionGroups);
+        Survey newSurvey = new Survey(name, description, startDate, endDate, open, accessID, uuid, questionGroups);
+
+        // Need to fetch user from db for hibernate to recognize it
+        Long userID = surveyDTO.getUserID();
+        Optional<User> userOptional = userRepository.findById(userID);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            newSurvey.setUser(user);
+        }
+
+        return newSurvey;
     }
 
     private List<QuestionGroup> createQuestionGroupsFromDtoList(List<QuestionGroupDTO> questionGroupDTOs) {
