@@ -1,6 +1,5 @@
 package iks.surveytool.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +23,6 @@ public class Checkbox extends AbstractEntity {
     @JoinColumn(name = "checkbox_group_id")
     private CheckboxGroup checkboxGroup;
 
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "checkbox_id")
     private List<Answer> answers;
