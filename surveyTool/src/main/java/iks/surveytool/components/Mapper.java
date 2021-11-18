@@ -72,19 +72,22 @@ public class Mapper {
 
         User user = survey.getUser();
         Long userID;
+        String userName;
         if (user != null) {
             userID = user.getId();
+            userName = user.getName();
         } else {
             userID = null;
+            userName = "Anonym";
         }
 
         if (complete) {
             List<QuestionGroup> questionGroups = survey.getQuestionGroups();
             List<QuestionGroupDTO> questionGroupDTOs = toQuestionGroupDtoList(questionGroups);
-            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID,
+            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID, userName,
                     questionGroupDTOs);
         } else {
-            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID);
+            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID, userName);
         }
     }
 

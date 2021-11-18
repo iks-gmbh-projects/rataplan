@@ -22,6 +22,7 @@ public class SurveyOverviewDTO {
     private UUID uuid;
 
     private Long userID;
+    private String userName;
 
     public SurveyOverviewDTO(Long id,
                              String name,
@@ -31,7 +32,8 @@ public class SurveyOverviewDTO {
                              boolean open,
                              String accessID,
                              UUID uuid,
-                             Long userID) {
+                             Long userID,
+                             String userName) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -41,5 +43,6 @@ public class SurveyOverviewDTO {
         this.accessID = accessID;
         this.uuid = uuid;
         this.userID = userID;
+        this.userName = userName;
     }
 }
