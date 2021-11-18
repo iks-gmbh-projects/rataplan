@@ -31,9 +31,9 @@ public class SurveyController {
         return ResponseEntity.ok(completeSurveyDTO);
     }
 
-    @GetMapping("/createSurvey/{surveyID}/final")
-    public ResponseEntity<SurveyOverviewDTO> getSurveyForOverviewAfterSubmission(@PathVariable("surveyID") Long surveyID) {
-        SurveyOverviewDTO surveyOverviewDTO = surveyService.createSurveyDtoById(surveyID, false);
+    @GetMapping("{accessId}")
+    public ResponseEntity<SurveyOverviewDTO> getSurveyByAccessID(@PathVariable String accessId) {
+        SurveyOverviewDTO surveyOverviewDTO = surveyService.createSurveyDtoByAccessId(accessId, true);
         if (surveyOverviewDTO != null) {
             return ResponseEntity.ok(surveyOverviewDTO);
         } else {
@@ -41,7 +41,7 @@ public class SurveyController {
         }
     }
 
-    @GetMapping("/answers")
+    @GetMapping("")
     public ResponseEntity<SurveyOverviewDTO> getSurveyForAnswering(@RequestParam UUID uuid) {
         SurveyOverviewDTO surveyDto = surveyService.createSurveyDtoByUUID(uuid);
         if (surveyDto != null) {
@@ -52,16 +52,6 @@ public class SurveyController {
                 // in front-end
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(surveyDto);
             }
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    @GetMapping("{accessId}")
-    public ResponseEntity<SurveyOverviewDTO> getSurveyForResults(@PathVariable String accessId) {
-        SurveyOverviewDTO surveyOverviewDTO = surveyService.createSurveyDtoByAccessId(accessId, true);
-        if (surveyOverviewDTO != null) {
-            return ResponseEntity.ok(surveyOverviewDTO);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
