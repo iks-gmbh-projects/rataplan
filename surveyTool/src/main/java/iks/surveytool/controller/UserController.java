@@ -25,12 +25,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<UserDTO> getUserById(@RequestParam Long id) {
-        UserDTO userDTO = userService.createUserDtoById(id);
-        return ResponseEntity.ok(userDTO);
-    }
-
     @PostMapping("/postUser")
     public ResponseEntity<UserDTO> postUser(@RequestBody UserDTO userDTO) {
         User newUser = userService.createUserFromDto(userDTO);

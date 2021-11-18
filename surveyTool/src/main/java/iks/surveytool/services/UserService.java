@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,12 +16,7 @@ public class UserService {
     private final Mapper mapper;
 
     public User saveUser(User newUser) {
-        User savedUser = userRepository.save(newUser);
-        return savedUser;
-    }
-
-    public Optional<User> findUserById(Long id) {
-        return userRepository.findById(id);
+        return userRepository.save(newUser);
     }
 
     public List<User> findParticipatingUsersBySurveyId(Long surveyId) {
@@ -32,15 +26,6 @@ public class UserService {
     public List<UserDTO> createParticipatingUserDtosBySurveyId(Long surveyId) {
         List<User> users = findParticipatingUsersBySurveyId(surveyId);
         return mapper.toParticipatingUserDtoList(users);
-    }
-
-    public UserDTO createUserDtoById(Long userId) {
-        Optional<User> userOptional = findUserById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            return mapper.toUserDto(user);
-        }
-        return null;
     }
 
     public UserDTO createUserDtoFromUser(User user) {
