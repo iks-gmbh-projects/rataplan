@@ -3,27 +3,17 @@ package iks.surveytool.services;
 import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.entities.Answer;
-import iks.surveytool.entities.Checkbox;
-import iks.surveytool.entities.Question;
-import iks.surveytool.entities.User;
 import iks.surveytool.repositories.AnswerRepository;
-import iks.surveytool.repositories.CheckboxRepository;
-import iks.surveytool.repositories.QuestionRepository;
-import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AnswerService {
     private final AnswerRepository answerRepository;
-    private final QuestionRepository questionRepository;
-    private final CheckboxRepository checkboxRepository;
-    private final UserRepository userRepository;
     private final Mapper mapper;
 
     public List<Answer> findAnswersByQuestionId(Long questionId) {
@@ -43,29 +33,6 @@ public class AnswerService {
         List<Answer> answers = new ArrayList<>();
         for (AnswerDTO answerDTO : answerDTOList) {
             Answer answer = mapper.createAnswerFromDto(answerDTO);
-
-            Long userID = answerDTO.getUserID();
-            Optional<User> userOptional = userRepository.findById(userID);
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                answer.setUser(user);
-            }
-
-            Long questionID = answerDTO.getQuestionID();
-            Optional<Question> questionOptional = questionRepository.findById(questionID);
-            if (questionOptional.isPresent()) {
-                Question question = questionOptional.get();
-                answer.setQuestion(question);
-            }
-
-            Long checkboxID = answerDTO.getCheckboxID();
-            if (checkboxID != null) {
-                Optional<Checkbox> checkboxOptional = checkboxRepository.findById(checkboxID);
-                if (checkboxOptional.isPresent()) {
-                    Checkbox checkbox = checkboxOptional.get();
-                    answer.setCheckbox(checkbox);
-                }
-            }
             answers.add(answer);
         }
         return answers;

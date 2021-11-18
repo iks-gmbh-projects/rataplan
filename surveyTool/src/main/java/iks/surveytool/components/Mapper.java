@@ -2,15 +2,26 @@ package iks.surveytool.components;
 
 import iks.surveytool.dtos.*;
 import iks.surveytool.entities.*;
+import iks.surveytool.repositories.CheckboxRepository;
+import iks.surveytool.repositories.QuestionRepository;
+import iks.surveytool.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class Mapper {
+
+    private final QuestionRepository questionRepository;
+    private final CheckboxRepository checkboxRepository;
+    private final UserRepository userRepository;
+
     // User/-DTO:
     public List<UserDTO> toParticipatingUserDtoList(List<User> users) {
         List<UserDTO> userDTOs = new ArrayList<>();
@@ -261,6 +272,32 @@ public class Mapper {
 
     public Answer createAnswerFromDto(AnswerDTO answerDTO) {
         String text = answerDTO.getText();
-        return new Answer(text);
+
+        Answer answer = new Answer(text);
+
+        Long userID = answerDTO.getUserID();
+        Optional<User> userOptional = userRepository.findById(userID);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            answer.setUser(user);
+        }
+
+        Long questionID = answerDTO.getQuestionID();
+        Optional<Question> questionOptional = questionRepository.findById(questionID);
+        if (questionOptional.isPresent()) {
+            Question question = questionOptional.get();
+            answer.setQuestion(question);
+        }
+
+        Long checkboxID = answerDTO.getCheckboxID();
+        if (checkboxID != null) {
+            Optional<Checkbox> checkboxOptional = checkboxRepository.findById(checkboxID);
+            if (checkboxOptional.isPresent()) {
+                Checkbox checkbox = checkboxOptional.get();
+                answer.setCheckbox(checkbox);
+            }
+        }
+
+        return answer;
     }
 }
