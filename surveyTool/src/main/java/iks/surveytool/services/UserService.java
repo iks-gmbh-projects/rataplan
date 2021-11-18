@@ -16,9 +16,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final Mapper mapper;
 
-    public Long saveUser(User newUser) {
+    public User saveUser(User newUser) {
         User savedUser = userRepository.save(newUser);
-        return savedUser.getId();
+        return savedUser;
     }
 
     public Optional<User> findUserById(Long id) {
@@ -41,5 +41,13 @@ public class UserService {
             return mapper.toUserDto(user);
         }
         return null;
+    }
+
+    public UserDTO createUserDtoFromUser(User user) {
+        return mapper.toUserDto(user);
+    }
+
+    public User createUserFromDto(UserDTO userDTO) {
+        return mapper.createUserFromDto(userDTO);
     }
 }

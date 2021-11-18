@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -33,12 +32,10 @@ public class UserController {
     }
 
     @PostMapping("/postUser")
-    public ResponseEntity<User> postUser(@RequestBody User newUser) {
-        Long id = userService.saveUser(newUser);
-        Optional<User> userOptional = userService.findUserById(id);
-        if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userOptional.get());
-        }
-        return null;
+    public ResponseEntity<UserDTO> postUser(@RequestBody UserDTO userDTO) {
+        User newUser = userService.createUserFromDto(userDTO);
+        User savedUser = userService.saveUser(newUser);
+        UserDTO savedUserDTO = userService.createUserDtoFromUser(savedUser);
+        return ResponseEntity.ok(savedUserDTO);
     }
 }

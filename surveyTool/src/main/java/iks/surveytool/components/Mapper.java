@@ -45,6 +45,11 @@ public class Mapper {
         return new UserDTO(userId, userName);
     }
 
+    public User createUserFromDto(UserDTO userDTO) {
+        String name = userDTO.getName();
+        return new User(name);
+    }
+
     // Survey/-DTO (and Classes that "belong" to Survey):
     public List<SurveyOverviewDTO> toOpenAccessSurveyDtoList(List<Survey> openAccessSurveys) {
         List<SurveyOverviewDTO> openAccessSurveyDtos = new ArrayList<>();
