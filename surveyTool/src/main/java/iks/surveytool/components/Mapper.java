@@ -12,7 +12,7 @@ import java.util.UUID;
 @Component
 public class Mapper {
     // User/-DTO:
-    public List<UserDTO> toParticipatingUserDtos(List<User> users) {
+    public List<UserDTO> toParticipatingUserDtoList(List<User> users) {
         List<UserDTO> userDTOs = new ArrayList<>();
         for (User user : users) {
             UserDTO userDTO = toUserDto(user);
@@ -34,8 +34,8 @@ public class Mapper {
         return new UserDTO(userId, userName);
     }
 
-    // Survey/-DTO (and Classes that belong to Survey):
-    public List<SurveyOverviewDTO> toOpenAccessSurveyDtos(List<Survey> openAccessSurveys) {
+    // Survey/-DTO (and Classes that "belong" to Survey):
+    public List<SurveyOverviewDTO> toOpenAccessSurveyDtoList(List<Survey> openAccessSurveys) {
         List<SurveyOverviewDTO> openAccessSurveyDtos = new ArrayList<>();
         for (Survey survey : openAccessSurveys) {
             SurveyOverviewDTO surveyOverviewDTO = toSurveyDto(survey, false);
@@ -64,7 +64,7 @@ public class Mapper {
 
         if (complete) {
             List<QuestionGroup> questionGroups = survey.getQuestionGroups();
-            List<QuestionGroupDTO> questionGroupDTOs = toQuestionGroupDtos(questionGroups);
+            List<QuestionGroupDTO> questionGroupDTOs = toQuestionGroupDtoList(questionGroups);
             return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID,
                     questionGroupDTOs);
         } else {
@@ -72,7 +72,7 @@ public class Mapper {
         }
     }
 
-    private List<QuestionGroupDTO> toQuestionGroupDtos(List<QuestionGroup> questionGroups) {
+    private List<QuestionGroupDTO> toQuestionGroupDtoList(List<QuestionGroup> questionGroups) {
         List<QuestionGroupDTO> questionGroupDTOs = new ArrayList<>();
         for (QuestionGroup questionGroup : questionGroups) {
             QuestionGroupDTO questionGroupDTO = toQuestionGroupDto(questionGroup);
@@ -85,12 +85,12 @@ public class Mapper {
         Long id = questionGroup.getId();
         String title = questionGroup.getTitle();
         List<Question> questions = questionGroup.getQuestions();
-        List<QuestionDTO> questionDTOs = toQuestionDtos(questions);
+        List<QuestionDTO> questionDTOs = toQuestionDtoList(questions);
 
         return new QuestionGroupDTO(id, title, questionDTOs);
     }
 
-    private List<QuestionDTO> toQuestionDtos(List<Question> questions) {
+    private List<QuestionDTO> toQuestionDtoList(List<Question> questions) {
         List<QuestionDTO> questionDTOs = new ArrayList<>();
         for (Question question : questions) {
             QuestionDTO questionDTO = toQuestionDto(question);
@@ -108,7 +108,8 @@ public class Mapper {
         QuestionDTO questionDTO;
 
         if (hasCheckbox) {
-            CheckboxGroupDTO checkboxGroupDTO = toCheckboxGroupDto(question.getCheckboxGroup());
+            CheckboxGroup checkboxGroup = question.getCheckboxGroup();
+            CheckboxGroupDTO checkboxGroupDTO = toCheckboxGroupDto(checkboxGroup);
             questionDTO = new QuestionDTO(id, text, required, hasCheckbox, checkboxGroupDTO);
         } else {
             questionDTO = new QuestionDTO(id, text, required, hasCheckbox);
@@ -123,12 +124,12 @@ public class Mapper {
         int maxSelect = checkboxGroup.getMaxSelect();
 
         List<Checkbox> checkboxes = checkboxGroup.getCheckboxes();
-        List<CheckboxDTO> checkboxDTOs = toCheckboxDtos(checkboxes);
+        List<CheckboxDTO> checkboxDTOs = toCheckboxDtoList(checkboxes);
 
         return new CheckboxGroupDTO(id, multipleSelect, minSelect, maxSelect, checkboxDTOs);
     }
 
-    private List<CheckboxDTO> toCheckboxDtos(List<Checkbox> checkboxes) {
+    private List<CheckboxDTO> toCheckboxDtoList(List<Checkbox> checkboxes) {
         List<CheckboxDTO> checkboxDTOs = new ArrayList<>();
         for (Checkbox checkbox : checkboxes) {
             CheckboxDTO checkboxDTO = toCheckboxDto(checkbox);
@@ -146,7 +147,7 @@ public class Mapper {
     }
 
     public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
-        List<QuestionGroup> questionGroups = createQuestionGroupsFromDtos(surveyDTO.getQuestionGroups());
+        List<QuestionGroup> questionGroups = createQuestionGroupsFromDtoList(surveyDTO.getQuestionGroups());
 
         String name = surveyDTO.getName();
         String description = surveyDTO.getDescription();
@@ -159,47 +160,61 @@ public class Mapper {
         return new Survey(name, description, startDate, endDate, open, accessID, uuid, questionGroups);
     }
 
-    private List<QuestionGroup> createQuestionGroupsFromDtos(List<QuestionGroupDTO> questionGroupDTOs) {
+    private List<QuestionGroup> createQuestionGroupsFromDtoList(List<QuestionGroupDTO> questionGroupDTOs) {
         List<QuestionGroup> questionGroups = new ArrayList<>();
         for (QuestionGroupDTO questionGroupDTO : questionGroupDTOs) {
-            String title = questionGroupDTO.getTitle();
-            List<Question> questions = createQuestionsFromDtos(questionGroupDTO.getQuestions());
-
-            questionGroups.add(new QuestionGroup(title, questions));
+            QuestionGroup questionGroup = createQuestionGroupFromDto(questionGroupDTO);
+            questionGroups.add(questionGroup);
         }
         return questionGroups;
     }
 
-    private List<Question> createQuestionsFromDtos(List<QuestionDTO> questionDTOs) {
+    private QuestionGroup createQuestionGroupFromDto(QuestionGroupDTO questionGroupDTO) {
+        String title = questionGroupDTO.getTitle();
+        List<QuestionDTO> questionDTOs = questionGroupDTO.getQuestions();
+        List<Question> questions = createQuestionsFromDtoList(questionDTOs);
+
+        return new QuestionGroup(title, questions);
+    }
+
+    private List<Question> createQuestionsFromDtoList(List<QuestionDTO> questionDTOs) {
         List<Question> questions = new ArrayList<>();
         for (QuestionDTO questionDTO : questionDTOs) {
-            String text = questionDTO.getText();
-            boolean required = questionDTO.isRequired();
-            boolean hasCheckbox = questionDTO.isHasCheckbox();
-
-            if (hasCheckbox) {
-                CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
-                CheckboxGroup checkboxGroup = createCheckboxGroupFromDtos(checkboxGroupDTO);
-                questions.add(new Question(text, required, hasCheckbox, checkboxGroup));
-            } else {
-                questions.add(new Question(text, required, hasCheckbox));
-            }
+            Question question = createQuestionFromDto(questionDTO);
+            questions.add(question);
         }
         return questions;
     }
 
-    private CheckboxGroup createCheckboxGroupFromDtos(CheckboxGroupDTO checkboxGroupDTO) {
+    private Question createQuestionFromDto(QuestionDTO questionDTO) {
+        String text = questionDTO.getText();
+        boolean required = questionDTO.isRequired();
+        boolean hasCheckbox = questionDTO.isHasCheckbox();
+
+        Question question;
+
+        if (hasCheckbox) {
+            CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
+            CheckboxGroup checkboxGroup = createCheckboxGroupFromDto(checkboxGroupDTO);
+            question = new Question(text, required, hasCheckbox, checkboxGroup);
+        } else {
+            question = new Question(text, required, hasCheckbox);
+        }
+        return question;
+    }
+
+    private CheckboxGroup createCheckboxGroupFromDto(CheckboxGroupDTO checkboxGroupDTO) {
         boolean multipleSelect = checkboxGroupDTO.isMultipleSelect();
         int minSelect = checkboxGroupDTO.getMinSelect();
         int maxSelect = checkboxGroupDTO.getMaxSelect();
 
         List<CheckboxDTO> checkboxDTOs = checkboxGroupDTO.getCheckboxes();
-        List<Checkbox> checkboxes = createCheckboxesFromDtos(checkboxDTOs);
+        List<Checkbox> checkboxes = createCheckboxesFromDtoList(checkboxDTOs);
 
         return new CheckboxGroup(multipleSelect, minSelect, maxSelect, checkboxes);
     }
 
-    private List<Checkbox> createCheckboxesFromDtos(List<CheckboxDTO> checkboxDTOs) {
+    private List<Checkbox> createCheckboxesFromDtoList(List<CheckboxDTO> checkboxDTOs) {
         List<Checkbox> checkboxes = new ArrayList<>();
         for (CheckboxDTO checkboxDTO : checkboxDTOs) {
             Checkbox checkbox = createCheckboxFromDto(checkboxDTO);
@@ -216,7 +231,7 @@ public class Mapper {
     }
 
     // Answer/-DTO:
-    public List<AnswerDTO> toAnswerDtos(List<Answer> answers) {
+    public List<AnswerDTO> toAnswerDtoList(List<Answer> answers) {
         List<AnswerDTO> answerDTOs = new ArrayList<>();
         for (Answer answer : answers) {
             AnswerDTO answerDTO = toAnswerDto(answer);

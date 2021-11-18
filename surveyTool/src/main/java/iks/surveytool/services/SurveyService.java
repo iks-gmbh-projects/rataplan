@@ -86,7 +86,7 @@ public class SurveyService {
 
     public List<SurveyOverviewDTO> createSurveyDtosByOpenIsTrue() {
         List<Survey> openAccessSurveys = findSurveysByOpenIsTrue();
-        return mapper.toOpenAccessSurveyDtos(openAccessSurveys);
+        return mapper.toOpenAccessSurveyDtoList(openAccessSurveys);
 
     }
 
@@ -111,16 +111,6 @@ public class SurveyService {
         generateUUID(savedSurvey);
         savedSurvey = surveyRepository.save(savedSurvey);
         return savedSurvey;
-    }
-
-    private void setUser(Survey survey) {
-        Long userID = survey.getUser().getId();
-        Optional<User> userOptional = userRepository.findById(userID);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            survey.setUser(user);
-        }
     }
 
     private void setCheckboxGroupForeignKeys(Survey survey) {

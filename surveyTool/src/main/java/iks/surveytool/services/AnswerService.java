@@ -31,12 +31,12 @@ public class AnswerService {
     }
 
     public List<AnswerDTO> createAnswerDtos(List<Answer> answers) {
-        return mapper.toAnswerDtos(answers);
+        return mapper.toAnswerDtoList(answers);
     }
 
     public List<AnswerDTO> createAnswerDtos(Long questionId) {
         List<Answer> answers = findAnswersByQuestionId(questionId);
-        return mapper.toAnswerDtos(answers);
+        return mapper.toAnswerDtoList(answers);
     }
 
     public List<Answer> createAnswersFromDtos(List<AnswerDTO> answerDTOList) {

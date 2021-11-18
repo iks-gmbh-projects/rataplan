@@ -31,7 +31,7 @@ public class UserService {
 
     public List<UserDTO> createParticipatingUserDtosBySurveyId(Long surveyId) {
         List<User> users = findParticipatingUsersBySurveyId(surveyId);
-        return mapper.toParticipatingUserDtos(users);
+        return mapper.toParticipatingUserDtoList(users);
     }
 
     public UserDTO createUserDtoById(Long userId) {
