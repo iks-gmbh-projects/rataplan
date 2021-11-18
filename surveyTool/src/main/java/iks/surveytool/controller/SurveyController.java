@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
+@RequestMapping("/surveys")
 @CrossOrigin(origins = "*")
 public class SurveyController {
 
@@ -22,7 +23,7 @@ public class SurveyController {
         this.surveyService = surveyService;
     }
 
-    @PostMapping("/createSurvey/save")
+    @PostMapping("")
     public ResponseEntity<SurveyOverviewDTO> postSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
         Survey newSurvey = surveyService.createSurveyFromDto(surveyDTO);
         Survey savedSurvey = surveyService.saveSurvey(newSurvey);

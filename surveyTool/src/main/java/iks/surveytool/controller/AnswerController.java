@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Controller
+@RequestMapping("/answers")
 @CrossOrigin(origins = "*")
 public class AnswerController {
 
@@ -20,7 +21,7 @@ public class AnswerController {
         this.answerService = answerService;
     }
 
-    @PostMapping("/postAnswers")
+    @PostMapping("")
     public ResponseEntity<List<AnswerDTO>> postAnswers(@RequestBody AnswerDTO[] answerDTOs) {
         List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
         List<Answer> answerList = answerService.createAnswersFromDtos(answerDTOList);
@@ -29,7 +30,7 @@ public class AnswerController {
         return ResponseEntity.ok(savedAnswerDTOs);
     }
 
-    @GetMapping("/getAnswersByQuestionId")
+    @GetMapping("/question")
     public ResponseEntity<List<AnswerDTO>> getAnswersByQuestionId(@RequestParam Long questionId) {
         List<AnswerDTO> answerDTOs = answerService.createAnswerDtos(questionId);
         return ResponseEntity.ok(answerDTOs);

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 @CrossOrigin(origins = "*")
 public class UserController {
 
@@ -19,17 +20,17 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/getParticipatingUsersBySurveyId")
-    public ResponseEntity<List<UserDTO>> getParticipatingUsersBySurveyId(@RequestParam Long surveyId) {
-        List<UserDTO> users = userService.createParticipatingUserDtosBySurveyId(surveyId);
-        return ResponseEntity.ok(users);
-    }
-
-    @PostMapping("/postUser")
+    @PostMapping("")
     public ResponseEntity<UserDTO> postUser(@RequestBody UserDTO userDTO) {
         User newUser = userService.createUserFromDto(userDTO);
         User savedUser = userService.saveUser(newUser);
         UserDTO savedUserDTO = userService.createUserDtoFromUser(savedUser);
         return ResponseEntity.ok(savedUserDTO);
+    }
+
+    @GetMapping("/survey")
+    public ResponseEntity<List<UserDTO>> getParticipatingUsersBySurveyId(@RequestParam Long surveyId) {
+        List<UserDTO> users = userService.createParticipatingUserDtosBySurveyId(surveyId);
+        return ResponseEntity.ok(users);
     }
 }
