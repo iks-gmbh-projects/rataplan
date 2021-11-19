@@ -66,27 +66,27 @@ public class Mapper {
         LocalDateTime startDate = survey.getStartDate();
         LocalDateTime endDate = survey.getEndDate();
         boolean open = survey.isOpen();
-        String accessID = survey.getAccessID();
-        String participationID = survey.getParticipationID();
+        String accessId = survey.getAccessId();
+        String participationId = survey.getParticipationId();
 
         User user = survey.getUser();
-        Long userID;
+        Long userId;
         String userName;
         if (user != null) {
-            userID = user.getId();
+            userId = user.getId();
             userName = user.getName();
         } else {
-            userID = null;
+            userId = null;
             userName = "Anonym";
         }
 
         if (complete) {
             List<QuestionGroup> questionGroups = survey.getQuestionGroups();
             List<QuestionGroupDTO> questionGroupDTOs = toQuestionGroupDtoList(questionGroups);
-            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, participationID, userID, userName,
+            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessId, participationId, userId, userName,
                     questionGroupDTOs);
         } else {
-            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessID, participationID, userID, userName);
+            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessId, participationId, userId, userName);
         }
     }
 
@@ -172,14 +172,14 @@ public class Mapper {
         LocalDateTime startDate = surveyDTO.getStartDate();
         LocalDateTime endDate = surveyDTO.getEndDate();
         boolean open = surveyDTO.isOpen();
-        String accessID = surveyDTO.getAccessID();
-        String participationID = surveyDTO.getParticipationID();
+        String accessId = surveyDTO.getAccessId();
+        String participationId = surveyDTO.getParticipationId();
 
-        Survey newSurvey = new Survey(name, description, startDate, endDate, open, accessID, participationID, questionGroups);
+        Survey newSurvey = new Survey(name, description, startDate, endDate, open, accessId, participationId, questionGroups);
 
         // Need to fetch user from db for hibernate to recognize it
-        Long userID = surveyDTO.getUserID();
-        Optional<User> userOptional = userRepository.findById(userID);
+        Long userId = surveyDTO.getUserId();
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             newSurvey.setUser(user);
@@ -274,17 +274,17 @@ public class Mapper {
         String text = answer.getText();
 
         User user = answer.getUser();
-        Long userID = user.getId();
+        Long userId = user.getId();
         String userName = user.getName();
 
         AnswerDTO answerDTO;
 
         Checkbox checkbox = answer.getCheckbox();
         if (checkbox != null) {
-            Long checkboxID = checkbox.getId();
-            answerDTO = new AnswerDTO(id, text, userID, userName, checkboxID);
+            Long checkboxId = checkbox.getId();
+            answerDTO = new AnswerDTO(id, text, userId, userName, checkboxId);
         } else {
-            answerDTO = new AnswerDTO(id, text, userID, userName);
+            answerDTO = new AnswerDTO(id, text, userId, userName);
         }
         return answerDTO;
     }
@@ -294,23 +294,23 @@ public class Mapper {
 
         Answer answer = new Answer(text);
 
-        Long userID = answerDTO.getUserID();
-        Optional<User> userOptional = userRepository.findById(userID);
+        Long userId = answerDTO.getUserId();
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             answer.setUser(user);
         }
 
-        Long questionID = answerDTO.getQuestionID();
-        Optional<Question> questionOptional = questionRepository.findById(questionID);
+        Long questionId = answerDTO.getQuestionId();
+        Optional<Question> questionOptional = questionRepository.findById(questionId);
         if (questionOptional.isPresent()) {
             Question question = questionOptional.get();
             answer.setQuestion(question);
         }
 
-        Long checkboxID = answerDTO.getCheckboxID();
-        if (checkboxID != null) {
-            Optional<Checkbox> checkboxOptional = checkboxRepository.findById(checkboxID);
+        Long checkboxId = answerDTO.getCheckboxId();
+        if (checkboxId != null) {
+            Optional<Checkbox> checkboxOptional = checkboxRepository.findById(checkboxId);
             if (checkboxOptional.isPresent()) {
                 Checkbox checkbox = checkboxOptional.get();
                 answer.setCheckbox(checkbox);

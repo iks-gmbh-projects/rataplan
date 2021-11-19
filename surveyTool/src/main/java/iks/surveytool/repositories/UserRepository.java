@@ -14,6 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "AND a.question = q.id " +
             "AND q.questionGroup = qg.id " +
             "AND qg.survey = s.id " +
-            "AND s.id = :surveyID")
-    List<User> findParticipatingUsersBySurveyId(@Param("surveyID") Long surveyID);
+            "AND s.id = :surveyId")
+    List<User> findParticipatingUsersBySurveyId(@Param("surveyId") Long surveyId);
 }

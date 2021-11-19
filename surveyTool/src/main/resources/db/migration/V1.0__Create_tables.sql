@@ -13,7 +13,7 @@ CREATE TABLE Survey
     Creation_Time DATETIME     NULL,
     Last_Updated  DATETIME     NULL,
     Version       INT          NULL,
-    Accessid      VARCHAR(255) NULL,
+    Access_Id     VARCHAR(255) NULL,
     Description   LONGTEXT     NULL,
     End_Date      DATETIME(6)  NULL,
     Name          VARCHAR(255) NOT NULL,

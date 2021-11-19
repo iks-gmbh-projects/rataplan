@@ -31,7 +31,7 @@ public class SurveyController {
     }
 
     @GetMapping("{accessId}")
-    public ResponseEntity<SurveyOverviewDTO> getSurveyByAccessID(@PathVariable String accessId) {
+    public ResponseEntity<SurveyOverviewDTO> getSurveyByAccessId(@PathVariable String accessId) {
         SurveyOverviewDTO surveyOverviewDTO = surveyService.createSurveyDtoByAccessId(accessId, true);
         if (surveyOverviewDTO != null) {
             return ResponseEntity.ok(surveyOverviewDTO);

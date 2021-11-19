@@ -12,24 +12,24 @@ public class AnswerDTO {
     private Long id;
     private String text;
 
-    private Long userID;
+    private Long userId;
     private String userName;
 
-    private Long checkboxID;
-    private Long questionID;
+    private Long checkboxId;
+    private Long questionId;
 
-    public AnswerDTO(Long id, String text, Long userID, String userName) {
+    public AnswerDTO(Long id, String text, Long userId, String userName) {
         this.id = id;
         this.text = text;
-        this.userID = userID;
+        this.userId = userId;
         this.userName = userName;
     }
 
-    public AnswerDTO(Long id, String text, Long userID, String userName, Long checkboxID) {
+    public AnswerDTO(Long id, String text, Long userId, String userName, Long checkboxId) {
         this.id = id;
         this.text = text;
-        this.userID = userID;
+        this.userId = userId;
         this.userName = userName;
-        this.checkboxID = checkboxID;
+        this.checkboxId = checkboxId;
     }
 }

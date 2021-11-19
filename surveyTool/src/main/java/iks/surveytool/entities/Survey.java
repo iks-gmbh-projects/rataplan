@@ -32,10 +32,10 @@ public class Survey extends AbstractEntity {
 
     // Whether the survey is open to be answered or not:
     private boolean open;
-    // ID for creator of survey to view results
-    private String accessID;
-    // ID for users to participate in survey
-    private String participationID;
+    // id for creator of survey to view results
+    private String accessId;
+    // id for users to participate in survey
+    private String participationId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -50,16 +50,16 @@ public class Survey extends AbstractEntity {
                   LocalDateTime startDate,
                   LocalDateTime endDate,
                   boolean open,
-                  String accessID,
-                  String participationID,
+                  String accessId,
+                  String participationId,
                   List<QuestionGroup> questionGroups) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.open = open;
-        this.accessID = accessID;
-        this.participationID = participationID;
+        this.accessId = accessId;
+        this.participationId = participationId;
         this.questionGroups = questionGroups;
     }
 }

@@ -1,2 +1,2 @@
 ALTER TABLE Survey
-    CHANGE Uuid Participationid VARCHAR(255);
+    CHANGE Uuid Participation_Id VARCHAR(255);

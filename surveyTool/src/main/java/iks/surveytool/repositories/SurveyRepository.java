@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
-    Optional<Survey> findSurveyByParticipationID(String participationID);
+    Optional<Survey> findSurveyByParticipationId(String participationId);
 
-    Optional<Survey> findSurveyByAccessID(String accessId);
+    Optional<Survey> findSurveyByAccessId(String accessId);
 
     List<Survey> findSurveysByOpenIsTrueAndEndDateIsAfterOrderByStartDate(LocalDateTime localDateTime);
 }

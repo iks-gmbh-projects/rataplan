@@ -17,10 +17,10 @@ public class SurveyOverviewDTO {
     private LocalDateTime endDate;
 
     private boolean open;
-    private String accessID;
-    private String participationID;
+    private String accessId;
+    private String participationId;
 
-    private Long userID;
+    private Long userId;
     private String userName;
 
     public SurveyOverviewDTO(Long id,
@@ -29,9 +29,9 @@ public class SurveyOverviewDTO {
                              LocalDateTime startDate,
                              LocalDateTime endDate,
                              boolean open,
-                             String accessID,
-                             String participationID,
-                             Long userID,
+                             String accessId,
+                             String participationId,
+                             Long userId,
                              String userName) {
         this.id = id;
         this.name = name;
@@ -39,9 +39,9 @@ public class SurveyOverviewDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.open = open;
-        this.accessID = accessID;
-        this.participationID = participationID;
-        this.userID = userID;
+        this.accessId = accessId;
+        this.participationId = participationId;
+        this.userId = userId;
         this.userName = userName;
     }
 }

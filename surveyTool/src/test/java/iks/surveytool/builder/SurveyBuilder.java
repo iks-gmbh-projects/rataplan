@@ -11,7 +11,7 @@ public class SurveyBuilder {
     LocalDateTime startDate = LocalDateTime.of(2050, 1, 1, 12, 0);
     LocalDateTime endDate = startDate.plusWeeks(1L);
     boolean open = false;
-    String accessID = "Test ID";
+    String accessId = "Test ID";
     URL link;
 
     public Survey createSurveyWithDefaultDate(Long id,
@@ -23,7 +23,7 @@ public class SurveyBuilder {
         newSurvey.setStartDate(startDate);
         newSurvey.setEndDate(endDate);
         newSurvey.setOpen(open);
-        newSurvey.setAccessID(accessID);
+        newSurvey.setAccessId(accessId);
         return newSurvey;
     }
 }

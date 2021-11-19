@@ -20,12 +20,12 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final Mapper mapper;
 
-    public Optional<Survey> findSurveyByParticipationID(String participationID) {
-        return surveyRepository.findSurveyByParticipationID(participationID);
+    public Optional<Survey> findSurveyByParticipationId(String participationId) {
+        return surveyRepository.findSurveyByParticipationId(participationId);
     }
 
     public Optional<Survey> findSurveyByAccessId(String accessId) {
-        return surveyRepository.findSurveyByAccessID(accessId);
+        return surveyRepository.findSurveyByAccessId(accessId);
     }
 
     public List<Survey> findSurveysByOpenIsTrue() {
@@ -46,8 +46,8 @@ public class SurveyService {
         return null;
     }
 
-    public SurveyOverviewDTO createSurveyDtoByParticipationId(String participationID) {
-        Optional<Survey> surveyOptional = findSurveyByParticipationID(participationID);
+    public SurveyOverviewDTO createSurveyDtoByParticipationId(String participationId) {
+        Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
             LocalDateTime surveyStartDate = survey.getStartDate();
@@ -77,12 +77,12 @@ public class SurveyService {
 
     public Survey saveSurvey(Survey survey) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        String accessID = generateUniqueIdWithDateTime(currentDateTime);
-        survey.setAccessID(accessID);
+        String accessId = generateUniqueIdWithDateTime(currentDateTime);
+        survey.setAccessId(accessId);
 
         LocalDateTime startDateTime = survey.getStartDate();
-        String participateID = generateUniqueIdWithDateTime(startDateTime);
-        survey.setParticipationID(participateID);
+        String participateId = generateUniqueIdWithDateTime(startDateTime);
+        survey.setParticipationId(participateId);
         return surveyRepository.save(survey);
     }
 
@@ -91,21 +91,21 @@ public class SurveyService {
 
         String hexSuffix = generateHexSuffix();
 
-        String accessID = currentDateTimeHex + "-" + hexSuffix;
+        String accessId = currentDateTimeHex + "-" + hexSuffix;
 
-        while (surveyRepository.findSurveyByAccessID(accessID).isPresent()) {
+        while (surveyRepository.findSurveyByAccessId(accessId).isPresent()) {
             hexSuffix = generateHexSuffix();
-            accessID = currentDateTimeHex + "-" + hexSuffix;
+            accessId = currentDateTimeHex + "-" + hexSuffix;
         }
 
-        return accessID.toUpperCase();
+        return accessId.toUpperCase();
     }
 
     private String convertDateTimeToHex(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmkddMMyy");
         String formattedDate = dateTime.format(formatter);
         long formattedDateLong = Long.parseLong(formattedDate);
-        
+
         return Long.toHexString(formattedDateLong);
     }
 
