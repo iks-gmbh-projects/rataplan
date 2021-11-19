@@ -102,11 +102,11 @@ public class SurveyService {
     }
 
     private String convertDateTimeToHex(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmhhddMM");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmkddMMyy");
         String formattedDate = dateTime.format(formatter);
-        int formattedDateInteger = Integer.parseInt(formattedDate);
-
-        return Integer.toHexString(formattedDateInteger);
+        long formattedDateLong = Long.parseLong(formattedDate);
+        
+        return Long.toHexString(formattedDateLong);
     }
 
     private String generateHexSuffix() {
