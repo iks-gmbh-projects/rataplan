@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -21,11 +20,11 @@ public class CompleteSurveyDTO extends SurveyOverviewDTO {
                              LocalDateTime endDate,
                              boolean open,
                              String accessID,
-                             UUID uuid,
+                             String participationID,
                              Long userID,
                              String userName,
                              List<QuestionGroupDTO> questionGroups) {
-        super(id, name, description, startDate, endDate, open, accessID, uuid, userID, userName);
+        super(id, name, description, startDate, endDate, open, accessID, participationID, userID, userName);
         this.questionGroups = questionGroups;
     }
 }

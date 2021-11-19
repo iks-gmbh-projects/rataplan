@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/surveys")
@@ -42,8 +41,8 @@ public class SurveyController {
     }
 
     @GetMapping("")
-    public ResponseEntity<SurveyOverviewDTO> getSurveyForAnswering(@RequestParam UUID uuid) {
-        SurveyOverviewDTO surveyDto = surveyService.createSurveyDtoByUUID(uuid);
+    public ResponseEntity<SurveyOverviewDTO> getSurveyForAnswering(@RequestParam String participationId) {
+        SurveyOverviewDTO surveyDto = surveyService.createSurveyDtoByParticipationId(participationId);
         if (surveyDto != null) {
             if (surveyDto instanceof CompleteSurveyDTO) {
                 return ResponseEntity.ok(surveyDto);

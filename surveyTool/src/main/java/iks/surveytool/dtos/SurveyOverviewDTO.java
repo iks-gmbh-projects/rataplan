@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,7 +18,7 @@ public class SurveyOverviewDTO {
 
     private boolean open;
     private String accessID;
-    private UUID uuid;
+    private String participationID;
 
     private Long userID;
     private String userName;
@@ -31,7 +30,7 @@ public class SurveyOverviewDTO {
                              LocalDateTime endDate,
                              boolean open,
                              String accessID,
-                             UUID uuid,
+                             String participationID,
                              Long userID,
                              String userName) {
         this.id = id;
@@ -41,7 +40,7 @@ public class SurveyOverviewDTO {
         this.endDate = endDate;
         this.open = open;
         this.accessID = accessID;
-        this.uuid = uuid;
+        this.participationID = participationID;
         this.userID = userID;
         this.userName = userName;
     }

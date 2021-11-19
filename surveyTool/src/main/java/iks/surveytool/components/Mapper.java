@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -68,7 +67,7 @@ public class Mapper {
         LocalDateTime endDate = survey.getEndDate();
         boolean open = survey.isOpen();
         String accessID = survey.getAccessID();
-        UUID uuid = survey.getUuid();
+        String participationID = survey.getParticipationID();
 
         User user = survey.getUser();
         Long userID;
@@ -84,10 +83,10 @@ public class Mapper {
         if (complete) {
             List<QuestionGroup> questionGroups = survey.getQuestionGroups();
             List<QuestionGroupDTO> questionGroupDTOs = toQuestionGroupDtoList(questionGroups);
-            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID, userName,
+            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessID, participationID, userID, userName,
                     questionGroupDTOs);
         } else {
-            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessID, uuid, userID, userName);
+            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessID, participationID, userID, userName);
         }
     }
 
@@ -174,9 +173,9 @@ public class Mapper {
         LocalDateTime endDate = surveyDTO.getEndDate();
         boolean open = surveyDTO.isOpen();
         String accessID = surveyDTO.getAccessID();
-        UUID uuid = surveyDTO.getUuid();
+        String participationID = surveyDTO.getParticipationID();
 
-        Survey newSurvey = new Survey(name, description, startDate, endDate, open, accessID, uuid, questionGroups);
+        Survey newSurvey = new Survey(name, description, startDate, endDate, open, accessID, participationID, questionGroups);
 
         // Need to fetch user from db for hibernate to recognize it
         Long userID = surveyDTO.getUserID();

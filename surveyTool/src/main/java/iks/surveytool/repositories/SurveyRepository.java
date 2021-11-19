@@ -6,12 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
-    Optional<Survey> findSurveyById(Long id);
-
-    Optional<Survey> findSurveyByUuid(UUID uuid);
+    Optional<Survey> findSurveyByParticipationID(String participationID);
 
     Optional<Survey> findSurveyByAccessID(String accessId);
 

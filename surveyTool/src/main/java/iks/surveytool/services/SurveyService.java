@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +20,8 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final Mapper mapper;
 
-    public Optional<Survey> findSurveyByUUID(UUID uuid) {
-        return surveyRepository.findSurveyByUuid(uuid);
+    public Optional<Survey> findSurveyByParticipationID(String participationID) {
+        return surveyRepository.findSurveyByParticipationID(participationID);
     }
 
     public Optional<Survey> findSurveyByAccessId(String accessId) {
@@ -47,8 +46,8 @@ public class SurveyService {
         return null;
     }
 
-    public SurveyOverviewDTO createSurveyDtoByUUID(UUID uuid) {
-        Optional<Survey> surveyOptional = findSurveyByUUID(uuid);
+    public SurveyOverviewDTO createSurveyDtoByParticipationId(String participationID) {
+        Optional<Survey> surveyOptional = findSurveyByParticipationID(participationID);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
             LocalDateTime surveyStartDate = survey.getStartDate();
@@ -77,15 +76,18 @@ public class SurveyService {
     }
 
     public Survey saveSurvey(Survey survey) {
-        String accessID = generateAccessID();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        String accessID = generateUniqueIdWithDateTime(currentDateTime);
         survey.setAccessID(accessID);
 
-        generateUUID(survey);
+        LocalDateTime startDateTime = survey.getStartDate();
+        String participateID = generateUniqueIdWithDateTime(startDateTime);
+        survey.setParticipationID(participateID);
         return surveyRepository.save(survey);
     }
 
-    public String generateAccessID() {
-        String currentDateTimeHex = convertCurrentDateTimeToHex();
+    public String generateUniqueIdWithDateTime(LocalDateTime currentDateTime) {
+        String currentDateTimeHex = convertDateTimeToHex(currentDateTime);
 
         String hexSuffix = generateHexSuffix();
 
@@ -99,23 +101,17 @@ public class SurveyService {
         return accessID.toUpperCase();
     }
 
-    private String generateHexSuffix() {
-        Random random = new Random();
-        int randomNumber = random.nextInt(256);
-        return Integer.toHexString(randomNumber);
-    }
-
-    private String convertCurrentDateTimeToHex() {
-        LocalDateTime currentDateTime = LocalDateTime.now();
+    private String convertDateTimeToHex(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmhhddMM");
-        String formattedDate = currentDateTime.format(formatter);
+        String formattedDate = dateTime.format(formatter);
         int formattedDateInteger = Integer.parseInt(formattedDate);
 
         return Integer.toHexString(formattedDateInteger);
     }
 
-    private void generateUUID(Survey survey) {
-        UUID uuid = UUID.randomUUID();
-        survey.setUuid(uuid);
+    private String generateHexSuffix() {
+        Random random = new Random();
+        int randomNumber = random.nextInt(256);
+        return Integer.toHexString(randomNumber);
     }
 }
