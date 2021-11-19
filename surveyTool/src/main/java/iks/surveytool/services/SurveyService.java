@@ -8,7 +8,6 @@ import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -78,24 +77,23 @@ public class SurveyService {
     }
 
     public Survey saveSurvey(Survey survey) {
-        String accessID = generateAccessID(survey);
+        String accessID = generateAccessID();
         survey.setAccessID(accessID);
 
         generateUUID(survey);
         return surveyRepository.save(survey);
     }
 
-    public String generateAccessID(Survey survey) {
-        LocalDateTime startDateTime = survey.getStartDate();
-        String startDateHex = convertStartDateToHex(startDateTime);
-        
+    public String generateAccessID() {
+        String currentDateTimeHex = convertCurrentDateTimeToHex();
+
         String hexSuffix = generateHexSuffix();
 
-        String accessID = startDateHex + "-" + hexSuffix;
+        String accessID = currentDateTimeHex + "-" + hexSuffix;
 
         while (surveyRepository.findSurveyByAccessID(accessID).isPresent()) {
             hexSuffix = generateHexSuffix();
-            accessID = startDateHex + "-" + hexSuffix;
+            accessID = currentDateTimeHex + "-" + hexSuffix;
         }
 
         return accessID.toUpperCase();
@@ -107,11 +105,10 @@ public class SurveyService {
         return Integer.toHexString(randomNumber);
     }
 
-    private String convertStartDateToHex(LocalDateTime startDateTime) {
-        LocalDate startDate = startDateTime.toLocalDate();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
-        String formattedDate = startDate.format(formatter);
+    private String convertCurrentDateTimeToHex() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmhhddMM");
+        String formattedDate = currentDateTime.format(formatter);
         int formattedDateInteger = Integer.parseInt(formattedDate);
 
         return Integer.toHexString(formattedDateInteger);
