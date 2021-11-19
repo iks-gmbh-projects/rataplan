@@ -20,10 +20,6 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final Mapper mapper;
 
-    public Optional<Survey> findSurveyById(Long surveyID) {
-        return surveyRepository.findSurveyById(surveyID);
-    }
-
     public Optional<Survey> findSurveyByUUID(UUID uuid) {
         return surveyRepository.findSurveyByUuid(uuid);
     }
@@ -39,15 +35,6 @@ public class SurveyService {
 
     public SurveyOverviewDTO createSurveyDtoFromSurvey(Survey savedSurvey) {
         return mapper.toSurveyDto(savedSurvey, true);
-    }
-
-    public SurveyOverviewDTO createSurveyDtoById(Long surveyID, boolean complete) {
-        Optional<Survey> surveyOptional = findSurveyById(surveyID);
-        if (surveyOptional.isPresent()) {
-            Survey survey = surveyOptional.get();
-            return mapper.toSurveyDto(survey, complete);
-        }
-        return null;
     }
 
     public SurveyOverviewDTO createSurveyDtoByAccessId(String accessId, boolean complete) {
