@@ -8,7 +8,9 @@ import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -76,19 +78,43 @@ public class SurveyService {
     }
 
     public Survey saveSurvey(Survey survey) {
-        Survey savedSurvey = surveyRepository.save(survey);
-        generateAccessID(savedSurvey);
-        generateUUID(savedSurvey);
-        savedSurvey = surveyRepository.save(savedSurvey);
-        return savedSurvey;
+        String accessID = generateAccessID(survey);
+        survey.setAccessID(accessID);
+
+        generateUUID(survey);
+        return surveyRepository.save(survey);
     }
 
-    // Temporary:
-    public void generateAccessID(Survey survey) {
+    public String generateAccessID(Survey survey) {
+        LocalDateTime startDateTime = survey.getStartDate();
+        String startDateHex = convertStartDateToHex(startDateTime);
+        
+        String hexSuffix = generateHexSuffix();
+
+        String accessID = startDateHex + "-" + hexSuffix;
+
+        while (surveyRepository.findSurveyByAccessID(accessID).isPresent()) {
+            hexSuffix = generateHexSuffix();
+            accessID = startDateHex + "-" + hexSuffix;
+        }
+
+        return accessID.toUpperCase();
+    }
+
+    private String generateHexSuffix() {
         Random random = new Random();
-        String accessID = "";
-        accessID += survey.getStartDate().getYear() + "-" + random.nextInt(10) + "-" + survey.getId();
-        survey.setAccessID(accessID);
+        int randomNumber = random.nextInt(256);
+        return Integer.toHexString(randomNumber);
+    }
+
+    private String convertStartDateToHex(LocalDateTime startDateTime) {
+        LocalDate startDate = startDateTime.toLocalDate();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+        String formattedDate = startDate.format(formatter);
+        int formattedDateInteger = Integer.parseInt(formattedDate);
+
+        return Integer.toHexString(formattedDateInteger);
     }
 
     private void generateUUID(Survey survey) {
