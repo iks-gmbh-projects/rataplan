@@ -1,6 +1,5 @@
 package iks.surveytool.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,16 +18,13 @@ abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime creationTime;
 
-    @JsonIgnore
     @UpdateTimestamp
     private LocalDateTime lastUpdated;
 
-    @JsonIgnore
     @Version
     private Integer version;
 }
