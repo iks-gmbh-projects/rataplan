@@ -30,26 +30,25 @@ public class Survey extends AbstractEntity {
     @Future(message = "Das Enddatum muss in der Zukunft liegen.")
     private LocalDateTime endDate;
 
-    // Whether the survey is open to be answered or not:
-    private boolean open;
+    private boolean openAccess;
     // id for creator of survey to view results
     private String accessId;
     // id for users to participate in survey
     private String participationId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "survey_id")
+    @JoinColumn(name = "surveyId")
     private List<QuestionGroup> questionGroups;
 
     public Survey(String name,
                   String description,
                   LocalDateTime startDate,
                   LocalDateTime endDate,
-                  boolean open,
+                  boolean openAccess,
                   String accessId,
                   String participationId,
                   List<QuestionGroup> questionGroups) {
@@ -57,7 +56,7 @@ public class Survey extends AbstractEntity {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.open = open;
+        this.openAccess = openAccess;
         this.accessId = accessId;
         this.participationId = participationId;
         this.questionGroups = questionGroups;
