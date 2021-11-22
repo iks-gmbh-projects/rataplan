@@ -18,13 +18,13 @@ public class CompleteSurveyDTO extends SurveyOverviewDTO {
                              String description,
                              LocalDateTime startDate,
                              LocalDateTime endDate,
-                             boolean open,
+                             boolean openAccess,
                              String accessId,
                              String participationId,
                              Long userId,
                              String userName,
                              List<QuestionGroupDTO> questionGroups) {
-        super(id, name, description, startDate, endDate, open, accessId, participationId, userId, userName);
+        super(id, name, description, startDate, endDate, openAccess, accessId, participationId, userId, userName);
         this.questionGroups = questionGroups;
     }
 }

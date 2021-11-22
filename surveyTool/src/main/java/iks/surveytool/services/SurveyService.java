@@ -28,9 +28,9 @@ public class SurveyService {
         return surveyRepository.findSurveyByAccessId(accessId);
     }
 
-    public List<Survey> findSurveysByOpenIsTrue() {
+    public List<Survey> findSurveysByOpenAccessIsTrue() {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        return surveyRepository.findSurveysByOpenIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
+        return surveyRepository.findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
     }
 
     public SurveyOverviewDTO createSurveyDtoFromSurvey(Survey savedSurvey) {
@@ -66,7 +66,7 @@ public class SurveyService {
     }
 
     public List<SurveyOverviewDTO> createSurveyDtosByOpenIsTrue() {
-        List<Survey> openAccessSurveys = findSurveysByOpenIsTrue();
+        List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
         return mapper.toOpenAccessSurveyDtoList(openAccessSurveys);
 
     }

@@ -65,7 +65,7 @@ public class Mapper {
         String description = survey.getDescription();
         LocalDateTime startDate = survey.getStartDate();
         LocalDateTime endDate = survey.getEndDate();
-        boolean open = survey.isOpen();
+        boolean openAccess = survey.isOpenAccess();
         String accessId = survey.getAccessId();
         String participationId = survey.getParticipationId();
 
@@ -83,10 +83,10 @@ public class Mapper {
         if (complete) {
             List<QuestionGroup> questionGroups = survey.getQuestionGroups();
             List<QuestionGroupDTO> questionGroupDTOs = toQuestionGroupDtoList(questionGroups);
-            return new CompleteSurveyDTO(id, name, description, startDate, endDate, open, accessId, participationId, userId, userName,
+            return new CompleteSurveyDTO(id, name, description, startDate, endDate, openAccess, accessId, participationId, userId, userName,
                     questionGroupDTOs);
         } else {
-            return new SurveyOverviewDTO(id, name, description, startDate, endDate, open, accessId, participationId, userId, userName);
+            return new SurveyOverviewDTO(id, name, description, startDate, endDate, openAccess, accessId, participationId, userId, userName);
         }
     }
 
@@ -171,11 +171,11 @@ public class Mapper {
         String description = surveyDTO.getDescription();
         LocalDateTime startDate = surveyDTO.getStartDate();
         LocalDateTime endDate = surveyDTO.getEndDate();
-        boolean open = surveyDTO.isOpen();
+        boolean openAccess = surveyDTO.isOpenAccess();
         String accessId = surveyDTO.getAccessId();
         String participationId = surveyDTO.getParticipationId();
 
-        Survey newSurvey = new Survey(name, description, startDate, endDate, open, accessId, participationId, questionGroups);
+        Survey newSurvey = new Survey(name, description, startDate, endDate, openAccess, accessId, participationId, questionGroups);
 
         // Need to fetch user from db for hibernate to recognize it
         Long userId = surveyDTO.getUserId();
