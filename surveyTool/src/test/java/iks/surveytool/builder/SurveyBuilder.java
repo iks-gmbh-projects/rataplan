@@ -4,6 +4,7 @@ import iks.surveytool.entities.Survey;
 
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class SurveyBuilder {
 
@@ -24,6 +25,7 @@ public class SurveyBuilder {
         newSurvey.setEndDate(endDate);
         newSurvey.setOpenAccess(openAccess);
         newSurvey.setAccessId(accessId);
+        newSurvey.setQuestionGroups(new ArrayList<>());
         return newSurvey;
     }
 }
