@@ -25,9 +25,13 @@ public class SurveyController {
     @PostMapping("")
     public ResponseEntity<SurveyOverviewDTO> postSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
         Survey newSurvey = surveyService.createSurveyFromDto(surveyDTO);
-        Survey savedSurvey = surveyService.saveSurvey(newSurvey);
-        SurveyOverviewDTO completeSurveyDTO = surveyService.createSurveyDtoFromSurvey(savedSurvey);
-        return ResponseEntity.ok(completeSurveyDTO);
+        if (!surveyService.checkIfAnythingEmpty(newSurvey)) {
+            Survey savedSurvey = surveyService.saveSurvey(newSurvey);
+            SurveyOverviewDTO completeSurveyDTO = surveyService.createSurveyDtoFromSurvey(savedSurvey);
+            return ResponseEntity.ok(completeSurveyDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
     @GetMapping("{accessId}")
