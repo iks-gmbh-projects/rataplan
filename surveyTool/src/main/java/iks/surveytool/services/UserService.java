@@ -35,4 +35,9 @@ public class UserService {
     public User createUserFromDto(UserDTO userDTO) {
         return mapper.createUserFromDto(userDTO);
     }
+
+    public boolean validate(User newUser) {
+        String name = newUser.getName();
+        return name == null;
+    }
 }

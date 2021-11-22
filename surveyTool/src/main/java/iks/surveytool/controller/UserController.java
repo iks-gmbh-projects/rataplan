@@ -3,6 +3,7 @@ package iks.surveytool.controller;
 import iks.surveytool.dtos.UserDTO;
 import iks.surveytool.entities.User;
 import iks.surveytool.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +24,13 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<UserDTO> postUser(@RequestBody UserDTO userDTO) {
         User newUser = userService.createUserFromDto(userDTO);
-        User savedUser = userService.saveUser(newUser);
-        UserDTO savedUserDTO = userService.createUserDtoFromUser(savedUser);
-        return ResponseEntity.ok(savedUserDTO);
+        if (!userService.validate(newUser)) {
+            User savedUser = userService.saveUser(newUser);
+            UserDTO savedUserDTO = userService.createUserDtoFromUser(savedUser);
+            return ResponseEntity.ok(savedUserDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
     }
 
     @GetMapping("/survey")
