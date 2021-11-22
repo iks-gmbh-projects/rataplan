@@ -41,7 +41,7 @@ public class SurveyController {
     }
 
     @GetMapping("")
-    public ResponseEntity<SurveyOverviewDTO> getSurveyForAnswering(@RequestParam String participationId) {
+    public ResponseEntity<SurveyOverviewDTO> getSurveyByParticipationId(@RequestParam String participationId) {
         SurveyOverviewDTO surveyDto = surveyService.createSurveyDtoByParticipationId(participationId);
         if (surveyDto != null) {
             if (surveyDto instanceof CompleteSurveyDTO) {
