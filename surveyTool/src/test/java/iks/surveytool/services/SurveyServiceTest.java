@@ -44,7 +44,7 @@ class SurveyServiceTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithDefaultDate(1L, "Survey without QuestionGroup");
 
-        boolean somethingIsMissing = surveyService.checkIfAnythingEmpty(survey);
+        boolean somethingIsMissing = surveyService.validate(survey);
 
         assertTrue(somethingIsMissing);
     }
@@ -65,7 +65,7 @@ class SurveyServiceTest {
                 .createSurveyWithDefaultDate(1L, "Survey with empty QuestionGroup");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion, questionGroupWithoutQuestion));
 
-        boolean somethingIsMissing = surveyService.checkIfAnythingEmpty(survey);
+        boolean somethingIsMissing = surveyService.validate(survey);
 
         assertTrue(somethingIsMissing);
     }
@@ -88,7 +88,7 @@ class SurveyServiceTest {
                 .createSurveyWithDefaultDate(1L, "Survey with no checkboxes for question");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        boolean somethingIsMissing = surveyService.checkIfAnythingEmpty(survey);
+        boolean somethingIsMissing = surveyService.validate(survey);
 
         assertTrue(somethingIsMissing);
     }
@@ -115,7 +115,7 @@ class SurveyServiceTest {
                 .createSurveyWithDefaultDate(1L, "Survey with not enough checkboxes for question");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        boolean somethingIsMissing = surveyService.checkIfAnythingEmpty(survey);
+        boolean somethingIsMissing = surveyService.validate(survey);
 
         assertTrue(somethingIsMissing);
     }
@@ -146,7 +146,7 @@ class SurveyServiceTest {
                 .createSurveyWithDefaultDate(1L, "Survey with not enough checkboxes for question");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        boolean somethingIsMissing = surveyService.checkIfAnythingEmpty(survey);
+        boolean somethingIsMissing = surveyService.validate(survey);
 
         assertTrue(somethingIsMissing);
     }
@@ -179,7 +179,7 @@ class SurveyServiceTest {
                 .createSurveyWithDefaultDate(1L, "Complete Survey");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        boolean somethingIsMissing = surveyService.checkIfAnythingEmpty(survey);
+        boolean somethingIsMissing = surveyService.validate(survey);
 
         assertFalse(somethingIsMissing);
     }
