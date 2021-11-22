@@ -3,6 +3,9 @@ package iks.surveytool.services;
 import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
+import iks.surveytool.entities.CheckboxGroup;
+import iks.surveytool.entities.Question;
+import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
@@ -113,5 +116,52 @@ public class SurveyService {
         Random random = new Random();
         int randomNumber = random.nextInt(256);
         return Integer.toHexString(randomNumber);
+    }
+
+    public boolean checkIfAnythingEmpty(Survey survey) {
+        return checkQuestionGroups(survey);
+    }
+
+    private boolean checkQuestionGroups(Survey survey) {
+        List<QuestionGroup> questionGroups = survey.getQuestionGroups();
+        if (questionGroups.isEmpty()) {
+            return true;
+        } else {
+            for (QuestionGroup questionGroup : questionGroups) {
+                List<Question> questions = questionGroup.getQuestions();
+                if (questions.isEmpty()) {
+                    return true;
+                } else {
+                    if (checkQuestions(questionGroup)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkQuestions(QuestionGroup questionGroup) {
+        List<Question> questions = questionGroup.getQuestions();
+        for (Question question : questions) {
+            if (question.isHasCheckbox()) {
+                CheckboxGroup checkboxGroup = question.getCheckboxGroup();
+                if (checkboxGroup.getCheckboxes().isEmpty()) {
+                    return true;
+                } else {
+                    int numberOfCheckboxes = checkboxGroup.getCheckboxes().size();
+                    if (!checkboxGroup.isMultipleSelect() && numberOfCheckboxes < 2) {
+                        return true;
+                    } else if (checkboxGroup.isMultipleSelect() &&
+                            numberOfCheckboxes < checkboxGroup.getMaxSelect()) {
+                        return true;
+                    } else if (question.isRequired() && checkboxGroup.isMultipleSelect() &&
+                            checkboxGroup.getMinSelect() < 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
