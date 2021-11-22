@@ -18,15 +18,15 @@ public class Answer extends AbstractEntity {
     private String text;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "questionId", nullable = false)
     private Question question;
 
     @ManyToOne
-    @JoinColumn(name = "checkbox_id")
+    @JoinColumn(name = "checkboxId")
     private Checkbox checkbox;
 
     public Answer(String text) {

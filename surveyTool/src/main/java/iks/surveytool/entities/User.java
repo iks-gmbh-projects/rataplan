@@ -19,11 +19,11 @@ public class User extends AbstractEntity {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private List<Answer> answers;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private List<Survey> surveys;
 
     public User(String name) {

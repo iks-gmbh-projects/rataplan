@@ -16,11 +16,11 @@ public class QuestionGroup extends AbstractEntity {
     private String title;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "survey_id")
+    @JoinColumn(name = "surveyId", nullable = false)
     private Survey survey;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "question_group_id")
+    @JoinColumn(name = "questionGroupId")
     private List<Question> questions;
 
     public QuestionGroup(String title, List<Question> questions) {

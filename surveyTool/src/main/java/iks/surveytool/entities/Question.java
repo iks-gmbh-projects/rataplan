@@ -22,11 +22,11 @@ public class Question extends AbstractEntity {
     private boolean hasCheckbox;
 
     @ManyToOne
-    @JoinColumn(name = "question_group_id")
+    @JoinColumn(name = "questionGroupId", nullable = false)
     private QuestionGroup questionGroup;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "questionId")
     private List<Answer> answers;
 
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)

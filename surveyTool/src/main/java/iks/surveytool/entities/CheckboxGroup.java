@@ -21,11 +21,11 @@ public class CheckboxGroup extends AbstractEntity {
     private int maxSelect;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "questionId", nullable = false)
     private Question question;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "checkbox_group_id")
+    @JoinColumn(name = "checkboxGroupId")
     private List<Checkbox> checkboxes;
 
     public CheckboxGroup(boolean multipleSelect, int minSelect, int maxSelect, List<Checkbox> checkboxes) {

@@ -20,11 +20,11 @@ public class Checkbox extends AbstractEntity {
     private boolean hasTextField;
 
     @ManyToOne
-    @JoinColumn(name = "checkbox_group_id")
+    @JoinColumn(name = "checkboxGroupId", nullable = false)
     private CheckboxGroup checkboxGroup;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "checkbox_id")
+    @JoinColumn(name = "checkboxId")
     private List<Answer> answers;
 
     public Checkbox(String text, boolean hasTextField) {
