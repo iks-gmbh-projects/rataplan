@@ -41,12 +41,12 @@ class SurveyServiceTest {
     @Test
     @DisplayName("Failed validation - Survey missing QuestionGroups")
     void surveyIsMissingQuestionGroups_Failed() {
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
         Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "Survey without QuestionGroup");
+                .createSurveyWithUserAndDefaultDate(1L, "Survey without QuestionGroup", user);
 
-        boolean somethingIsMissing = surveyService.validate(survey);
-
-        assertTrue(somethingIsMissing);
+        assertFalse(surveyService.validate(survey));
     }
 
     @Test
@@ -61,20 +61,20 @@ class SurveyServiceTest {
         QuestionGroup questionGroupWithoutQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(2L, "QuestionGroup without Question");
 
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
         Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "Survey with empty QuestionGroup");
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with empty QuestionGroup", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion, questionGroupWithoutQuestion));
 
-        boolean somethingIsMissing = surveyService.validate(survey);
-
-        assertTrue(somethingIsMissing);
+        assertFalse(surveyService.validate(survey));
     }
 
     @Test
     @DisplayName("Failed validation - No Checkboxes - No multipleSelect")
     void questionNoCheckboxes_failed() {
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, false, 0, 0);
+                .createCheckboxGroup(1L, false, 0, 2);
 
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, true);
@@ -84,13 +84,13 @@ class SurveyServiceTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
         Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "Survey with no checkboxes for question");
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with no checkboxes for question", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        boolean somethingIsMissing = surveyService.validate(survey);
-
-        assertTrue(somethingIsMissing);
+        assertFalse(surveyService.validate(survey));
     }
 
     @Test
@@ -100,7 +100,7 @@ class SurveyServiceTest {
                 .createCheckbox(1L, "First Test Checkbox", false);
 
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, false, 0, 0);
+                .createCheckboxGroup(1L, false, 0, 2);
         checkboxGroup.setCheckboxes(List.of(onlyCheckbox));
 
         Question question = new QuestionBuilder()
@@ -111,13 +111,13 @@ class SurveyServiceTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
         Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "Survey with not enough checkboxes for question");
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        boolean somethingIsMissing = surveyService.validate(survey);
-
-        assertTrue(somethingIsMissing);
+        assertFalse(surveyService.validate(survey));
     }
 
     @Test
@@ -142,18 +142,18 @@ class SurveyServiceTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
         Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "Survey with not enough checkboxes for question");
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        boolean somethingIsMissing = surveyService.validate(survey);
-
-        assertTrue(somethingIsMissing);
+        assertFalse(surveyService.validate(survey));
     }
 
     @Test
-    @DisplayName("Successful validation - saving complete survey")
-    void surveyIsComplete_Successful() {
+    @DisplayName("Failed validation - User missing")
+    void surveyMissingUser() {
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
         Checkbox secondCheckbox = new CheckboxBuilder()
@@ -176,11 +176,42 @@ class SurveyServiceTest {
         questionGroupWithQuestion.setQuestions(List.of(question));
 
         Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "Complete Survey");
+                .createSurveyWithDefaultDate(1L, "User missing");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        boolean somethingIsMissing = surveyService.validate(survey);
+        assertFalse(surveyService.validate(survey));
+    }
 
-        assertFalse(somethingIsMissing);
+    @Test
+    @DisplayName("Successful validation - Saving complete survey")
+    void surveyIsComplete_Successful() {
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .createCheckbox(1L, "First Test Checkbox", false);
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .createCheckbox(2L, "Second Test Checkbox", true);
+        Checkbox thirdCheckbox = new CheckboxBuilder()
+                .createCheckbox(3L, "Third Test Checkbox", true);
+        Checkbox fourthCheckbox = new CheckboxBuilder()
+                .createCheckbox(4L, "Fourth Test Checkbox", false);
+
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .createCheckboxGroup(1L, true, 1, 3);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox));
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertTrue(surveyService.validate(survey));
     }
 }
