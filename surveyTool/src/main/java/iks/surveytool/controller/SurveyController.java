@@ -25,7 +25,7 @@ public class SurveyController {
     @PostMapping("")
     public ResponseEntity<SurveyOverviewDTO> postSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
         Survey newSurvey = surveyService.createSurveyFromDto(surveyDTO);
-        if (!surveyService.validate(newSurvey)) {
+        if (surveyService.validate(newSurvey)) {
             surveyService.generateIds(newSurvey);
             Survey savedSurvey = surveyService.saveSurvey(newSurvey);
             SurveyOverviewDTO completeSurveyDTO = surveyService.createSurveyDtoFromSurvey(savedSurvey);

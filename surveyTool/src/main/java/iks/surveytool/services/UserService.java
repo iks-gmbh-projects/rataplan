@@ -38,6 +38,6 @@ public class UserService {
 
     public boolean validate(User newUser) {
         String name = newUser.getName();
-        return name == null;
+        return name != null;
     }
 }

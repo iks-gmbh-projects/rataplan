@@ -120,11 +120,11 @@ public class SurveyService {
 
     public boolean validate(Survey survey) {
         if (checkIfAnythingEmpty(survey)) {
-            return true;
-        } else if (checkIfDataIsValid(survey)) {
-            return true;
-        } else {
             return false;
+        } else if (!checkIfDataIsValid(survey)) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -133,101 +133,101 @@ public class SurveyService {
         LocalDateTime startDate = survey.getStartDate();
         LocalDateTime endDate = survey.getEndDate();
         if (name == null || startDate == null || endDate == null) {
-            return true;
+            return false;
         } else {
-            if (checkDates(startDate, endDate)) {
-                return true;
+            if (!checkDates(startDate, endDate)) {
+                return false;
             }
         }
 
         List<QuestionGroup> questionGroups = survey.getQuestionGroups();
-        if (validateQuestionGroups(questionGroups)) {
-            return true;
+        if (!validateQuestionGroups(questionGroups)) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     private boolean checkDates(LocalDateTime startDate, LocalDateTime endDate) {
-        return dateInPast(startDate) || dateInPast(endDate) || endDateBeforeStartDate(startDate, endDate);
+        return dateTimeInFuture(startDate) && dateTimeInFuture(endDate) && startDateBeforeEndDate(startDate, endDate);
     }
 
-    private boolean endDateBeforeStartDate(LocalDateTime startDate, LocalDateTime endDate) {
-        return endDate.isBefore(startDate);
+    private boolean startDateBeforeEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return startDate.isBefore(endDate);
     }
 
-    private boolean dateInPast(LocalDateTime startDate) {
-        return startDate.isBefore(LocalDateTime.now());
+    private boolean dateTimeInFuture(LocalDateTime dateTime) {
+        return dateTime.isAfter(LocalDateTime.now());
     }
 
     private boolean validateQuestionGroups(List<QuestionGroup> questionGroups) {
         for (QuestionGroup questionGroup : questionGroups) {
             String title = questionGroup.getTitle();
             if (title == null) {
-                return true;
+                return false;
             }
 
             List<Question> questions = questionGroup.getQuestions();
-            if (validateQuestions(questions)) {
-                return true;
+            if (!validateQuestions(questions)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private boolean validateQuestions(List<Question> questions) {
         for (Question question : questions) {
             String text = question.getText();
             if (text == null) {
-                return true;
+                return false;
             }
             if (question.isHasCheckbox()) {
                 boolean required = question.isRequired();
                 CheckboxGroup checkboxGroup = question.getCheckboxGroup();
-                if (validateCheckboxGroup(checkboxGroup, required)) {
-                    return true;
+                if (!validateCheckboxGroup(checkboxGroup, required)) {
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private boolean validateCheckboxGroup(CheckboxGroup checkboxGroup, boolean required) {
         int minSelect = checkboxGroup.getMinSelect();
         int maxSelect = checkboxGroup.getMaxSelect();
-        if (checkMinMaxSelect(minSelect, maxSelect)) {
-            return true;
+        if (!checkMinMaxSelect(minSelect, maxSelect)) {
+            return false;
         }
 
         int numberOfCheckboxes = checkboxGroup.getCheckboxes().size();
         if (!checkboxGroup.isMultipleSelect() && (numberOfCheckboxes < 2)) {
-            return true;
+            return false;
         } else if (checkboxGroup.isMultipleSelect() && (numberOfCheckboxes < maxSelect)) {
-            return true;
+            return false;
         } else if (required && checkboxGroup.isMultipleSelect() && (minSelect < 1)) {
-            return true;
+            return false;
         }
 
         List<Checkbox> checkboxes = checkboxGroup.getCheckboxes();
-        if (validateCheckboxes(checkboxes)) {
-            return true;
+        if (!validateCheckboxes(checkboxes)) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     private boolean checkMinMaxSelect(int minSelect, int maxSelect) {
-        return (maxSelect < minSelect) || (minSelect < 0) || (maxSelect < 2);
+        return (minSelect <= maxSelect) && (0 <= minSelect) && (2 <= maxSelect);
     }
 
     private boolean validateCheckboxes(List<Checkbox> checkboxes) {
         for (Checkbox checkbox : checkboxes) {
             String text = checkbox.getText();
             if (text == null) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private boolean checkIfAnythingEmpty(Survey survey) {
