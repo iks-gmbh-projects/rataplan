@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -40,7 +41,7 @@ class SurveyServiceTest {
 
     @Test
     @DisplayName("Failed validation - Survey missing QuestionGroups")
-    void surveyIsMissingQuestionGroups_Failed() {
+    void surveyIsMissingQuestionGroups() {
         User user = new UserBuilder().createUser(1L, "Test Person");
 
         Survey survey = new SurveyBuilder()
@@ -51,7 +52,7 @@ class SurveyServiceTest {
 
     @Test
     @DisplayName("Failed validation - QuestionGroup missing Questions")
-    void questionGroupIsMissingQuestion_failed() {
+    void questionGroupIsMissingQuestion() {
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, false);
 
@@ -72,7 +73,7 @@ class SurveyServiceTest {
 
     @Test
     @DisplayName("Failed validation - No Checkboxes - No multipleSelect")
-    void questionNoCheckboxes_failed() {
+    void questionNoCheckboxes() {
         CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
                 .createCheckboxGroup(1L, false, 0, 2);
 
@@ -95,7 +96,7 @@ class SurveyServiceTest {
 
     @Test
     @DisplayName("Failed validation - Not enough Checkboxes - No multipleSelect")
-    void questionNotEnoughCheckboxes_failed() {
+    void questionNotEnoughCheckboxes() {
         Checkbox onlyCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
 
@@ -122,7 +123,7 @@ class SurveyServiceTest {
 
     @Test
     @DisplayName("Failed validation - Not enough Checkboxes - With multipleSelect (max: 4)")
-    void questionNotEnoughCheckboxes_multipleSelect_failed() {
+    void questionNotEnoughCheckboxesMultipleSelect() {
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
         Checkbox secondCheckbox = new CheckboxBuilder()
@@ -146,6 +147,252 @@ class SurveyServiceTest {
 
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - Survey name missing")
+    void surveyBasicInfoMissing() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, false);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        survey.setName(null);
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - endDate before startDate")
+    void surveyEndDateBeforeStartDate() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, false);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        survey.setEndDate(survey.getStartDate().minusDays(2));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - startDate in past")
+    void startDateInPast() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, false);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        survey.setStartDate(LocalDateTime.of(2000, 1, 1, 12, 0));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - QuestionGroup missing title")
+    void questionGroupIsMissingTitle() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, false);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, null);
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - Question missing text")
+    void questionIsMissingText() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, null, false, false);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - minSelect > maxSelect")
+    void minSelectGreaterThanMaxSelect() {
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .createCheckbox(1L, "First Test Checkbox", false);
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .createCheckbox(2L, "Second Test Checkbox", true);
+        Checkbox thirdCheckbox = new CheckboxBuilder()
+                .createCheckbox(3L, "Third Test Checkbox", true);
+
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .createCheckboxGroup(1L, true, 3, 2);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - minSelect < 0")
+    void minSelectLessThanZero() {
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .createCheckbox(1L, "First Test Checkbox", false);
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .createCheckbox(2L, "Second Test Checkbox", true);
+        Checkbox thirdCheckbox = new CheckboxBuilder()
+                .createCheckbox(3L, "Third Test Checkbox", true);
+
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .createCheckboxGroup(1L, true, -1, 2);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - maxSelect < 2")
+    void maxSelectLessThanTwo() {
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .createCheckbox(1L, "First Test Checkbox", false);
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .createCheckbox(2L, "Second Test Checkbox", true);
+        Checkbox thirdCheckbox = new CheckboxBuilder()
+                .createCheckbox(3L, "Third Test Checkbox", true);
+
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .createCheckboxGroup(1L, true, 0, 1);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - Checkbox missing text")
+    void checkboxIsMissingText() {
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .createCheckbox(1L, "First Test Checkbox", false);
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .createCheckbox(2L, null, true);
+        Checkbox thirdCheckbox = new CheckboxBuilder()
+                .createCheckbox(3L, "Third Test Checkbox", true);
+
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .createCheckboxGroup(1L, true, 0, 2);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+        question.setCheckboxGroup(checkboxGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
+    @DisplayName("Failed validation - Question required but minSelect = 0")
+    void requiredButMinSelectZero() {
+        Checkbox firstCheckbox = new CheckboxBuilder()
+                .createCheckbox(1L, "First Test Checkbox", false);
+        Checkbox secondCheckbox = new CheckboxBuilder()
+                .createCheckbox(2L, "Second Test Checkbox", true);
+        Checkbox thirdCheckbox = new CheckboxBuilder()
+                .createCheckbox(3L, "Third Test Checkbox", true);
+
+        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
+                .createCheckboxGroup(1L, true, 0, 2);
+        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", true, true);
+        question.setCheckboxGroup(checkboxGroup);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(surveyService.validate(survey));
@@ -184,7 +431,7 @@ class SurveyServiceTest {
 
     @Test
     @DisplayName("Successful validation - Saving complete survey")
-    void surveyIsComplete_Successful() {
+    void surveyIsComplete() {
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
         Checkbox secondCheckbox = new CheckboxBuilder()
