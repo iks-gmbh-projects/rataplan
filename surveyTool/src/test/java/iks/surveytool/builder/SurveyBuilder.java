@@ -1,6 +1,7 @@
 package iks.surveytool.builder;
 
 import iks.surveytool.entities.Survey;
+import iks.surveytool.entities.User;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -20,12 +21,27 @@ public class SurveyBuilder {
         Survey newSurvey = new Survey();
         newSurvey.setId(id);
         newSurvey.setName(name);
+        setDefaults(newSurvey);
+        return newSurvey;
+    }
+
+    public Survey createSurveyWithUserAndDefaultDate(Long id,
+                                                     String name,
+                                                     User user) {
+        Survey newSurvey = new Survey();
+        newSurvey.setId(id);
+        newSurvey.setName(name);
+        newSurvey.setUser(user);
+        setDefaults(newSurvey);
+        return newSurvey;
+    }
+
+    private void setDefaults(Survey newSurvey) {
         newSurvey.setDescription(description);
         newSurvey.setStartDate(startDate);
         newSurvey.setEndDate(endDate);
         newSurvey.setOpenAccess(openAccess);
         newSurvey.setAccessId(accessId);
         newSurvey.setQuestionGroups(new ArrayList<>());
-        return newSurvey;
     }
 }
