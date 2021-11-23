@@ -16,6 +16,16 @@ public class SurveyBuilder {
     String accessId = "Test ID";
     URL link;
 
+    public Survey createDefaultSurvey() {
+        Survey newSurvey = new Survey();
+        User user = new User("Test Person");
+        newSurvey.setId(1L);
+        newSurvey.setName("Test Survey");
+        newSurvey.setUser(user);
+        setDefaults(newSurvey);
+        return newSurvey;
+    }
+
     public Survey createSurveyWithDefaultDate(Long id,
                                               String name) {
         Survey newSurvey = new Survey();
