@@ -129,11 +129,10 @@ public class SurveyService {
     }
 
     private boolean checkIfDataIsValid(Survey survey) {
-        User user = survey.getUser();
         String name = survey.getName();
         LocalDateTime startDate = survey.getStartDate();
         LocalDateTime endDate = survey.getEndDate();
-        if (user == null || name == null || startDate == null || endDate == null) {
+        if (name == null || startDate == null || endDate == null) {
             return false;
         } else {
             if (!checkDates(startDate, endDate)) {
@@ -232,6 +231,11 @@ public class SurveyService {
     }
 
     private boolean checkIfAnythingEmpty(Survey survey) {
+        User user = survey.getUser();
+        if (user == null) {
+            return true;
+        }
+
         List<QuestionGroup> questionGroups = survey.getQuestionGroups();
         if (questionGroups.isEmpty()) {
             return true;
