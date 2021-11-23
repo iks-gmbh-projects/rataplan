@@ -179,10 +179,12 @@ public class Mapper {
 
         // Need to fetch user from db for hibernate to recognize it
         Long userId = surveyDTO.getUserId();
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            newSurvey.setUser(user);
+        if (userId != null) {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                newSurvey.setUser(user);
+            }
         }
 
         return newSurvey;
@@ -295,17 +297,21 @@ public class Mapper {
         Answer answer = new Answer(text);
 
         Long userId = answerDTO.getUserId();
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            answer.setUser(user);
+        if (userId != null) {
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                answer.setUser(user);
+            }
         }
 
         Long questionId = answerDTO.getQuestionId();
-        Optional<Question> questionOptional = questionRepository.findById(questionId);
-        if (questionOptional.isPresent()) {
-            Question question = questionOptional.get();
-            answer.setQuestion(question);
+        if (questionId != null) {
+            Optional<Question> questionOptional = questionRepository.findById(questionId);
+            if (questionOptional.isPresent()) {
+                Question question = questionOptional.get();
+                answer.setQuestion(question);
+            }
         }
 
         Long checkboxId = answerDTO.getCheckboxId();
