@@ -57,24 +57,18 @@ public class AnswerService {
     private boolean validateAnswer(Answer answer) {
         User user = answer.getUser();
         Question question = answer.getQuestion();
-        if (user == null || question == null) {
+        Checkbox checkbox = answer.getCheckbox();
+        if (user == null || question == null || (question.isHasCheckbox() && checkbox == null)) {
             return false;
-        } else if (question.isHasCheckbox()) {
-            Checkbox checkbox = answer.getCheckbox();
-            if (checkbox == null) {
-                return false;
-            } else if (checkbox.isHasTextField()) {
-                String text = answer.getText();
-                if (text == null || text.length() > 1500) {
-                    return false;
-                }
-            }
-        } else if (question.isRequired() && !question.isHasCheckbox()) {
-            String text = answer.getText();
-            if (text == null || text.length() > 1500 || text.equals("")) {
-                return false;
-            }
+        }
+        if (!question.isHasCheckbox() || checkbox.isHasTextField()) {
+            return checkIfAnswerTextValid(answer);
         }
         return true;
+    }
+
+    private boolean checkIfAnswerTextValid(Answer answer) {
+        String text = answer.getText();
+        return text != null && text.length() <= 1500;
     }
 }
