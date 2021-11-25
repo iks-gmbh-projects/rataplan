@@ -130,9 +130,10 @@ public class SurveyService {
 
     private boolean checkIfDataIsValid(Survey survey) {
         String name = survey.getName();
+        String description = survey.getDescription();
         LocalDateTime startDate = survey.getStartDate();
         LocalDateTime endDate = survey.getEndDate();
-        if (name == null || startDate == null || endDate == null) {
+        if (name == null || name.length() > 255 || description.length() > 3000 || startDate == null || endDate == null) {
             return false;
         } else {
             if (!checkDates(startDate, endDate)) {
@@ -163,7 +164,7 @@ public class SurveyService {
     private boolean validateQuestionGroups(List<QuestionGroup> questionGroups) {
         for (QuestionGroup questionGroup : questionGroups) {
             String title = questionGroup.getTitle();
-            if (title == null) {
+            if (title == null || title.length() > 255) {
                 return false;
             }
 
@@ -178,7 +179,7 @@ public class SurveyService {
     private boolean validateQuestions(List<Question> questions) {
         for (Question question : questions) {
             String text = question.getText();
-            if (text == null) {
+            if (text == null || text.length() > 500) {
                 return false;
             }
             if (question.isHasCheckbox()) {
@@ -223,7 +224,7 @@ public class SurveyService {
     private boolean validateCheckboxes(List<Checkbox> checkboxes) {
         for (Checkbox checkbox : checkboxes) {
             String text = checkbox.getText();
-            if (text == null) {
+            if (text == null || text.length() > 255) {
                 return false;
             }
         }

@@ -65,13 +65,13 @@ public class AnswerService {
                 return false;
             } else if (checkbox.isHasTextField()) {
                 String text = answer.getText();
-                if (text == null) {
+                if (text == null || text.length() > 1500) {
                     return false;
                 }
             }
         } else if (question.isRequired() && !question.isHasCheckbox()) {
             String text = answer.getText();
-            if (text == null || text.equals("")) {
+            if (text == null || text.length() > 1500 || text.equals("")) {
                 return false;
             }
         }
