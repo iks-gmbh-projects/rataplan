@@ -119,39 +119,36 @@ public class SurveyService {
     }
 
     public boolean validate(Survey survey) {
-        if (checkIfAnythingEmpty(survey)) {
-            return false;
-        } else if (!checkIfDataIsValid(survey)) {
-            return false;
-        } else {
-            return true;
-        }
+        return checkIfSurveyComplete(survey) && checkIfDataIsValid(survey);
     }
 
     private boolean checkIfDataIsValid(Survey survey) {
+        List<QuestionGroup> questionGroups = survey.getQuestionGroups();
+        return validateSurvey(survey) && validateQuestionGroups(questionGroups);
+    }
+
+    private boolean validateSurvey(Survey survey) {
+        return checkSurveyNameAndDescription(survey) && checkSurveyTimeframe(survey);
+    }
+
+    private boolean checkSurveyNameAndDescription(Survey survey) {
         String name = survey.getName();
         String description = survey.getDescription();
+        return name != null
+                && name.length() <= 255
+                && description.length() <= 3000;
+    }
+
+    private boolean checkSurveyTimeframe(Survey survey) {
         LocalDateTime startDate = survey.getStartDate();
         LocalDateTime endDate = survey.getEndDate();
-        if (name == null || name.length() > 255 || description.length() > 3000 || startDate == null || endDate == null) {
-            return false;
-        } else {
-            if (!checkDates(startDate, endDate)) {
-                return false;
-            }
-        }
-
-        List<QuestionGroup> questionGroups = survey.getQuestionGroups();
-        if (!validateQuestionGroups(questionGroups)) {
-            return false;
-        }
-
-        return true;
+        return startDate != null
+                && endDate != null
+                && dateTimeInFuture(startDate)
+                && dateTimeInFuture(endDate)
+                && startDateBeforeEndDate(startDate, endDate);
     }
 
-    private boolean checkDates(LocalDateTime startDate, LocalDateTime endDate) {
-        return dateTimeInFuture(startDate) && dateTimeInFuture(endDate) && startDateBeforeEndDate(startDate, endDate);
-    }
 
     private boolean startDateBeforeEndDate(LocalDateTime startDate, LocalDateTime endDate) {
         return startDate.isBefore(endDate);
@@ -163,25 +160,25 @@ public class SurveyService {
 
     private boolean validateQuestionGroups(List<QuestionGroup> questionGroups) {
         for (QuestionGroup questionGroup : questionGroups) {
-            String title = questionGroup.getTitle();
-            if (title == null || title.length() > 255) {
-                return false;
-            }
-
             List<Question> questions = questionGroup.getQuestions();
-            if (!validateQuestions(questions)) {
+            if (!validateQuestionGroup(questionGroup) || !validateQuestions(questions)) {
                 return false;
             }
         }
         return true;
     }
 
+    private boolean validateQuestionGroup(QuestionGroup questionGroup) {
+        String title = questionGroup.getTitle();
+        return title != null && title.length() <= 255;
+    }
+
     private boolean validateQuestions(List<Question> questions) {
         for (Question question : questions) {
-            String text = question.getText();
-            if (text == null || text.length() > 500) {
+            if (!validateQuestion(question)) {
                 return false;
             }
+
             if (question.isHasCheckbox()) {
                 boolean required = question.isRequired();
                 CheckboxGroup checkboxGroup = question.getCheckboxGroup();
@@ -193,77 +190,76 @@ public class SurveyService {
         return true;
     }
 
-    private boolean validateCheckboxGroup(CheckboxGroup checkboxGroup, boolean required) {
-        int minSelect = checkboxGroup.getMinSelect();
-        int maxSelect = checkboxGroup.getMaxSelect();
-        if (!checkMinMaxSelect(minSelect, maxSelect)) {
-            return false;
-        }
-
-        int numberOfCheckboxes = checkboxGroup.getCheckboxes().size();
-        if (!checkboxGroup.isMultipleSelect() && (numberOfCheckboxes < 2)) {
-            return false;
-        } else if (checkboxGroup.isMultipleSelect() && (numberOfCheckboxes < maxSelect)) {
-            return false;
-        } else if (required && checkboxGroup.isMultipleSelect() && (minSelect < 1)) {
-            return false;
-        }
-
-        List<Checkbox> checkboxes = checkboxGroup.getCheckboxes();
-        if (!validateCheckboxes(checkboxes)) {
-            return false;
-        }
-
-        return true;
+    private boolean validateQuestion(Question question) {
+        String text = question.getText();
+        return text != null && text.length() <= 500;
     }
 
-    private boolean checkMinMaxSelect(int minSelect, int maxSelect) {
-        return (minSelect <= maxSelect) && (0 <= minSelect) && (2 <= maxSelect);
+    private boolean validateCheckboxGroup(CheckboxGroup checkboxGroup, boolean questionRequired) {
+        List<Checkbox> checkboxes = checkboxGroup.getCheckboxes();
+        return checkMinMaxSelect(checkboxGroup, questionRequired)
+                && checkNumberOfCheckboxes(checkboxGroup)
+                && validateCheckboxes(checkboxes);
+    }
+
+    private boolean checkMinMaxSelect(CheckboxGroup checkboxGroup, boolean questionRequired) {
+        int minSelect = checkboxGroup.getMinSelect();
+        int maxSelect = checkboxGroup.getMaxSelect();
+        boolean multipleSelect = checkboxGroup.isMultipleSelect();
+        return minSelect <= maxSelect
+                && minSelect >= 0
+                && maxSelect >= 2
+                && !(questionRequired && multipleSelect && minSelect < 1);
+    }
+
+    private boolean checkNumberOfCheckboxes(CheckboxGroup checkboxGroup) {
+        int numberOfCheckboxes = checkboxGroup.getCheckboxes().size();
+        int maxSelect = checkboxGroup.getMaxSelect();
+        boolean multipleSelect = checkboxGroup.isMultipleSelect();
+        return (!multipleSelect && numberOfCheckboxes >= 2) || (multipleSelect && numberOfCheckboxes >= maxSelect);
     }
 
     private boolean validateCheckboxes(List<Checkbox> checkboxes) {
         for (Checkbox checkbox : checkboxes) {
-            String text = checkbox.getText();
-            if (text == null || text.length() > 255) {
+            if (!validateCheckbox(checkbox)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean checkIfAnythingEmpty(Survey survey) {
-        User user = survey.getUser();
-        if (user == null) {
-            return true;
-        }
-
-        List<QuestionGroup> questionGroups = survey.getQuestionGroups();
-        if (questionGroups.isEmpty()) {
-            return true;
-        } else {
-            for (QuestionGroup questionGroup : questionGroups) {
-                List<Question> questions = questionGroup.getQuestions();
-                if (questions.isEmpty()) {
-                    return true;
-                } else {
-                    if (checkQuestions(questions)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+    private boolean validateCheckbox(Checkbox checkbox) {
+        String text = checkbox.getText();
+        return text != null && text.length() <= 255;
     }
 
-    private boolean checkQuestions(List<Question> questions) {
+    private boolean checkIfSurveyComplete(Survey survey) {
+        User user = survey.getUser();
+        List<QuestionGroup> questionGroups = survey.getQuestionGroups();
+        return user != null
+                && !questionGroups.isEmpty()
+                && checkIfQuestionGroupsComplete(questionGroups);
+    }
+
+    private boolean checkIfQuestionGroupsComplete(List<QuestionGroup> questionGroups) {
+        for (QuestionGroup questionGroup : questionGroups) {
+            List<Question> questions = questionGroup.getQuestions();
+            if (questions.isEmpty() || !checkIfQuestionsComplete(questions)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkIfQuestionsComplete(List<Question> questions) {
         for (Question question : questions) {
             if (question.isHasCheckbox()) {
                 CheckboxGroup checkboxGroup = question.getCheckboxGroup();
-                if (checkboxGroup.getCheckboxes().isEmpty()) {
-                    return true;
+                if (checkboxGroup == null || checkboxGroup.getCheckboxes().isEmpty()) {
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 }
