@@ -153,6 +153,25 @@ class SurveyServiceTest {
     }
 
     @Test
+    @DisplayName("Failed validation - Question with hasCheckbox == true, but no CheckboxGroup")
+    void questionHasCheckboxTrueButNoCheckboxGroup() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+
+        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(1L, "QuestionGroup with Question");
+        questionGroupWithQuestion.setQuestions(List.of(question));
+
+        User user = new UserBuilder().createUser(1L, "Test Person");
+
+        Survey survey = new SurveyBuilder()
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
+        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+
+        assertFalse(surveyService.validate(survey));
+    }
+
+    @Test
     @DisplayName("Failed validation - Survey name missing")
     void surveyBasicInfoMissing() {
         Question question = new QuestionBuilder()
