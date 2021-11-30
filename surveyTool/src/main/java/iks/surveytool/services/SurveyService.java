@@ -6,10 +6,12 @@ import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.*;
 import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -19,6 +21,7 @@ import java.util.Random;
 public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final Mapper mapper;
+    private final ModelMapper modelMapper;
 
     public Optional<Survey> findSurveyByParticipationId(String participationId) {
         return surveyRepository.findSurveyByParticipationId(participationId);
@@ -34,14 +37,14 @@ public class SurveyService {
     }
 
     public SurveyOverviewDTO createSurveyDtoFromSurvey(Survey savedSurvey) {
-        return mapper.toSurveyDto(savedSurvey, true);
+        return modelMapper.map(savedSurvey, CompleteSurveyDTO.class);
     }
 
     public SurveyOverviewDTO createSurveyDtoByAccessId(String accessId, boolean complete) {
         Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
-            return mapper.toSurveyDto(survey, complete);
+            return modelMapper.map(survey, CompleteSurveyDTO.class);
         }
         return null;
     }
@@ -54,11 +57,11 @@ public class SurveyService {
             LocalDateTime surveyEndDate = survey.getEndDate();
             LocalDateTime currentDateTime = LocalDateTime.now();
             if (currentDateTime.isAfter(surveyStartDate) && currentDateTime.isBefore(surveyEndDate)) {
-                return mapper.toSurveyDto(survey, true);
+                return modelMapper.map(survey, CompleteSurveyDTO.class);
             } else {
                 // If current time is not within start- and endDate: return survey without questions to fill information
                 // in front-end
-                return mapper.toSurveyDto(survey, false);
+                return modelMapper.map(survey, SurveyOverviewDTO.class);
             }
         } else {
             return null;
@@ -67,11 +70,17 @@ public class SurveyService {
 
     public List<SurveyOverviewDTO> createSurveyDtosByOpenIsTrue() {
         List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
-        return mapper.toOpenAccessSurveyDtoList(openAccessSurveys);
-
+        List<SurveyOverviewDTO> surveyDTOs = new ArrayList<>();
+        for (Survey survey : openAccessSurveys) {
+            SurveyOverviewDTO surveyOverviewDTO = modelMapper.map(survey, SurveyOverviewDTO.class);
+            surveyDTOs.add(surveyOverviewDTO);
+        }
+        return surveyDTOs;
     }
 
     public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
+//        TODO: Need to skip mapping of user?
+//        return modelMapper.map(surveyDTO, Survey.class);
         return mapper.createSurveyFromDto(surveyDTO);
     }
 
