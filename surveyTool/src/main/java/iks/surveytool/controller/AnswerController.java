@@ -20,7 +20,7 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<List<AnswerDTO>> postAnswers(@RequestBody AnswerDTO[] answerDTOs) {
         List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
         List<Answer> answerList = answerService.createAnswersFromDtos(answerDTOList);
@@ -33,8 +33,8 @@ public class AnswerController {
         }
     }
 
-    @GetMapping("/question")
-    public ResponseEntity<List<AnswerDTO>> getAnswersByQuestionId(@RequestParam Long questionId) {
+    @GetMapping("/questions/{questionId}")
+    public ResponseEntity<List<AnswerDTO>> getAnswersByQuestionId(@PathVariable Long questionId) {
         List<AnswerDTO> answerDTOs = answerService.createAnswerDtos(questionId);
         return ResponseEntity.ok(answerDTOs);
     }
