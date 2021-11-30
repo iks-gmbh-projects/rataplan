@@ -19,7 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<UserDTO> postUser(@RequestBody UserDTO userDTO) {
         User newUser = userService.createUserFromDto(userDTO);
         if (userService.validate(newUser)) {
@@ -31,8 +31,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/survey")
-    public ResponseEntity<List<UserDTO>> getParticipatingUsersBySurveyId(@RequestParam Long surveyId) {
+    @GetMapping("/surveys/{surveyId}")
+    public ResponseEntity<List<UserDTO>> getParticipatingUsersBySurveyId(@PathVariable Long surveyId) {
         List<UserDTO> users = userService.createParticipatingUserDtosBySurveyId(surveyId);
         return ResponseEntity.ok(users);
     }
