@@ -4,6 +4,7 @@ import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.services.SurveyService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,10 @@ import java.util.List;
 @Controller
 @RequestMapping("/surveys")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class SurveyController {
 
     private final SurveyService surveyService;
-
-    public SurveyController(SurveyService surveyService) {
-        this.surveyService = surveyService;
-    }
 
     @PostMapping("")
     public ResponseEntity<SurveyOverviewDTO> postSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
