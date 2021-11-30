@@ -1,18 +1,19 @@
 package iks.surveytool.dtos;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CheckboxDTO {
+@NoArgsConstructor
+public class CheckboxDTO extends AbstractDTO {
 
-    private Long id;
     private String text;
     private boolean hasTextField;
-    
+
     public CheckboxDTO(Long id, String text, boolean hasTextField) {
-        this.id = id;
+        super(id);
         this.text = text;
         this.hasTextField = hasTextField;
     }

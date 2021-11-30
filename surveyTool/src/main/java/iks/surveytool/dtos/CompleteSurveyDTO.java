@@ -2,6 +2,7 @@ package iks.surveytool.dtos;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class CompleteSurveyDTO extends SurveyOverviewDTO {
 
     private List<QuestionGroupDTO> questionGroups;

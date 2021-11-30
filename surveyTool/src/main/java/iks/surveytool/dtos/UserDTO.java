@@ -1,17 +1,18 @@
 package iks.surveytool.dtos;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
+@NoArgsConstructor
+public class UserDTO extends AbstractDTO {
 
-    private Long id;
     private String name;
 
     public UserDTO(Long id, String name) {
-        this.id = id;
+        super(id);
         this.name = name;
     }
 }

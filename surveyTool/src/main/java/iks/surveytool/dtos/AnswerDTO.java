@@ -7,9 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AnswerDTO {
+public class AnswerDTO extends AbstractDTO {
 
-    private Long id;
     private String text;
 
     private Long userId;
@@ -19,14 +18,14 @@ public class AnswerDTO {
     private Long questionId;
 
     public AnswerDTO(Long id, String text, Long userId, String userName) {
-        this.id = id;
+        super(id);
         this.text = text;
         this.userId = userId;
         this.userName = userName;
     }
 
     public AnswerDTO(Long id, String text, Long userId, String userName, Long checkboxId) {
-        this.id = id;
+        super(id);
         this.text = text;
         this.userId = userId;
         this.userName = userName;

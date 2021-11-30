@@ -1,21 +1,22 @@
 package iks.surveytool.dtos;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
-public class QuestionGroupDTO {
+@NoArgsConstructor
+public class QuestionGroupDTO extends AbstractDTO {
 
-    private Long id;
     private String title;
 
     private List<QuestionDTO> questions;
 
     public QuestionGroupDTO(Long id, String title, List<QuestionDTO> questions) {
-        this.id = id;
+        super(id);
         this.title = title;
         this.questions = questions;
     }

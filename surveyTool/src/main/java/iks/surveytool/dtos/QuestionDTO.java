@@ -7,24 +7,23 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestionDTO {
+public class QuestionDTO extends AbstractDTO {
 
-    private Long id;
     private String text;
     private boolean required;
     private boolean hasCheckbox;
-    
+
     private CheckboxGroupDTO checkboxGroup;
 
     public QuestionDTO(Long id, String text, boolean required, boolean hasCheckbox) {
-        this.id = id;
+        super(id);
         this.text = text;
         this.required = required;
         this.hasCheckbox = hasCheckbox;
     }
 
     public QuestionDTO(Long id, String text, boolean required, boolean hasCheckbox, CheckboxGroupDTO checkboxGroup) {
-        this.id = id;
+        super(id);
         this.text = text;
         this.required = required;
         this.hasCheckbox = hasCheckbox;
