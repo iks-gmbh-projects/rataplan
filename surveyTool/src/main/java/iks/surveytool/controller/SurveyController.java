@@ -33,8 +33,8 @@ public class SurveyController {
         }
     }
 
-    @GetMapping("{accessId}")
-    public ResponseEntity<SurveyOverviewDTO> getSurveyByAccessId(@PathVariable String accessId) {
+    @GetMapping("")
+    public ResponseEntity<SurveyOverviewDTO> getSurveyByAccessId(@RequestParam String accessId) {
         SurveyOverviewDTO surveyOverviewDTO = surveyService.createSurveyDtoByAccessId(accessId, true);
         if (surveyOverviewDTO != null) {
             return ResponseEntity.ok(surveyOverviewDTO);
@@ -43,7 +43,7 @@ public class SurveyController {
         }
     }
 
-    @GetMapping("")
+    @GetMapping("/participate")
     public ResponseEntity<SurveyOverviewDTO> getSurveyByParticipationId(@RequestParam String participationId) {
         SurveyOverviewDTO surveyDto = surveyService.createSurveyDtoByParticipationId(participationId);
         if (surveyDto != null) {
