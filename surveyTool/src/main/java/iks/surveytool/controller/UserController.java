@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDTO> postUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         User newUser = userService.createUserFromDto(userDTO);
         if (userService.validate(newUser)) {
             User savedUser = userService.saveUser(newUser);
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/surveys/{surveyId}")
-    public ResponseEntity<List<UserDTO>> getParticipatingUsersBySurveyId(@PathVariable Long surveyId) {
+    public ResponseEntity<List<UserDTO>> findParticipatingUsersBySurveyId(@PathVariable Long surveyId) {
         List<UserDTO> users = userService.createParticipatingUserDtosBySurveyId(surveyId);
         return ResponseEntity.ok(users);
     }

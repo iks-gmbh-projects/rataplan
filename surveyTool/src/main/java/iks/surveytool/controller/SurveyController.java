@@ -21,7 +21,7 @@ public class SurveyController {
     private final SurveyService surveyService;
 
     @PostMapping
-    public ResponseEntity<SurveyOverviewDTO> postSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
+    public ResponseEntity<SurveyOverviewDTO> createSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
         Survey newSurvey = surveyService.createSurveyFromDto(surveyDTO);
         if (surveyService.validate(newSurvey)) {
             surveyService.generateIds(newSurvey);
@@ -34,7 +34,7 @@ public class SurveyController {
     }
 
     @GetMapping(params = {"accessId"})
-    public ResponseEntity<SurveyOverviewDTO> getSurveyByAccessId(@RequestParam String accessId) {
+    public ResponseEntity<SurveyOverviewDTO> findSurveyByAccessId(@RequestParam String accessId) {
         SurveyOverviewDTO surveyOverviewDTO = surveyService.createSurveyDtoByAccessId(accessId, true);
         if (surveyOverviewDTO != null) {
             return ResponseEntity.ok(surveyOverviewDTO);
@@ -44,7 +44,7 @@ public class SurveyController {
     }
 
     @GetMapping(params = {"participationId"})
-    public ResponseEntity<SurveyOverviewDTO> getSurveyByParticipationId(@RequestParam String participationId) {
+    public ResponseEntity<SurveyOverviewDTO> findSurveyByParticipationId(@RequestParam String participationId) {
         SurveyOverviewDTO surveyDto = surveyService.createSurveyDtoByParticipationId(participationId);
         if (surveyDto != null) {
             if (surveyDto instanceof CompleteSurveyDTO) {
@@ -60,7 +60,7 @@ public class SurveyController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SurveyOverviewDTO>> getOpenAccessSurveys() {
+    public ResponseEntity<List<SurveyOverviewDTO>> findOpenAccessSurveys() {
         List<SurveyOverviewDTO> openAccessSurveys = surveyService.createSurveyDtosByOpenIsTrue();
         return ResponseEntity.ok(openAccessSurveys);
     }
