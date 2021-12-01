@@ -1,13 +1,10 @@
-package iks.surveytool.services;
+package iks.surveytool.validation;
 
+import iks.surveytool.builder.*;
 import iks.surveytool.entities.*;
-import iks.surveytool.repositories.SurveyRepository;
-import iks.surveytool.utils.builder.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -15,29 +12,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Testing SurveyService")
-class SurveyServiceTest {
-
-    @Mock
-    private SurveyRepository surveyRepository;
-
-    @InjectMocks
-    private SurveyService surveyService;
-
-    @Test
-    @DisplayName("Adding Survey")
-    void addSurvey() {
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "Test Umfrage");
-        when(surveyRepository.save(survey)).thenReturn(survey);
-
-        surveyService.saveSurvey(survey);
-
-        verify(surveyRepository, times(1)).save(survey);
-    }
+@DisplayName("Testing validation of entities")
+class ValidationTest {
 
     @Test
     @DisplayName("Failed validation - Survey missing QuestionGroups")
@@ -47,7 +25,7 @@ class SurveyServiceTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey without QuestionGroup", user);
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -68,7 +46,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with empty QuestionGroup", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion, questionGroupWithoutQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -91,7 +69,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with no checkboxes for question", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -118,7 +96,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -149,7 +127,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -168,7 +146,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -187,7 +165,7 @@ class SurveyServiceTest {
 
         survey.setName(null);
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -206,7 +184,7 @@ class SurveyServiceTest {
 
         survey.setEndDate(survey.getStartDate().minusDays(2));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -225,7 +203,7 @@ class SurveyServiceTest {
 
         survey.setStartDate(LocalDateTime.of(2000, 1, 1, 12, 0));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -242,7 +220,7 @@ class SurveyServiceTest {
                 .createDefaultSurvey();
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -259,7 +237,7 @@ class SurveyServiceTest {
                 .createDefaultSurvey();
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -290,7 +268,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -321,7 +299,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -352,7 +330,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -383,7 +361,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -414,7 +392,7 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -445,7 +423,7 @@ class SurveyServiceTest {
                 .createSurveyWithDefaultDate(1L, "User missing");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(surveyService.validate(survey));
+        assertFalse(survey.validate());
     }
 
     @Test
@@ -478,6 +456,6 @@ class SurveyServiceTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertTrue(surveyService.validate(survey));
+        assertTrue(survey.validate());
     }
 }

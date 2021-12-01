@@ -34,4 +34,38 @@ public class CheckboxGroup extends AbstractEntity {
         this.maxSelect = maxSelect;
         this.checkboxes = checkboxes;
     }
+
+    boolean checkIfComplete() {
+        return !checkboxes.isEmpty();
+    }
+
+    boolean validate(boolean questionRequired) {
+        return this.validateData(questionRequired) && this.validateCheckboxes();
+    }
+
+    private boolean validateData(boolean questionRequired) {
+        return this.checkMinMaxSelect(questionRequired) && this.checkNumberOfCheckboxes();
+    }
+
+    private boolean checkMinMaxSelect(boolean questionRequired) {
+        return this.minSelect <= this.maxSelect
+                && this.minSelect >= 0
+                && this.maxSelect >= 2
+                && !(questionRequired && this.multipleSelect && this.minSelect < 1);
+    }
+
+    private boolean checkNumberOfCheckboxes() {
+        int numberOfCheckboxes = this.checkboxes.size();
+        return (!this.multipleSelect && numberOfCheckboxes >= 2) ||
+                (this.multipleSelect && numberOfCheckboxes >= this.maxSelect);
+    }
+
+    private boolean validateCheckboxes() {
+        for (Checkbox checkbox : this.checkboxes) {
+            if (!checkbox.validate()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

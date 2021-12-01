@@ -29,4 +29,8 @@ public class User extends AbstractEntity {
     public User(String name) {
         this.name = name;
     }
+
+    public boolean validate() {
+        return this.name != null && this.name.length() <= 255;
+    }
 }

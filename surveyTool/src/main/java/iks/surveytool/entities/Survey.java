@@ -57,4 +57,63 @@ public class Survey extends AbstractEntity {
         this.participationId = participationId;
         this.questionGroups = questionGroups;
     }
+
+    public boolean validate() {
+        return this.checkIfComplete() && checkIfDataIsValid();
+    }
+
+    private boolean checkIfComplete() {
+        return this.user != null
+                && !this.questionGroups.isEmpty()
+                && this.checkIfQuestionGroupsComplete();
+    }
+
+    private boolean checkIfQuestionGroupsComplete() {
+        for (QuestionGroup questionGroup : this.questionGroups) {
+            if (!questionGroup.checkIfComplete()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkIfDataIsValid() {
+        return this.validateData() && this.validateQuestionGroups();
+    }
+
+    private boolean validateData() {
+        return this.checkNameAndDescription() && this.checkTimeframe();
+    }
+
+    private boolean checkNameAndDescription() {
+        return this.name != null
+                && this.name.length() <= 255
+                && this.description.length() <= 3000;
+    }
+
+    private boolean checkTimeframe() {
+        return this.startDate != null
+                && this.endDate != null
+                && dateTimeInFuture(this.startDate)
+                && dateTimeInFuture(this.endDate)
+                && startDateBeforeEndDate();
+    }
+
+    private boolean startDateBeforeEndDate() {
+        return this.startDate.isBefore(this.endDate);
+    }
+
+    private boolean dateTimeInFuture(LocalDateTime dateTime) {
+        return dateTime.isAfter(LocalDateTime.now());
+    }
+
+    private boolean validateQuestionGroups() {
+        for (QuestionGroup questionGroup : this.questionGroups) {
+            if (!questionGroup.validate()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

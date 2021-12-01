@@ -32,4 +32,18 @@ public class Answer extends AbstractEntity {
     public Answer(String text) {
         this.text = text;
     }
+
+    public boolean validate() {
+        if (this.user == null || this.question == null || (this.question.isHasCheckbox() && this.checkbox == null)) {
+            return false;
+        }
+        if (!this.question.isHasCheckbox() || this.checkbox.isHasTextField()) {
+            return this.checkIfAnswerTextValid();
+        }
+        return true;
+    }
+
+    private boolean checkIfAnswerTextValid() {
+        return this.text != null && this.text.length() <= 1500;
+    }
 }
