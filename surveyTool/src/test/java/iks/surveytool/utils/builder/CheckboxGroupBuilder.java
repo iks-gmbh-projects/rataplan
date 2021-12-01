@@ -1,4 +1,4 @@
-package iks.surveytool.builder;
+package iks.surveytool.utils.builder;
 
 import iks.surveytool.entities.CheckboxGroup;
 
