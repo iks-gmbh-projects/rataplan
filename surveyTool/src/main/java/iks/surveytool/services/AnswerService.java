@@ -8,6 +8,7 @@ import iks.surveytool.entities.Question;
 import iks.surveytool.entities.User;
 import iks.surveytool.repositories.AnswerRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,18 +19,24 @@ import java.util.List;
 public class AnswerService {
     private final AnswerRepository answerRepository;
     private final Mapper mapper;
+    private final ModelMapper modelMapper;
 
     public List<Answer> findAnswersByQuestionId(Long questionId) {
         return answerRepository.findAllByQuestion_Id(questionId);
     }
 
     public List<AnswerDTO> createAnswerDtos(List<Answer> answers) {
-        return mapper.toAnswerDtoList(answers);
+        List<AnswerDTO> answerDTOS = new ArrayList<>();
+        for (Answer answer : answers) {
+            AnswerDTO answerDTO = modelMapper.map(answer, AnswerDTO.class);
+            answerDTOS.add(answerDTO);
+        }
+        return answerDTOS;
     }
 
     public List<AnswerDTO> createAnswerDtos(Long questionId) {
         List<Answer> answers = findAnswersByQuestionId(questionId);
-        return mapper.toAnswerDtoList(answers);
+        return createAnswerDtos(answers);
     }
 
     public List<Answer> createAnswersFromDtos(List<AnswerDTO> answerDTOList) {
