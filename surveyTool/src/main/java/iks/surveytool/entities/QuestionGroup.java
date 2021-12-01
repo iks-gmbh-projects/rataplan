@@ -42,7 +42,11 @@ public class QuestionGroup extends AbstractEntity {
     }
 
     public boolean validate() {
-        return this.title != null && this.title.length() <= 255 && this.validateQuestions();
+        return validateData() && this.validateQuestions();
+    }
+
+    private boolean validateData() {
+        return this.title != null && this.title.length() <= 255;
     }
 
     private boolean validateQuestions() {
