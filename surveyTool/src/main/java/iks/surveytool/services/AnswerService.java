@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,12 +34,7 @@ public class AnswerService {
     }
 
     private List<Answer> createAnswersFromDTOs(List<AnswerDTO> answerDTOList) {
-        List<Answer> answers = new ArrayList<>();
-        for (AnswerDTO answerDTO : answerDTOList) {
-            Answer answer = mapper.createAnswerFromDTO(answerDTO);
-            answers.add(answer);
-        }
-        return answers;
+        return mapper.createAnswersFromDTOList(answerDTOList);
     }
 
     private boolean validate(List<Answer> answerList) {

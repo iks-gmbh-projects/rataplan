@@ -291,6 +291,15 @@ public class Mapper {
         return answerDTO;
     }
 
+    public List<Answer> createAnswersFromDTOList(List<AnswerDTO> answerDTOs) {
+        List<Answer> answers = new ArrayList<>();
+        for (AnswerDTO answerDTO : answerDTOs) {
+            Answer answer = createAnswerFromDTO(answerDTO);
+            answers.add(answer);
+        }
+        return answers;
+    }
+
     public Answer createAnswerFromDTO(AnswerDTO answerDTO) {
         String text = answerDTO.getText();
 
