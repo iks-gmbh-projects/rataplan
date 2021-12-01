@@ -1,8 +1,8 @@
 package iks.surveytool.services;
 
-import iks.surveytool.builder.*;
 import iks.surveytool.entities.*;
 import iks.surveytool.repositories.SurveyRepository;
+import iks.surveytool.utils.builder.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
