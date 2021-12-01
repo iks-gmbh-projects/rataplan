@@ -35,14 +35,16 @@ public class CheckboxGroup extends AbstractEntity {
         this.checkboxes = checkboxes;
     }
 
-    public boolean checkIfComplete() {
+    boolean checkIfComplete() {
         return !checkboxes.isEmpty();
     }
 
-    public boolean validate(boolean questionRequired) {
-        return this.checkMinMaxSelect(questionRequired)
-                && this.checkNumberOfCheckboxes()
-                && this.validateCheckboxes();
+    boolean validate(boolean questionRequired) {
+        return this.validateData(questionRequired) && this.validateCheckboxes();
+    }
+
+    private boolean validateData(boolean questionRequired) {
+        return this.checkMinMaxSelect(questionRequired) && this.checkNumberOfCheckboxes();
     }
 
     private boolean checkMinMaxSelect(boolean questionRequired) {

@@ -38,14 +38,14 @@ public class Question extends AbstractEntity {
         this.hasCheckbox = hasCheckbox;
     }
 
-    public boolean checkIfComplete() {
+    boolean checkIfComplete() {
         if (this.hasCheckbox) {
             return this.checkboxGroup != null && checkboxGroup.checkIfComplete();
         }
         return true;
     }
 
-    public boolean validate() {
+    boolean validate() {
         return validateData() && (!this.hasCheckbox || checkboxGroup.validate(this.required));
     }
 

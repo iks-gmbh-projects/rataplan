@@ -28,7 +28,7 @@ public class QuestionGroup extends AbstractEntity {
         this.questions = questions;
     }
 
-    public boolean checkIfComplete() {
+    boolean checkIfComplete() {
         return !this.questions.isEmpty() && this.checkIfQuestionsComplete();
     }
 
@@ -41,7 +41,7 @@ public class QuestionGroup extends AbstractEntity {
         return true;
     }
 
-    public boolean validate() {
+    boolean validate() {
         return validateData() && this.validateQuestions();
     }
 

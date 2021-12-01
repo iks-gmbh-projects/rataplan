@@ -32,7 +32,7 @@ public class Checkbox extends AbstractEntity {
         this.hasTextField = hasTextField;
     }
 
-    public boolean validate() {
+    boolean validate() {
         return this.text != null && this.text.length() <= 255;
     }
 }
