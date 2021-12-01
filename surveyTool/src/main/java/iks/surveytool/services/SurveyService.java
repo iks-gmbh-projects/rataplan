@@ -63,24 +63,24 @@ public class SurveyService {
         return ResponseEntity.ok(openAccessSurveys);
     }
 
-    public Optional<Survey> findSurveyByParticipationId(String participationId) {
+    private Optional<Survey> findSurveyByParticipationId(String participationId) {
         return surveyRepository.findSurveyByParticipationId(participationId);
     }
 
-    public Optional<Survey> findSurveyByAccessId(String accessId) {
+    private Optional<Survey> findSurveyByAccessId(String accessId) {
         return surveyRepository.findSurveyByAccessId(accessId);
     }
 
-    public List<Survey> findSurveysByOpenAccessIsTrue() {
+    private List<Survey> findSurveysByOpenAccessIsTrue() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return surveyRepository.findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
     }
 
-    public SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
+    private SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
         return mapper.toSurveyDTO(savedSurvey, true);
     }
 
-    public SurveyOverviewDTO mapSurveyToDTOByAccessId(String accessId, boolean complete) {
+    private SurveyOverviewDTO mapSurveyToDTOByAccessId(String accessId, boolean complete) {
         Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
@@ -89,7 +89,7 @@ public class SurveyService {
         return null;
     }
 
-    public SurveyOverviewDTO mapSurveyToDTOByParticipationId(String participationId) {
+    private SurveyOverviewDTO mapSurveyToDTOByParticipationId(String participationId) {
         Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
@@ -108,21 +108,21 @@ public class SurveyService {
         }
     }
 
-    public List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
+    private List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
         List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
         return mapper.toOpenAccessSurveyDTOList(openAccessSurveys);
-
     }
 
-    public Survey mapSurveyToEntity(CompleteSurveyDTO surveyDTO) {
+    private Survey mapSurveyToEntity(CompleteSurveyDTO surveyDTO) {
         return mapper.createSurveyFromDTO(surveyDTO);
     }
 
+    // TODO: Rewrite tests to make saveSurvey() validate() private
     public Survey saveSurvey(Survey survey) {
         return surveyRepository.save(survey);
     }
 
-    public void generateIds(Survey survey) {
+    private void generateIds(Survey survey) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         String accessId = generateUniqueIdWithDateTime(currentDateTime);
         survey.setAccessId(accessId);
@@ -132,7 +132,7 @@ public class SurveyService {
         survey.setParticipationId(participateId);
     }
 
-    public String generateUniqueIdWithDateTime(LocalDateTime currentDateTime) {
+    private String generateUniqueIdWithDateTime(LocalDateTime currentDateTime) {
         String currentDateTimeHex = convertDateTimeToHex(currentDateTime);
 
         String hexSuffix = generateHexSuffix();
