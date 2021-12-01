@@ -27,4 +27,30 @@ public class QuestionGroup extends AbstractEntity {
         this.title = title;
         this.questions = questions;
     }
+
+    public boolean checkIfComplete() {
+        return !this.questions.isEmpty() && this.checkIfQuestionsComplete();
+    }
+
+    private boolean checkIfQuestionsComplete() {
+        for (Question question : this.questions) {
+            if (!question.checkIfComplete()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean validate() {
+        return this.title != null && this.title.length() <= 255 && this.validateQuestions();
+    }
+
+    private boolean validateQuestions() {
+        for (Question question : this.questions) {
+            if (!question.validate()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
