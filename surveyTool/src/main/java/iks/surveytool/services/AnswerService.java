@@ -23,17 +23,17 @@ public class AnswerService {
 
     public ResponseEntity<List<AnswerDTO>> processAnswerDTOs(AnswerDTO[] answerDTOs) {
         List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
-        List<Answer> answerList = createAnswersFromDTOs(answerDTOList);
+        List<Answer> answerList = mapAnswersToEntity(answerDTOList);
         if (validate(answerList)) {
             List<Answer> savedAnswers = saveAnswers(answerList);
-            List<AnswerDTO> savedAnswerDTOs = createAnswerDTOs(savedAnswers);
+            List<AnswerDTO> savedAnswerDTOs = mapAnswerToDTO(savedAnswers);
             return ResponseEntity.ok(savedAnswerDTOs);
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
     }
 
-    private List<Answer> createAnswersFromDTOs(List<AnswerDTO> answerDTOList) {
+    private List<Answer> mapAnswersToEntity(List<AnswerDTO> answerDTOList) {
         return mapper.createAnswersFromDTOList(answerDTOList);
     }
 
@@ -59,25 +59,25 @@ public class AnswerService {
         return true;
     }
 
-    private List<Answer> saveAnswers(List<Answer> answerList) {
-        return answerRepository.saveAll(answerList);
-    }
-
     private boolean checkIfAnswerTextValid(Answer answer) {
         String text = answer.getText();
         return text != null && text.length() <= 1500;
     }
 
-    private List<AnswerDTO> createAnswerDTOs(List<Answer> answers) {
+    private List<Answer> saveAnswers(List<Answer> answerList) {
+        return answerRepository.saveAll(answerList);
+    }
+
+    private List<AnswerDTO> mapAnswerToDTO(List<Answer> answers) {
         return mapper.toAnswerDTOList(answers);
     }
 
     public ResponseEntity<List<AnswerDTO>> processAnswersByQuestionId(Long questionId) {
-        List<AnswerDTO> answerDTOs = createAnswerDTOsByQuestionId(questionId);
+        List<AnswerDTO> answerDTOs = mapAnswerToDTOByQuestionId(questionId);
         return ResponseEntity.ok(answerDTOs);
     }
 
-    private List<AnswerDTO> createAnswerDTOsByQuestionId(Long questionId) {
+    private List<AnswerDTO> mapAnswerToDTOByQuestionId(Long questionId) {
         List<Answer> answers = findAnswersByQuestionId(questionId);
         return mapper.toAnswerDTOList(answers);
     }
