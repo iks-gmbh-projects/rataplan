@@ -41,7 +41,7 @@ public class AnswerService {
         return answers;
     }
 
-    public List<Answer> saveListOfAnswers(List<Answer> answerList) {
+    public List<Answer> saveAnswers(List<Answer> answerList) {
         return answerRepository.saveAll(answerList);
     }
 

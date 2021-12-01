@@ -25,7 +25,7 @@ public class AnswerController {
         List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
         List<Answer> answerList = answerService.createAnswersFromDTOs(answerDTOList);
         if (answerService.validate(answerList)) {
-            List<Answer> savedAnswers = answerService.saveListOfAnswers(answerList);
+            List<Answer> savedAnswers = answerService.saveAnswers(answerList);
             List<AnswerDTO> savedAnswerDTOs = answerService.createAnswerDTOs(savedAnswers);
             return ResponseEntity.ok(savedAnswerDTOs);
         } else {
