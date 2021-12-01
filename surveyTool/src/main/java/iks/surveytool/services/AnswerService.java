@@ -23,19 +23,19 @@ public class AnswerService {
         return answerRepository.findAllByQuestion_Id(questionId);
     }
 
-    public List<AnswerDTO> createAnswerDtos(List<Answer> answers) {
-        return mapper.toAnswerDtoList(answers);
+    public List<AnswerDTO> createAnswerDTOs(List<Answer> answers) {
+        return mapper.toAnswerDTOList(answers);
     }
 
-    public List<AnswerDTO> createAnswerDtos(Long questionId) {
+    public List<AnswerDTO> createAnswerDTOs(Long questionId) {
         List<Answer> answers = findAnswersByQuestionId(questionId);
-        return mapper.toAnswerDtoList(answers);
+        return mapper.toAnswerDTOList(answers);
     }
 
-    public List<Answer> createAnswersFromDtos(List<AnswerDTO> answerDTOList) {
+    public List<Answer> createAnswersFromDTOs(List<AnswerDTO> answerDTOList) {
         List<Answer> answers = new ArrayList<>();
         for (AnswerDTO answerDTO : answerDTOList) {
-            Answer answer = mapper.createAnswerFromDto(answerDTO);
+            Answer answer = mapper.createAnswerFromDTO(answerDTO);
             answers.add(answer);
         }
         return answers;

@@ -23,17 +23,17 @@ public class UserService {
         return userRepository.findParticipatingUsersBySurveyId(surveyId);
     }
 
-    public List<UserDTO> createParticipatingUserDtosBySurveyId(Long surveyId) {
+    public List<UserDTO> createParticipatingUserDTOsBySurveyId(Long surveyId) {
         List<User> users = findParticipatingUsersBySurveyId(surveyId);
-        return mapper.toParticipatingUserDtoList(users);
+        return mapper.toParticipatingUserDTOList(users);
     }
 
-    public UserDTO createUserDtoFromUser(User user) {
-        return mapper.toUserDto(user);
+    public UserDTO createUserDTOFromUser(User user) {
+        return mapper.toUserDTO(user);
     }
 
-    public User createUserFromDto(UserDTO userDTO) {
-        return mapper.createUserFromDto(userDTO);
+    public User createUserFromDTO(UserDTO userDTO) {
+        return mapper.createUserFromDTO(userDTO);
     }
 
     public boolean validate(User newUser) {

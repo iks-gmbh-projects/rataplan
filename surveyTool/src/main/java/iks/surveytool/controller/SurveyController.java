@@ -22,11 +22,11 @@ public class SurveyController {
 
     @PostMapping
     public ResponseEntity<SurveyOverviewDTO> createSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
-        Survey newSurvey = surveyService.createSurveyFromDto(surveyDTO);
+        Survey newSurvey = surveyService.createSurveyFromDTO(surveyDTO);
         if (surveyService.validate(newSurvey)) {
             surveyService.generateIds(newSurvey);
             Survey savedSurvey = surveyService.saveSurvey(newSurvey);
-            SurveyOverviewDTO completeSurveyDTO = surveyService.createSurveyDtoFromSurvey(savedSurvey);
+            SurveyOverviewDTO completeSurveyDTO = surveyService.createSurveyDTOFromSurvey(savedSurvey);
             return ResponseEntity.ok(completeSurveyDTO);
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
@@ -35,7 +35,7 @@ public class SurveyController {
 
     @GetMapping(params = {"accessId"})
     public ResponseEntity<SurveyOverviewDTO> findSurveyByAccessId(@RequestParam String accessId) {
-        SurveyOverviewDTO surveyOverviewDTO = surveyService.createSurveyDtoByAccessId(accessId, true);
+        SurveyOverviewDTO surveyOverviewDTO = surveyService.createSurveyDTOByAccessId(accessId, true);
         if (surveyOverviewDTO != null) {
             return ResponseEntity.ok(surveyOverviewDTO);
         } else {
@@ -45,14 +45,14 @@ public class SurveyController {
 
     @GetMapping(params = {"participationId"})
     public ResponseEntity<SurveyOverviewDTO> findSurveyByParticipationId(@RequestParam String participationId) {
-        SurveyOverviewDTO surveyDto = surveyService.createSurveyDtoByParticipationId(participationId);
-        if (surveyDto != null) {
-            if (surveyDto instanceof CompleteSurveyDTO) {
-                return ResponseEntity.ok(surveyDto);
+        SurveyOverviewDTO surveyDTO = surveyService.createSurveyDTOByParticipationId(participationId);
+        if (surveyDTO != null) {
+            if (surveyDTO instanceof CompleteSurveyDTO) {
+                return ResponseEntity.ok(surveyDTO);
             } else {
                 // If current time is not within start- and endDate: return survey without questions to fill information
                 // in front-end
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(surveyDto);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(surveyDTO);
             }
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -61,7 +61,7 @@ public class SurveyController {
 
     @GetMapping
     public ResponseEntity<List<SurveyOverviewDTO>> findOpenAccessSurveys() {
-        List<SurveyOverviewDTO> openAccessSurveys = surveyService.createSurveyDtosByOpenIsTrue();
+        List<SurveyOverviewDTO> openAccessSurveys = surveyService.createSurveyDTOsByOpenIsTrue();
         return ResponseEntity.ok(openAccessSurveys);
     }
 }

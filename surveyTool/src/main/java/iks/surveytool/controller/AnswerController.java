@@ -23,10 +23,10 @@ public class AnswerController {
     @PostMapping
     public ResponseEntity<List<AnswerDTO>> addAnswers(@RequestBody AnswerDTO[] answerDTOs) {
         List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
-        List<Answer> answerList = answerService.createAnswersFromDtos(answerDTOList);
+        List<Answer> answerList = answerService.createAnswersFromDTOs(answerDTOList);
         if (answerService.validate(answerList)) {
             List<Answer> savedAnswers = answerService.saveListOfAnswers(answerList);
-            List<AnswerDTO> savedAnswerDTOs = answerService.createAnswerDtos(savedAnswers);
+            List<AnswerDTO> savedAnswerDTOs = answerService.createAnswerDTOs(savedAnswers);
             return ResponseEntity.ok(savedAnswerDTOs);
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
@@ -35,7 +35,7 @@ public class AnswerController {
 
     @GetMapping("/questions/{questionId}")
     public ResponseEntity<List<AnswerDTO>> findAnswersByQuestionId(@PathVariable Long questionId) {
-        List<AnswerDTO> answerDTOs = answerService.createAnswerDtos(questionId);
+        List<AnswerDTO> answerDTOs = answerService.createAnswerDTOs(questionId);
         return ResponseEntity.ok(answerDTOs);
     }
 }

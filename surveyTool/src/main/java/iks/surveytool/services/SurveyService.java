@@ -33,20 +33,20 @@ public class SurveyService {
         return surveyRepository.findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
     }
 
-    public SurveyOverviewDTO createSurveyDtoFromSurvey(Survey savedSurvey) {
-        return mapper.toSurveyDto(savedSurvey, true);
+    public SurveyOverviewDTO createSurveyDTOFromSurvey(Survey savedSurvey) {
+        return mapper.toSurveyDTO(savedSurvey, true);
     }
 
-    public SurveyOverviewDTO createSurveyDtoByAccessId(String accessId, boolean complete) {
+    public SurveyOverviewDTO createSurveyDTOByAccessId(String accessId, boolean complete) {
         Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
-            return mapper.toSurveyDto(survey, complete);
+            return mapper.toSurveyDTO(survey, complete);
         }
         return null;
     }
 
-    public SurveyOverviewDTO createSurveyDtoByParticipationId(String participationId) {
+    public SurveyOverviewDTO createSurveyDTOByParticipationId(String participationId) {
         Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
@@ -54,25 +54,25 @@ public class SurveyService {
             LocalDateTime surveyEndDate = survey.getEndDate();
             LocalDateTime currentDateTime = LocalDateTime.now();
             if (currentDateTime.isAfter(surveyStartDate) && currentDateTime.isBefore(surveyEndDate)) {
-                return mapper.toSurveyDto(survey, true);
+                return mapper.toSurveyDTO(survey, true);
             } else {
                 // If current time is not within start- and endDate: return survey without questions to fill information
                 // in front-end
-                return mapper.toSurveyDto(survey, false);
+                return mapper.toSurveyDTO(survey, false);
             }
         } else {
             return null;
         }
     }
 
-    public List<SurveyOverviewDTO> createSurveyDtosByOpenIsTrue() {
+    public List<SurveyOverviewDTO> createSurveyDTOsByOpenIsTrue() {
         List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
-        return mapper.toOpenAccessSurveyDtoList(openAccessSurveys);
+        return mapper.toOpenAccessSurveyDTOList(openAccessSurveys);
 
     }
 
-    public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
-        return mapper.createSurveyFromDto(surveyDTO);
+    public Survey createSurveyFromDTO(CompleteSurveyDTO surveyDTO) {
+        return mapper.createSurveyFromDTO(surveyDTO);
     }
 
     public Survey saveSurvey(Survey survey) {

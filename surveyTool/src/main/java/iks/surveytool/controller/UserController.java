@@ -21,10 +21,10 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        User newUser = userService.createUserFromDto(userDTO);
+        User newUser = userService.createUserFromDTO(userDTO);
         if (userService.validate(newUser)) {
             User savedUser = userService.saveUser(newUser);
-            UserDTO savedUserDTO = userService.createUserDtoFromUser(savedUser);
+            UserDTO savedUserDTO = userService.createUserDTOFromUser(savedUser);
             return ResponseEntity.ok(savedUserDTO);
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping("/surveys/{surveyId}")
     public ResponseEntity<List<UserDTO>> findParticipatingUsersBySurveyId(@PathVariable Long surveyId) {
-        List<UserDTO> users = userService.createParticipatingUserDtosBySurveyId(surveyId);
+        List<UserDTO> users = userService.createParticipatingUserDTOsBySurveyId(surveyId);
         return ResponseEntity.ok(users);
     }
 }
