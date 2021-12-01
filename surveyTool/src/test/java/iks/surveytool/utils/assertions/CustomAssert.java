@@ -69,4 +69,66 @@ public class CustomAssert {
         assertEquals(checkboxDTO.getText(), checkbox.getText());
         assertEquals(checkboxDTO.isHasTextField(), checkbox.isHasTextField());
     }
+
+    public static void assertSurvey(Survey survey, CompleteSurveyDTO surveyDTO) {
+        assertEquals(survey.getId(), surveyDTO.getId());
+        assertEquals(survey.getName(), surveyDTO.getName());
+        assertEquals(survey.getDescription(), surveyDTO.getDescription());
+        assertEquals(survey.getStartDate(), surveyDTO.getStartDate());
+        assertEquals(survey.getEndDate(), surveyDTO.getEndDate());
+        assertEquals(survey.isOpenAccess(), surveyDTO.isOpenAccess());
+        assertEquals(survey.getAccessId(), surveyDTO.getAccessId());
+        assertEquals(survey.getParticipationId(), surveyDTO.getParticipationId());
+
+        assertEquals(survey.getUser().getId(), surveyDTO.getUserId());
+        assertEquals(survey.getUser().getName(), surveyDTO.getUserName());
+
+        List<QuestionGroup> questionGroups = survey.getQuestionGroups();
+        List<QuestionGroupDTO> questionGroupDTOs = surveyDTO.getQuestionGroups();
+        for (int i = 0; i < questionGroups.size(); i++) {
+            assertQuestionGroup(questionGroups.get(i), questionGroupDTOs.get(i));
+        }
+    }
+
+    private static void assertQuestionGroup(QuestionGroup questionGroup, QuestionGroupDTO questionGroupDTO) {
+        assertEquals(questionGroup.getId(), questionGroupDTO.getId());
+        assertEquals(questionGroup.getTitle(), questionGroupDTO.getTitle());
+
+        List<Question> questions = questionGroup.getQuestions();
+        List<QuestionDTO> questionDTOs = questionGroupDTO.getQuestions();
+        for (int i = 0; i < questionDTOs.size(); i++) {
+            assertQuestion(questions.get(i), questionDTOs.get(i));
+        }
+    }
+
+    private static void assertQuestion(Question question, QuestionDTO questionDTO) {
+        assertEquals(question.getId(), questionDTO.getId());
+        assertEquals(question.getText(), questionDTO.getText());
+        assertEquals(question.isRequired(), questionDTO.isRequired());
+        assertEquals(question.isHasCheckbox(), questionDTO.isHasCheckbox());
+
+        if (questionDTO.isHasCheckbox()) {
+            CheckboxGroup checkboxGroup = question.getCheckboxGroup();
+            CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
+            assertCheckboxGroup(checkboxGroup, checkboxGroupDTO);
+        }
+    }
+
+    private static void assertCheckboxGroup(CheckboxGroup checkboxGroup, CheckboxGroupDTO checkboxGroupDTO) {
+        assertEquals(checkboxGroup.getId(), checkboxGroupDTO.getId());
+        assertEquals(checkboxGroup.isMultipleSelect(), checkboxGroupDTO.isMultipleSelect());
+        assertEquals(checkboxGroup.getMinSelect(), checkboxGroupDTO.getMinSelect());
+        assertEquals(checkboxGroup.getMaxSelect(), checkboxGroupDTO.getMaxSelect());
+
+        List<Checkbox> checkboxes = checkboxGroup.getCheckboxes();
+        List<CheckboxDTO> checkboxDTOs = checkboxGroupDTO.getCheckboxes();
+        for (int i = 0; i < checkboxDTOs.size(); i++) {
+            assertCheckbox(checkboxes.get(i), checkboxDTOs.get(i));
+        }
+    }
+
+    private static void assertCheckbox(Checkbox checkbox, CheckboxDTO checkboxDTO) {
+        assertEquals(checkbox.getText(), checkboxDTO.getText());
+        assertEquals(checkbox.isHasTextField(), checkboxDTO.isHasTextField());
+    }
 }
