@@ -6,6 +6,8 @@ import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.*;
 import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,6 +22,47 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final Mapper mapper;
 
+    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
+        Survey newSurvey = mapSurveyToEntity(surveyDTO);
+        if (validate(newSurvey)) {
+            generateIds(newSurvey);
+            Survey savedSurvey = saveSurvey(newSurvey);
+            SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+            return ResponseEntity.ok(completeSurveyDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+        }
+    }
+
+    public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId) {
+        SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId, true);
+        if (surveyOverviewDTO != null) {
+            return ResponseEntity.ok(surveyOverviewDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    public ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId) {
+        SurveyOverviewDTO surveyDTO = mapSurveyToDTOByParticipationId(participationId);
+        if (surveyDTO != null) {
+            if (surveyDTO instanceof CompleteSurveyDTO) {
+                return ResponseEntity.ok(surveyDTO);
+            } else {
+                // If current time is not within start- and endDate: return survey without questions to fill information
+                // in front-end
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(surveyDTO);
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    public ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys() {
+        List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
+        return ResponseEntity.ok(openAccessSurveys);
+    }
+
     public Optional<Survey> findSurveyByParticipationId(String participationId) {
         return surveyRepository.findSurveyByParticipationId(participationId);
     }
@@ -33,11 +76,11 @@ public class SurveyService {
         return surveyRepository.findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
     }
 
-    public SurveyOverviewDTO createSurveyDTOFromSurvey(Survey savedSurvey) {
+    public SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
         return mapper.toSurveyDTO(savedSurvey, true);
     }
 
-    public SurveyOverviewDTO createSurveyDTOByAccessId(String accessId, boolean complete) {
+    public SurveyOverviewDTO mapSurveyToDTOByAccessId(String accessId, boolean complete) {
         Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
@@ -46,7 +89,7 @@ public class SurveyService {
         return null;
     }
 
-    public SurveyOverviewDTO createSurveyDTOByParticipationId(String participationId) {
+    public SurveyOverviewDTO mapSurveyToDTOByParticipationId(String participationId) {
         Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
@@ -65,13 +108,13 @@ public class SurveyService {
         }
     }
 
-    public List<SurveyOverviewDTO> createSurveyDTOsByOpenIsTrue() {
+    public List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
         List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
         return mapper.toOpenAccessSurveyDTOList(openAccessSurveys);
 
     }
 
-    public Survey createSurveyFromDTO(CompleteSurveyDTO surveyDTO) {
+    public Survey mapSurveyToEntity(CompleteSurveyDTO surveyDTO) {
         return mapper.createSurveyFromDTO(surveyDTO);
     }
 
