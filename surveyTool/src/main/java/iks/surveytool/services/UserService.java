@@ -19,7 +19,7 @@ public class UserService {
 
     public ResponseEntity<UserDTO> processUserDTO(UserDTO userDTO) {
         User newUser = mapUserToEntity(userDTO);
-        if (validate(newUser)) {
+        if (newUser.validate()) {
             User savedUser = saveUser(newUser);
             UserDTO savedUserDTO = mapUserToDTO(savedUser);
             return ResponseEntity.ok(savedUserDTO);
@@ -30,11 +30,6 @@ public class UserService {
 
     private User mapUserToEntity(UserDTO userDTO) {
         return mapper.toUserEntity(userDTO);
-    }
-
-    private boolean validate(User newUser) {
-        String name = newUser.getName();
-        return name != null && name.length() <= 255;
     }
 
     private User saveUser(User newUser) {
