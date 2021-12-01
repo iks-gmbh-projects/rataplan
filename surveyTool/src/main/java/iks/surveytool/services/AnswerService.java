@@ -26,7 +26,7 @@ public class AnswerService {
         List<Answer> answerList = mapAnswersToEntity(answerDTOList);
         if (validate(answerList)) {
             List<Answer> savedAnswers = saveAnswers(answerList);
-            List<AnswerDTO> savedAnswerDTOs = mapAnswerToDTO(savedAnswers);
+            List<AnswerDTO> savedAnswerDTOs = mapAnswersToDTO(savedAnswers);
             return ResponseEntity.ok(savedAnswerDTOs);
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
@@ -68,16 +68,16 @@ public class AnswerService {
         return answerRepository.saveAll(answerList);
     }
 
-    private List<AnswerDTO> mapAnswerToDTO(List<Answer> answers) {
+    private List<AnswerDTO> mapAnswersToDTO(List<Answer> answers) {
         return mapper.toAnswerDTOList(answers);
     }
 
     public ResponseEntity<List<AnswerDTO>> processAnswersByQuestionId(Long questionId) {
-        List<AnswerDTO> answerDTOs = mapAnswerToDTOByQuestionId(questionId);
+        List<AnswerDTO> answerDTOs = mapAnswersToDTOByQuestionId(questionId);
         return ResponseEntity.ok(answerDTOs);
     }
 
-    private List<AnswerDTO> mapAnswerToDTOByQuestionId(Long questionId) {
+    private List<AnswerDTO> mapAnswersToDTOByQuestionId(Long questionId) {
         List<Answer> answers = findAnswersByQuestionId(questionId);
         return mapper.toAnswerDTOList(answers);
     }
