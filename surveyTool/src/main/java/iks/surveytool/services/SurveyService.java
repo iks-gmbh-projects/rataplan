@@ -1,6 +1,5 @@
 package iks.surveytool.services;
 
-import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.*;
@@ -20,7 +19,6 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class SurveyService {
     private final SurveyRepository surveyRepository;
-    private final Mapper mapper;
     private final ModelMapper modelMapper;
 
     public Optional<Survey> findSurveyByParticipationId(String participationId) {
@@ -79,9 +77,7 @@ public class SurveyService {
     }
 
     public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
-//        TODO: Need to skip mapping of user?
-//        return modelMapper.map(surveyDTO, Survey.class);
-        return mapper.createSurveyFromDto(surveyDTO);
+        return modelMapper.map(surveyDTO, Survey.class);
     }
 
     public Survey saveSurvey(Survey survey) {
