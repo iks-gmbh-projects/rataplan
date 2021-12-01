@@ -21,11 +21,11 @@ public class SurveyConverter {
     public Converter<CompleteSurveyDTO, Survey> toDAO = new AbstractConverter<CompleteSurveyDTO, Survey>() {
         @Override
         protected Survey convert(CompleteSurveyDTO source) {
-            return createSurveyFromDto(source);
+            return toSurveyEntity(source);
         }
 
-        public Survey createSurveyFromDto(CompleteSurveyDTO surveyDTO) {
-            List<QuestionGroup> questionGroups = createQuestionGroupsFromDtoList(surveyDTO.getQuestionGroups());
+        public Survey toSurveyEntity(CompleteSurveyDTO surveyDTO) {
+            List<QuestionGroup> questionGroups = toQuestionGroupEntityList(surveyDTO.getQuestionGroups());
 
             String name = surveyDTO.getName();
             String description = surveyDTO.getDescription();
@@ -50,33 +50,33 @@ public class SurveyConverter {
             return newSurvey;
         }
 
-        private List<QuestionGroup> createQuestionGroupsFromDtoList(List<QuestionGroupDTO> questionGroupDTOs) {
+        private List<QuestionGroup> toQuestionGroupEntityList(List<QuestionGroupDTO> questionGroupDTOs) {
             List<QuestionGroup> questionGroups = new ArrayList<>();
             for (QuestionGroupDTO questionGroupDTO : questionGroupDTOs) {
-                QuestionGroup questionGroup = createQuestionGroupFromDto(questionGroupDTO);
+                QuestionGroup questionGroup = toQuestionGroupEntity(questionGroupDTO);
                 questionGroups.add(questionGroup);
             }
             return questionGroups;
         }
 
-        private QuestionGroup createQuestionGroupFromDto(QuestionGroupDTO questionGroupDTO) {
+        private QuestionGroup toQuestionGroupEntity(QuestionGroupDTO questionGroupDTO) {
             String title = questionGroupDTO.getTitle();
             List<QuestionDTO> questionDTOs = questionGroupDTO.getQuestions();
-            List<Question> questions = createQuestionsFromDtoList(questionDTOs);
+            List<Question> questions = toQuestionEntityList(questionDTOs);
 
             return new QuestionGroup(title, questions);
         }
 
-        private List<Question> createQuestionsFromDtoList(List<QuestionDTO> questionDTOs) {
+        private List<Question> toQuestionEntityList(List<QuestionDTO> questionDTOs) {
             List<Question> questions = new ArrayList<>();
             for (QuestionDTO questionDTO : questionDTOs) {
-                Question question = createQuestionFromDto(questionDTO);
+                Question question = toQuestionEntity(questionDTO);
                 questions.add(question);
             }
             return questions;
         }
 
-        private Question createQuestionFromDto(QuestionDTO questionDTO) {
+        private Question toQuestionEntity(QuestionDTO questionDTO) {
             String text = questionDTO.getText();
             boolean required = questionDTO.isRequired();
             boolean hasCheckbox = questionDTO.isHasCheckbox();
@@ -85,7 +85,7 @@ public class SurveyConverter {
 
             if (hasCheckbox) {
                 CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
-                CheckboxGroup checkboxGroup = createCheckboxGroupFromDto(checkboxGroupDTO);
+                CheckboxGroup checkboxGroup = toCheckboxGroupEntity(checkboxGroupDTO);
                 // Set references for the one-to-one-relationship
                 checkboxGroup.setQuestion(question);
                 question.setCheckboxGroup(checkboxGroup);
@@ -94,27 +94,27 @@ public class SurveyConverter {
             return question;
         }
 
-        private CheckboxGroup createCheckboxGroupFromDto(CheckboxGroupDTO checkboxGroupDTO) {
+        private CheckboxGroup toCheckboxGroupEntity(CheckboxGroupDTO checkboxGroupDTO) {
             boolean multipleSelect = checkboxGroupDTO.isMultipleSelect();
             int minSelect = checkboxGroupDTO.getMinSelect();
             int maxSelect = checkboxGroupDTO.getMaxSelect();
 
             List<CheckboxDTO> checkboxDTOs = checkboxGroupDTO.getCheckboxes();
-            List<Checkbox> checkboxes = createCheckboxesFromDtoList(checkboxDTOs);
+            List<Checkbox> checkboxes = toCheckboxEntityList(checkboxDTOs);
 
             return new CheckboxGroup(multipleSelect, minSelect, maxSelect, checkboxes);
         }
 
-        private List<Checkbox> createCheckboxesFromDtoList(List<CheckboxDTO> checkboxDTOs) {
+        private List<Checkbox> toCheckboxEntityList(List<CheckboxDTO> checkboxDTOs) {
             List<Checkbox> checkboxes = new ArrayList<>();
             for (CheckboxDTO checkboxDTO : checkboxDTOs) {
-                Checkbox checkbox = createCheckboxFromDto(checkboxDTO);
+                Checkbox checkbox = toCheckboxEntity(checkboxDTO);
                 checkboxes.add(checkbox);
             }
             return checkboxes;
         }
 
-        private Checkbox createCheckboxFromDto(CheckboxDTO checkboxDTO) {
+        private Checkbox toCheckboxEntity(CheckboxDTO checkboxDTO) {
             String text = checkboxDTO.getText();
             boolean hasTextField = checkboxDTO.isHasTextField();
 
