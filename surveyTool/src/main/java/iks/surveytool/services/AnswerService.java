@@ -3,9 +3,6 @@ package iks.surveytool.services;
 import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.entities.Answer;
-import iks.surveytool.entities.Checkbox;
-import iks.surveytool.entities.Question;
-import iks.surveytool.entities.User;
 import iks.surveytool.repositories.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,29 +36,11 @@ public class AnswerService {
 
     private boolean validate(List<Answer> answerList) {
         for (Answer answer : answerList) {
-            if (!validateAnswer(answer)) {
+            if (!answer.validate()) {
                 return false;
             }
         }
         return true;
-    }
-
-    private boolean validateAnswer(Answer answer) {
-        User user = answer.getUser();
-        Question question = answer.getQuestion();
-        Checkbox checkbox = answer.getCheckbox();
-        if (user == null || question == null || (question.isHasCheckbox() && checkbox == null)) {
-            return false;
-        }
-        if (!question.isHasCheckbox() || checkbox.isHasTextField()) {
-            return checkIfAnswerTextValid(answer);
-        }
-        return true;
-    }
-
-    private boolean checkIfAnswerTextValid(Answer answer) {
-        String text = answer.getText();
-        return text != null && text.length() <= 1500;
     }
 
     private List<Answer> saveAnswers(List<Answer> answerList) {
