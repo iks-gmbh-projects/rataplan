@@ -29,7 +29,7 @@ public class UserService {
     }
 
     private User mapUserToEntity(UserDTO userDTO) {
-        return mapper.createUserFromDTO(userDTO);
+        return mapper.toUserEntity(userDTO);
     }
 
     private boolean validate(User newUser) {

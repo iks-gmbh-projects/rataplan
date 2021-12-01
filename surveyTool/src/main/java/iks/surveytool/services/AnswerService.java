@@ -34,7 +34,7 @@ public class AnswerService {
     }
 
     private List<Answer> mapAnswersToEntity(List<AnswerDTO> answerDTOList) {
-        return mapper.createAnswersFromDTOList(answerDTOList);
+        return mapper.toAnswerEntityList(answerDTOList);
     }
 
     private boolean validate(List<Answer> answerList) {

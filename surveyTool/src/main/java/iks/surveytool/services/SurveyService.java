@@ -114,7 +114,7 @@ public class SurveyService {
     }
 
     private Survey mapSurveyToEntity(CompleteSurveyDTO surveyDTO) {
-        return mapper.createSurveyFromDTO(surveyDTO);
+        return mapper.toSurveyEntity(surveyDTO);
     }
 
     // TODO: Rewrite tests to make saveSurvey() validate() private
