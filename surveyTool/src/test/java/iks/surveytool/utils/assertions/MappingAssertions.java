@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CustomAssert {
+public class MappingAssertions {
     public static void assertCompleteSurveyDTO(CompleteSurveyDTO surveyDTO, Survey survey) {
         assertEquals(surveyDTO.getId(), survey.getId());
         assertEquals(surveyDTO.getName(), survey.getName());
