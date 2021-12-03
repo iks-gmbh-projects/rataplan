@@ -1,14 +1,16 @@
 package iks.surveytool.services;
 
-import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.entities.Answer;
 import iks.surveytool.repositories.AnswerRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnswerService {
     private final AnswerRepository answerRepository;
-    private final Mapper mapper;
+    private final ModelMapper modelMapper;
 
     public ResponseEntity<List<AnswerDTO>> processAnswerDTOs(AnswerDTO[] answerDTOs) {
         List<AnswerDTO> answerDTOList = Arrays.asList(answerDTOs);
@@ -31,7 +33,9 @@ public class AnswerService {
     }
 
     private List<Answer> mapAnswersToEntity(List<AnswerDTO> answerDTOList) {
-        return mapper.toAnswerEntityList(answerDTOList);
+        Type answerList = new TypeToken<List<Answer>>() {
+        }.getType();
+        return modelMapper.map(answerDTOList, answerList);
     }
 
     private boolean validate(List<Answer> answerList) {
@@ -48,7 +52,9 @@ public class AnswerService {
     }
 
     private List<AnswerDTO> mapAnswersToDTO(List<Answer> answers) {
-        return mapper.toAnswerDTOList(answers);
+        Type answerDTOList = new TypeToken<List<AnswerDTO>>() {
+        }.getType();
+        return modelMapper.map(answers, answerDTOList);
     }
 
     public ResponseEntity<List<AnswerDTO>> processAnswersByQuestionId(Long questionId) {
@@ -58,7 +64,7 @@ public class AnswerService {
 
     private List<AnswerDTO> mapAnswersToDTOByQuestionId(Long questionId) {
         List<Answer> answers = findAnswersByQuestionId(questionId);
-        return mapper.toAnswerDTOList(answers);
+        return mapAnswersToDTO(answers);
     }
 
     private List<Answer> findAnswersByQuestionId(Long questionId) {

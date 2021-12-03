@@ -1,43 +1,37 @@
 package iks.surveytool.services;
 
-import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.UserDTO;
 import iks.surveytool.entities.User;
 import iks.surveytool.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final Mapper mapper;
+    private final ModelMapper modelMapper;
 
     public ResponseEntity<UserDTO> processUserDTO(UserDTO userDTO) {
-        User newUser = mapUserToEntity(userDTO);
+        User newUser = modelMapper.map(userDTO, User.class);
         if (newUser.validate()) {
             User savedUser = saveUser(newUser);
-            UserDTO savedUserDTO = mapUserToDTO(savedUser);
+            UserDTO savedUserDTO = modelMapper.map(savedUser, UserDTO.class);
             return ResponseEntity.ok(savedUserDTO);
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
     }
 
-    private User mapUserToEntity(UserDTO userDTO) {
-        return mapper.toUserEntity(userDTO);
-    }
-
     private User saveUser(User newUser) {
         return userRepository.save(newUser);
-    }
-
-    private UserDTO mapUserToDTO(User user) {
-        return mapper.toUserDTO(user);
     }
 
     public ResponseEntity<List<UserDTO>> processParticipatingUsersBySurveyId(Long surveyId) {
@@ -47,7 +41,9 @@ public class UserService {
 
     private List<UserDTO> mapParticipatingUsersToDTOBySurveyId(Long surveyId) {
         List<User> users = findParticipatingUsersBySurveyId(surveyId);
-        return mapper.toParticipatingUserDTOList(users);
+        Type userDTOList = new TypeToken<List<UserDTO>>() {
+        }.getType();
+        return modelMapper.map(users, userDTOList);
     }
 
     private List<User> findParticipatingUsersBySurveyId(Long surveyId) {

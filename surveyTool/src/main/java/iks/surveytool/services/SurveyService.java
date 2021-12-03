@@ -1,15 +1,17 @@
 package iks.surveytool.services;
 
-import iks.surveytool.components.Mapper;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.repositories.SurveyRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class SurveyService {
     private final SurveyRepository surveyRepository;
-    private final Mapper mapper;
+    private final ModelMapper modelMapper;
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
         Survey newSurvey = mapSurveyToEntity(surveyDTO);
@@ -77,14 +79,14 @@ public class SurveyService {
     }
 
     private SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
-        return mapper.toSurveyDTO(savedSurvey, true);
+        return modelMapper.map(savedSurvey, CompleteSurveyDTO.class);
     }
 
     private SurveyOverviewDTO mapSurveyToDTOByAccessId(String accessId) {
         Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
-            return mapper.toSurveyDTO(survey, true);
+            return modelMapper.map(survey, CompleteSurveyDTO.class);
         }
         return null;
     }
@@ -97,11 +99,11 @@ public class SurveyService {
             LocalDateTime surveyEndDate = survey.getEndDate();
             LocalDateTime currentDateTime = LocalDateTime.now();
             if (currentDateTime.isAfter(surveyStartDate) && currentDateTime.isBefore(surveyEndDate)) {
-                return mapper.toSurveyDTO(survey, true);
+                return modelMapper.map(survey, CompleteSurveyDTO.class);
             } else {
                 // If current time is not within start- and endDate: return survey without questions to fill information
                 // in front-end
-                return mapper.toSurveyDTO(survey, false);
+                return modelMapper.map(survey, SurveyOverviewDTO.class);
             }
         } else {
             return null;
@@ -110,15 +112,16 @@ public class SurveyService {
 
     private List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
         List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
-        return mapper.toOpenAccessSurveyDTOList(openAccessSurveys);
+        Type surveyOverviewList = new TypeToken<List<SurveyOverviewDTO>>() {
+        }.getType();
+        return modelMapper.map(openAccessSurveys, surveyOverviewList);
     }
 
     private Survey mapSurveyToEntity(CompleteSurveyDTO surveyDTO) {
-        return mapper.toSurveyEntity(surveyDTO);
+        return modelMapper.map(surveyDTO, Survey.class);
     }
 
-    // TODO: Rewrite tests to make saveSurvey() private
-    public Survey saveSurvey(Survey survey) {
+    private Survey saveSurvey(Survey survey) {
         return surveyRepository.save(survey);
     }
 
