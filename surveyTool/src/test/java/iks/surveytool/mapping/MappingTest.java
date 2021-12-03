@@ -2,7 +2,7 @@ package iks.surveytool.mapping;
 
 import iks.surveytool.dtos.*;
 import iks.surveytool.entities.*;
-import iks.surveytool.utils.assertions.CustomAssert;
+import iks.surveytool.utils.assertions.MappingAssertions;
 import iks.surveytool.utils.builder.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ public class MappingTest {
 //        CompleteSurveyDTO surveyDTO = (CompleteSurveyDTO) mapper.toSurveyDto(survey, true);
         CompleteSurveyDTO surveyDTO = modelMapper.map(survey, CompleteSurveyDTO.class);
 
-        CustomAssert.assertCompleteSurveyDTO(surveyDTO, survey);
+        MappingAssertions.assertCompleteSurveyDTO(surveyDTO, survey);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class MappingTest {
         System.out.println(surveyConverted.getUser().getId());
         System.out.println(surveyConverted.getUser().getName());
 
-        CustomAssert.assertSurvey(surveyConverted, surveyDTO);
+        MappingAssertions.assertSurvey(surveyConverted, surveyDTO);
     }
 
     @Test
@@ -134,16 +134,10 @@ public class MappingTest {
         user.setId(1L);
         user.setName("Test User");
 
-        Answer firstAnswer = new Answer();
-        firstAnswer.setId(1L);
-        firstAnswer.setText("Test Answer");
-        firstAnswer.setUser(user);
-        firstAnswer.setQuestion(firstQuestion);
-        Answer secondAnswer = new Answer();
-        secondAnswer.setId(2L);
-        secondAnswer.setUser(user);
-        secondAnswer.setQuestion(secondQuestion);
-        secondAnswer.setCheckbox(firstCheckbox);
+        Answer firstAnswer = new AnswerBuilder()
+                .createAnswer(1L, "Test Answer", user, firstQuestion, null);
+        Answer secondAnswer = new AnswerBuilder()
+                .createAnswer(2L, null, user, secondQuestion, firstCheckbox);
 
         List<Answer> answers = List.of(firstAnswer, secondAnswer);
 
@@ -151,7 +145,7 @@ public class MappingTest {
         }.getType();
         List<AnswerDTO> answerDTOList = modelMapper.map(answers, answerDTOListType);
 
-        CustomAssert.assertAnswerDTOs(answerDTOList, answers);
+        MappingAssertions.assertAnswerDTOs(answerDTOList, answers);
     }
 
     @Test
@@ -168,26 +162,24 @@ public class MappingTest {
         secondAnswerDTO.setQuestionId(2L);
         secondAnswerDTO.setCheckboxId(1L);
 
-
         List<AnswerDTO> answerDTOs = List.of(secondAnswerDTO, secondAnswerDTO);
 
         Type answerListType = new TypeToken<List<Answer>>() {
         }.getType();
         List<Answer> answers = modelMapper.map(answerDTOs, answerListType);
 
-        CustomAssert.assertAnswers(answers, answerDTOs);
+        MappingAssertions.assertAnswers(answers, answerDTOs);
     }
 
     @Test
     @DisplayName("User to UserDTO")
     void mapUserToUserDTO() {
-        User user = new User();
-        user.setId(1L);
-        user.setName("Test User");
+        User user = new UserBuilder()
+                .createUser(1L, "Test User");
 
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
-        CustomAssert.assertUserDTO(userDTO, user);
+        MappingAssertions.assertUserDTO(userDTO, user);
     }
 
     @Test
@@ -199,7 +191,7 @@ public class MappingTest {
 
         User user = modelMapper.map(userDTO, User.class);
 
-        CustomAssert.assertUser(user, userDTO);
+        MappingAssertions.assertUser(user, userDTO);
     }
 
 }
