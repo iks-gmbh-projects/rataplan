@@ -427,7 +427,7 @@ class ValidationTest {
     }
 
     @Test
-    @DisplayName("Successful validation - Saving complete survey")
+    @DisplayName("Successful validation - Complete survey")
     void surveyIsComplete() {
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
@@ -458,4 +458,116 @@ class ValidationTest {
 
         assertTrue(survey.validate());
     }
+
+    @Test
+    @DisplayName("Failed validation - User missing name")
+    void userMissingName() {
+        User user = new UserBuilder()
+                .createUser(1L, null);
+
+        assertFalse(user.validate());
+    }
+
+    @Test
+    @DisplayName("Successful validation - User")
+    void userIsComplete() {
+        User user = new UserBuilder()
+                .createUser(1L, "Test User");
+
+        assertTrue(user.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - Answer missing user")
+    void answerMissingUser() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, false);
+
+        Answer answer = new AnswerBuilder()
+                .createAnswer(1L, "Test Answer", null, question, null);
+
+        assertFalse(answer.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - Answer missing Checkbox")
+    void answerMissingQuestion() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+
+        User user = new UserBuilder()
+                .createUser(1L, "Test User");
+
+        Answer answer = new AnswerBuilder()
+                .createAnswer(1L, "Test Answer", user, question, null);
+
+        assertFalse(answer.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - Answer missing Text when Checkbox has text field")
+    void answerMissingTextWhenCheckboxHasTextField() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+
+        User user = new UserBuilder()
+                .createUser(1L, "Test User");
+
+        Checkbox checkbox = new CheckboxBuilder()
+                .createCheckbox(1L, "Test Checkbox", true);
+
+        Answer answer = new AnswerBuilder()
+                .createAnswer(1L, null, user, question, checkbox);
+
+        assertFalse(answer.validate());
+    }
+
+    @Test
+    @DisplayName("Failed validation - Answer missing Text when text Question")
+    void answerMissingTextWhenQuestionWithTextField() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, false);
+
+        User user = new UserBuilder()
+                .createUser(1L, "Test User");
+
+        Answer answer = new AnswerBuilder()
+                .createAnswer(1L, null, user, question, null);
+
+        assertFalse(answer.validate());
+    }
+
+    @Test
+    @DisplayName("Successful validation - Complete Answer to text Question")
+    void answerToTextQuestionIsComplete() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, false);
+
+        User user = new UserBuilder()
+                .createUser(1L, "Test User");
+
+        Answer answer = new AnswerBuilder()
+                .createAnswer(1L, "Test", user, question, null);
+
+        assertTrue(answer.validate());
+    }
+
+    @Test
+    @DisplayName("Successful validation - Complete Answer to multiple choice Question")
+    void answerToChoiceQuestionIsComplete() {
+        Question question = new QuestionBuilder()
+                .createQuestion(1L, "Test Question", false, true);
+
+        User user = new UserBuilder()
+                .createUser(1L, "Test User");
+
+        Checkbox checkbox = new CheckboxBuilder()
+                .createCheckbox(1L, "Test Checkbox", false);
+
+        Answer answer = new AnswerBuilder()
+                .createAnswer(1L, null, user, question, checkbox);
+
+        assertTrue(answer.validate());
+    }
+
 }
