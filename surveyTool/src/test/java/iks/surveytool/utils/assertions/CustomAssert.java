@@ -131,4 +131,52 @@ public class CustomAssert {
         assertEquals(checkbox.getText(), checkboxDTO.getText());
         assertEquals(checkbox.isHasTextField(), checkboxDTO.isHasTextField());
     }
+
+    public static void assertAnswerDTOs(List<AnswerDTO> answerDTOs, List<Answer> answers) {
+        for (int i = 0; i < answers.size(); i++) {
+            assertAnswerDTO(answerDTOs.get(i), answers.get(i));
+        }
+    }
+
+    private static void assertAnswerDTO(AnswerDTO answerDTO, Answer answer) {
+        assertEquals(answerDTO.getId(), answer.getId());
+        assertEquals(answerDTO.getText(), answer.getText());
+
+        assertEquals(answerDTO.getUserId(), answer.getUser().getId());
+        assertEquals(answerDTO.getUserName(), answer.getUser().getName());
+
+        if (answer.getCheckbox() != null) {
+            assertEquals(answerDTO.getCheckboxId(), answer.getCheckbox().getId());
+        }
+        assertEquals(answerDTO.getQuestionId(), answer.getQuestion().getId());
+    }
+
+    public static void assertAnswers(List<Answer> answers, List<AnswerDTO> answerDTOs) {
+        for (int i = 0; i < answerDTOs.size(); i++) {
+            assertAnswer(answers.get(i), answerDTOs.get(i));
+        }
+    }
+
+    private static void assertAnswer(Answer answer, AnswerDTO answerDTO) {
+        assertEquals(answer.getId(), answerDTO.getId());
+        assertEquals(answer.getText(), answerDTO.getText());
+
+        assertEquals(answer.getUser().getId(), answerDTO.getUserId());
+        assertEquals(answer.getUser().getName(), answerDTO.getUserName());
+
+        if (answerDTO.getCheckboxId() != null) {
+            assertEquals(answer.getCheckbox().getId(), answerDTO.getCheckboxId());
+        }
+        assertEquals(answer.getQuestion().getId(), answerDTO.getQuestionId());
+    }
+
+    public static void assertUserDTO(UserDTO userDTO, User user) {
+        assertEquals(userDTO.getId(), user.getId());
+        assertEquals(userDTO.getName(), user.getName());
+    }
+
+    public static void assertUser(User user, UserDTO userDTO) {
+        assertEquals(user.getId(), userDTO.getId());
+        assertEquals(user.getName(), userDTO.getName());
+    }
 }
