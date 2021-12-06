@@ -127,19 +127,17 @@ public class SurveyService {
 
     private void generateIds(Survey survey) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        String accessId = generateUniqueIdWithDateTime(currentDateTime);
+        String accessId = generateAccessId(currentDateTime);
         survey.setAccessId(accessId);
 
         LocalDateTime startDateTime = survey.getStartDate();
-        String participateId = generateUniqueIdWithDateTime(startDateTime);
+        String participateId = generateParticipationId(startDateTime);
         survey.setParticipationId(participateId);
     }
 
-    private String generateUniqueIdWithDateTime(LocalDateTime currentDateTime) {
+    private String generateAccessId(LocalDateTime currentDateTime) {
         String currentDateTimeHex = convertDateTimeToHex(currentDateTime);
-
         String hexSuffix = generateHexSuffix();
-
         String accessId = currentDateTimeHex + "-" + hexSuffix;
 
         while (surveyRepository.findSurveyByAccessId(accessId).isPresent()) {
@@ -148,6 +146,19 @@ public class SurveyService {
         }
 
         return accessId.toUpperCase();
+    }
+
+    private String generateParticipationId(LocalDateTime startDate) {
+        String currentDateTimeHex = convertDateTimeToHex(startDate);
+        String hexSuffix = generateHexSuffix();
+        String participationId = currentDateTimeHex + "-" + hexSuffix;
+
+        while (surveyRepository.findSurveyByParticipationId(participationId).isPresent()) {
+            hexSuffix = generateHexSuffix();
+            participationId = currentDateTimeHex + "-" + hexSuffix;
+        }
+
+        return participationId.toUpperCase();
     }
 
     private String convertDateTimeToHex(LocalDateTime dateTime) {
