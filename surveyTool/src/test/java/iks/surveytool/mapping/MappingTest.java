@@ -51,7 +51,6 @@ public class MappingTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-//        CompleteSurveyDTO surveyDTO = (CompleteSurveyDTO) mapper.toSurveyDto(survey, true);
         CompleteSurveyDTO surveyDTO = modelMapper.map(survey, CompleteSurveyDTO.class);
 
         MappingAssertions.assertCompleteSurveyDTO(surveyDTO, survey);
@@ -104,7 +103,6 @@ public class MappingTest {
         surveyDTO.setUserName("Max Mustermann");
         surveyDTO.setQuestionGroups(List.of(questionGroupDTO));
 
-        //        Survey surveyConverted = mapper.createSurveyFromDto(surveyDTO);
         Survey surveyConverted = modelMapper.map(surveyDTO, Survey.class);
         System.out.println(surveyConverted.getUser().getId());
         System.out.println(surveyConverted.getUser().getName());
