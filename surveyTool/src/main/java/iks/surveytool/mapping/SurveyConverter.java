@@ -8,10 +8,9 @@ import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -27,15 +26,8 @@ public class SurveyConverter {
         public Survey toSurveyEntity(CompleteSurveyDTO surveyDTO) {
             List<QuestionGroup> questionGroups = toQuestionGroupEntityList(surveyDTO.getQuestionGroups());
 
-            String name = surveyDTO.getName();
-            String description = surveyDTO.getDescription();
-            LocalDateTime startDate = surveyDTO.getStartDate();
-            LocalDateTime endDate = surveyDTO.getEndDate();
-            boolean openAccess = surveyDTO.isOpenAccess();
-            String accessId = surveyDTO.getAccessId();
-            String participationId = surveyDTO.getParticipationId();
-
-            Survey newSurvey = new Survey(name, description, startDate, endDate, openAccess, accessId, participationId, questionGroups);
+            Survey newSurvey = new Survey(surveyDTO.getName(), surveyDTO.getDescription(), surveyDTO.getStartDate(), surveyDTO.getEndDate(),
+                    surveyDTO.isOpenAccess(), surveyDTO.getAccessId(), surveyDTO.getParticipationId(), questionGroups);
 
             // Need to fetch user from db for hibernate to recognize it
             Long userId = surveyDTO.getUserId();
@@ -51,41 +43,22 @@ public class SurveyConverter {
         }
 
         private List<QuestionGroup> toQuestionGroupEntityList(List<QuestionGroupDTO> questionGroupDTOs) {
-            List<QuestionGroup> questionGroups = new ArrayList<>();
-            for (QuestionGroupDTO questionGroupDTO : questionGroupDTOs) {
-                QuestionGroup questionGroup = toQuestionGroupEntity(questionGroupDTO);
-                questionGroups.add(questionGroup);
-            }
-            return questionGroups;
+            return questionGroupDTOs.stream().map(this::toQuestionGroupEntity).collect(Collectors.toList());
         }
 
         private QuestionGroup toQuestionGroupEntity(QuestionGroupDTO questionGroupDTO) {
-            String title = questionGroupDTO.getTitle();
-            List<QuestionDTO> questionDTOs = questionGroupDTO.getQuestions();
-            List<Question> questions = toQuestionEntityList(questionDTOs);
-
-            return new QuestionGroup(title, questions);
+            return new QuestionGroup(questionGroupDTO.getTitle(), toQuestionEntityList(questionGroupDTO.getQuestions()));
         }
 
         private List<Question> toQuestionEntityList(List<QuestionDTO> questionDTOs) {
-            List<Question> questions = new ArrayList<>();
-            for (QuestionDTO questionDTO : questionDTOs) {
-                Question question = toQuestionEntity(questionDTO);
-                questions.add(question);
-            }
-            return questions;
+            return questionDTOs.stream().map(this::toQuestionEntity).collect(Collectors.toList());
         }
 
         private Question toQuestionEntity(QuestionDTO questionDTO) {
-            String text = questionDTO.getText();
-            boolean required = questionDTO.isRequired();
-            boolean hasCheckbox = questionDTO.isHasCheckbox();
+            Question question = new Question(questionDTO.getText(), questionDTO.isRequired(), questionDTO.isHasCheckbox());
 
-            Question question = new Question(text, required, hasCheckbox);
-
-            if (hasCheckbox) {
-                CheckboxGroupDTO checkboxGroupDTO = questionDTO.getCheckboxGroup();
-                CheckboxGroup checkboxGroup = toCheckboxGroupEntity(checkboxGroupDTO);
+            if (questionDTO.isHasCheckbox()) {
+                CheckboxGroup checkboxGroup = toCheckboxGroupEntity(questionDTO.getCheckboxGroup());
                 // Set references for the one-to-one-relationship
                 checkboxGroup.setQuestion(question);
                 question.setCheckboxGroup(checkboxGroup);
@@ -95,30 +68,16 @@ public class SurveyConverter {
         }
 
         private CheckboxGroup toCheckboxGroupEntity(CheckboxGroupDTO checkboxGroupDTO) {
-            boolean multipleSelect = checkboxGroupDTO.isMultipleSelect();
-            int minSelect = checkboxGroupDTO.getMinSelect();
-            int maxSelect = checkboxGroupDTO.getMaxSelect();
-
-            List<CheckboxDTO> checkboxDTOs = checkboxGroupDTO.getCheckboxes();
-            List<Checkbox> checkboxes = toCheckboxEntityList(checkboxDTOs);
-
-            return new CheckboxGroup(multipleSelect, minSelect, maxSelect, checkboxes);
+            return new CheckboxGroup(checkboxGroupDTO.isMultipleSelect(), checkboxGroupDTO.getMinSelect(),
+                    checkboxGroupDTO.getMaxSelect(), toCheckboxEntityList(checkboxGroupDTO.getCheckboxes()));
         }
 
         private List<Checkbox> toCheckboxEntityList(List<CheckboxDTO> checkboxDTOs) {
-            List<Checkbox> checkboxes = new ArrayList<>();
-            for (CheckboxDTO checkboxDTO : checkboxDTOs) {
-                Checkbox checkbox = toCheckboxEntity(checkboxDTO);
-                checkboxes.add(checkbox);
-            }
-            return checkboxes;
+            return checkboxDTOs.stream().map(this::toCheckboxEntity).collect(Collectors.toList());
         }
 
         private Checkbox toCheckboxEntity(CheckboxDTO checkboxDTO) {
-            String text = checkboxDTO.getText();
-            boolean hasTextField = checkboxDTO.isHasTextField();
-
-            return new Checkbox(text, hasTextField);
+            return new Checkbox(checkboxDTO.getText(), checkboxDTO.isHasTextField());
         }
     };
 
