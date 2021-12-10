@@ -39,12 +39,7 @@ public class AnswerService {
     }
 
     private boolean validate(List<Answer> answerList) {
-        for (Answer answer : answerList) {
-            if (!answer.validate()) {
-                return false;
-            }
-        }
-        return true;
+        return answerList.stream().allMatch(Answer::validate);
     }
 
     private List<Answer> saveAnswers(List<Answer> answerList) {

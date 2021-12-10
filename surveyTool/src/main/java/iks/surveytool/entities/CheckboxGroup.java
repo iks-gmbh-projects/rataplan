@@ -61,11 +61,6 @@ public class CheckboxGroup extends AbstractEntity {
     }
 
     private boolean validateCheckboxes() {
-        for (Checkbox checkbox : this.checkboxes) {
-            if (!checkbox.validate()) {
-                return false;
-            }
-        }
-        return true;
+        return this.checkboxes.stream().allMatch(Checkbox::validate);
     }
 }

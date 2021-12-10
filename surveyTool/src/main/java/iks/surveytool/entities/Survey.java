@@ -69,12 +69,7 @@ public class Survey extends AbstractEntity {
     }
 
     private boolean checkIfQuestionGroupsComplete() {
-        for (QuestionGroup questionGroup : this.questionGroups) {
-            if (!questionGroup.checkIfComplete()) {
-                return false;
-            }
-        }
-        return true;
+        return this.questionGroups.stream().allMatch(QuestionGroup::checkIfComplete);
     }
 
     private boolean checkIfDataIsValid() {
@@ -108,12 +103,7 @@ public class Survey extends AbstractEntity {
     }
 
     private boolean validateQuestionGroups() {
-        for (QuestionGroup questionGroup : this.questionGroups) {
-            if (!questionGroup.validate()) {
-                return false;
-            }
-        }
-        return true;
+        return this.questionGroups.stream().allMatch(QuestionGroup::validate);
     }
 
 }

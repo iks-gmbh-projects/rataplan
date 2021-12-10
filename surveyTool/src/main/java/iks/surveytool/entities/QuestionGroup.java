@@ -33,12 +33,7 @@ public class QuestionGroup extends AbstractEntity {
     }
 
     private boolean checkIfQuestionsComplete() {
-        for (Question question : this.questions) {
-            if (!question.checkIfComplete()) {
-                return false;
-            }
-        }
-        return true;
+        return this.questions.stream().allMatch(Question::checkIfComplete);
     }
 
     boolean validate() {
@@ -50,11 +45,6 @@ public class QuestionGroup extends AbstractEntity {
     }
 
     private boolean validateQuestions() {
-        for (Question question : this.questions) {
-            if (!question.validate()) {
-                return false;
-            }
-        }
-        return true;
+        return this.questions.stream().allMatch(Question::validate);
     }
 }
