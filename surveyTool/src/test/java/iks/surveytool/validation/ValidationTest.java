@@ -133,12 +133,14 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - Question with hasCheckbox == true, but no CheckboxGroup")
     void questionHasCheckboxTrueButNoCheckboxGroup() {
-        Question question = new QuestionBuilder()
+        Question firstQuestion = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, true);
+        Question secondQuestion = new QuestionBuilder()
+                .createQuestion(2L, "Test Question", false, false);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
+        questionGroupWithQuestion.setQuestions(List.of(firstQuestion, secondQuestion));
 
         User user = new UserBuilder().createUser(1L, "Test Person");
 
@@ -209,16 +211,21 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - QuestionGroup missing title")
     void questionGroupIsMissingTitle() {
-        Question question = new QuestionBuilder()
+        Question firstQuestion = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, false);
+        Question secondQuestion = new QuestionBuilder()
+                .createQuestion(2L, "Test Question", false, false);
 
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
+        QuestionGroup firstQuestionGroupWithQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(1L, null);
-        questionGroupWithQuestion.setQuestions(List.of(question));
+        firstQuestionGroupWithQuestion.setQuestions(List.of(firstQuestion));
+        QuestionGroup secondQuestionGroupWithQuestion = new QuestionGroupBuilder()
+                .createQuestionGroup(2L, "Test Title");
+        secondQuestionGroupWithQuestion.setQuestions(List.of(secondQuestion));
 
         Survey survey = new SurveyBuilder()
                 .createDefaultSurvey();
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+        survey.setQuestionGroups(List.of(firstQuestionGroupWithQuestion, secondQuestionGroupWithQuestion));
 
         assertFalse(survey.validate());
     }
@@ -226,12 +233,14 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - Question missing text")
     void questionIsMissingText() {
-        Question question = new QuestionBuilder()
+        Question firstQuestion = new QuestionBuilder()
                 .createQuestion(1L, null, false, false);
+        Question secondQuestion = new QuestionBuilder()
+                .createQuestion(2L, "Test", false, false);
 
         QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
+                .createQuestionGroup(1L, "QuestionGroup with Questions");
+        questionGroupWithQuestion.setQuestions(List.of(firstQuestion, secondQuestion));
 
         Survey survey = new SurveyBuilder()
                 .createDefaultSurvey();
