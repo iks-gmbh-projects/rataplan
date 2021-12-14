@@ -1,91 +1,94 @@
-CREATE TABLE User
+CREATE TABLE surveyToolUser
 (
-    Id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Creation_Time DATETIME     NULL,
-    Last_Updated  DATETIME     NULL,
-    Version       INT          NULL,
-    Name          VARCHAR(255) NULL
+    id           SERIAL PRIMARY KEY,
+    creationTime TIMESTAMP    NOT NULL,
+    lastUpdated  TIMESTAMP    NOT NULL,
+    version      INT          NOT NULL,
+    name         VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Survey
+CREATE TABLE survey
 (
-    Id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Creation_Time DATETIME     NULL,
-    Last_Updated  DATETIME     NULL,
-    Version       INT          NULL,
-    Access_Id     VARCHAR(255) NULL,
-    Description   LONGTEXT     NULL,
-    End_Date      DATETIME(6)  NULL,
-    Name          VARCHAR(255) NOT NULL,
-    Open          BOOLEAN      NOT NULL,
-    Start_Date    DATETIME(6)  NULL,
-    Uuid          VARCHAR(255) NULL,
-    User_Id       BIGINT       NULL,
-    FOREIGN KEY (User_Id) REFERENCES User (Id)
+    id              SERIAL PRIMARY KEY,
+    creationTime    TIMESTAMP     NOT NULL,
+    lastUpdated     TIMESTAMP     NOT NULL,
+    version         INT           NOT NULL,
+    name            VARCHAR(255)  NOT NULL,
+    description     VARCHAR(3000) NULL,
+    startDate       TIMESTAMP(6)  NOT NULL,
+    endDate         TIMESTAMP(6)  NOT NULL,
+    openAccess      BOOLEAN       NOT NULL,
+    accessId        VARCHAR(255)  NOT NULL,
+    participationId VARCHAR(255)  NOT NULL,
+    userId          BIGINT,
+    FOREIGN KEY (userId) REFERENCES surveyToolUser (id),
+    CONSTRAINT checkStartBeforeEnd CHECK ( startDate < endDate )
 );
 
-CREATE TABLE Question_Group
+CREATE TABLE questionGroup
 (
-    Id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Creation_Time DATETIME     NULL,
-    Last_Updated  DATETIME     NULL,
-    Version       INT          NULL,
-    Title         VARCHAR(255) NULL,
-    Survey_Id     BIGINT       NULL,
-    FOREIGN KEY (Survey_Id) REFERENCES Survey (Id)
+    id           SERIAL PRIMARY KEY,
+    creationTime TIMESTAMP    NOT NULL,
+    lastUpdated  TIMESTAMP    NOT NULL,
+    version      INT          NOT NULL,
+    title        VARCHAR(255) NOT NULL,
+    surveyId     BIGINT REFERENCES survey (id)
 );
 
-CREATE TABLE Question
+CREATE TABLE question
 (
-    Id                BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Creation_Time     DATETIME     NULL,
-    Last_Updated      DATETIME     NULL,
-    Version           INT          NULL,
-    Has_Checkbox      BOOLEAN      NOT NULL,
-    Required          BOOLEAN      NOT NULL,
-    Text              VARCHAR(255) NOT NULL,
-    Question_Group_Id BIGINT       NULL,
-    FOREIGN KEY (Question_Group_Id) REFERENCES Question_Group (Id)
+    id              SERIAL PRIMARY KEY,
+    creationTime    TIMESTAMP    NOT NULL,
+    lastUpdated     TIMESTAMP    NOT NULL,
+    version         INT          NOT NULL,
+    hasCheckbox     BOOLEAN      NOT NULL,
+    required        BOOLEAN      NOT NULL,
+    text            VARCHAR(255) NOT NULL,
+    questionGroupId BIGINT,
+    FOREIGN KEY (questionGroupId) REFERENCES questionGroup (id)
 );
 
-CREATE TABLE Checkbox_Group
+CREATE TABLE checkboxGroup
 (
-    Id              BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Creation_Time   DATETIME NULL,
-    Last_Updated    DATETIME NULL,
-    Version         INT      NULL,
-    Max_Select      INT      NOT NULL,
-    Min_Select      INT      NOT NULL,
-    Multiple_Select BOOLEAN  NOT NULL,
-    Question_Id     BIGINT   NULL,
-    FOREIGN KEY (Question_Id) REFERENCES Question (Id)
+    id             SERIAL PRIMARY KEY,
+    creationTime   TIMESTAMP NOT NULL,
+    lastUpdated    TIMESTAMP NOT NULL,
+    version        INT       NOT NULL,
+    multipleSelect BOOLEAN   NOT NULL,
+    maxSelect      INT       NOT NULL,
+    minSelect      INT       NOT NULL,
+    questionId     BIGINT,
+    FOREIGN KEY (questionId) REFERENCES question (id),
+    CONSTRAINT maxSelectGreaterThanEqualsMinSelect CHECK ( minSelect <= maxSelect ),
+    CONSTRAINT minSelectGreaterThanEqualsZero CHECK ( 0 <= minSelect ),
+    CONSTRAINT maxSelectGreaterThanEqualsTwo CHECK ( 2 <= maxSelect )
 );
 
-CREATE TABLE Checkbox
+CREATE TABLE checkbox
 (
-    Id                BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Creation_Time     DATETIME     NULL,
-    Last_Updated      DATETIME     NULL,
-    Version           INT          NULL,
-    Has_Text_Field    BOOLEAN      NOT NULL,
-    Text              VARCHAR(255) NOT NULL,
-    Checkbox_Group_Id BIGINT       NULL,
-    FOREIGN KEY (Checkbox_Group_Id) REFERENCES Checkbox_Group (Id)
+    id              SERIAL PRIMARY KEY,
+    creationTime    TIMESTAMP    NOT NULL,
+    lastUpdated     TIMESTAMP    NOT NULL,
+    version         INT          NOT NULL,
+    hasTextField    BOOLEAN      NOT NULL,
+    text            VARCHAR(255) NOT NULL,
+    checkboxGroupId BIGINT,
+    FOREIGN KEY (checkboxGroupId) REFERENCES checkboxGroup (id)
 );
 
-CREATE TABLE Answer
+CREATE TABLE answer
 (
-    Id            BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Creation_Time DATETIME NULL,
-    Last_Updated  DATETIME NULL,
-    Version       INT      NULL,
-    Text          LONGTEXT NULL,
-    Checkbox_Id   BIGINT   NULL,
-    Question_Id   BIGINT   NULL,
-    User_Id       BIGINT   NULL,
-    FOREIGN KEY (User_Id) REFERENCES User (Id),
-    FOREIGN KEY (Question_Id) REFERENCES Question (Id),
-    FOREIGN KEY (Checkbox_Id) REFERENCES Checkbox (Id)
+    id           SERIAL PRIMARY KEY,
+    creationTime TIMESTAMP NOT NULL,
+    lastUpdated  TIMESTAMP NOT NULL,
+    version      INT       NOT NULL,
+    text         VARCHAR(1500),
+    checkboxId   BIGINT,
+    questionId   BIGINT,
+    userId       BIGINT,
+    FOREIGN KEY (userId) REFERENCES surveyToolUser (id),
+    FOREIGN KEY (questionId) REFERENCES question (id),
+    FOREIGN KEY (checkboxId) REFERENCES checkbox (id)
 );
 
 

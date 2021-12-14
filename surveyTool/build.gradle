@@ -24,7 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation:2.5.5'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.5.5'
     implementation 'mysql:mysql-connector-java:8.0.26'
-    implementation 'org.postgresql:postgresql:42.1.4'
+    implementation 'org.postgresql:postgresql:42.3.1'
     implementation 'org.modelmapper:modelmapper:2.4.4'
     implementation 'org.modelmapper.extensions:modelmapper-spring:2.4.4'
     compileOnly "org.flywaydb:flyway-core:8.0.5"

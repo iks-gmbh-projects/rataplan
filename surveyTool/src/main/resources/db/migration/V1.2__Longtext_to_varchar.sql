@@ -1,5 +1,0 @@
-ALTER TABLE Survey
-    MODIFY Description VARCHAR(3000);
-ALTER TABLE Answer
-    MODIFY Text VARCHAR(1500);
-
