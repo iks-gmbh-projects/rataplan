@@ -11,7 +11,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/answers")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class AnswerController {
 

@@ -12,7 +12,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/surveys")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class SurveyController {
 
