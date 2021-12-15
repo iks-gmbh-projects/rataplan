@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-public class Config {
+public class MappingConfig {
 
     private final SurveyConverter surveyConverter;
     private final AnswerConverter answerConverter;
