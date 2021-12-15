@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -95,10 +97,13 @@ public class SurveyService {
         Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
+            ZoneId berlinTime = ZoneId.of("Europe/Berlin");
             LocalDateTime surveyStartDate = survey.getStartDate();
+            ZonedDateTime zonedStartDate = ZonedDateTime.of(surveyStartDate, berlinTime);
             LocalDateTime surveyEndDate = survey.getEndDate();
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            if (currentDateTime.isAfter(surveyStartDate) && currentDateTime.isBefore(surveyEndDate)) {
+            ZonedDateTime zonedEndDate = ZonedDateTime.of(surveyEndDate, berlinTime);
+            ZonedDateTime currentDateTime = ZonedDateTime.now(berlinTime);
+            if (currentDateTime.isAfter(zonedStartDate) && currentDateTime.isBefore(zonedEndDate)) {
                 return modelMapper.map(survey, CompleteSurveyDTO.class);
             } else {
                 // If current time is not within start- and endDate: return survey without questions to fill information
