@@ -10,10 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
-                .allowedOrigins("https://umfragetool.herokuapp.com/")
-                .allowedHeaders("*");
-        corsRegistry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200/")
+                .allowedOrigins("http://localhost:4200/", "https://umfragetool.herokuapp.com/")
                 .allowedHeaders("*");
     }
 }
