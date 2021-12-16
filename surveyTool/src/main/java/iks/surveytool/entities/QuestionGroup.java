@@ -21,6 +21,7 @@ public class QuestionGroup extends AbstractEntity {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "questionGroupId")
+    @OrderBy("id")
     private List<Question> questions;
 
     public QuestionGroup(String title, List<Question> questions) {
