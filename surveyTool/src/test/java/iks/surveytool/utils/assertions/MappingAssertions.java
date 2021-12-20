@@ -15,6 +15,7 @@ public class MappingAssertions {
         assertEquals(surveyDTO.getStartDate(), survey.getStartDate());
         assertEquals(surveyDTO.getEndDate(), survey.getEndDate());
         assertEquals(surveyDTO.isOpenAccess(), survey.isOpenAccess());
+        assertEquals(surveyDTO.isAnonymousParticipation(), survey.isAnonymousParticipation());
         assertEquals(surveyDTO.getAccessId(), survey.getAccessId());
         assertEquals(surveyDTO.getParticipationId(), survey.getParticipationId());
 
@@ -77,6 +78,7 @@ public class MappingAssertions {
         assertEquals(survey.getStartDate(), surveyDTO.getStartDate());
         assertEquals(survey.getEndDate(), surveyDTO.getEndDate());
         assertEquals(survey.isOpenAccess(), surveyDTO.isOpenAccess());
+        assertEquals(survey.isAnonymousParticipation(), surveyDTO.isAnonymousParticipation());
         assertEquals(survey.getAccessId(), surveyDTO.getAccessId());
         assertEquals(survey.getParticipationId(), surveyDTO.getParticipationId());
 

@@ -97,6 +97,7 @@ public class MappingTest {
         surveyDTO.setStartDate(LocalDateTime.of(2050, 1, 1, 12, 0));
         surveyDTO.setEndDate(surveyDTO.getStartDate().plusWeeks(1L));
         surveyDTO.setOpenAccess(false);
+        surveyDTO.setAnonymousParticipation(true);
         surveyDTO.setAccessId("Dummy String");
         surveyDTO.setParticipationId("Dummy String");
         surveyDTO.setUserId(1L);

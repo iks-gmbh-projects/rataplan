@@ -27,6 +27,7 @@ public class Survey extends AbstractEntity {
     private LocalDateTime endDate;
 
     private boolean openAccess;
+    private boolean anonymousParticipation;
     // id for creator of survey to view results
     private String accessId;
     // id for users to participate in survey
@@ -45,6 +46,7 @@ public class Survey extends AbstractEntity {
                   LocalDateTime startDate,
                   LocalDateTime endDate,
                   boolean openAccess,
+                  boolean anonymousParticipation,
                   String accessId,
                   String participationId,
                   List<QuestionGroup> questionGroups) {
@@ -53,6 +55,7 @@ public class Survey extends AbstractEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.openAccess = openAccess;
+        this.anonymousParticipation = anonymousParticipation;
         this.accessId = accessId;
         this.participationId = participationId;
         this.questionGroups = questionGroups;

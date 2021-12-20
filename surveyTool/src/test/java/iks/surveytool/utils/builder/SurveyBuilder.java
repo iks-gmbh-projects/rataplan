@@ -13,6 +13,7 @@ public class SurveyBuilder {
     LocalDateTime startDate = LocalDateTime.of(2050, 1, 1, 12, 0);
     LocalDateTime endDate = startDate.plusWeeks(1L);
     boolean openAccess = false;
+    boolean anonymousParticipation = false;
     String accessId = "Test ID";
     URL link;
 
@@ -52,6 +53,7 @@ public class SurveyBuilder {
         newSurvey.setEndDate(endDate);
         newSurvey.setOpenAccess(openAccess);
         newSurvey.setAccessId(accessId);
+        newSurvey.setAnonymousParticipation(anonymousParticipation);
         newSurvey.setQuestionGroups(new ArrayList<>());
     }
 }

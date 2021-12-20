@@ -27,7 +27,7 @@ public class SurveyConverter {
             List<QuestionGroup> questionGroups = toQuestionGroupEntityList(surveyDTO.getQuestionGroups());
 
             Survey newSurvey = new Survey(surveyDTO.getName(), surveyDTO.getDescription(), surveyDTO.getStartDate(), surveyDTO.getEndDate(),
-                    surveyDTO.isOpenAccess(), surveyDTO.getAccessId(), surveyDTO.getParticipationId(), questionGroups);
+                    surveyDTO.isOpenAccess(), surveyDTO.isAnonymousParticipation(), surveyDTO.getAccessId(), surveyDTO.getParticipationId(), questionGroups);
 
             // Need to fetch user from db for hibernate to recognize it
             Long userId = surveyDTO.getUserId();

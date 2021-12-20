@@ -18,6 +18,7 @@ public class SurveyOverviewDTO extends AbstractDTO {
     private LocalDateTime endDate;
 
     private boolean openAccess;
+    private boolean anonymousParticipation;
     private String accessId;
     private String participationId;
 
@@ -30,6 +31,7 @@ public class SurveyOverviewDTO extends AbstractDTO {
                              LocalDateTime startDate,
                              LocalDateTime endDate,
                              boolean openAccess,
+                             boolean anonymousParticipation,
                              String accessId,
                              String participationId,
                              Long userId,
@@ -40,6 +42,7 @@ public class SurveyOverviewDTO extends AbstractDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.openAccess = openAccess;
+        this.anonymousParticipation = anonymousParticipation;
         this.accessId = accessId;
         this.participationId = participationId;
         this.userId = userId;
