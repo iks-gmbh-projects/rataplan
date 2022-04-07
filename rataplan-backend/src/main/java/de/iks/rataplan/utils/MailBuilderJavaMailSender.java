@@ -24,6 +24,9 @@ public class MailBuilderJavaMailSender {
 
 	@Value("${rataplan.frontend.url}")
 	private String baseUrl;
+
+	@Value("${mail.contactTo}")
+	private String contactMailTo;
 	
 	@Autowired
 	private TemplateEngine templateEngine;

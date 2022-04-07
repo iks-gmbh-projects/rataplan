@@ -32,6 +32,9 @@ public class MailBuilderSendGrid {
 	@Value("${rataplan.frontend.url}")
 	private String baseUrl;
 
+	@Value("${mail.contactTo}")
+	private String contactMailTo;
+
 	@Autowired
 	private TemplateEngine templateEngine;
 
@@ -168,7 +171,7 @@ public class MailBuilderSendGrid {
 		Personalization personalization = new Personalization();
 
 		Email toMail = new Email();
-		toMail.setEmail("drumdibum@iks-gmbh.com");
+		toMail.setEmail(this.contactMailTo);
 		personalization.addTo(toMail);
 		
 		mail.addPersonalization(personalization);
