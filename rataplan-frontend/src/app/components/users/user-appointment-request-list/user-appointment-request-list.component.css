@@ -1,7 +1,0 @@
-.btn-wrapper {
-  float: right;
-}
-
-.btn-wrapper::after {
-  clear: both;
-}
