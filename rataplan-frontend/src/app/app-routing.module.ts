@@ -1,7 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import {ConditionsComponent} from "./legals/conditions/conditions.component";
+import {HomepageComponent} from "./homepage/homepage.component";
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', component: HomepageComponent},
+  { path: 'terms-and-conditions', component: ConditionsComponent}
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
