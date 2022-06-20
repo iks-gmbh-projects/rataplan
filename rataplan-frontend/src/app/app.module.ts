@@ -10,6 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ImprintComponent } from './legals/imprint/imprint.component';
+import { PrivacyComponent } from './legals/privacy/privacy.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ImprintComponent } from './legals/imprint/imprint.component';
     ConditionsComponent,
     HomepageComponent,
     ImprintComponent,
+    PrivacyComponent,
   ],
   imports: [
     BrowserModule,
