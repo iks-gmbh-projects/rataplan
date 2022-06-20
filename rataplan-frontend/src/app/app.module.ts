@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { ImprintComponent } from './legals/imprint/imprint.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { HomepageComponent } from './homepage/homepage.component';
     HeaderComponent,
     ConditionsComponent,
     HomepageComponent,
+    ImprintComponent,
   ],
   imports: [
     BrowserModule,
