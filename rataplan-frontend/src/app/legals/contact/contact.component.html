@@ -20,7 +20,7 @@
       <mat-error *ngIf="content.invalid">{{getMessageErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
-  <button class="submit-button" mat-raised-button color="primary" [disabled]="contact.invalid || submitted" (click)="submit()">
+  <button class="submit-button" mat-raised-button color="primary" [disabled]="contact.invalid" (click)="submit()">
     Abschicken
   </button>
 </form>

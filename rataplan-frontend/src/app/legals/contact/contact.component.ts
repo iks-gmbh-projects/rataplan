@@ -60,6 +60,7 @@ export class ContactComponent implements OnInit {
       }
       this.submitted = responseData;
     });
+    this.contact.reset();
   }
 
   openSnackBar(message: string) {
