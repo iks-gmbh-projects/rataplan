@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ContactService} from "../../services/contact-service/contact.service"
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 
 
@@ -20,25 +21,28 @@ export class ContactComponent implements OnInit {
     subject: this.subject,
     content: this.content,
   });
+  snackbarMessage: string = "Nachricht erfolgreich versandt!";
+  snackbarNoAction: undefined;
 
   getEmailErrorMessage() {
     if (this.senderMail.hasError('required')) {
-      return 'You must enter a value';
+      return 'Dieses Feld darf nicht leer bleiben';
     }
 
-    return this.senderMail.hasError('email') ? 'Not a valid email' : '';
+    return this.senderMail.hasError('email') ? 'Keine gültige email' : '';
   }
 
   getSubjectErrorMessage() {
-    return this.subject.hasError('required') ? 'You must enter a value' : '';
+    return this.subject.hasError('required') ? 'Dieses Feld darf nicht leer bleiben' : '';
   }
 
   getMessageErrorMessage() {
-    return this.content.hasError('required') ? 'You must enter a value' : '';
+    return this.content.hasError('required') ? 'Dieses Feld darf nicht leer bleiben' : '';
   }
 
   constructor(private contactService: ContactService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
   }
@@ -51,8 +55,17 @@ export class ContactComponent implements OnInit {
     }
 
     this.contactService.contact(contactData).subscribe(responseData => {
-      console.log(responseData);
+      if (responseData){
+        this.openSnackBar(this.snackbarMessage);
+      }
       this.submitted = responseData;
+    });
+  }
+
+  openSnackBar(message: string) {
+    this._snackBar.open(message, this.snackbarNoAction, {
+      panelClass: ['mat-toolbar', 'mat-primary'],
+      duration: 3000
     });
   }
 }
