@@ -20,6 +20,7 @@ import {MatInputModule} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { RegisterComponent } from './register/register.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     ImprintComponent,
     PrivacyComponent,
     MainNavComponent,
-    ContactComponent
+    ContactComponent,
+    RegisterComponent
   ],
     imports: [
         BrowserModule,

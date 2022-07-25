@@ -1,0 +1,44 @@
+<div class="form-container">
+  <h1 class="headline">Registrieren</h1>
+  <form [formGroup]="registerForm">
+    <div class="username">
+      <mat-form-field appearance="fill">
+        <mat-label>Benutzername</mat-label>
+        <input matInput [formControl]="username">
+        <mat-error *ngIf="username.invalid">{{getUsernameErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="email">
+      <mat-form-field appearance="fill">
+        <mat-label>E-Mail</mat-label>
+        <input matInput placeholder="pat@example.com" [formControl]="mail">
+        <mat-error *ngIf="mail.invalid">{{getMailErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="password">
+      <mat-form-field appearance="fill">
+        <mat-label>Passwort</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="confirmPassword">
+      <mat-form-field appearance="fill">
+        <mat-label>Passwort wiederholen</mat-label>
+        <input matInput [type]="hideConfirm ? 'password' : 'text'" [formControl]="confirmPassword" pattern="{{password.value}}">
+        <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
+          <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error *ngIf="confirmPassword.invalid">{{getConfirmPasswordErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="submit-container">
+      <button class="submit-button" mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="submit()">
+        Registrieren
+      </button>
+    </div>
+  </form>
+</div>
