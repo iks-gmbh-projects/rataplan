@@ -10,6 +10,10 @@ public interface AuthService {
 
 	ResponseEntity<AuthUser> registerUser(AuthUser authUser);
 
+	ResponseEntity<Boolean> checkIfMailExists(String mail);
+
+	ResponseEntity<Boolean> checkIfUsernameExists(String username);
+
 	ResponseEntity<AuthUser> loginUser(AuthUser authUser);
 	
 	ResponseEntity<Boolean> changePassword(String token, PasswordChange passwords); 

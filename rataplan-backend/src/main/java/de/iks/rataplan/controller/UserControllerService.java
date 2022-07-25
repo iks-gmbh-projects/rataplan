@@ -44,6 +44,18 @@ public class UserControllerService {
 		return new FrontendUser(authUser, backendUser);
 	}
 
+	public boolean checkIfMailExists(String mail) {
+
+		ResponseEntity<Boolean> authServiceResponse = authService.checkIfMailExists(mail);
+		return authServiceResponse.getBody();
+	}
+
+	public boolean checkIfUsernameExists(String username) {
+
+		ResponseEntity<Boolean> authServiceResponse = authService.checkIfUsernameExists(username);
+		return authServiceResponse.getBody();
+	}
+
 	public FrontendUser loginUser(FrontendUser frontendUser) {
 
 		ResponseEntity<AuthUser> authServiceResponse = authService.loginUser(new AuthUser(frontendUser));
@@ -73,11 +85,10 @@ public class UserControllerService {
 
 		return new FrontendUser(authUser, backendUser);
 	}
-	
+
 	public boolean changePassword(PasswordChange passwords, String jwtToken) {
 
 		ResponseEntity<Boolean> response = this.authService.changePassword(jwtToken, passwords);
 		return response.getBody();
 	}
-
 }

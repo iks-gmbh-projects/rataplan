@@ -42,6 +42,18 @@ public class AuthServiceImpl implements AuthService {
 		String url = authUrl + "/users/register";
 		return restTemplate.postForEntity(url, authUser, AuthUser.class);
 	}
+
+	public ResponseEntity<Boolean> checkIfMailExists(String mail) {
+		String url = authUrl + "/users/mailExists";
+
+		return restTemplate.postForEntity(url, mail, Boolean.class);
+	}
+
+	public ResponseEntity<Boolean> checkIfUsernameExists(String username) {
+		String url = authUrl + "/users/usernameExists";
+
+		return restTemplate.postForEntity(url, username, Boolean.class);
+	}
 	
 	public ResponseEntity<AuthUser> loginUser(AuthUser authUser) {
 		String url = authUrl + "/users/login";
