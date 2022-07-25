@@ -38,6 +38,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public boolean checkIfMailExists(String mail){
+
+		return this.userRepository.existsByMail(mail);
+	}
+
+	@Override
+	public boolean checkIfUsernameExists(String username){
+		return this.userRepository.existsByUsername(username);
+	}
+
+	@Override
 	public User loginUser(User user) {
 		user.trimUserCredentials();
 		User dbUser;
