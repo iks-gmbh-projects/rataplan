@@ -73,6 +73,7 @@ export class RegisterComponent implements OnInit {
       console.log(responseData);
     });
 
+    //should route to profile, which doesnt exist yet
     //this.router.navigateByUrl('/');
   }
 
