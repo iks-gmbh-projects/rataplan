@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HomepageComponent } from './homepage.component';
+import { DatepickerSubformComponent } from './datepicker-subform.component';
 
-describe('HomepageComponent', () => {
-  let component: HomepageComponent;
-  let fixture: ComponentFixture<HomepageComponent>;
+describe('CalendarSubformComponent', () => {
+  let component: DatepickerSubformComponent;
+  let fixture: ComponentFixture<DatepickerSubformComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomepageComponent],
+      declarations: [DatepickerSubformComponent],
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomepageComponent);
+    fixture = TestBed.createComponent(DatepickerSubformComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

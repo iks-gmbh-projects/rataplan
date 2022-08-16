@@ -1,0 +1,13 @@
+<div>
+  <label>Bitte wählen Sie die Tage an denen ein Event geplant ist</label>
+</div>
+<div>
+  <mat-card>
+    <mat-calendar #calendar
+                  [minDate]="minDate"
+                  [maxDate]="maxDate"
+                  (selectedChange)="select($event, calendar)"
+                  [dateClass]="isSelected">
+    </mat-calendar>
+  </mat-card>
+</div>

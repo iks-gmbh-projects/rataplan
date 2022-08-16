@@ -3,16 +3,17 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-privacy',
   templateUrl: './privacy.component.html',
-  styleUrls: ['./privacy.component.css']
+  styleUrls: ['./privacy.component.css'],
 })
 export class PrivacyComponent implements OnInit {
 
   public url: any;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
-    this.url = "https://drumdibum.de";
+    this.url = 'https://drumdibum.de';
   }
 
 }

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HomepageComponent } from './homepage.component';
+import { GeneralSubformComponent } from './general-subform.component';
 
-describe('HomepageComponent', () => {
-  let component: HomepageComponent;
-  let fixture: ComponentFixture<HomepageComponent>;
+describe('GeneralSubformComponent', () => {
+  let component: GeneralSubformComponent;
+  let fixture: ComponentFixture<GeneralSubformComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomepageComponent],
+      declarations: [GeneralSubformComponent],
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomepageComponent);
+    fixture = TestBed.createComponent(GeneralSubformComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

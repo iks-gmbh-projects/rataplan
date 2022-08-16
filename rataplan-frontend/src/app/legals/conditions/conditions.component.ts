@@ -3,13 +3,13 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-conditions',
   templateUrl: './conditions.component.html',
-  styleUrls: ['./conditions.component.css']
+  styleUrls: ['./conditions.component.css'],
 })
 export class ConditionsComponent implements OnInit {
 
-  public conditionsUrl = "";
-  public privacyUrl = "";
-  public contactUrl = "";
+  public conditionsUrl = '';
+  public privacyUrl = '';
+  public contactUrl = '';
 
   // constructor(private environmentService: EnvironmentService) { }
   //
@@ -24,7 +24,7 @@ export class ConditionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    let baseUrl = "https://www.drumdibum.de"
+    const baseUrl = 'https://www.drumdibum.de';
     this.conditionsUrl = baseUrl + '/terms-and-conditions';
     this.privacyUrl = baseUrl + '/privacy';
     this.contactUrl = baseUrl + '/contact';

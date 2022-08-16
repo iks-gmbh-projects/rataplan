@@ -1,0 +1,18 @@
+<div class="wrapper">
+  <h2>Abstimmung erstellen</h2>
+  <router-outlet></router-outlet>
+  <div *ngIf="appointmentSections[indexOfSection] !== appointmentSections[appointmentSections.length - 1]">
+    <button *ngIf="indexOfSection > 0"
+            mat-raised-button
+            (click)="backPage()">Zurück
+    </button>
+    <button (click)="nextPage()"
+            [disabled]="!isPageValid"
+            class="next-button"
+            type="submit"
+            color="primary"
+            mat-raised-button>
+      {{ appointmentSections[indexOfSection] !== appointmentSections[appointmentSections.length - 2] ? 'Weiter' : 'Fertig' }}
+    </button>
+  </div>
+</div>

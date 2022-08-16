@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HomepageComponent } from './homepage.component';
+import { EmailSubformComponent } from './email-subform.component';
 
-describe('HomepageComponent', () => {
-  let component: HomepageComponent;
-  let fixture: ComponentFixture<HomepageComponent>;
+describe('EmailSubformComponent', () => {
+  let component: EmailSubformComponent;
+  let fixture: ComponentFixture<EmailSubformComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomepageComponent],
+      declarations: [EmailSubformComponent],
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomepageComponent);
+    fixture = TestBed.createComponent(EmailSubformComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

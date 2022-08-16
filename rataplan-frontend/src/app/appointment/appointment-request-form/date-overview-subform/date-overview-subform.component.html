@@ -1,0 +1,14 @@
+<h3>{{ title }}</h3>
+<p>{{ description }}</p>
+<mat-chip-list>
+  <mat-chip (removed)="removeDate(date)"
+            *ngFor="let date of selectedDates">
+    {{ date | date:'dd. MMMM yyyy':'+0200':'de'}}
+    <button matChipRemove>
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </mat-chip>
+</mat-chip-list>
+<div *ngIf="selectedDates.length == 0">
+  <p class="mat-error">Es existieren keine Events mehr, bitte tragen Sie neue ein.</p>
+</div>

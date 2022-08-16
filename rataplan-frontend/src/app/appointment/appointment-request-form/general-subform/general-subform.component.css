@@ -1,0 +1,22 @@
+.wrapper {
+  padding: 50px;
+}
+
+button {
+  margin-bottom: 30px;
+}
+
+h2 {
+  margin-bottom: 40px;
+}
+
+.form-size {
+  min-width: 244px;
+  max-width: 500px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.next-button {
+  float: right;
+}

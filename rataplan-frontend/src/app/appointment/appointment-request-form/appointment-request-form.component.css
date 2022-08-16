@@ -1,0 +1,16 @@
+.wrapper {
+  padding: 50px;
+}
+
+button {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+h2 {
+  margin-bottom: 40px;
+}
+
+.next-button {
+  float: right;
+}
