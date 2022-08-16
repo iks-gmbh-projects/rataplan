@@ -1,6 +1,9 @@
 package de.iks.rataplan.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import de.iks.rataplan.domain.AuthToken;
+import de.iks.rataplan.domain.ResetPasswordData;
+import de.iks.rataplan.service.AuthTokenService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,15 +16,19 @@ import de.iks.rataplan.exceptions.InvalidTokenException;
 import de.iks.rataplan.service.JwtTokenService;
 import de.iks.rataplan.service.UserService;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1")
 public class RataplanAuthRestController {
 
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private JwtTokenService jwtTokenService;
+    private final UserService userService;
+
+
+    private final AuthTokenService authTokenService;
+
+
+    private final JwtTokenService jwtTokenService;
 
     private static final String JWT_COOKIE_NAME = "jwttoken";
 
@@ -82,6 +89,28 @@ public class RataplanAuthRestController {
         String username = jwtTokenService.getUsernameFromToken(token);
         boolean success = this.userService.changePassword(username, passwords);
         return new ResponseEntity<>(success, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/users/resetPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
+
+        if (this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
+            int userId = this.authTokenService.getIdFromAuthToken(resetPasswordData.getToken());
+            User user = this.userService.getUserFromId(userId);
+            boolean success = this.userService.changePasswordByToken(user, resetPasswordData.getPassword());
+            this.authTokenService.deleteById(userId);
+
+            return new ResponseEntity<>(success, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/users/saveAuthToken", method = RequestMethod.POST)
+    public AuthToken createAuthToken(@RequestBody String mail) {
+
+        AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
+
+        return response;
     }
 
     private HttpHeaders createResponseHeaders(User user) {

@@ -4,10 +4,19 @@ import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.domain.User;
 
 public interface UserService {
-    public User registerUser(User user);
-    public boolean checkIfMailExists(String mail);
+    User registerUser(User user);
+
+    boolean checkIfMailExists(String mail);
+
     boolean checkIfUsernameExists(String username);
-    public User loginUser(User user);
-    public User getUserData(String username);
-    public Boolean changePassword(String token, PasswordChange passwords);
+
+    User loginUser(User user);
+
+    User getUserData(String username);
+
+    Boolean changePassword(String token, PasswordChange passwords);
+
+    Boolean changePasswordByToken(User user, String password);
+
+    User getUserFromId(int userId);
 }
