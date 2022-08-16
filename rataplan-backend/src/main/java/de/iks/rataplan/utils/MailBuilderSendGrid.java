@@ -3,6 +3,7 @@ package de.iks.rataplan.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.iks.rataplan.domain.ResetPasswordMailData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,187 +21,222 @@ import de.iks.rataplan.domain.ContactData;
 @Service
 public class MailBuilderSendGrid {
 
-	/*
-	 * Sendgrid mailbuilder Github:
-	 * https://github.com/sendgrid/sendgrid-java/blob/master/examples/helpers/
-	 * mail/Example.java#L42
-	 * 
-	 */
-	@Value("${mail.from}")
-	private String from;
+    /*
+     * Sendgrid mailbuilder Github:
+     * https://github.com/sendgrid/sendgrid-java/blob/master/examples/helpers/
+     * mail/Example.java#L42
+     *
+     */
+    @Value("${mail.from}")
+    private String from;
 
-	@Value("${rataplan.frontend.url}")
-	private String baseUrl;
+    @Value("${rataplan.frontend.url}")
+    private String baseUrl;
 
-	@Value("${mail.contactTo}")
-	private String contactMailTo;
+    @Value("${mail.contactTo}")
+    private String contactMailTo;
 
-	@Autowired
-	private TemplateEngine templateEngine;
+    @Autowired
+    private TemplateEngine templateEngine;
 
-	public List<Mail> buildMailListForAppointmentRequestInvitations(AppointmentRequest appointmentRequest) {
-		String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
+    public List<Mail> buildMailListForAppointmentRequestInvitations(AppointmentRequest appointmentRequest) {
+        String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
 
-		List<Mail> mailList = new ArrayList<>();
+        List<Mail> mailList = new ArrayList<>();
 
-		Email from = new Email();
-		from.setName("drumdibum");
-		from.setEmail("donotreply@drumdibum.de");
+        Email from = new Email();
+        from.setName("drumdibum");
+        from.setEmail("donotreply@drumdibum.de");
 
-		for (String consignee : appointmentRequest.getConsigneeList()) {
-			Mail mail = new Mail();
+        for (String consignee : appointmentRequest.getConsigneeList()) {
+            Mail mail = new Mail();
 
-			Email to = new Email();
-			to.setName(consignee);
-			to.setEmail(consignee);
+            Email to = new Email();
+            to.setName(consignee);
+            to.setEmail(consignee);
 
-			Personalization personalization = new Personalization();
-			personalization.addTo(to);
+            Personalization personalization = new Personalization();
+            personalization.addTo(to);
 
-			mail.addPersonalization(personalization);
-			mail.setFrom(from);
+            mail.addPersonalization(personalization);
+            mail.setFrom(from);
 
-			Context ctx = new Context();
-			ctx.setVariable("url", url);
+            Context ctx = new Context();
+            ctx.setVariable("url", url);
 
-			String subjectString = templateEngine.process("invitation_subject", ctx);
-			String contentString = templateEngine.process("invitation_content", ctx);
+            String subjectString = templateEngine.process("invitation_subject", ctx);
+            String contentString = templateEngine.process("invitation_content", ctx);
 
-			Content content = new Content();
-			content.setType("text/html");
-			content.setValue(contentString);
+            Content content = new Content();
+            content.setType("text/html");
+            content.setValue(contentString);
 
-			mail.setSubject(subjectString);
-			mail.addContent(content);
+            mail.setSubject(subjectString);
+            mail.addContent(content);
 
-			mailList.add(mail);
-		}
+            mailList.add(mail);
+        }
 
-		return mailList;
-	}
-	
-	public Mail buildMailForAppointmentRequestExpired(AppointmentRequest appointmentRequest) {
-		String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
+        return mailList;
+    }
 
-		Mail mail = new Mail();
+    public Mail buildMailForAppointmentRequestExpired(AppointmentRequest appointmentRequest) {
+        String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
 
-		Email fromEmail = new Email();
-		fromEmail.setName("drumdibum");
-		fromEmail.setEmail("donotreply@drumdibum.de");
-		mail.setFrom(fromEmail);
+        Mail mail = new Mail();
 
-		Personalization personalization = new Personalization();
+        Email fromEmail = new Email();
+        fromEmail.setName("drumdibum");
+        fromEmail.setEmail("donotreply@drumdibum.de");
+        mail.setFrom(fromEmail);
 
-		Email toMail = new Email();
-		toMail.setEmail(appointmentRequest.getOrganizerMail());
-		personalization.addTo(toMail);
+        Personalization personalization = new Personalization();
 
-		mail.addPersonalization(personalization);
+        Email toMail = new Email();
+        toMail.setEmail(appointmentRequest.getOrganizerMail());
+        personalization.addTo(toMail);
 
-		Context ctx = new Context();
-		ctx.setVariable("url", url);
-		ctx.setVariable("title", appointmentRequest.getTitle());
+        mail.addPersonalization(personalization);
 
-		String subjectContent = templateEngine.process("expired_subject", ctx);
-		mail.setSubject(subjectContent);
+        Context ctx = new Context();
+        ctx.setVariable("url", url);
+        ctx.setVariable("title", appointmentRequest.getTitle());
 
-		Content content = new Content();
+        String subjectContent = templateEngine.process("expired_subject", ctx);
+        mail.setSubject(subjectContent);
 
-//		String plainContent = createPlainContent(url, adminUrl);
-//		content.setType("text/plain");
-//		content.setValue(plainContent);
-//		mail.addContent(content);
-
-		String htmlContent = templateEngine.process("expired_content", ctx);
-		content.setType("text/html");
-		content.setValue(htmlContent);
-		mail.addContent(content);
-
-		return mail;
-	}
-
-	public Mail buildMailForAppointmentRequestCreation(AppointmentRequest appointmentRequest) {
-		String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
-		String adminUrl = baseUrl + "/appointmentrequest/" + appointmentRequest.getId() + "/edit";
-
-		Mail mail = new Mail();
-
-		Email fromEmail = new Email();
-		fromEmail.setName("drumdibum");
-		fromEmail.setEmail("donotreply@drumdibum.de");
-		mail.setFrom(fromEmail);
-
-		Personalization personalization = new Personalization();
-
-		Email toMail = new Email();
-		toMail.setEmail(appointmentRequest.getOrganizerMail());
-		personalization.addTo(toMail);
-
-		mail.addPersonalization(personalization);
-
-		Context ctx = new Context();
-		ctx.setVariable("url", url);
-		ctx.setVariable("adminUrl", adminUrl);
-
-		String subjectContent = templateEngine.process("to_organizerMail_subject", ctx);
-		mail.setSubject(subjectContent);
-
-		Content content = new Content();
+        Content content = new Content();
 
 //		String plainContent = createPlainContent(url, adminUrl);
 //		content.setType("text/plain");
 //		content.setValue(plainContent);
 //		mail.addContent(content);
 
-		String htmlContent = templateEngine.process("to_organizerMail_htmlContent", ctx);
-		content.setType("text/html");
-		content.setValue(htmlContent);
-		mail.addContent(content);
+        String htmlContent = templateEngine.process("expired_content", ctx);
+        content.setType("text/html");
+        content.setValue(htmlContent);
+        mail.addContent(content);
 
-		return mail;
-	}
+        return mail;
+    }
 
-	public Mail buildMailForContactRequest(ContactData contactData) {
-		Mail mail = new Mail();
+    public Mail buildMailForAppointmentRequestCreation(AppointmentRequest appointmentRequest) {
+        String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
+        String adminUrl = baseUrl + "/appointmentrequest/" + appointmentRequest.getId() + "/edit";
 
-		Email fromEmail = new Email();
-		fromEmail.setName("drumdibum");
-		fromEmail.setEmail("donotreply@drumdibum.de");
-		mail.setFrom(fromEmail);
+        Mail mail = new Mail();
 
-		Personalization personalization = new Personalization();
+        Email fromEmail = new Email();
+        fromEmail.setName("drumdibum");
+        fromEmail.setEmail("donotreply@drumdibum.de");
+        mail.setFrom(fromEmail);
 
-		Email toMail = new Email();
-		toMail.setEmail(this.contactMailTo);
-		personalization.addTo(toMail);
-		
-		mail.addPersonalization(personalization);
-		
-		Context ctx = new Context();
-		ctx.setVariable("subject", contactData.getSubject());
-		ctx.setVariable("senderMail", contactData.getSenderMail());
-		ctx.setVariable("content", contactData.getContent());
+        Personalization personalization = new Personalization();
 
-		String subjectContent = templateEngine.process("contact_subject", ctx);
-		mail.setSubject(subjectContent);
+        Email toMail = new Email();
+        toMail.setEmail(appointmentRequest.getOrganizerMail());
+        personalization.addTo(toMail);
 
-		Content content = new Content();
+        mail.addPersonalization(personalization);
+
+        Context ctx = new Context();
+        ctx.setVariable("url", url);
+        ctx.setVariable("adminUrl", adminUrl);
+
+        String subjectContent = templateEngine.process("to_organizerMail_subject", ctx);
+        mail.setSubject(subjectContent);
+
+        Content content = new Content();
 
 //		String plainContent = createPlainContent(url, adminUrl);
 //		content.setType("text/plain");
 //		content.setValue(plainContent);
 //		mail.addContent(content);
 
-		String htmlContent = templateEngine.process("contact_htmlContent", ctx);
-		content.setType("text/html");
-		content.setValue(htmlContent);
-		mail.addContent(content);
-				
-		return mail;
-	}
-	
-	
-	// f�r plain/text ist "\r\n" in Java ein Zeilenumbruch
+        String htmlContent = templateEngine.process("to_organizerMail_htmlContent", ctx);
+        content.setType("text/html");
+        content.setValue(htmlContent);
+        mail.addContent(content);
+
+        return mail;
+    }
+
+    public Mail buildMailForContactRequest(ContactData contactData) {
+        Mail mail = new Mail();
+
+        Email fromEmail = new Email();
+        fromEmail.setName("drumdibum");
+        fromEmail.setEmail("donotreply@drumdibum.de");
+        mail.setFrom(fromEmail);
+
+        Personalization personalization = new Personalization();
+
+        Email toMail = new Email();
+        toMail.setEmail(this.contactMailTo);
+        personalization.addTo(toMail);
+
+        mail.addPersonalization(personalization);
+
+        Context ctx = new Context();
+        ctx.setVariable("subject", contactData.getSubject());
+        ctx.setVariable("senderMail", contactData.getSenderMail());
+        ctx.setVariable("content", contactData.getContent());
+
+        String subjectContent = templateEngine.process("contact_subject", ctx);
+        mail.setSubject(subjectContent);
+
+        Content content = new Content();
+
+//		String plainContent = createPlainContent(url, adminUrl);
+//		content.setType("text/plain");
+//		content.setValue(plainContent);
+//		mail.addContent(content);
+
+        String htmlContent = templateEngine.process("contact_htmlContent", ctx);
+        content.setType("text/html");
+        content.setValue(htmlContent);
+        mail.addContent(content);
+
+        return mail;
+    }
+
+    public Mail buildMailForResetPassword(ResetPasswordMailData resetPasswordMailData) {
+
+        String resetPasswordLink = baseUrl + "/reset-password?token=" + resetPasswordMailData.getToken();
+
+        Mail mail = new Mail();
+
+        Email fromEmail = new Email();
+        fromEmail.setName("drumdibum");
+        fromEmail.setEmail("donotreply@drumdibum.de");
+        mail.setFrom(fromEmail);
+
+        Personalization personalization = new Personalization();
+
+        Email toMail = new Email();
+        toMail.setEmail(resetPasswordMailData.getMail());
+        personalization.addTo(toMail);
+
+        mail.addPersonalization(personalization);
+
+        Context ctx = new Context();
+        ctx.setVariable("link", resetPasswordLink);
+
+        String subjectContent = templateEngine.process("resetPassword_subject", ctx);
+        mail.setSubject(subjectContent);
+
+        Content content = new Content();
+
+        String htmlContent = templateEngine.process("resetPassword_content", ctx);
+        content.setType("text/html");
+        content.setValue(htmlContent);
+        mail.addContent(content);
+
+        return mail;
+    }
+
+
+    // f�r plain/text ist "\r\n" in Java ein Zeilenumbruch
 //	private String createPlainContent(String url, String adminUrl) {
 //		return "Hallo! \r\n\r\n\r\n"
 //				+ "Sie haben soeben eine neue Terminanfrage erstellt. Jetzt m�ssen nur noch alle abstimmen: \r\n\r\n"
