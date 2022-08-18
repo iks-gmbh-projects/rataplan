@@ -21,6 +21,9 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { RegisterComponent } from './register/register.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+
 
 
 @NgModule({
@@ -32,7 +35,9 @@ import { RegisterComponent } from './register/register.component';
     PrivacyComponent,
     MainNavComponent,
     ContactComponent,
-    RegisterComponent
+    RegisterComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent
   ],
     imports: [
         BrowserModule,

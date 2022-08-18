@@ -3,7 +3,6 @@ import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import {RegisterService} from "../services/register-service/register.service";
 import {switchMap, timer} from "rxjs";
 import {map} from "rxjs/operators";
-import {Router} from "@angular/router";
 
 
 @Component({
@@ -41,7 +40,7 @@ export class RegisterComponent implements OnInit {
       }))
     });
 
-  password = new FormControl('', Validators.required);
+  password = new FormControl('', [Validators.required, Validators.minLength(3)]);
   confirmPassword = new FormControl('', Validators.required);
   hide = true;
   hideConfirm = true;
@@ -54,8 +53,7 @@ export class RegisterComponent implements OnInit {
   })
 
   constructor(private formBuilder: FormBuilder,
-              private registerService: RegisterService,
-              private router: Router) {
+              private registerService: RegisterService) {
   }
 
   ngOnInit(): void {
@@ -95,21 +93,24 @@ export class RegisterComponent implements OnInit {
     }
 
     if (this.mail.hasError('mailExists')) {
-      return 'Email wird bereits verwendet'
+      return 'Email wird bereits verwendet';
     }
 
     return this.mail.hasError('email') ? 'Keine gültige email' : '';
   }
 
   getPasswordErrorMessage() {
-    if (this.username.hasError('required')) {
+    if (this.password.hasError('required')) {
       return 'Dieses Feld darf nicht leer bleiben';
+    }
+    if (this.password.hasError('minLength')) {
+      return 'Mindestens 3 Zeichen';
     }
     return '';
   }
 
   getConfirmPasswordErrorMessage() {
-    if (this.username.hasError('required')) {
+    if (this.confirmPassword.hasError('required')) {
       return 'Dieses Feld darf nicht leer bleiben';
     }
     return this.confirmPassword.hasError('pattern') ? 'Passwort stimmt nicht überein' : '';
