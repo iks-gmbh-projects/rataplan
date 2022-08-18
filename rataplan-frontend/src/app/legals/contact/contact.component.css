@@ -1,0 +1,21 @@
+.mat-form-field{
+  width: 80%;
+  margin-left:10%;
+  margin-right:10%;
+}
+
+.email{
+  margin-top: 21.5px;
+}
+
+.message-textarea {
+  height: 30vh;
+}
+
+.submit-button {
+  position: absolute;
+  right: 10%;
+}
+
+
+

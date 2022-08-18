@@ -39,6 +39,11 @@ import { ConditionsComponent } from './legals/conditions/conditions.component';
 import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
+import { ContactComponent } from './legals/contact/contact.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RegisterComponent } from './register/register.component';
 
 registerLocaleData(localeDE);
 
@@ -49,6 +54,9 @@ registerLocaleData(localeDE);
     HomepageComponent,
     ImprintComponent,
     PrivacyComponent,
+    MainNavComponent,
+    ContactComponent,
+    RegisterComponent,
     MainNavComponent,
     AppointmentRequestFormComponent,
     GeneralSubformComponent,
@@ -74,7 +82,10 @@ registerLocaleData(localeDE);
     MatCardModule,
     MatMomentDateModule,
     MatChipsModule,
+    HttpClientModule,
+    MatSnackBarModule,
     MatCheckboxModule,
+    MatFormFieldModule,
     FormsModule,
   ],
   providers: [
