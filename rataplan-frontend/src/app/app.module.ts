@@ -20,19 +20,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import {
-  AppointmentRequestFormComponent,
-} from './appointment/appointment-request-form/appointment-request-form.component';
-import {
-  DateOverviewSubformComponent,
-} from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
-import {
-  DatepickerSubformComponent,
-} from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
+import { AppointmentRequestFormComponent, } from './appointment/appointment-request-form/appointment-request-form.component';
+import { DateOverviewSubformComponent } from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
+import { DatepickerSubformComponent, } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
 import { EmailSubformComponent } from './appointment/appointment-request-form/email-subform/email-subform.component';
-import {
-  GeneralSubformComponent,
-} from './appointment/appointment-request-form/general-subform/general-subform.component';
+import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
 import { LinkSubformComponent } from './appointment/appointment-request-form/link-subform/link-subform.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
@@ -44,6 +36,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RegisterComponent } from './register/register.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 registerLocaleData(localeDE);
 
@@ -56,6 +50,9 @@ registerLocaleData(localeDE);
     PrivacyComponent,
     MainNavComponent,
     ContactComponent,
+    RegisterComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
     RegisterComponent,
     MainNavComponent,
     AppointmentRequestFormComponent,
