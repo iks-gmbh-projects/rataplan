@@ -14,29 +14,32 @@ import de.iks.rataplan.repository.AppointmentRequestRepository;
 @Component
 public class SchedulerService {
 
-	@Autowired
-	private AppointmentRequestRepository appointmentRequestRepository;
-	
-	@Autowired
-	private MailService mailService;
-	
+    @Autowired
+    private AppointmentRequestRepository appointmentRequestRepository;
 
-	
+    @Autowired
+    private MailService mailService;
 
-	@Scheduled(cron = "0 1 0 ? * *")	// Jeden Tag um 0:01 Uhr
+
+    @Scheduled(cron = "0 1 0 ? * *")    // Jeden Tag um 0:01 Uhr
 //	@Scheduled(fixedRate = 10000)		// Alle 10 Sekunden
     public void reportCurrentTime() {
-    	
-    	List<AppointmentRequest> requests = appointmentRequestRepository.findByDeadlineBeforeAndExpiredFalse(new Date(Calendar.getInstance().getTimeInMillis()));
 
-    	for (AppointmentRequest request : requests) {
+        List<AppointmentRequest> requests = appointmentRequestRepository.findByDeadlineBeforeAndExpiredFalse(new Date(Calendar.getInstance().getTimeInMillis()));
 
-    		request.setExpired(true);
-    		appointmentRequestRepository.saveAndFlush(request);
-    		
-    		if (request.getOrganizerMail() != null) {
-        		mailService.sendMailForAppointmentRequestExpired(request);
-    		}
-    	}
+        for (AppointmentRequest request : requests) {
+
+            request.setExpired(true);
+            appointmentRequestRepository.saveAndFlush(request);
+
+            if (request.getOrganizerMail() != null) {
+                mailService.sendMailForAppointmentRequestExpired(request);
+            }
+        }
+    }
+
+    @Scheduled(fixedRate = 20000)
+    public void deleteOldAuthToken() {
+        //authService
     }
 }

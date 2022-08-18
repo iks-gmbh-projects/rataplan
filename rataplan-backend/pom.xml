@@ -19,7 +19,7 @@
  		<spring.security.version>3.1.0.RELEASE</spring.security.version>
  		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
  		<mysql.connector.version>5.1.40</mysql.connector.version>
- 		<postgresql.version>42.0.0</postgresql.version>
+ 		<postgresql.version>42.3.3</postgresql.version>
  		<h2.version>1.4.192</h2.version>
  		<gson.version>2.7</gson.version>
  		<flyway.version>4.2.0</flyway.version>

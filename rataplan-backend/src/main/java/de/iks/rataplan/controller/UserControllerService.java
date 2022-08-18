@@ -2,93 +2,114 @@ package de.iks.rataplan.controller;
 
 import javax.servlet.http.HttpServletResponse;
 
+import de.iks.rataplan.domain.*;
+import de.iks.rataplan.service.MailServiceImplSendGrid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.domain.BackendUser;
-import de.iks.rataplan.domain.FrontendUser;
-import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.restservice.AuthService;
 import de.iks.rataplan.service.BackendUserService;
 import de.iks.rataplan.utils.CookieBuilder;
 
+
 @Service
 public class UserControllerService {
 
-	@Autowired
-	private AuthService authService;
+    @Autowired
+    private AuthService authService;
 
-	@Autowired
-	private BackendUserService backendUserService;
+    @Autowired
+    private BackendUserService backendUserService;
 
-	@Autowired
-	private HttpServletResponse servletResponse;
+    @Autowired
+    private HttpServletResponse servletResponse;
 
-	@Autowired
-	private CookieBuilder cookieBuilder;
+    @Autowired
+    private CookieBuilder cookieBuilder;
 
-	@Autowired
-	private AuthorizationControllerService authorizationControllerService;
+    @Autowired
+    private AuthorizationControllerService authorizationControllerService;
 
-	public FrontendUser registerUser(FrontendUser frontendUser) {
+    @Autowired
+    private MailServiceImplSendGrid mailServiceImplSendGrid;
 
-		ResponseEntity<AuthUser> authServiceResponse = authService.registerUser(new AuthUser(frontendUser));
-		AuthUser authUser = authServiceResponse.getBody();
-		authorizationControllerService.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
+    public FrontendUser registerUser(FrontendUser frontendUser) {
 
-		frontendUser.setId(authUser.getId());
+        ResponseEntity<AuthUser> authServiceResponse = authService.registerUser(new AuthUser(frontendUser));
+        AuthUser authUser = authServiceResponse.getBody();
+        authorizationControllerService.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
 
-		BackendUser backendUser = backendUserService.createBackendUser(new BackendUser(authUser.getId()));
-		return new FrontendUser(authUser, backendUser);
-	}
+        frontendUser.setId(authUser.getId());
 
-	public boolean checkIfMailExists(String mail) {
+        BackendUser backendUser = backendUserService.createBackendUser(new BackendUser(authUser.getId()));
+        return new FrontendUser(authUser, backendUser);
+    }
 
-		ResponseEntity<Boolean> authServiceResponse = authService.checkIfMailExists(mail);
-		return authServiceResponse.getBody();
-	}
+    public boolean checkIfMailExists(String mail) {
 
-	public boolean checkIfUsernameExists(String username) {
+        ResponseEntity<Boolean> authServiceResponse = authService.checkIfMailExists(mail);
+        return authServiceResponse.getBody();
+    }
 
-		ResponseEntity<Boolean> authServiceResponse = authService.checkIfUsernameExists(username);
-		return authServiceResponse.getBody();
-	}
+    public boolean checkIfUsernameExists(String username) {
 
-	public FrontendUser loginUser(FrontendUser frontendUser) {
+        ResponseEntity<Boolean> authServiceResponse = authService.checkIfUsernameExists(username);
+        return authServiceResponse.getBody();
+    }
 
-		ResponseEntity<AuthUser> authServiceResponse = authService.loginUser(new AuthUser(frontendUser));
-		AuthUser authUser = authServiceResponse.getBody();
-		authorizationControllerService.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
+    public boolean sendForgotPasswordMail(String mail) {
 
-		BackendUser backendUser = backendUserService.getBackendUserByAuthUserId(authUser.getId());
+        AuthToken response = authService.saveAuthTokenToUserWithMail(mail).getBody();
 
-		if (backendUser == null) {
-			backendUser = backendUserService.createBackendUser(new BackendUser(authUser.getId()));
-		}
+        ResetPasswordMailData resetPasswordMailData = new ResetPasswordMailData();
+        resetPasswordMailData.setMail(mail);
+        resetPasswordMailData.setToken(response.getToken());
 
-		return new FrontendUser(authUser, backendUser);
-	}
+        mailServiceImplSendGrid.sendMailForResetPassword(resetPasswordMailData);
 
-	public void logoutUser() {
-		this.servletResponse.addHeader("Set-Cookie", this.cookieBuilder.generateCookieValue(null, true));
-	}
+        return true;
+    }
 
-	public FrontendUser getUserData(String jwtToken) {
+    public FrontendUser loginUser(FrontendUser frontendUser) {
 
-		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-		AuthUser authUser = authServiceResponse.getBody();
-		authorizationControllerService.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
+        ResponseEntity<AuthUser> authServiceResponse = authService.loginUser(new AuthUser(frontendUser));
+        AuthUser authUser = authServiceResponse.getBody();
+        authorizationControllerService.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
 
-		BackendUser backendUser = backendUserService.getBackendUserByAuthUserId(authUser.getId());
+        BackendUser backendUser = backendUserService.getBackendUserByAuthUserId(authUser.getId());
 
-		return new FrontendUser(authUser, backendUser);
-	}
+        if (backendUser == null) {
+            backendUser = backendUserService.createBackendUser(new BackendUser(authUser.getId()));
+        }
 
-	public boolean changePassword(PasswordChange passwords, String jwtToken) {
+        return new FrontendUser(authUser, backendUser);
+    }
 
-		ResponseEntity<Boolean> response = this.authService.changePassword(jwtToken, passwords);
-		return response.getBody();
-	}
+    public void logoutUser() {
+        this.servletResponse.addHeader("Set-Cookie", this.cookieBuilder.generateCookieValue(null, true));
+    }
+
+    public FrontendUser getUserData(String jwtToken) {
+
+        ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
+        AuthUser authUser = authServiceResponse.getBody();
+        authorizationControllerService.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
+
+        BackendUser backendUser = backendUserService.getBackendUserByAuthUserId(authUser.getId());
+
+        return new FrontendUser(authUser, backendUser);
+    }
+
+    public boolean changePassword(PasswordChange passwords, String jwtToken) {
+
+        ResponseEntity<Boolean> response = this.authService.changePassword(jwtToken, passwords);
+        return response.getBody();
+    }
+
+    public boolean resetPassword(ResetPasswordData resetPasswordData) {
+
+        ResponseEntity<Boolean> response = this.authService.resetPassword(resetPasswordData);
+        return response.getBody();
+    }
 }
