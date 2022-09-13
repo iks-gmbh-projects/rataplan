@@ -18,31 +18,20 @@ public class AppointmentRequestConfig {
 	private Integer id;
 	private AppointmentConfig appointmentConfig;
 	private DecisionType decisionType = DecisionType.DEFAULT;
-	private String password = null;
-	private String adminPassword = null;
 
 	public AppointmentRequestConfig() {
 		//Nothing to do here
 	}
-	
-	public AppointmentRequestConfig(Integer id, AppointmentConfig appointmentConfig, DecisionType decisionType,
-			String password, String adminPassword) {
+
+	public AppointmentRequestConfig(Integer id, AppointmentConfig appointmentConfig, DecisionType decisionType) {
 		this.id = id;
 		this.appointmentConfig = appointmentConfig;
 		this.decisionType = decisionType;
-		this.password = password;
-		this.adminPassword = adminPassword;
 	}
 
 	public AppointmentRequestConfig(AppointmentConfig appointmentConfig, DecisionType decisionType) {
 		this.appointmentConfig = appointmentConfig;
 		this.decisionType = decisionType;
-	}
-	
-	public AppointmentRequestConfig(AppointmentConfig appointmentConfig, DecisionType decisionType, String password, String adminPassword) {
-		this(appointmentConfig, decisionType);
-		this.password = password;
-		this.adminPassword = adminPassword;
 	}
 	
 	@Id
@@ -72,28 +61,6 @@ public class AppointmentRequestConfig {
 
 	public void setDecisionType(DecisionType decisionType) {
 		this.decisionType = decisionType;
-	}
-	
-	@JsonIgnore
-	@Column(name = "password")
-	public String getPassword() {
-		return this.password;
-	}
-	
-	@JsonProperty
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	@JsonIgnore
-	@Column(name = "adminPassword")
-	public String getAdminPassword() {
-		return this.adminPassword;
-	}
-	
-	@JsonProperty
-	public void setAdminPassword(String adminPassword) {
-		this.adminPassword = adminPassword;
 	}
 
 	@Override

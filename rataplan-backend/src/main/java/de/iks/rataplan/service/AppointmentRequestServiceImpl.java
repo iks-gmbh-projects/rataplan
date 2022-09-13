@@ -34,12 +34,6 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 	private AppointmentRepository appointmentRepository;
 
 	@Autowired
-	private BackendUserAccessRepository backendUserAccessRepository;
-
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-
-	@Autowired
 	private MailService mailService;
 
 	@Override
@@ -62,11 +56,6 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			}
 			appointment.setId(null);
 		}
-
-		appointmentRequest.getAppointmentRequestConfig().setAdminPassword(
-				this.encodePassword(appointmentRequest.getAppointmentRequestConfig().getAdminPassword()));
-		appointmentRequest.getAppointmentRequestConfig()
-				.setPassword(this.encodePassword(appointmentRequest.getAppointmentRequestConfig().getPassword()));
 
 		AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.saveAndFlush(appointmentRequest);
 
@@ -122,22 +111,6 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 
 		this.removeAppointments(newAppointmentRequest, dbAppointmentRequest.getAppointments());
 
-		AppointmentRequestConfig newConfig = newAppointmentRequest.getAppointmentRequestConfig();
-		dbAppointmentRequest.getAppointmentRequestConfig().setAppointmentConfig(newConfig.getAppointmentConfig());;
-
-		if (newConfig.getAdminPassword() != null && newConfig.getAdminPassword() != "") {
-			backendUserAccessRepository.resetAdminAccess(dbAppointmentRequest.getId(),
-					dbAppointmentRequest.getBackendUserId());
-			dbAppointmentRequest.getAppointmentRequestConfig()
-					.setAdminPassword(this.encodePassword(newConfig.getAdminPassword()));
-		}
-
-		if (newConfig.getPassword() != null && newConfig.getPassword() != "") {
-			backendUserAccessRepository.resetAccess(dbAppointmentRequest.getId());
-			dbAppointmentRequest.getAppointmentRequestConfig()
-					.setPassword(this.encodePassword(newConfig.getPassword()));
-		}
-
 		// Add Appointments that are not existent in the old AppointmentRequest
 		this.addAppointments(dbAppointmentRequest, newAppointmentRequest.getAppointments());
 
@@ -146,18 +119,6 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 		}
 
 		return appointmentRequestRepository.saveAndFlush(dbAppointmentRequest);
-	}
-
-	private String encodePassword(String password) {
-
-		if (password != null && password != "") {
-			if (password.length() < 4 || password.length() > 32) {
-				throw new MalformedException("Incorrect Passwordlength: " + password.length());
-			}
-			return passwordEncoder.encode(password);
-		} else {
-			return null;
-		}
 	}
 
 	private void removeAppointments(AppointmentRequest newRequest, List<Appointment> oldAppointments) {
