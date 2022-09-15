@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {switchMap, timer} from "rxjs";
-import {map} from "rxjs/operators";
-import {RegisterService} from "../services/register-service/register.service";
-import {ForgotPasswordService} from "../services/forgot-password-service/forgot-password.service";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { switchMap, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { ForgotPasswordService } from '../../services/forgot-password-service/forgot-password.service';
+import { RegisterService } from '../../services/register-service/register.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -20,15 +21,15 @@ export class ForgotPasswordComponent implements OnInit {
             if (resp) {
               return (null);
             } else {
-              return ({mailDoesNotExist: true});
+              return ({ mailDoesNotExist: true });
             }
-          }))
-      }))
+          }));
+      }));
     });
 
   forgotPasswordForm = this.formBuilder.group({
     mail: this.mail,
-  })
+  });
 
   constructor(private formBuilder: FormBuilder,
               private registerService: RegisterService,

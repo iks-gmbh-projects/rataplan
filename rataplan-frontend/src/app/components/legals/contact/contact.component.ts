@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ContactService} from "../../services/contact-service/contact.service"
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { ContactService } from '../../../services/contact-service/contact.service';
 
 @Component({
   selector: 'app-contact',
@@ -10,7 +11,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 })
 export class ContactComponent implements OnInit {
 
-  snackbarMessage: string = "Nachricht erfolgreich versandt!";
+  snackbarMessage = 'Nachricht erfolgreich versandt!';
   snackbarNoAction: undefined;
   senderMail = new FormControl('', [Validators.required, Validators.email]);
   subject = new FormControl('', [Validators.required]);
@@ -31,11 +32,11 @@ export class ContactComponent implements OnInit {
   }
 
   submit(){
-    let contactData: ContactData = {
+    const contactData: ContactData = {
       senderMail: this.senderMail.value,
       subject: this.subject.value,
       content: this.content.value,
-    }
+    };
 
     this.contactService.contact(contactData).subscribe(responseData => {
       if (responseData){

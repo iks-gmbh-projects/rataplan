@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
+import { AppointmentRequestModel } from '../../../models/appointment-request.model';
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
 import { AppointmentRequestNavigationEnum } from '../appointment-request-navigation.enum';
-import { AppointmentRequestModel } from '../model/appointmentRequestModel';
 
 @Component({
   selector: 'app-appointment-request-form',
@@ -18,9 +18,9 @@ export class AppointmentRequestFormComponent implements OnInit, OnDestroy {
     AppointmentRequestNavigationEnum.Datepicker,
     AppointmentRequestNavigationEnum.Overview,
     AppointmentRequestNavigationEnum.Email,
-    AppointmentRequestNavigationEnum.Links,
   ];
 
+  isSend = false;
   isPageValid = false;
   indexOfSection = 0;
 
@@ -35,6 +35,13 @@ export class AppointmentRequestFormComponent implements OnInit, OnDestroy {
       .subscribe(valid => {
         this.isPageValid = valid;
       });
+    this.appointmentRequestFormService.resetFormObservable
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        this.indexOfSection = 0;
+        this.isPageValid = false;
+        this.isSend = false;
+      });
   }
 
   ngOnDestroy(): void {
@@ -43,28 +50,22 @@ export class AppointmentRequestFormComponent implements OnInit, OnDestroy {
     this.appointmentRequestFormService.appointmentRequest = new AppointmentRequestModel();
   }
 
-  navigateToPage() {
-    this.router.navigate([this.appointmentSections[this.indexOfSection]],
-      { relativeTo: this.route });
-    if (this.appointmentSections[this.indexOfSection] === AppointmentRequestNavigationEnum.Links) {
-      this.sendEndOfAppointment();
-    }
-  }
-
   nextPage() {
     this.appointmentRequestFormService.submitValues();
-    this.indexOfSection++;
-    this.navigateToPage();
+    this.router.navigate([this.appointmentSections[++this.indexOfSection]],
+      { relativeTo: this.route });
   }
 
   backPage() {
     this.appointmentRequestFormService.submitValues();
-    this.indexOfSection--;
-    this.navigateToPage();
+    this.router.navigate([this.appointmentSections[--this.indexOfSection]],
+      { relativeTo: this.route });
   }
 
   sendEndOfAppointment() {
-    console.log('Sending HTTP Request... just kidding not working yet');
+    this.router.navigate(['links'], { relativeTo: this.route });
+    this.isSend = true;
+    this.appointmentRequestFormService.createAppointmentRequest();
     console.log(this.appointmentRequestFormService.appointmentRequest);
   }
 }

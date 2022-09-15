@@ -20,7 +20,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     'title': new FormControl(null, Validators.required),
     'description': new FormControl(null),
     'deadline': new FormControl(null, Validators.required),
-    'decision': new FormControl(null, Validators.required),
+    'decision': new FormControl('0', Validators.required),
   });
 
   showDescription = false;
@@ -35,13 +35,13 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     const appointmentRequest = this.appointmentRequestFormService.appointmentRequest;
     const title = appointmentRequest.title;
     const deadline = appointmentRequest.deadline;
-    const decision = appointmentRequest.decision;
 
-    if (title || deadline || decision) {
+    if (title || deadline) {
       this.generalSubform.get('title')?.setValue(title);
       this.generalSubform.get('description')?.setValue(appointmentRequest.description);
       this.generalSubform.get('deadline')?.setValue(deadline);
-      this.generalSubform.get('decision')?.setValue(decision);
+      this.generalSubform.get('decision')?.setValue('0');
+
       Promise
         .resolve()
         .then(() => this.appointmentRequestFormService.validationObservable.next(true));
@@ -71,7 +71,6 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
       this.generalSubform.get('title')?.value,
       this.generalSubform.get('description')?.value,
       this.generalSubform.get('deadline')?.value,
-      this.generalSubform.get('decision')?.value,
     );
   }
 

@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {RegisterService} from "../services/register-service/register.service";
-import {switchMap, timer} from "rxjs";
-import {map} from "rxjs/operators";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { switchMap, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { RegisterService } from '../../services/register-service/register.service';
 
 
 @Component({
@@ -18,12 +19,12 @@ export class RegisterComponent implements OnInit {
         return this.registerService.checkIfUsernameExists(this.username.value)
           .pipe(map(resp => {
             if (resp) {
-              return ({usernameExists: true});
+              return ({ usernameExists: true });
             } else {
               return (null);
             }
-          }))
-      }))
+          }));
+      }));
     });
 
   mail: FormControl = new FormControl('', [Validators.required, Validators.email],
@@ -32,12 +33,12 @@ export class RegisterComponent implements OnInit {
         return this.registerService.checkIfMailExists(this.mail.value)
           .pipe(map(resp => {
             if (resp) {
-              return ({mailExists: true});
+              return ({ mailExists: true });
             } else {
               return (null);
             }
-          }))
-      }))
+          }));
+      }));
     });
 
   password = new FormControl('', [Validators.required, Validators.minLength(3)]);
@@ -50,7 +51,7 @@ export class RegisterComponent implements OnInit {
     mail: this.mail,
     password: this.password,
     confirmPassword: this.confirmPassword,
-  })
+  });
 
   constructor(private formBuilder: FormBuilder,
               private registerService: RegisterService) {
@@ -60,12 +61,12 @@ export class RegisterComponent implements OnInit {
   }
 
   submit() {
-    this.username.updateValueAndValidity()
-    let frontendUser: FrontendUser = {
+    this.username.updateValueAndValidity();
+    const frontendUser: FrontendUser = {
       username: this.username.value,
       mail: this.mail.value,
       password: this.password.value
-    }
+    };
 
     this.registerService.registerUser(frontendUser).subscribe(responseData => {
       console.log(responseData);

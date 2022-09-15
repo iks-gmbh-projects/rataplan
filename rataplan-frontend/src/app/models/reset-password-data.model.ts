@@ -1,4 +1,4 @@
-export class ResetPasswordData {
+export class ResetPasswordDataModel {
 
   private token: string;
   private password: string;

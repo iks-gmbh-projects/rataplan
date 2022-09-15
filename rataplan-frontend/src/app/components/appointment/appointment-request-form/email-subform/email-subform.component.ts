@@ -17,8 +17,8 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   emails: string[] = [];
 
   emailSubform = new FormGroup({
-    'name': new FormControl(null, Validators.required),
-    'email': new FormControl(null, [Validators.required, Validators.email]),
+    'name': new FormControl(null),
+    'email': new FormControl(null, Validators.email),
   });
 
   constructor(private appointmentRequestFormService: AppointmentRequestFormService) {
@@ -26,19 +26,11 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const appointmentRequest = this.appointmentRequestFormService.appointmentRequest;
-    const name = appointmentRequest.creatorName;
-    const email = appointmentRequest.creatorEmail;
+    const name = appointmentRequest.organizerName;
+    const email = appointmentRequest.organizerMail;
 
-    if (name || email) {
-      this.emailSubform.get('name')?.setValue(name);
-      this.emailSubform.get('email')?.setValue(email);
-      this.appointmentRequestFormService.validationObservable.next(true);
-    } else {
-      Promise
-        .resolve()
-        .then(() => this.appointmentRequestFormService.validationObservable.next(false));
-    }
-
+    this.emailSubform.get('name')?.setValue(name);
+    this.emailSubform.get('email')?.setValue(email);
     this.emailSubform.statusChanges
       .pipe(takeUntil(this.destroySubject))
       .subscribe(val => this.appointmentRequestFormService.emitValidation(val));
