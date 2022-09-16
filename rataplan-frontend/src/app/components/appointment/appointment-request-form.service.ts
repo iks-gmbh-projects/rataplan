@@ -20,8 +20,8 @@ export class AppointmentRequestFormService {
   }
 
   setGeneralInputValue(title: string, description: string, deadline: Date) {
-    this.appointmentRequest.title = title;
-    this.appointmentRequest.description = description;
+    this.appointmentRequest.title = title.trim();
+    if (description !== null) this.appointmentRequest.description = description.trim();
     this.appointmentRequest.deadline = deadline;
   }
 
@@ -38,8 +38,8 @@ export class AppointmentRequestFormService {
   }
 
   setEmailInputValue(name: string, email: string) {
-    this.appointmentRequest.organizerName = name;
-    this.appointmentRequest.organizerMail = email;
+    this.appointmentRequest.organizerName = name.trim();
+    this.appointmentRequest.organizerMail = email.trim();
   }
 
   emitValidation(val: string) {
@@ -62,6 +62,7 @@ export class AppointmentRequestFormService {
         'Content-Type': 'application/json;charset=utf-8'
       })
     }).subscribe(response => {
+      this.selectedDates = [];
       this.appointmentRequest = new AppointmentRequestModel();
       console.log(response);
     });

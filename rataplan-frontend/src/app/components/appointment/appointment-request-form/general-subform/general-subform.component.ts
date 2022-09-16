@@ -17,7 +17,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   maxDate: Date;
 
   generalSubform = new FormGroup({
-    'title': new FormControl(null, Validators.required),
+    'title': new FormControl(null, [Validators.required, this.noWhiteSpace]),
     'description': new FormControl(null),
     'deadline': new FormControl(null, Validators.required),
     'decision': new FormControl('0', Validators.required),
@@ -79,5 +79,11 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     if (!this.showDescription && this.generalSubform.get('description')) {
       this.generalSubform.get('description')?.setValue(null);
     }
+  }
+
+  noWhiteSpace(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : { 'whitespace': true };
   }
 }
