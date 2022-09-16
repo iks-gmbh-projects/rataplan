@@ -1,19 +1,6 @@
 package de.iks.rataplan.repository;
 
-import static de.iks.rataplan.testutils.TestConstants.APPOINTMENTREQUESTS;
-import static de.iks.rataplan.testutils.TestConstants.CREATE;
-import static de.iks.rataplan.testutils.TestConstants.DATE_2050_10_10;
-import static de.iks.rataplan.testutils.TestConstants.DATE_2050_11_11__11_11_00;
-import static de.iks.rataplan.testutils.TestConstants.DATE_2050_12_12__12_12_00;
-import static de.iks.rataplan.testutils.TestConstants.FILE_EMPTY_DB;
-import static de.iks.rataplan.testutils.TestConstants.FILE_EXPECTED;
-import static de.iks.rataplan.testutils.TestConstants.FILE_INITIAL;
-import static de.iks.rataplan.testutils.TestConstants.GET;
-import static de.iks.rataplan.testutils.TestConstants.IKS_MAIL;
-import static de.iks.rataplan.testutils.TestConstants.PATH;
-import static de.iks.rataplan.testutils.TestConstants.REPOSITORY;
-import static de.iks.rataplan.testutils.TestConstants.UPDATE;
-import static de.iks.rataplan.testutils.TestConstants.createSimpleAppointmentRequest;
+import static de.iks.rataplan.testutils.TestConstants.*;
 import static de.iks.rataplan.utils.AppointmentRequestBuilder.appointmentList;
 import static org.junit.Assert.assertEquals;
 
@@ -77,7 +64,7 @@ public class AppointmentRequestRepositoryTest {
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequestWithExtendedConfigAndOneAppointment() throws Exception {
 		AppointmentRequest appointmentRequest = new AppointmentRequest("Coding Dojo", "Fun with code",
-				new Date(DATE_2050_10_10), IKS_MAIL, new AppointmentRequestConfig(
+				new Date(DATE_2050_10_10), IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(
 						new AppointmentConfig(true, true, true, true, true, true), DecisionType.EXTENDED));
 
 		Appointment appointment = new Appointment("Let's Do Something", appointmentRequest);

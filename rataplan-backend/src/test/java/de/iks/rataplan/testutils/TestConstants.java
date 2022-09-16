@@ -57,6 +57,7 @@ public final class TestConstants {
 	public static final String ACCESS_TOKEN_WRONG_PASSWORD = "wrongpassword";
 	
 	// Static Objects
+	public static final String IKS_NAME = "IKS GmbH";
 	public static final String IKS_MAIL = "iks@iks-gmbh.com";
 
 	public static final AuthUser AUTHUSER_1 = new AuthUser(1, IKS_MAIL, "IKS_1", "password", "firstname", "lastname");
@@ -67,7 +68,7 @@ public final class TestConstants {
 
 	public static final AppointmentRequest createSimpleAppointmentRequest() {
 		AppointmentRequest appointmentRequest = new AppointmentRequest("Coding Dojo", "Fun with code",
-				new Date(DATE_2050_10_10), IKS_MAIL, new AppointmentRequestConfig(
+				new Date(DATE_2050_10_10),IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(
 						new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
 
 		appointmentRequest.setAppointments(appointmentList(new Appointment("iks Hilden", appointmentRequest),

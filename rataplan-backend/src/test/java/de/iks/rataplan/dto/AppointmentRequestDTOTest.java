@@ -1,7 +1,6 @@
 package de.iks.rataplan.dto;
 
-import static de.iks.rataplan.testutils.TestConstants.IKS_MAIL;
-import static de.iks.rataplan.testutils.TestConstants.createSimpleAppointmentRequest;
+import static de.iks.rataplan.testutils.TestConstants.*;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.Date;
@@ -49,7 +48,7 @@ public class AppointmentRequestDTOTest {
 	public void mapToDomain_PlainAppointmentRequestDTO_mapped() {
 		
 		AppointmentRequestDTO dtoRequest = new AppointmentRequestDTO("Title", "Description", new Date(1234567890L),
-				IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
+				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
 
 		AppointmentRequest appointmentRequest = mapper.map(dtoRequest, AppointmentRequest.class);
 
@@ -82,7 +81,7 @@ public class AppointmentRequestDTOTest {
 		AppointmentConfig config = new AppointmentConfig(true, false, true, true, true, true);
 		
 		AppointmentRequestDTO dtoRequest = new AppointmentRequestDTO("Title", "Description", new Date(1234567890L),
-				IKS_MAIL, new AppointmentRequestConfig(config, DecisionType.EXTENDED));
+				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(config, DecisionType.EXTENDED));
 		dtoRequest.setId(1);
 		AppointmentDTO dtoAppointment = new AppointmentDTO(new Timestamp(123123123L), "iks Hilden");
 		dtoAppointment.setRequestId(dtoRequest.getId());
@@ -106,7 +105,7 @@ public class AppointmentRequestDTOTest {
 	@Test
 	public void mapToDTO_AppointmentRequestFull_mapped() {
 		AppointmentRequest appointmentRequest = new AppointmentRequest("Title", "Description", new Date(123456789L),
-				IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, true, false, false, false), DecisionType.EXTENDED));
+				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, true, false, false, false), DecisionType.EXTENDED));
 		Appointment appointment1 = new Appointment(new Timestamp(123123123L), "iks Hilden", appointmentRequest);
 		Appointment appointment2 = new Appointment(new Timestamp(321321321L), "Berufsschule D�sseldorf", appointmentRequest);
 
@@ -148,7 +147,7 @@ public class AppointmentRequestDTOTest {
 	@Test
 	public void mapToDomain_AppointmentRequestDTOFull_mapped() {
 		AppointmentRequestDTO dtoRequest = new AppointmentRequestDTO("Title", "Description", new Date(123456789L),
-				IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, true, true, false, false), DecisionType.NUMBER));
+				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, true, true, false, false), DecisionType.NUMBER));
 		dtoRequest.setId(1);
 		
 		AppointmentDTO appointment1 = new AppointmentDTO(new Timestamp(123123123L), "iks Hilden");

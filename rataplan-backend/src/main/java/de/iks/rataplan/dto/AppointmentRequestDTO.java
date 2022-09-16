@@ -14,6 +14,7 @@ public class AppointmentRequestDTO implements Serializable {
     private Integer id;
     private String title;
     private String description;
+    private String organizerName;
     private String organizerMail;
     private Date deadline;
     private Integer backendUserId;
@@ -29,20 +30,21 @@ public class AppointmentRequestDTO implements Serializable {
         //Nothing to do here
     }
 
-    public AppointmentRequestDTO(Integer id, String title, String description, Date deadline, String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
-    	this(title, description, deadline, organizerMail, appointmentRequestConfig);
+    public AppointmentRequestDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+    	this(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
     	this.id = id;
     }
 
-    public AppointmentRequestDTO(String title, String description, Date deadline, String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<String> consigneeList) {
-    	this(title, description, deadline, organizerMail, appointmentRequestConfig);
+    public AppointmentRequestDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<String> consigneeList) {
+    	this(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
     	this.consigneeList = consigneeList;
     }
     
-    public AppointmentRequestDTO(String title, String description, Date deadline, String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+    public AppointmentRequestDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
         this.title = title;
         this.description = description;
         this.deadline = deadline;
+        this.organizerName = organizerName;
         this.organizerMail = organizerMail;
         this.appointmentRequestConfig = appointmentRequestConfig;
     }
@@ -69,6 +71,14 @@ public class AppointmentRequestDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getOrganizerName() {
+        return organizerName;
+    }
+
+    public void setOrganizerName(String organizerName) {
+        this.organizerName = organizerName;
     }
 
     public String getOrganizerMail() {
@@ -144,7 +154,9 @@ public class AppointmentRequestDTO implements Serializable {
 		builder.append(title);
 		builder.append(", description=");
 		builder.append(description);
-		builder.append(", organizerMail=");
+        builder.append(", organizerName=");
+        builder.append(organizerName);
+        builder.append(", organizerMail=");
 		builder.append(organizerMail);
 		builder.append(", deadline=");
 		builder.append(deadline);

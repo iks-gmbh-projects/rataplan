@@ -30,6 +30,7 @@ public class AppointmentRequest implements Serializable {
 	private String title;
 	private String description;
 	private Date deadline;
+	private String organizerName;
 	private String organizerMail;
 	private Integer backendUserId;
 	private boolean isExpired = false;
@@ -40,12 +41,13 @@ public class AppointmentRequest implements Serializable {
 	private List<Appointment> appointments = new ArrayList<>();
 	private List<AppointmentMember> appointmentMembers = new ArrayList<>();
 
-	public AppointmentRequest(String title, String description, Date deadline, String organizerMail,
-			AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
+	public AppointmentRequest(String title, String description, Date deadline, String organizerName,
+			String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
 			List<AppointmentMember> appointmentMembers, boolean isExpired) {
 		this.title = title;
 		this.description = description;
 		this.deadline = deadline;
+		this.organizerName = organizerMail;
 		this.organizerMail = organizerMail;
 		this.appointments = appointments;
 		this.appointmentMembers = appointmentMembers;
@@ -53,11 +55,12 @@ public class AppointmentRequest implements Serializable {
 		this.isExpired = isExpired;
 	}
 
-	public AppointmentRequest(String title, String description, Date deadline, String organizerMail,
-			AppointmentRequestConfig appointmentRequestConfig) {
+	public AppointmentRequest(String title, String description, Date deadline, String organizerName,
+			String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
 		this.title = title;
 		this.description = description;
 		this.deadline = deadline;
+		this.organizerName = organizerName;
 		this.organizerMail = organizerMail;
 		this.appointmentRequestConfig = appointmentRequestConfig;
 	}
@@ -102,6 +105,15 @@ public class AppointmentRequest implements Serializable {
 
 	public void setDeadline(Date deadline) {
 		this.deadline = deadline;
+	}
+
+	@Column(name = "organizerName")
+	public String getOrganizerName() {
+		return organizerName;
+	}
+
+	public void setOrganizerName(String organizerName) {
+		this.organizerName = organizerName;
 	}
 
 	@Column(name = "organizerMail")
@@ -250,6 +262,8 @@ public class AppointmentRequest implements Serializable {
 		builder.append(description);
 		builder.append(", deadline=");
 		builder.append(deadline);
+		builder.append(", organizerName=");
+		builder.append(organizerName);
 		builder.append(", organizerMail=");
 		builder.append(organizerMail);
 		builder.append(", appointmentRequestConfig=");
