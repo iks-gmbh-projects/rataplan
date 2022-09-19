@@ -6,3 +6,4 @@
 application.pid
 rataplan_schema_drop_tables.sql
 .idea
+*.iml
