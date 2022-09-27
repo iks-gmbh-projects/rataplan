@@ -17,10 +17,14 @@ import {MatIconModule} from '@angular/material/icon';
 import { ContactComponent } from './legals/contact/contact.component';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import { RegisterComponent } from './register/register.component';
+import {LoginComponent} from "./login/login.component";
+import {RegisterComponent} from "./register/register.component";
+import {MatMenuModule} from "@angular/material/menu";
+
+
 
 
 @NgModule({
@@ -32,6 +36,7 @@ import { RegisterComponent } from './register/register.component';
     PrivacyComponent,
     MainNavComponent,
     ContactComponent,
+    LoginComponent,
     RegisterComponent
   ],
     imports: [
@@ -47,7 +52,12 @@ import { RegisterComponent } from './register/register.component';
         MatInputModule,
         ReactiveFormsModule,
         HttpClientModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatMenuModule,
+
+
     ],
   providers: [],
   bootstrap: [AppComponent]
