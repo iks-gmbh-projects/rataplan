@@ -1,1 +1,14 @@
-<p>survey-view works!</p>
+<div *ngIf="survey">
+  <h3>{{survey.name}}</h3>
+  <p>{{survey.description}}</p>
+  <div>
+    <label>Von: </label><input type="date" readonly [value]="ensureDate(survey.startDate)"><br>
+    <label>Bis: </label><input type="date" readonly [value]="ensureDate(survey.endDate)">
+  </div>
+  <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
+    ""}}</span>
+    <hr>
+  <a [routerLink]="['..','..','participate', survey.participationId]">Teilnahmelink</a><br>
+  <a routerLink="edit">Bearbeiten</a><br>
+  <a routerLink="results">Ergennisse</a><br>
+</div>
