@@ -1,0 +1,8 @@
+<span *ngIf="busy">Fetching...</span>
+<span *ngIf="!busy && error">{{error | json}}</span>
+<ul *ngIf="!busy && !error">
+  <li *ngFor="let survey of surveys">
+    <span>{{survey.name}}</span>
+    <span>{{survey.description}}</span>
+  </li>
+</ul>

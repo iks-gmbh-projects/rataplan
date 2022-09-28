@@ -41,6 +41,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [AuthGuardService]},
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'survey', loadChildren: () => import("./survey/survey.module").then(m => m.SurveyModule) }
 ];
 
 @NgModule({

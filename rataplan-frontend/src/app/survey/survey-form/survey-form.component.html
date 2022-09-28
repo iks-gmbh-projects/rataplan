@@ -1,0 +1,25 @@
+<div *ngIf="survey">
+  <h3>{{survey.name}}</h3>
+  <p>{{survey.description}}</p>
+  <div>
+    <span>Von: {{survey.startDate}}</span>
+    <span>Bis: {{survey.endDate}}</span>
+  </div>
+  <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
+    ""}}</span>
+  <form *ngIf="survey.questionGroups" (ngSubmit)="submit()" [formGroup]="answers" #form="ngForm">
+    <fieldset *ngFor="let group of survey.questionGroups">
+      <div *ngFor="let question of group.questions" [formGroupName]="question.id">
+        <ng-template [ngIf]="question.checkboxGroup">
+          <ng-template ngFor let-checkbox [ngForOf]="question.checkboxGroup.checkboxes">
+            <input type="radio" [value]="checkbox.id" formControlName="checkboxId">
+            <input *ngIf="checkbox.hasTextField" type="text" formControlName="text">
+            <label *ngIf="!checkbox.hasTextField" [for]="checkbox.id">{{checkbox.text}}</label>
+          </ng-template>
+        </ng-template>
+        <input *ngIf="!question.checkboxGroup" type="text" formControlName="text">
+      </div>
+    </fieldset>
+    <button type="submit" [disabled]="form.invalid">Einreichen</button>
+  </form>
+</div>
