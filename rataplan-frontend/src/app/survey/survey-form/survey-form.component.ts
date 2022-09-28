@@ -26,7 +26,7 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
     let answers: {[questionId: string]: FormGroup} = {};
     for(let group of survey.questionGroups!) {
       for(let question of group.questions) {
-        answers[question.id] = new FormGroup({
+        answers[question.id!] = new FormGroup({
           questionId: new FormControl(question.id),
           ...(question.checkboxGroup ? {checkboxId: new FormControl(null, Validators.required)} : null),
           text: new FormControl(null, question.checkboxGroup ? undefined : Validators.required)

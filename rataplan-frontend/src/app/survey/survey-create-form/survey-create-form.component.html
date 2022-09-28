@@ -1,1 +1,54 @@
-<p>survey-create-form works!</p>
+<form [formGroup]="formGroup" (ngSubmit)="submit()">
+  <label for="name">Umfragename</label>
+  <input type="text" formControlName="name"><br>
+  <label for="description">Beschreibung</label>
+  <textarea formControlName="description"></textarea><br>
+  <label for="startDate">Öffnungsdatum</label>
+  <input type="date" formControlName="startDate"><br>
+  <label for="endDate">Schließungsdatum</label>
+  <input type="date" formControlName="endDate"><br>
+  <input type="checkbox" formControlName="openAccess">
+  <label for="openAccess">Öffentlich</label><br>
+  <input type="checkbox" formControlName="anonymousParticipation">
+  <label for="anonymousParticipation">Anonym</label><br>
+  <div formArrayName="questionGroups">
+    <fieldset *ngFor="let questionGroup of getQuestionGroups().controls; index as i" [formGroupName]="i">
+      <label for="{{i}}.title">Überschrift</label>
+      <input type="text" formControlName="title">
+      <button type="button" [disabled]="getQuestionGroups().length <= 1" (click)="getQuestionGroups().removeAt(i)">Entferne Frage Block</button><br>
+      <div formArrayName="questions">
+        <fieldset *ngFor="let question of getQuestions(questionGroup).controls; index as j" [formGroupName]="j">
+          <label for="{{i}}.{{j}}.text">Frage</label>
+          <input type="text" formControlName="text">
+          <button type="button" [disabled]="getQuestions(questionGroup).length <= 1" (click)="getQuestions(questionGroup).removeAt(j)">Entferne Frage</button><br>
+          <input type="checkbox" formControlName="required">
+          <label for="{{i}}.{{j}}.required">Erforderlich</label><br>
+          <label for="{{i}}.{{j}}.checkboxGroup">Antwortmöglichkeiten (Freitext wenn keine gegeben)</label>
+          <fieldset formGroupName="checkboxGroup">
+            <ng-template [ngIf]="getCheckboxes(question).length">
+            <input type="checkbox" formControlName="multipleSelect">
+            <label for="{{i}}.{{j}}.multipleSelect">Mehrfachauswahl</label><br>
+            <label for="{{i}}.{{j}}.minSelect">Minimale Auswahlanzahl</label>
+            <input type="number" formControlName="minSelect"><br>
+            <label for="{{i}}.{{j}}.maxSelect">Maximale Auswahlanzahl</label>
+            <input type="number" formControlName="maxSelect"><br>
+            <div formArrayName="checkboxes">
+              <fieldset *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
+                <label for="{{i}}.{{j}}.{{k}}.text">Antwortmöglichkeit {{k+1}}</label>
+                <input type="text" formControlName="text">
+                <button type="button" (click)="getCheckboxes(question).removeAt(k)">Entferne Antwortmöglichkeit</button><br>
+                <input type="checkbox" formControlName="hasTextField">
+                <label for="{{i}}.{{j}}.{{k}}.hasTextField">Freitext</label>
+              </fieldset>
+            </div>
+            </ng-template>
+            <button type="button" (click)="getCheckboxes(question).push(createCheckbox())">Neue Antwortmöglichkeit</button>
+          </fieldset>
+        </fieldset>
+      </div>
+      <button type="button" (click)="getQuestions(questionGroup).push(createQuestion())">Neue Frage</button>
+    </fieldset>
+  </div>
+  <button type="button" (click)="getQuestionGroups().push(createQuestionGroup())">Neuer Frageblock</button>
+  <button type="submit" [disabled]="formGroup.invalid">Einreichen</button>
+</form>

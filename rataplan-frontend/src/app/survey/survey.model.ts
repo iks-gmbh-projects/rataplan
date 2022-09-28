@@ -1,33 +1,37 @@
-export type Survey = {
-  id: string,
+export type SurveyHead = {
+  id?: string,
   name: string,
   description: string,
   startDate: Date,
   endDate: Date,
   openAccess: boolean,
   anonymousParticipation: boolean,
-  accessId: string,
-  participationId: string,
-  userId: number,
-  userName: string,
-  questionGroups?: QuestionGroup[]
+  accessId?: string,
+  participationId?: string,
+  userId?: number,
+  userName?: string,
+};
+
+export type Survey = SurveyHead & {
+  questionGroups: QuestionGroup[]
 };
 
 export type QuestionGroup = {
-  id: string,
+  id?: string,
   title: string,
   questions: Question[]
 };
 
 export type Question = {
-  id: string,
+  id?: string,
   text: string,
   required: boolean,
+  hasCheckbox?: boolean,
   checkboxGroup?: CheckboxGroup
 };
 
 export type CheckboxGroup = {
-  id: string,
+  id?: string,
   multipleSelect: boolean,
   minSelect: number,
   maxSelect: number,
@@ -35,16 +39,16 @@ export type CheckboxGroup = {
 };
 
 export type Checkbox = {
-  id: string,
+  id?: string,
   text: string,
   hasTextField: boolean
 };
 
 export type Answer = {
-  id: string,
-  text: string,
-  userId: number,
-  userName: string,
+  id?: string,
+  text?: string,
+  userId?: number,
+  userName?: string,
   checkboxId?: string,
   questionId: string
 };

@@ -9,7 +9,7 @@
     ""}}</span>
   <form *ngIf="survey.questionGroups" (ngSubmit)="submit()" [formGroup]="answers" #form="ngForm">
     <fieldset *ngFor="let group of survey.questionGroups">
-      <div *ngFor="let question of group.questions" [formGroupName]="question.id">
+      <div *ngFor="let question of group.questions" [formGroupName]="question.id!">
         <ng-template [ngIf]="question.checkboxGroup">
           <ng-template ngFor let-checkbox [ngForOf]="question.checkboxGroup.checkboxes">
             <input type="radio" [value]="checkbox.id" formControlName="checkboxId">

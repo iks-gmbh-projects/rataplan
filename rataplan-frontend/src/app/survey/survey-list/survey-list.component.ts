@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Survey } from '../survey.model';
+import { SurveyHead } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
 @Component({
@@ -9,7 +8,7 @@ import { SurveyService } from '../survey.service';
   styleUrls: ['./survey-list.component.css']
 })
 export class SurveyListComponent implements OnInit {
-  public surveys: Survey[] = [];
+  public surveys: SurveyHead[] = [];
   public busy: boolean = false;
   public error: any = null;
 

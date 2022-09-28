@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { Survey } from "./survey.model";
+import { Survey, SurveyHead } from "./survey.model";
 
 const surveyURL:string = "https://umfragetool-backend.herokuapp.com/surveys";
 
@@ -9,7 +9,7 @@ const surveyURL:string = "https://umfragetool-backend.herokuapp.com/surveys";
 export class SurveyService {
   constructor(private http:HttpClient) {}
 
-  public getOpenSurveys(): Observable<Survey[]> {
+  public getOpenSurveys(): Observable<SurveyHead[]> {
     return this.http.get<Survey[]>(surveyURL);
   }
 
@@ -23,5 +23,9 @@ export class SurveyService {
     return this.http.get<Survey>(surveyURL, {
       params: new HttpParams().append("accessId", accessId)
     });
+  }
+
+  public createSurvey(survey: Survey): Observable<SurveyHead> {
+    return this.http.post<SurveyHead>(surveyURL, survey);
   }
 }
