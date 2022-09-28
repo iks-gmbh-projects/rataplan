@@ -1,8 +1,11 @@
-<span *ngIf="busy">Fetching...</span>
+<a routerLink="create">Umfrage Erstellen</a>
+<hr>
+<button type="button" (click)="updateList()">Neu laden</button>
+<span *ngIf="busy" class="">Lade...</span>
 <span *ngIf="!busy && error">{{error | json}}</span>
-<ul *ngIf="!busy && !error">
-  <li *ngFor="let survey of surveys">
+<ul style="margin: auto;" *ngIf="!busy && !error">
+  <li *ngFor="let survey of surveys" [routerLink]="survey.participationId">
     <span>{{survey.name}}</span>
-    <span>{{survey.description}}</span>
+    <p>{{survey.description}}</p>
   </li>
 </ul>

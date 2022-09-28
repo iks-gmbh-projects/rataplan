@@ -18,10 +18,10 @@ const surveyRoutes: Routes = [
           { path: "edit", component: SurveyCreateFormComponent },
         ]
       },
-      { path: "create", component: SurveyCreateFormComponent }
     ]
   },
-  { path: ":participationID", resolve: {survey: ParticipationIDSurveyResolver}, component: SurveyFormComponent },
+  { path: "create", component: SurveyCreateFormComponent },
+  { path: "participate/:participationID", resolve: {survey: ParticipationIDSurveyResolver}, component: SurveyFormComponent },
 ];
 
 @NgModule({
