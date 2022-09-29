@@ -1,11 +1,20 @@
+<div class="col">
 <a routerLink="create">Umfrage Erstellen</a>
 <hr>
-<button type="button" (click)="updateList()">Neu laden</button>
-<span *ngIf="busy" class="">Lade...</span>
-<span *ngIf="!busy && error">{{error | json}}</span>
-<ul style="margin: auto;" *ngIf="!busy && !error">
-  <li *ngFor="let survey of surveys" [routerLink]="survey.participationId">
-    <span>{{survey.name}}</span>
-    <p>{{survey.description}}</p>
-  </li>
-</ul>
+<div class="row">
+<div style="width: 20%;">
+  <button style="width:100%" type="button" (click)="updateList()">Neu laden</button>
+  <span *ngIf="busy" class="">Lade...</span>
+  <span *ngIf="!busy && error">{{error | json}}</span>
+  <ul style="padding:0px;margin:0px;" *ngIf="!busy && !error">
+    <li class="list-button" *ngFor="let survey of surveys" [routerLink]="survey.participationId">
+      <div class="header">{{survey.name}}</div>
+      <div class="content">{{survey.description}}</div>
+    </li>
+  </ul>
+</div>
+<div class="col">
+  <router-outlet></router-outlet>
+</div>
+</div>
+</div>

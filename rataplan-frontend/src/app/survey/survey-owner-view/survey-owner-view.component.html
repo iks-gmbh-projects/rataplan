@@ -2,8 +2,8 @@
   <h3>{{survey.name}}</h3>
   <p>{{survey.description}}</p>
   <div>
-    <label>Von: </label><input type="date" readonly [value]="ensureDate(survey.startDate)"><br>
-    <label>Bis: </label><input type="date" readonly [value]="ensureDate(survey.endDate)">
+    <label>Von: </label><input type="date" readonly [valueAsDate]="survey.startDate"><br>
+    <label>Bis: </label><input type="date" readonly [valueAsDate]="survey.endDate">
   </div>
   <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
     ""}}</span>

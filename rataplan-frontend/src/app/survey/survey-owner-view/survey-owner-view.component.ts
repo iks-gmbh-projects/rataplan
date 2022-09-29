@@ -23,10 +23,4 @@ export class SurveyOwnerViewComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.sub?.unsubscribe();
   }
-
-  public ensureDate(input: Date|number|string): string {
-    let ret = new Date(input).toISOString().split('T')[0];
-    return ret;
-  }
-
 }

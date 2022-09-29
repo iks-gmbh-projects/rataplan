@@ -1,0 +1,20 @@
+<div *ngIf="survey">
+  <h3>{{survey.name}}</h3>
+  <p>{{survey.description}}</p>
+  <div>
+    <ng-template [ngIf]="willOpen()">
+      <label>Offen ab: </label><input type="datetime-local" readonly [valueAsNumber]="survey.startDate.getTime()"><br>
+      <label>Bis: </label><input type="datetime-local" readonly [valueAsNumber]="survey.endDate.getTime()">
+    </ng-template>
+    <ng-template [ngIf]="isOpen()">
+      <label>Offen bis: </label><input type="datetime-local" readonly [valueAsNumber]="survey.endDate.getTime()">
+    </ng-template>
+    <ng-template [ngIf]="hasClosed()">
+      <label>Geschlossen seit: </label><input type="datetime-local" readonly [valueAsNumber]="survey.endDate.getTime()">
+    </ng-template>
+  </div>
+  <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
+    ""}}</span>
+  <hr>
+  <a *ngIf="isOpen()" [routerLink]="['..','..','participate', survey.participationId]">Teilnehmen</a><br>
+</div>

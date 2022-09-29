@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { SurveyService } from './survey.service';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
+import { SurveyOverviewComponent } from './survey-list/survey-overview/survey-overview.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolve
     SurveyFormComponent,
     SurveyOwnerViewComponent,
     SurveyCreateFormComponent,
-    SurveyResultsComponent
+    SurveyResultsComponent,
+    SurveyOverviewComponent
   ],
   imports: [
     CommonModule,
