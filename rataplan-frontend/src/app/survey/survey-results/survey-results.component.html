@@ -1,1 +1,54 @@
-<p>survey-results works!</p>
+<div *ngIf="survey">
+  <h3>{{survey.name}}</h3>
+  <p>{{survey.description}}</p>
+  <div>
+    <label>Von: </label><input type="date" readonly [valueAsDate]="survey.startDate"><br>
+    <label>Bis: </label><input type="date" readonly [valueAsDate]="survey.endDate">
+  </div>
+  <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
+    ""}}</span>
+  <hr>
+  <a routerLink="..">Zurück</a><br>
+  <hr>
+  <div style="text-align:center" *ngIf="busy">Lade...</div>
+  <ng-template [ngIf]="!busy">
+  <div *ngFor="let group of survey.questionGroups">
+    <div *ngFor="let question of group.questions">
+      <ng-template [ngIf]="question.id && answers[question.id]">
+        <table *ngIf="!question.checkboxGroup">
+          <tr>
+            <th>Beantworter</th>
+            <th>Antwort</th>
+          </tr>
+          <tr *ngFor="let answer of answers[question.id]">
+            <td>
+              {{answer.userName || answer.userId}}
+            </td>
+            <td>
+              {{answer.text}}
+            </td>
+          </tr>
+        </table>
+        <table *ngIf="question.checkboxGroup">
+          <tr>
+            <th>Beantworter</th>
+            <th *ngFor="let checkbox of question.checkboxGroup.checkboxes">{{checkbox.text}}</th>
+            <th>Antwort</th>
+          </tr>
+          <tr *ngFor="let answer of answers[question.id]">
+            <td>
+              {{answer.userName || answer.userId}}
+            </td>
+            <td *ngFor="let checkbox of question.checkboxGroup.checkboxes">
+              {{answer.checkboxId == checkbox.id ? "X" : " "}}
+            </td>
+            <td *ngIf="answer.text">
+              {{answer.text}}
+            </td>
+          </tr>
+        </table>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>
+</div>

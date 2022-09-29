@@ -43,4 +43,8 @@ export class SurveyService {
   public answerSurvey(answers: Answer[]): Observable<Answer[]> {
     return this.http.post<Answer[]>(answerURL, answers);
   }
+
+  public fetchAnswers(questionId: string|number): Observable<Answer[]> {
+    return this.http.get<Answer[]>(answerURL+"/questions/"+questionId);
+  }
 }
