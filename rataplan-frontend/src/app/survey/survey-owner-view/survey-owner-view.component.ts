@@ -5,10 +5,10 @@ import { Survey } from '../survey.model';
 
 @Component({
   selector: 'app-survey-view',
-  templateUrl: './survey-view.component.html',
-  styleUrls: ['./survey-view.component.css']
+  templateUrl: './survey-owner-view.component.html',
+  styleUrls: ['./survey-owner-view.component.css']
 })
-export class SurveyViewComponent implements OnInit, OnDestroy {
+export class SurveyOwnerViewComponent implements OnInit, OnDestroy {
   public survey: Survey|null = null;
 
   private sub: Subscription|null = null;

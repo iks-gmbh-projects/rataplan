@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SurveyViewComponent } from './survey-view.component';
+import { SurveyOwnerViewComponent } from './survey-owner-view.component';
 
-describe('SurveyViewComponent', () => {
-  let component: SurveyViewComponent;
-  let fixture: ComponentFixture<SurveyViewComponent>;
+describe('SurveyOwnerViewComponent', () => {
+  let component: SurveyOwnerViewComponent;
+  let fixture: ComponentFixture<SurveyOwnerViewComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SurveyViewComponent ]
+      declarations: [ SurveyOwnerViewComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SurveyViewComponent);
+    fixture = TestBed.createComponent(SurveyOwnerViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
