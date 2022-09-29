@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { ContactData } from '../../components/legals/contact/contact.component';
+import { ContactData } from '../../legals/contact/contact.component';
 
 @Injectable({
   providedIn: 'root'

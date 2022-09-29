@@ -3,8 +3,8 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { switchMap, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { ForgotPasswordService } from '../../services/forgot-password-service/forgot-password.service';
-import { RegisterService } from '../../services/register-service/register.service';
+import { ForgotPasswordService } from '../services/forgot-password-service/forgot-password.service';
+import { RegisterService } from '../services/register-service/register.service';
 
 @Component({
   selector: 'app-forgot-password',

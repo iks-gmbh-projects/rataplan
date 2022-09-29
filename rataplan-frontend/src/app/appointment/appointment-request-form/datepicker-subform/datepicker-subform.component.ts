@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AppointmentRequestFormService } from '../../appointment-request-form.service';
+import { AppointmentRequestFormService } from '../appointment-request-form.service';
 
 @Component({
   selector: 'app-datepicker-subform',

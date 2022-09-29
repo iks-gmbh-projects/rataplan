@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { AppointmentRequestFormService } from '../components/appointment/appointment-request-form.service';
+import { AppointmentRequestFormService } from '../appointment-request-form/appointment-request-form.service';
 
 @Injectable({
   providedIn: 'root',

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { FrontendUser } from '../../components/register/register.component';
+import { FrontendUser } from '../../register/register.component';
 
 @Injectable({
   providedIn: 'root'

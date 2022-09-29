@@ -1,4 +1,4 @@
-import { DecisionType } from '../components/appointment/decision-type.enum';
+import { DecisionType } from '../appointment/appointment-request-form/decision-type.enum';
 
 export class AppointmentDecisionModel {
   constructor(

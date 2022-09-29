@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
-import { AppointmentRequestFormService } from '../../appointment-request-form.service';
+import { AppointmentRequestFormService } from '../appointment-request-form.service';
 
 @Component({
   selector: 'app-date-overview-subform',

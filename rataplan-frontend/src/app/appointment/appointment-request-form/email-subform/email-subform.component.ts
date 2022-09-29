@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Subject, takeUntil } from 'rxjs';
 
-import { AppointmentRequestFormService } from '../../appointment-request-form.service';
+import { AppointmentRequestFormService } from '../appointment-request-form.service';
 
 @Component({
   selector: 'app-email-subform',

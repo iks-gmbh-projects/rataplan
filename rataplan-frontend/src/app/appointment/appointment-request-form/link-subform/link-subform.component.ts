@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { AppointmentRequestFormService } from '../../appointment-request-form.service';
+import { AppointmentRequestFormService } from '../appointment-request-form.service';
 
 @Component({
   selector: 'app-link-subform',

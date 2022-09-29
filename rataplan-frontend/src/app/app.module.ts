@@ -23,21 +23,21 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AppointmentRequestFormComponent, } from './components/appointment/appointment-request-form/appointment-request-form.component';
-import { DateOverviewSubformComponent } from './components/appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
-import { DatepickerSubformComponent, } from './components/appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
-import { EmailSubformComponent } from './components/appointment/appointment-request-form/email-subform/email-subform.component';
-import { GeneralSubformComponent } from './components/appointment/appointment-request-form/general-subform/general-subform.component';
-import { LinkSubformComponent } from './components/appointment/appointment-request-form/link-subform/link-subform.component';
-import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { HomepageComponent } from './components/homepage/homepage.component';
-import { ConditionsComponent } from './components/legals/conditions/conditions.component';
-import { ContactComponent } from './components/legals/contact/contact.component';
-import { ImprintComponent } from './components/legals/imprint/imprint.component';
-import { PrivacyComponent } from './components/legals/privacy/privacy.component';
-import { RegisterComponent } from './components/register/register.component';
-import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { AppointmentRequestFormComponent, } from './appointment/appointment-request-form/appointment-request-form.component';
+import { DateOverviewSubformComponent } from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
+import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
+import { EmailSubformComponent } from './appointment/appointment-request-form/email-subform/email-subform.component';
+import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
+import { LinkSubformComponent } from './appointment/appointment-request-form/link-subform/link-subform.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { HomepageComponent } from './homepage/homepage.component';
+import { ConditionsComponent } from './legals/conditions/conditions.component';
+import { ContactComponent } from './legals/contact/contact.component';
+import { ImprintComponent } from './legals/imprint/imprint.component';
+import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
+import { RegisterComponent } from './register/register.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 registerLocaleData(localeDE);
 

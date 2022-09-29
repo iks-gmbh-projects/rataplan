@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { switchMap, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { RegisterService } from '../../services/register-service/register.service';
+import { RegisterService } from '../services/register-service/register.service';
 
 
 @Component({
