@@ -10,45 +10,47 @@
   <hr>
   <a routerLink="..">Zurück</a><br>
   <hr>
-  <div style="text-align:center" *ngIf="busy">Lade...</div>
-  <ng-template [ngIf]="!busy">
-  <div *ngFor="let group of survey.questionGroups">
-    <div *ngFor="let question of group.questions">
-      <ng-template [ngIf]="question.id && answers[question.id]">
-        <table *ngIf="!question.checkboxGroup">
-          <tr>
-            <th>Beantworter</th>
-            <th>Antwort</th>
-          </tr>
-          <tr *ngFor="let answer of answers[question.id]">
-            <td>
-              {{answer.userName || answer.userId}}
-            </td>
-            <td>
-              {{answer.text}}
-            </td>
-          </tr>
-        </table>
-        <table *ngIf="question.checkboxGroup">
-          <tr>
-            <th>Beantworter</th>
-            <th *ngFor="let checkbox of question.checkboxGroup.checkboxes">{{checkbox.text}}</th>
-            <th>Antwort</th>
-          </tr>
-          <tr *ngFor="let answer of answers[question.id]">
-            <td>
-              {{answer.userName || answer.userId}}
-            </td>
-            <td *ngFor="let checkbox of question.checkboxGroup.checkboxes">
-              {{answer.checkboxId == checkbox.id ? "X" : " "}}
-            </td>
-            <td *ngIf="answer.text">
-              {{answer.text}}
-            </td>
-          </tr>
-        </table>
-      </ng-template>
+  <div style="text-align:center" *ngIf="busy; else finished">Lade...</div>
+  <ng-template #finished>
+    <div *ngFor="let group of survey.questionGroups">
+      <div class="header">{{group.title}}</div>
+      <div *ngFor="let question of group.questions">
+        <div style="font-weight:bold;">{{question.text}}</div>
+        <ng-template [ngIf]="question.id">
+          <table *ngIf="!question.checkboxGroup">
+            <tr>
+              <th>Beantworter</th>
+              <th>Antwort</th>
+            </tr>
+            <tr *ngFor="let answer of answers[question.id] | async">
+              <td>
+                {{answer.userName || answer.userId}}
+              </td>
+              <td>
+                {{answer.text}}
+              </td>
+            </tr>
+          </table>
+          <table *ngIf="question.checkboxGroup">
+            <tr>
+              <th>Beantworter</th>
+              <th *ngFor="let checkbox of question.checkboxGroup.checkboxes">{{checkbox.text}}</th>
+              <th>Antwort</th>
+            </tr>
+            <tr *ngFor="let answer of answers[question.id] | async">
+              <td>
+                {{answer.userName || answer.userId}}
+              </td>
+              <td *ngFor="let checkbox of question.checkboxGroup.checkboxes">
+                {{answer.checkboxId == checkbox.id ? "X" : " "}}
+              </td>
+              <td *ngIf="answer.text">
+                {{answer.text}}
+              </td>
+            </tr>
+          </table>
+        </ng-template>
+      </div>
     </div>
-  </div>
-</ng-template>
+  </ng-template>
 </div>
