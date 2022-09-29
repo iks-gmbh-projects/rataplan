@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { Observable } from "rxjs";
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from "@angular/router";
+import { catchError, EMPTY, empty, Observable, single, throwError } from "rxjs";
 import { Survey } from "../survey.model";
 import { SurveyService } from "../survey.service";
 
@@ -15,9 +15,16 @@ export class AccessIDSurveyResolver implements Resolve<Survey> {
 
 @Injectable()
 export class ParticipationIDSurveyResolver implements Resolve<Survey> {
-  constructor(private surveys:SurveyService) {}
+  constructor(private surveys:SurveyService, private router:Router) {}
 
   public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Survey | Observable<Survey> | Promise<Survey> {
-    return this.surveys.getSurveyForParticipation(route.params["participationID"]);
+    return this.surveys.getSurveyForParticipation(route.params["participationID"])
+    .pipe(catchError(err => {
+      if(err.status == 403) {
+        this.router.navigate(["/survey/closed"]);
+        return EMPTY;
+      }
+      return throwError(() => err);
+    }));
   }
 }

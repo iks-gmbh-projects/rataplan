@@ -1,9 +1,11 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
-import { Survey, SurveyHead } from "./survey.model";
+import { Answer, Survey, SurveyHead } from "./survey.model";
 
-const surveyURL: string = "https://umfragetool-backend.herokuapp.com/surveys";
+const backendURL: string = "https://umfragetool-backend.herokuapp.com/";
+const surveyURL: string = backendURL + "surveys";
+const answerURL: string = backendURL + "answers";
 
 function ensureDate<T extends SurveyHead>(head: T): T {
   head.startDate = new Date(head.startDate);
@@ -35,6 +37,10 @@ export class SurveyService {
 
   public createSurvey(survey: Survey): Observable<SurveyHead> {
     return this.http.post<SurveyHead>(surveyURL, survey)
-    .pipe(ensureDateOperator);
+      .pipe(ensureDateOperator);
+  }
+
+  public answerSurvey(answers: Answer[]): Observable<Answer[]> {
+    return this.http.post<Answer[]>(answerURL, answers);
   }
 }

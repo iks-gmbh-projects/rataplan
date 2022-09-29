@@ -7,6 +7,7 @@ import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyOverviewComponent } from './survey-list/survey-overview/survey-overview.component';
+import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
 
 const surveyRoutes: Routes = [{
   path: "", children: [
@@ -28,6 +29,7 @@ const surveyRoutes: Routes = [{
       ]
     },
     { path: "participate/:participationID", resolve: { survey: ParticipationIDSurveyResolver }, component: SurveyFormComponent },
+    { path: "closed", component: SurveyClosedComponent },
     { path: "", pathMatch: "exact", redirectTo: "list" },
   ]
 }];

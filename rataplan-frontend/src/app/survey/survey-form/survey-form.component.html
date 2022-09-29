@@ -8,9 +8,9 @@
   <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
     ""}}</span>
   <form *ngIf="survey.questionGroups" (ngSubmit)="submit()" [formGroup]="answers" #form="ngForm">
-    <div class="box" *ngFor="let group of survey.questionGroups">
-      <div class="header">{{group.title}}</div>
-      <div *ngFor="let question of group.questions" [formGroupName]="question.id!">
+    <div class="box">
+      <div class="header">{{survey.questionGroups[page].title}}</div>
+      <div *ngFor="let question of survey.questionGroups[page].questions" [formGroupName]="question.id!">
         <div style="font-weight: bold">{{question.text}}</div>
         <ng-template [ngIf]="question.checkboxGroup">
           <ng-template ngFor let-checkbox [ngForOf]="question.checkboxGroup.checkboxes">
@@ -23,6 +23,8 @@
         <div style="padding-bottom: 1em;"></div>
       </div>
     </div>
-    <button type="submit" [disabled]="form.invalid">Einreichen</button>
+    <button [disabled]="page < 1" type="button" (click)="prevPage()">&lt;</button>
+    <button [disabled]="page >= survey.questionGroups.length-1" type="button" (click)="nextPage()">&gt;</button>
+    <button type="submit" [disabled]="form.invalid || busy">Einreichen</button>
   </form>
 </div>

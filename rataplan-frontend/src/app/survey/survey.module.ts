@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SurveyService } from './survey.service';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyOverviewComponent } from './survey-list/survey-overview/survey-overview.component';
+import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { SurveyOverviewComponent } from './survey-list/survey-overview/survey-ov
     SurveyOwnerViewComponent,
     SurveyCreateFormComponent,
     SurveyResultsComponent,
-    SurveyOverviewComponent
+    SurveyOverviewComponent,
+    SurveyClosedComponent
   ],
   imports: [
     CommonModule,

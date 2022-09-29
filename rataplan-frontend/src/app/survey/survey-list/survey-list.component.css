@@ -6,6 +6,11 @@
   margin: 10px;
 }
 
+.container {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
 .list-button {
   display: block;
   padding: 2px;
