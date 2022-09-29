@@ -11,9 +11,9 @@ import { Question, QuestionGroup, Survey } from '../survey.model';
 })
 
 export class SurveyFormComponent implements OnInit, OnDestroy {
-  public survey: Survey|null = null;
-  public answers: FormGroup = new FormGroup({});
-  private sub: Subscription|null = null;
+  public survey?: Survey;
+  public answers?: FormGroup;
+  private sub?: Subscription;
   constructor(private route: ActivatedRoute) {}
 
   public ngOnInit(): void {
@@ -46,6 +46,6 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
   }
 
   public submit(): void {
-    if(this.answers.valid) console.log(this.answers.value);
+    if(this.answers?.valid) console.log(this.answers.value);
   }
 }

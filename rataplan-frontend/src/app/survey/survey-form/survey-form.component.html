@@ -1,15 +1,17 @@
-<div *ngIf="survey">
+<div *ngIf="survey && answers" style="margin-left: 10%; margin-right: 10%;">
   <h3>{{survey.name}}</h3>
   <p>{{survey.description}}</p>
   <div>
-    <span>Von: {{survey.startDate}}</span>
-    <span>Bis: {{survey.endDate}}</span>
+    <label>Von: </label><input type="datetime-local" readonly [valueAsNumber]="survey.startDate"><br>
+    <label>Bis: </label><input type="datetime-local" readonly [valueAsNumber]="survey.endDate">
   </div>
   <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
     ""}}</span>
   <form *ngIf="survey.questionGroups" (ngSubmit)="submit()" [formGroup]="answers" #form="ngForm">
-    <fieldset *ngFor="let group of survey.questionGroups">
+    <div class="box" *ngFor="let group of survey.questionGroups">
+      <div class="header">{{group.title}}</div>
       <div *ngFor="let question of group.questions" [formGroupName]="question.id!">
+        <div style="font-weight: bold">{{question.text}}</div>
         <ng-template [ngIf]="question.checkboxGroup">
           <ng-template ngFor let-checkbox [ngForOf]="question.checkboxGroup.checkboxes">
             <input type="radio" [value]="checkbox.id" formControlName="checkboxId">
@@ -18,8 +20,9 @@
           </ng-template>
         </ng-template>
         <input *ngIf="!question.checkboxGroup" type="text" formControlName="text">
+        <div style="padding-bottom: 1em;"></div>
       </div>
-    </fieldset>
+    </div>
     <button type="submit" [disabled]="form.invalid">Einreichen</button>
   </form>
 </div>
