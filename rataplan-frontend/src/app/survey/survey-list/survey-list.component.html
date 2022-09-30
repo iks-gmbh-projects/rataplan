@@ -1,20 +1,24 @@
-<div class="col container">
-<a routerLink="../create">Umfrage Erstellen</a>
-<hr>
-<div class="row">
-<div style="width: 20%;">
-  <button style="width:100%" type="button" (click)="updateList()">Neu laden</button>
-  <span *ngIf="busy" class="">Lade...</span>
-  <span *ngIf="!busy && error">{{error | json}}</span>
-  <ul style="padding:0px;margin:0px;" *ngIf="!busy && !error">
-    <li class="list-button" *ngFor="let survey of surveys" [routerLink]="survey.participationId">
-      <div class="header">{{survey.name}}</div>
-      <div class="content">{{survey.description}}</div>
-    </li>
-  </ul>
-</div>
-<div class="col">
-  <router-outlet></router-outlet>
-</div>
-</div>
+<div class="wrapper">
+  <a mat-raised-button color="primary" routerLink="../create">Umfrage Erstellen</a>
+  <hr>
+  <div style="display:flex">
+    <button class="rightSpace" mat-mini-fab color="primary" aria-label="Neu Laden" type="button" (click)="updateList()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <div class="rightSpace" style="width: 20%;">
+      <mat-spinner *ngIf="busy; else done"></mat-spinner>
+      <ng-template #done>
+        <div *ngIf="error; else success">{{error | json}}</div>
+        <ng-template #success>
+              <mat-card class="bottomSpace" *ngFor="let survey of surveys" [routerLink]="survey.participationId">
+                <mat-card-header>{{survey.name}}</mat-card-header>
+                <mat-card-content>{{survey.description}}</mat-card-content>
+              </mat-card>
+        </ng-template>
+      </ng-template>
+    </div>
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

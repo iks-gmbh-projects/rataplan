@@ -12,6 +12,16 @@ import { SurveyService } from './survey.service';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyOverviewComponent } from './survey-list/survey-overview/survey-overview.component';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -28,6 +38,16 @@ import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
     ReactiveFormsModule,
     HttpClientModule,
     SurveyRoutingModule,
+    MatButtonModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatCardModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    MatListModule,
   ],
   providers: [
     SurveyService,

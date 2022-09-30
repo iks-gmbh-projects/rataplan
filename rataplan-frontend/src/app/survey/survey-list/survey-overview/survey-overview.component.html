@@ -1,5 +1,6 @@
-<div *ngIf="survey">
-  <h3>{{survey.name}}</h3>
+<mat-card *ngIf="survey">
+  <mat-card-title>{{survey.name}}</mat-card-title>
+  <mat-card-content>
   <p>{{survey.description}}</p>
   <div>
     <ng-template [ngIf]="willOpen()">
@@ -15,6 +16,8 @@
   </div>
   <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
     ""}}</span>
-  <hr>
-  <a *ngIf="isOpen()" [routerLink]="['/survey','participate', survey.participationId]">Teilnehmen</a><br>
-</div>
+  </mat-card-content>
+  <mat-card-actions>
+  <a mat-raised-button [disabled]="!isOpen()" [routerLink]="['/survey','participate', survey.participationId]">Teilnehmen</a><br>
+</mat-card-actions>
+  </mat-card>
