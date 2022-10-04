@@ -1,0 +1,20 @@
+<h3 mat-dialog-title>{{ data.appointments }}</h3>
+<div mat-dialog-content>
+  <span>Lorem ipsum dolor sit amet.</span>
+</div>
+<div>
+  <p></p>
+  <span>Teilnahme:</span>
+</div>
+<div>
+  <mat-list>
+    <mat-list-item *ngIf='data.isVoted'>
+      <div mat-line>{{ data.name }}</div>
+        <mat-button-toggle [ngSwitch]='data.appointmentDecision'
+                           disabled>
+          <mat-icon *ngSwitchCase="accept">done</mat-icon>
+          <mat-icon *ngSwitchDefault>close</mat-icon>
+        </mat-button-toggle>
+    </mat-list-item>
+  </mat-list>
+</div>

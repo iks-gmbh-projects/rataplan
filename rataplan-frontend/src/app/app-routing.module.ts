@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { AppointmentComponent } from './appointment/appointment/appointment.component';
 import { AppointmentRequestFormComponent } from './appointment/appointment-request-form/appointment-request-form.component';
 import { DateOverviewSubformComponent } from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
 import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
@@ -31,6 +32,7 @@ const routes: Routes = [
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
   },
+  { path: 'vote', component: AppointmentComponent },
   { path: 'terms-and-conditions', component: ConditionsComponent },
   { path: 'imprint', component: ImprintComponent },
   { path: 'privacy', component: PrivacyComponent },

@@ -1,0 +1,13 @@
+.wrapper {
+  padding: 50px;
+}
+
+.mat-list-item {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.vote-button {
+  margin-top: 20px;
+  float: right;
+}

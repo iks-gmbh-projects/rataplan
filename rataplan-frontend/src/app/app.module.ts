@@ -4,11 +4,13 @@ import localeDE from '@angular/common/locales/de';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -23,6 +25,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AppointmentComponent } from './appointment/appointment/appointment.component';
+import { MemberDecisionSubformComponent } from './appointment/appointment/member-decision-subform/member-decision-subform.component';
 import { AppointmentRequestFormComponent, } from './appointment/appointment-request-form/appointment-request-form.component';
 import { DateOverviewSubformComponent } from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
 import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
@@ -61,6 +65,8 @@ registerLocaleData(localeDE);
     DateOverviewSubformComponent,
     EmailSubformComponent,
     LinkSubformComponent,
+    AppointmentComponent,
+    MemberDecisionSubformComponent
   ],
   imports: [
     BrowserModule,
@@ -84,6 +90,8 @@ registerLocaleData(localeDE);
     MatCheckboxModule,
     MatFormFieldModule,
     FormsModule,
+    MatButtonToggleModule,
+    MatDialogModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
