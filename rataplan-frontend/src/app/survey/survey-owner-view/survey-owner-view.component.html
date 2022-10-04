@@ -5,18 +5,26 @@
       <p>{{survey.description}}</p>
       <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
       <p style="text-align: center">
-        Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
-        {{survey.anonymousParticipation ? "
-        anonym" :
-        ""}}
+        Teilnahme
+        {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
+        {{survey.anonymousParticipation ? "anonym" : ""}}
       </p>
     </mat-card-content>
     <mat-card-actions>
-      <a mat-raised-button color="link" [routerLink]="['/survey','participate', survey.participationId]">Teilnahmelink
+      <a mat-raised-button color="link" [routerLink]="['/survey','participate', survey.participationId]">
         <mat-icon>open_in_new</mat-icon>
       </a>
-      <!--<a mat-raised-button color="warn" routerLink="edit">Bearbeiten</a>-->
-      <a mat-raised-button color="primary" routerLink="results">Ergennisse</a>
+      <!--ugly workaround for missing angular feature-->
+      <a style="display:none" [routerLink]="['/survey','participate', survey.participationId]" #participationLink></a>
+      <button mat-raised-button color="basic" (click)="clipboard.copy(participationLink.href)">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <a mat-raised-button color="warn" routerLink="edit">
+        <mat-icon>edit</mat-icon>
+      </a>
+      <a mat-raised-button color="primary" routerLink="results">
+        <mat-icon>analytics</mat-icon>
+      </a>
     </mat-card-actions>
   </mat-card>
 </div>

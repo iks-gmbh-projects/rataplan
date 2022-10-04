@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { SurveyListComponent } from './survey-list/survey-list.component';
-import { SurveyFormComponent } from './survey-form/survey-form.component';
-import { SurveyCreateFormComponent } from './survey-create-form/survey-create-form.component';
 import { RouterModule, Routes } from '@angular/router';
-import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
-import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
+import { SurveyCreateFormComponent } from './survey-create-form/survey-create-form.component';
+import { SurveyFormComponent } from './survey-form/survey-form.component';
+import { SurveyListComponent } from './survey-list/survey-list.component';
+import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
+import { SurveyResultsComponent } from './survey-results/survey-results.component';
 
 const surveyRoutes: Routes = [{
   path: "", children: [

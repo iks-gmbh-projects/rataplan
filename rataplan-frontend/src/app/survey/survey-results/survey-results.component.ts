@@ -1,7 +1,6 @@
-import { Component, DoCheck, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { DateRange } from '@angular/material/datepicker';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subscription, tap } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Answer, Survey } from '../survey.model';
 import { SurveyService } from '../survey.service';
 

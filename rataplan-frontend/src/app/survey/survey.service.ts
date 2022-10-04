@@ -40,6 +40,13 @@ export class SurveyService {
       .pipe(ensureDateOperator);
   }
 
+  public editSurvey(survey: Survey): Observable<SurveyHead> {
+    return this.http.put<SurveyHead>(surveyURL, survey, {
+      params: new HttpParams().append("accessId", survey.accessId!)
+    })
+      .pipe(ensureDateOperator);
+  }
+
   public answerSurvey(answers: Answer[]): Observable<Answer[]> {
     return this.http.post<Answer[]>(answerURL, answers);
   }
