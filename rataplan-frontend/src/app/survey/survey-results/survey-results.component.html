@@ -7,52 +7,44 @@
     <mat-card-title>{{survey.name}}</mat-card-title>
     <mat-spinner *ngIf="busy; else finished"></mat-spinner>
     <ng-template #finished>
-      <mat-list>
-        <mat-list-item *ngFor="let group of survey.questionGroups">
-          <mat-card>
-            <mat-card-title matLine>{{group.title}}</mat-card-title>
-            <mat-card-content>
-              <mat-list>
-                <mat-list-item *ngFor="let question of group.questions">
-                  <mat-card>
-                    <ng-template [ngIf]="question.id">
-                      <mat-card-title matLine>{{question.text}}</mat-card-title>
-                      <mat-card-content>
-                        <table mat-table [dataSource]="answers[question.id].observable">
-                          <ng-container matColumnDef="user">
-                            <th mat-header-cell *matHeaderCellDef> Beantworter </th>
-                            <td mat-cell *matCellDef="let answer">{{answer.userName || answer.userId}}</td>
-                          </ng-container>
-                          <ng-template [ngIf]="question.checkboxGroup">
-                            <ng-container *ngFor="let checkbox of question.checkboxGroup.checkboxes"
-                              [matColumnDef]="'checkbox'+checkbox.id!">
-                              <th mat-header-cell *matHeaderCellDef> {{checkbox.text}} </th>
-                              <td mat-cell *matCellDef="let answer">
-                                <mat-checkbox [checked]="answer.checkboxId == checkbox.id" readonly="true">
-                                </mat-checkbox>
-                              </td>
-                            </ng-container>
-                          </ng-template>
-                          <ng-container matColumnDef="answer">
-                            <th mat-header-cell *matHeaderCellDef> Freitextantwort </th>
-                            <td mat-cell *matCellDef="let answer">{{answer.text}}</td>
-                          </ng-container>
-                          <tr matLine mat-header-row *matHeaderRowDef="answers[question.id].columns"></tr>
-                          <tr matLine mat-row *matRowDef="let row; columns: answers[question.id].columns"></tr>
-                        </table>
-                      </mat-card-content>
-                      <mat-card-actions matLine>
-                        <button mat-raised-button color="primary">Als CSV Herunterladen</button>
-                      </mat-card-actions>
-                    </ng-template>
-                  </mat-card>
-                </mat-list-item>
-              </mat-list>
-            </mat-card-content>
+      <mat-card class="bottomspace" *ngFor="let group of survey.questionGroups">
+        <mat-card-title>{{group.title}}</mat-card-title>
+        <mat-card-content>
+          <mat-card class="bottomspace" *ngFor="let question of group.questions">
+            <ng-template [ngIf]="question.id">
+              <mat-card-title>{{question.text}}</mat-card-title>
+              <mat-card-content>
+                <table style="display:block" mat-table matSort [dataSource]="answers[question.id].observable">
+                  <ng-container matColumnDef="user">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef>Beantworter</th>
+                    <td mat-cell *matCellDef="let answer">{{answer.userName || answer.userId}}</td>
+                  </ng-container>
+                  <ng-template [ngIf]="question.checkboxGroup">
+                    <ng-container *ngFor="let checkbox of question.checkboxGroup.checkboxes"
+                      [matColumnDef]="'checkbox'+checkbox.id!">
+                      <th mat-header-cell mat-sort-header *matHeaderCellDef> {{checkbox.text}} </th>
+                      <td mat-cell *matCellDef="let answer">
+                        <mat-checkbox [checked]="answer.checkboxId == checkbox.id" readonly="true">
+                        </mat-checkbox>
+                      </td>
+                    </ng-container>
+                  </ng-template>
+                  <ng-container matColumnDef="answer">
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef> Freitextantwort </th>
+                    <td mat-cell *matCellDef="let answer">{{answer.text}}</td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="answers[question.id].columns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: answers[question.id].columns"></tr>
+                </table>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-raised-button color="primary">Als CSV Herunterladen</button>
+              </mat-card-actions>
+            </ng-template>
           </mat-card>
-        </mat-list-item>
-      </mat-list>
+        </mat-card-content>
+      </mat-card>
     </ng-template>
   </ng-template>
-  <a mat-raised-button color="primary" routerLink="/survey/list">Zurück</a>
+  <a mat-raised-button color="primary" routerLink="..">Zurück</a>
 </div>

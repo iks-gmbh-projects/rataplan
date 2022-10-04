@@ -6,11 +6,10 @@ import { SurveyCreateFormComponent } from './survey-create-form/survey-create-fo
 import { SurveyRoutingModule } from './survey.routing.module';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { SurveyService } from './survey.service';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
-import { SurveyOverviewComponent } from './survey-list/survey-overview/survey-overview.component';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -21,7 +20,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
+import { PageComponent } from './survey-form/page/page.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { DateRangeComponent } from './date-range/date-range.component';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -30,12 +32,14 @@ import { MatListModule } from '@angular/material/list';
     SurveyOwnerViewComponent,
     SurveyCreateFormComponent,
     SurveyResultsComponent,
-    SurveyOverviewComponent,
-    SurveyClosedComponent
+    SurveyClosedComponent,
+    PageComponent,
+    DateRangeComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     HttpClientModule,
     SurveyRoutingModule,
     MatButtonModule,
@@ -45,9 +49,10 @@ import { MatListModule } from '@angular/material/list';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTableModule,
+    MatSortModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatDividerModule,
-    MatListModule,
   ],
   providers: [
     SurveyService,

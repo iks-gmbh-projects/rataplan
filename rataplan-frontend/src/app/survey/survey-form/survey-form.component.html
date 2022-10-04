@@ -1,30 +1,18 @@
-<div *ngIf="survey && answers" style="margin-left: 10%; margin-right: 10%;">
-  <h3>{{survey.name}}</h3>
-  <p>{{survey.description}}</p>
-  <div>
-    <label>Von: </label><input type="datetime-local" readonly [valueAsNumber]="survey.startDate"><br>
-    <label>Bis: </label><input type="datetime-local" readonly [valueAsNumber]="survey.endDate">
-  </div>
-  <span>Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}{{survey.anonymousParticipation ? " anonym" :
-    ""}}</span>
-  <form *ngIf="survey.questionGroups" (ngSubmit)="submit()" [formGroup]="answers" #form="ngForm">
-    <div class="box">
-      <div class="header">{{survey.questionGroups[page].title}}</div>
-      <div *ngFor="let question of survey.questionGroups[page].questions" [formGroupName]="question.id!">
-        <div style="font-weight: bold">{{question.text}}</div>
-        <ng-template [ngIf]="question.checkboxGroup">
-          <ng-template ngFor let-checkbox [ngForOf]="question.checkboxGroup.checkboxes">
-            <input type="radio" [value]="checkbox.id" formControlName="checkboxId">
-            <input *ngIf="checkbox.hasTextField" type="text" formControlName="text">
-            <label *ngIf="!checkbox.hasTextField" [for]="checkbox.id">{{checkbox.text}}</label>
-          </ng-template>
-        </ng-template>
-        <input *ngIf="!question.checkboxGroup" type="text" formControlName="text">
-        <div style="padding-bottom: 1em;"></div>
-      </div>
-    </div>
-    <button [disabled]="page < 1" type="button" (click)="prevPage()">&lt;</button>
-    <button [disabled]="page >= survey.questionGroups.length-1" type="button" (click)="nextPage()">&gt;</button>
-    <button type="submit" [disabled]="form.invalid || busy">Einreichen</button>
-  </form>
+<div *ngIf="survey" class="wrapper">
+  <mat-card class="bottomspace">
+    <mat-card-title>{{survey.name}}</mat-card-title>
+    <mat-card-content>
+      <p>{{survey.description}}</p>
+      <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
+    </mat-card-content>
+    <mat-card-footer>
+      <p style="text-align: center">
+        Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
+        {{survey.anonymousParticipation ?
+        " anonym" :
+        ""}}</p>
+    </mat-card-footer>
+  </mat-card>
+  <mat-divider class="bottomspace"></mat-divider>
+  <survey-form-page [questionGroup]="survey.questionGroups[page]" (onSubmit)="pageSubmit($event)"></survey-form-page>
 </div>

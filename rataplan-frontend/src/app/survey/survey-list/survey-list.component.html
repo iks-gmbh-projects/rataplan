@@ -1,24 +1,23 @@
 <div class="wrapper">
-  <a mat-raised-button color="primary" routerLink="../create">Umfrage Erstellen</a>
+  <a class="rightSpace" mat-raised-button color="primary" routerLink="../create">Umfrage Erstellen</a>
+  <button mat-icon-button aria-label="Neu Laden" type="button" (click)="updateList()">
+    <mat-icon>{{error ? 'sync_problem' : 'sync'}}</mat-icon>
+  </button>
   <hr>
-  <div style="display:flex">
-    <button class="rightSpace" mat-mini-fab color="primary" aria-label="Neu Laden" type="button" (click)="updateList()">
-      <mat-icon>refresh</mat-icon>
-    </button>
-    <div class="rightSpace" style="width: 20%;">
-      <mat-spinner *ngIf="busy; else done"></mat-spinner>
-      <ng-template #done>
-        <div *ngIf="error; else success">{{error | json}}</div>
-        <ng-template #success>
-              <mat-card class="bottomSpace" *ngFor="let survey of surveys" [routerLink]="survey.participationId">
-                <mat-card-header>{{survey.name}}</mat-card-header>
-                <mat-card-content>{{survey.description}}</mat-card-content>
-              </mat-card>
-        </ng-template>
+  <div>
+    <mat-spinner *ngIf="busy; else done"></mat-spinner>
+    <ng-template #done>
+      <div *ngIf="error; else success">{{error | json}}</div>
+      <ng-template #success>
+        <mat-card class="bottomSpace" *ngFor="let survey of surveys">
+          <mat-card-title>{{survey.name}}</mat-card-title>
+          <mat-card-content>{{survey.description}}</mat-card-content>
+          <mat-card-actions>
+            <a mat-raised-button color="primary"
+              [routerLink]="['..','participate',survey.participationId]">Teilnehmen</a>
+          </mat-card-actions>
+        </mat-card>
       </ng-template>
-    </div>
-    <div>
-      <router-outlet></router-outlet>
-    </div>
+    </ng-template>
   </div>
 </div>

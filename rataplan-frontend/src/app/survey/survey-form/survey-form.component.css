@@ -1,11 +1,7 @@
-.box {
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 1em;
+.wrapper {
+  padding: 50px;
 }
 
-.header {
-  font-size: large;
-  font-weight: bold;
-  padding-bottom: 1em;
+.bottomspace {
+  margin-bottom: 1ex;
 }

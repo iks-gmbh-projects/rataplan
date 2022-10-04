@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, Form, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Survey } from '../survey.model';
 import { SurveyService } from '../survey.service';
@@ -37,8 +37,8 @@ export class SurveyCreateFormComponent {
       required: new FormControl(true),
       checkboxGroup: new FormGroup({
         multipleSelect: new FormControl(false),
-        minSelect: new FormControl(1, Validators.min(1)),
-        maxSelect: new FormControl(1, Validators.min(1)),
+        minSelect: new FormControl(0, Validators.min(0)),
+        maxSelect: new FormControl(2, Validators.min(2)),
         checkboxes: new FormArray([])
       })
     });
@@ -48,6 +48,7 @@ export class SurveyCreateFormComponent {
     return new FormGroup({
       text: new FormControl(null, Validators.required),
       hasTextField: new FormControl(false),
+      answers: new FormArray([]),
     });
   }
 
@@ -67,9 +68,7 @@ export class SurveyCreateFormComponent {
     if(this.formGroup.invalid) return;
     let survey: Survey = this.formGroup.value;
     survey.startDate = new Date(survey.startDate);
-    survey.startDate.setHours(23,59, 59, 999);
     survey.endDate = new Date(survey.endDate);
-    survey.endDate.setHours(23,59, 59, 999);
     for(let qg of survey.questionGroups) {
       for(let q of qg.questions) {
         if(q.checkboxGroup && q.checkboxGroup.checkboxes.length == 0) {

@@ -6,7 +6,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
-import { SurveyOverviewComponent } from './survey-list/survey-overview/survey-overview.component';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
 
 const surveyRoutes: Routes = [{
@@ -23,12 +22,8 @@ const surveyRoutes: Routes = [{
       ]
     },
     { path: "create", component: SurveyCreateFormComponent },
-    {
-      path: "list", component: SurveyListComponent, children: [
-        { path: ":participationID", resolve: { survey: ParticipationIDSurveyResolver }, component: SurveyOverviewComponent }
-      ]
-    },
-    { path: "participate/:participationID", resolve: { survey: ParticipationIDSurveyResolver }, component: SurveyFormComponent },
+    { path: "list", component: SurveyListComponent },
+    { path: "participate/:participationID", resolve: { survey: ParticipationIDSurveyResolver }, component: SurveyFormComponent},
     { path: "closed", component: SurveyClosedComponent },
     { path: "", pathMatch: "exact", redirectTo: "list" },
   ]

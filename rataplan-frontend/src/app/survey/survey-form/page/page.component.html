@@ -1,0 +1,36 @@
+<form *ngIf="questionGroup" (ngSubmit)="submit(form)" #form="ngForm">
+  <mat-card style="margin-bottom: 1ex" *ngFor="let question of questionGroup.questions" [ngModelGroup]="question.id!">
+    <mat-card-title>{{question.text}}</mat-card-title>
+    <mat-card-content>
+      <input type="hidden" name="questionId" [ngModel]="question.id">
+      <input type="hidden" name="userId" [ngModel]="userId">
+      <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
+        <input type="text" ngModel name="text" [required]="question.required" matInput>
+      </mat-form-field>
+      <ng-template [ngIf]="question.checkboxGroup">
+        <ng-template [ngIf]="question.checkboxGroup.multipleSelect" [ngIfElse]="singleSelect">
+          <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
+            <mat-checkbox ngModel name="checkboxId" [value]="checkbox.id!">{{checkbox.text}}</mat-checkbox>
+            <mat-form-field appearance="fill">
+              <mat-label>Answer</mat-label>
+              <input type="text" ngModel name="text" matInput>
+            </mat-form-field>
+          </ng-template>
+        </ng-template>
+        <ng-template #singleSelect>
+          <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
+            <mat-radio-button ngModel name="checkboxId" [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button>
+            <mat-form-field appearance="fill">
+              <mat-label>Additional Text</mat-label>
+              <input type="text" ngModel name="text" matInput>
+            </mat-form-field>
+          </ng-template>
+        </ng-template>
+      </ng-template>
+    </mat-card-content>
+    <mat-card-actions>
+      <button type="button" mat-raised-button color="basic" (click)="revert()"><mat-icon>navigate_before</mat-icon></button>
+      <button style="float:right" type="submit" mat-raised-button color="primary"><mat-icon>navigate_next</mat-icon></button>
+    </mat-card-actions>
+  </mat-card>
+</form>

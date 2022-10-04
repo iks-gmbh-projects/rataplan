@@ -1,54 +1,101 @@
-<form [formGroup]="formGroup" (ngSubmit)="submit()">
-  <label for="name">Umfragename</label>
-  <input type="text" formControlName="name"><br>
-  <label for="description">Beschreibung</label>
-  <textarea formControlName="description"></textarea><br>
-  <label for="startDate">Öffnungsdatum</label>
-  <input type="date" formControlName="startDate"><br>
-  <label for="endDate">Schließungsdatum</label>
-  <input type="date" formControlName="endDate"><br>
-  <input type="checkbox" formControlName="openAccess">
-  <label for="openAccess">Öffentlich</label><br>
-  <input type="checkbox" formControlName="anonymousParticipation">
-  <label for="anonymousParticipation">Anonym</label><br>
+<form class="wrapper" [formGroup]="formGroup" (ngSubmit)="submit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Umfragename</mat-label>
+    <input type="text" matInput formControlName="name">
+  </mat-form-field><br>
+  <mat-form-field appearance="fill">
+    <mat-label>Beschreibung</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+  </mat-form-field><br>
+  <mat-form-field appearance="fill">
+    <mat-label>Zeitraum</mat-label>
+    <mat-date-range-input [rangePicker]="openRange">
+      <input matStartDate formControlName="startDate">
+      <input matEndDate formControlName="endDate">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="openRange"></mat-datepicker-toggle>
+    <mat-date-range-picker #openRange></mat-date-range-picker>
+  </mat-form-field><br>
+  <mat-checkbox formControlName="openAccess">Öffentlich</mat-checkbox><br>
+  <mat-checkbox formControlName="anonymousParticipation">Anonym</mat-checkbox><br>
   <div formArrayName="questionGroups">
-    <fieldset *ngFor="let questionGroup of getQuestionGroups().controls; index as i" [formGroupName]="i">
-      <label for="{{i}}.title">Überschrift</label>
-      <input type="text" formControlName="title">
-      <button type="button" [disabled]="getQuestionGroups().length <= 1" (click)="getQuestionGroups().removeAt(i)">Entferne Frage Block</button><br>
-      <div formArrayName="questions">
-        <fieldset *ngFor="let question of getQuestions(questionGroup).controls; index as j" [formGroupName]="j">
-          <label for="{{i}}.{{j}}.text">Frage</label>
-          <input type="text" formControlName="text">
-          <button type="button" [disabled]="getQuestions(questionGroup).length <= 1" (click)="getQuestions(questionGroup).removeAt(j)">Entferne Frage</button><br>
-          <input type="checkbox" formControlName="required">
-          <label for="{{i}}.{{j}}.required">Erforderlich</label><br>
-          <label for="{{i}}.{{j}}.checkboxGroup">Antwortmöglichkeiten (Freitext wenn keine gegeben)</label>
-          <fieldset formGroupName="checkboxGroup">
-            <ng-template [ngIf]="getCheckboxes(question).length">
-            <input type="checkbox" formControlName="multipleSelect">
-            <label for="{{i}}.{{j}}.multipleSelect">Mehrfachauswahl</label><br>
-            <label for="{{i}}.{{j}}.minSelect">Minimale Auswahlanzahl</label>
-            <input type="number" formControlName="minSelect"><br>
-            <label for="{{i}}.{{j}}.maxSelect">Maximale Auswahlanzahl</label>
-            <input type="number" formControlName="maxSelect"><br>
-            <div formArrayName="checkboxes">
-              <fieldset *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
-                <label for="{{i}}.{{j}}.{{k}}.text">Antwortmöglichkeit {{k+1}}</label>
-                <input type="text" formControlName="text">
-                <button type="button" (click)="getCheckboxes(question).removeAt(k)">Entferne Antwortmöglichkeit</button><br>
-                <input type="checkbox" formControlName="hasTextField">
-                <label for="{{i}}.{{j}}.{{k}}.hasTextField">Freitext</label>
-              </fieldset>
-            </div>
-            </ng-template>
-            <button type="button" (click)="getCheckboxes(question).push(createCheckbox())">Neue Antwortmöglichkeit</button>
-          </fieldset>
-        </fieldset>
-      </div>
-      <button type="button" (click)="getQuestions(questionGroup).push(createQuestion())">Neue Frage</button>
-    </fieldset>
+    <mat-card class="bottomspace" *ngFor="let questionGroup of getQuestionGroups().controls; index as i" [formGroupName]="i">
+      <mat-card-content>
+        <mat-form-field appearance="fill">
+          <mat-label>Überschrift</mat-label>
+          <input type="text" matInput formControlName="title">
+        </mat-form-field>
+        <div formArrayName="questions">
+          <mat-card class="bottomspace" *ngFor="let question of getQuestions(questionGroup).controls; index as j" [formGroupName]="j">
+            <mat-card-content>
+              <mat-form-field>
+                <mat-label>Frage</mat-label>
+                <input type="text" matInput formControlName="text">
+              </mat-form-field><br>
+              <mat-checkbox formControlName="required">Erforderlich</mat-checkbox>
+              <mat-card>
+                <mat-card-title>Antwortmöglichkeiten</mat-card-title>
+                <mat-card-subtitle>Freitext wenn keine gegeben</mat-card-subtitle>
+                <mat-card-content formGroupName="checkboxGroup">
+                  <ng-template [ngIf]="getCheckboxes(question).length">
+                    <mat-checkbox formControlName="multipleSelect" #multi="matCheckbox">Mehrfachauswahl</mat-checkbox>
+                    <br>
+                    <ng-template [ngIf]="multi.checked">
+                      <mat-form-field>
+                        <mat-label>Minimale Auswahlanzahl</mat-label>
+                        <input type="number" matInput formControlName="minSelect">
+                      </mat-form-field><br>
+                      <mat-form-field>
+                        <mat-label>Maximale Auswahlanzahl</mat-label>
+                        <input type="number" matInput formControlName="maxSelect">
+                      </mat-form-field><br>
+                    </ng-template>
+                    <div formArrayName="checkboxes">
+                      <div *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
+                        <mat-form-field>
+                          <mat-label>Antwortmöglichkeit {{k+1}}</mat-label>
+                          <input type="text" matInput formControlName="text">
+                        </mat-form-field>
+                        <button mat-icon-button type="button" (click)="getCheckboxes(question).removeAt(k)">
+                          <mat-icon>delete</mat-icon>
+                        </button><br>
+                        <mat-checkbox formControlName="hasTextField">Freitext</mat-checkbox>
+                      </div>
+                    </div>
+                  </ng-template>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button mat-icon-button color="primary" type="button"
+                    (click)="getCheckboxes(question).push(createCheckbox())">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-icon-button color="warn" type="button" [disabled]="getQuestions(questionGroup).length <= 1"
+                (click)="getQuestions(questionGroup).removeAt(j)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button color="warn" type="button" [disabled]="getQuestionGroups().length <= 1"
+          (click)="getQuestionGroups().removeAt(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" type="button"
+          (click)="getQuestions(questionGroup).push(createQuestion())">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </div>
-  <button type="button" (click)="getQuestionGroups().push(createQuestionGroup())">Neuer Frageblock</button>
-  <button type="submit" [disabled]="formGroup.invalid">Einreichen</button>
+  <button mat-icon-button color="primary" type="button" (click)="getQuestionGroups().push(createQuestionGroup())">
+    <mat-icon>add</mat-icon>
+  </button>
+  <!--<button mat-mini-fab color="primary" style="margin-right: 1ex"><mat-icon>preview</mat-icon></button>-->
+  <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid">Einreichen</button>
 </form>
