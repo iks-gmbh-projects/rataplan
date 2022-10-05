@@ -1,0 +1,18 @@
+<mat-card *ngIf="survey">
+  <mat-card-content>
+    <mat-stepper #stepper="matStepper">
+     <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title">
+        <app-survey-form-page [questionGroup]="questionGroup" (onSubmit)="changePage(stepper, $event)">
+        </app-survey-form-page>
+      </mat-step>
+    </mat-stepper>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="submit.emit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" (click)="submit.emit(survey)">
+      <mat-icon>publish</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

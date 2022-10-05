@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, NgForm, RequiredValidator, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Answer, Question, QuestionGroup, Survey } from '../survey.model';
@@ -14,7 +15,6 @@ import { SurveyService } from '../survey.service';
 
 export class SurveyFormComponent implements OnInit, OnDestroy {
   public survey?: Survey;
-  public page: number = 0;
   private answers: {[key: string|number]:Answer} = {};
   private sub?: Subscription;
   constructor(private route: ActivatedRoute, private router:Router, private surveys:SurveyService, private snackBars:MatSnackBar) { }
@@ -33,22 +33,23 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  public pageSubmit(answers: {[key: string|number]: Answer}|null) {
+  public pageSubmit(stepper: MatStepper, answers?: {[key: string|number]: Answer}) {
     if(!this.survey) return;
-    if(answers == null) {
-      if(this.page>0) this.page--;
-    } else {
+    if(answers) {
       this.answers = {...this.answers, ...answers};
-      this.page++;
-      if(this.page >= this.survey.questionGroups.length) {
+      if(stepper.selectedIndex >= this.survey.questionGroups.length-1) {
         this.surveys.answerSurvey(Object.values(this.answers)).subscribe({
           next: d => this.router.navigate(["/survey","list"]),
           error: err => {
-            this.page--;
+            stepper.previous();
             this.snackBars.open("Fehler beim Hochladen der Antwort.");
           },
         });
+      } else {
+        stepper.next();
       }
+    } else {
+      stepper.previous();
     }
   }
 }

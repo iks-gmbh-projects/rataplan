@@ -3,8 +3,9 @@
     <mat-card-title>{{question.text}}</mat-card-title>
     <mat-card-content>
       <input type="hidden" name="questionId" [ngModel]="question.id">
-      <input type="hidden" name="userId" [ngModel]="userId">
+      <input type="hidden" name="userId" [ngModel]="userId || 120">
       <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
+        <mat-label>Antwort</mat-label>
         <input type="text" ngModel name="text" [required]="question.required" matInput>
       </mat-form-field>
       <ng-template [ngIf]="question.checkboxGroup">
@@ -18,19 +19,27 @@
           </ng-template>
         </ng-template>
         <ng-template #singleSelect>
-          <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
-            <mat-radio-button ngModel name="checkboxId" [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button>
-            <mat-form-field appearance="fill">
-              <mat-label>Additional Text</mat-label>
-              <input type="text" ngModel name="text" matInput>
-            </mat-form-field>
-          </ng-template>
+          <mat-radio-group ngModel name="checkboxId" [required]="question.required">
+            <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
+              <mat-radio-button [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button><br>
+              <ng-template [ngIf]="checkbox.hasTextField">
+                <mat-form-field appearance="fill">
+                  <mat-label>Additional Text</mat-label>
+                  <input type="text" ngModel name="text" matInput>
+                </mat-form-field><br>
+              </ng-template>
+            </ng-template>
+          </mat-radio-group>
         </ng-template>
       </ng-template>
     </mat-card-content>
     <mat-card-actions>
-      <button type="button" mat-raised-button color="basic" (click)="revert()"><mat-icon>navigate_before</mat-icon></button>
-      <button style="float:right" type="submit" mat-raised-button color="primary"><mat-icon>navigate_next</mat-icon></button>
+      <button type="button" mat-raised-button color="basic" (click)="revert()">
+        <mat-icon>navigate_before</mat-icon>
+      </button>
+      <button style="float:right" type="submit" mat-raised-button color="primary">
+        <mat-icon>navigate_next</mat-icon>
+      </button>
     </mat-card-actions>
   </mat-card>
 </form>

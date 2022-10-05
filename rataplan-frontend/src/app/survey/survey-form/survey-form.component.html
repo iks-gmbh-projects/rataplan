@@ -14,5 +14,9 @@
     </mat-card-footer>
   </mat-card>
   <mat-divider class="bottomspace"></mat-divider>
-  <survey-form-page [questionGroup]="survey.questionGroups[page]" (onSubmit)="pageSubmit($event)"></survey-form-page>
+  <mat-stepper #stepper="matStepper">
+    <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title">
+      <app-survey-form-page [questionGroup]="questionGroup" (onSubmit)="pageSubmit(stepper, $event)"></app-survey-form-page>
+    </mat-step>
+  </mat-stepper>
 </div>

@@ -1,4 +1,4 @@
-<form class="wrapper" *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="submit()">
+<form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="preview()">
   <mat-form-field appearance="fill">
     <mat-label>Umfragename</mat-label>
     <input type="text" matInput formControlName="name">
@@ -99,7 +99,8 @@
     <mat-icon>add</mat-icon>
   </button>
   <!--<button mat-mini-fab color="primary" style="margin-right: 1ex"><mat-icon>preview</mat-icon></button>-->
-  <a *ngIf="isEdit" mat-raised-button color="primary" routerLink="..">Abbrechen</a>
-  <button mat-raised-button [color]="isEdit ? 'warn' : 'primary'" type="submit"
-    [disabled]="formGroup.invalid">Einreichen</button>
+  <a mat-raised-button color="primary" routerLink="..">Abbrechen</a>
+  <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid">
+    <mat-icon>preview</mat-icon>
+  </button>
 </form>

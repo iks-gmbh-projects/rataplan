@@ -1,35 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { Checkbox, Question, QuestionGroup, Survey } from '../survey.model';
-import { SurveyService } from '../survey.service';
+import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
 
 @Component({
   selector: 'app-survey-create-form',
   templateUrl: './survey-create-form.component.html',
   styleUrls: ['./survey-create-form.component.css']
 })
-export class SurveyCreateFormComponent implements OnInit, OnDestroy {
-  public formGroup?: FormGroup;
-  public isEdit: boolean = false;
-
-  private sub?: Subscription;
-
-  constructor(private router: Router, private route: ActivatedRoute, private surveys: SurveyService) { }
-
-  public ngOnInit(): void {
-    this.isEdit = !!this.route.snapshot.data['survey'];
-    this.formGroup = this.createSurvey(this.route.snapshot.data['survey']);
-    this.sub = this.route.data.subscribe(data => {
-      this.isEdit = !!data['survey'];
-      this.formGroup = this.createSurvey(data['survey']);
-    });
+export class SurveyCreateFormComponent {
+  private _survey?: Survey;
+  public get survey() {
+    return this._survey;
   }
-
-  public ngOnDestroy(): void {
-    this.sub?.unsubscribe();
+  @Input() public set survey(survey: Survey | undefined) {
+    if (this._survey === survey) return;
+    this._survey = survey;
+    this.formGroup = this.createSurvey(this._survey);
   }
+  @Output() public readonly submit: EventEmitter<Survey> = new EventEmitter<Survey>();
+  public formGroup?: FormGroup = this.createSurvey(this.survey);
+
+  constructor() { }
 
   private createSurvey(survey?: Survey): FormGroup {
     return new FormGroup({
@@ -69,7 +60,7 @@ export class SurveyCreateFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  public createCheckbox(checkbox?:Checkbox): FormGroup {
+  public createCheckbox(checkbox?: Checkbox): FormGroup {
     return new FormGroup({
       id: new FormControl(checkbox?.id),
       text: new FormControl(checkbox?.text || null, Validators.required),
@@ -90,23 +81,19 @@ export class SurveyCreateFormComponent implements OnInit, OnDestroy {
     return question?.get(["checkboxGroup", "checkboxes"]) as FormArray;
   }
 
-  public submit(): void {
-    if(!this.formGroup || this.formGroup.invalid) return;
+  public preview(): void {
+    if (!this.formGroup || this.formGroup.invalid) return;
     let survey: Survey = this.formGroup.value;
     survey.startDate = new Date(survey.startDate);
     survey.endDate = new Date(survey.endDate);
-    for(let qg of survey.questionGroups) {
-      for(let q of qg.questions) {
-        if(q.checkboxGroup && q.checkboxGroup.checkboxes.length == 0) {
+    for (let qg of survey.questionGroups) {
+      for (let q of qg.questions) {
+        if (q.checkboxGroup && q.checkboxGroup.checkboxes.length == 0) {
           delete q.checkboxGroup;
         }
-        q.hasCheckbox= "checkboxGroup" in q;
+        q.hasCheckbox = "checkboxGroup" in q;
       }
     }
-    (
-      this.isEdit ?
-      this.surveys.editSurvey(survey) :
-      this.surveys.createSurvey(survey)
-    ).subscribe(surv => this.router.navigate(["..", "access", surv.accessId], {relativeTo: this.route}));
+    this.submit.emit(survey);
   }
 }

@@ -1,0 +1,4 @@
+<div class="wrapper">
+  <app-survey-create-form *ngIf="!preview" [survey]="survey" (submit)="toPreview($event)"></app-survey-create-form>
+  <app-survey-preview *ngIf="preview" [survey]="survey" (submit)="submit($event)"></app-survey-preview>
+</div>
