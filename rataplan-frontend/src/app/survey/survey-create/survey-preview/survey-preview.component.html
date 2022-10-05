@@ -8,10 +8,10 @@
     </mat-stepper>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="submit.emit()">
+    <button mat-raised-button color="primary" (click)="onSubmit.emit()">
       <mat-icon>edit</mat-icon>
     </button>
-    <button mat-raised-button color="primary" (click)="submit.emit(survey)">
+    <button mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
       <mat-icon>publish</mat-icon>
     </button>
   </mat-card-actions>

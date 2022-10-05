@@ -10,16 +10,16 @@ import { SurveyService } from '../../survey.service';
 })
 export class SurveyPreviewComponent {
   @Input() public survey?:Survey;
-  @Output() public readonly submit = new EventEmitter<Survey>();
+  @Output() public readonly onSubmit = new EventEmitter<Survey>();
 
   constructor() { }
 
   public changePage(stepper: MatStepper, answer?: any): void {
     if(!this.survey) return;
     if(answer) {
-      if(stepper.selectedIndex >= this.survey.questionGroups.length-1) this.submit.emit(this.survey);
+      if(stepper.selectedIndex >= this.survey.questionGroups.length-1) this.onSubmit.emit(this.survey);
       else stepper.next();
     } else if(stepper.selectedIndex) stepper.previous();
-    else this.submit.emit();
+    else this.onSubmit.emit();
   }
 }

@@ -17,7 +17,7 @@ export class SurveyCreateFormComponent {
     this._survey = survey;
     this.formGroup = this.createSurvey(this._survey);
   }
-  @Output() public readonly submit: EventEmitter<Survey> = new EventEmitter<Survey>();
+  @Output() public readonly onSubmit: EventEmitter<Survey> = new EventEmitter<Survey>();
   public formGroup?: FormGroup = this.createSurvey(this.survey);
 
   constructor() { }
@@ -94,6 +94,6 @@ export class SurveyCreateFormComponent {
         q.hasCheckbox = "checkboxGroup" in q;
       }
     }
-    this.submit.emit(survey);
+    this.onSubmit.emit(survey);
   }
 }

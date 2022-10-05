@@ -36,11 +36,13 @@ export class SurveyService {
   }
 
   public createSurvey(survey: Survey): Observable<SurveyHead> {
+    console.trace();
     return this.http.post<SurveyHead>(surveyURL, survey)
       .pipe(ensureDateOperator);
   }
 
   public editSurvey(survey: Survey): Observable<SurveyHead> {
+    console.trace();
     return this.http.put<SurveyHead>(surveyURL, survey, {
       params: new HttpParams().append("accessId", survey.accessId!)
     })
@@ -48,6 +50,7 @@ export class SurveyService {
   }
 
   public answerSurvey(answers: Answer[]): Observable<Answer[]> {
+    console.trace();
     return this.http.post<Answer[]>(answerURL, answers);
   }
 

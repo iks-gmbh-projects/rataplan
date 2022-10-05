@@ -1,7 +1,7 @@
 <form *ngIf="questionGroup" (ngSubmit)="submit(form)" #form="ngForm">
-  <mat-card style="margin-bottom: 1ex" *ngFor="let question of questionGroup.questions" [ngModelGroup]="question.id!">
-    <mat-card-title>{{question.text}}</mat-card-title>
-    <mat-card-content>
+  <div style="margin-bottom: 1ex" *ngFor="let question of questionGroup.questions" [ngModelGroup]="question.id!">
+    <h3>{{question.text}}</h3>
+    <div>
       <input type="hidden" name="questionId" [ngModel]="question.id">
       <input type="hidden" name="userId" [ngModel]="userId || 120">
       <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
@@ -32,14 +32,14 @@
           </mat-radio-group>
         </ng-template>
       </ng-template>
-    </mat-card-content>
-    <mat-card-actions>
+    </div>
+    <div>
       <button type="button" mat-raised-button color="basic" (click)="revert()">
         <mat-icon>navigate_before</mat-icon>
       </button>
       <button style="float:right" type="submit" mat-raised-button color="primary">
         <mat-icon>navigate_next</mat-icon>
       </button>
-    </mat-card-actions>
-  </mat-card>
+    </div>
+  </div>
 </form>
