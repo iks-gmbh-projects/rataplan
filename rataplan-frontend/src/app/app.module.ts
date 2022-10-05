@@ -35,6 +35,21 @@ import { ConditionsComponent } from './legals/conditions/conditions.component';
 import { ContactComponent } from './legals/contact/contact.component';
 import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
+import {MainNavComponent} from './main-nav/main-nav.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
+import {MatIconModule} from '@angular/material/icon';
+import { ContactComponent } from './legals/contact/contact.component';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {LoginComponent} from "./login/login.component";
+import {RegisterComponent} from "./register/register.component";
+import {MatMenuModule} from "@angular/material/menu";
+
+
 import { MainNavComponent } from './main-nav/main-nav.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
@@ -50,6 +65,8 @@ registerLocaleData(localeDE);
     PrivacyComponent,
     MainNavComponent,
     ContactComponent,
+    LoginComponent,
+    RegisterComponent
     RegisterComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
@@ -84,11 +101,11 @@ registerLocaleData(localeDE);
     MatCheckboxModule,
     MatFormFieldModule,
     FormsModule,
+    MatMenuModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule { }
