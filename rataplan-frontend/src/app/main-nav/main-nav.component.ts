@@ -6,6 +6,7 @@ import {LoginComponent} from "../login/login.component";
 import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
 import {Router} from "@angular/router";
 import {MatMenuTrigger} from "@angular/material/menu";
+import {LoginService} from "../services/login.service/login.service";
 
 @Component({
   selector: 'app-main-nav',
@@ -27,13 +28,15 @@ export class MainNavComponent {
 
   constructor(private breakpointObserver: BreakpointObserver,
                public localstorageService: LocalstorageService,
+              public loginService: LoginService,
               private router: Router) {
 
   }
   onLogout() {
+    this.loginService.logoutUser()
+
     localStorage.removeItem("username");
     localStorage.removeItem("id")
-
  }
   onClick(){
     if (!this.localstorageService.isLoggedIn()){

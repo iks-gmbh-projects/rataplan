@@ -16,17 +16,25 @@ export class LoginService {
   constructor(private httpClient: HttpClient) {}
 
 
-  public loginUser (frontendUser: FrontendUser) {
+  public loginUser (frontendUser: FrontendUser){
 
     let url = 'http://localhost:8080/v1/users/login'
 
-    const requestOptions = {
-      params: new HttpParams()
-    };
+    // const requestOptions = {
+    //   params: new HttpParams()
+    // };
+    //
+    // requestOptions.params.set('Content-Type','application/json');
+    return this.httpClient.post<any> (url,frontendUser,{withCredentials: true});
+    }
 
-    requestOptions.params.set('Content-Type','application/json');
+    public logoutUser () {
+    let url = 'http://localhost:8080/v1/users/logout'
 
-    return this.httpClient.post<any> (url,frontendUser,requestOptions);
+      return this.httpClient.get<any>(url,{withCredentials: true}).subscribe(console.log);
+
+
+
     }
 
     cannotContainWhitespace(control: AbstractControl) : ValidationErrors | null {
