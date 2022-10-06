@@ -33,7 +33,6 @@ export class SurveyCreateFormComponent {
       endDate: new FormControl(survey?.endDate || null, Validators.required),
       openAccess: new FormControl(survey?.openAccess || false),
       anonymousParticipation: new FormControl(survey?.anonymousParticipation || false),
-      userId: new FormControl(survey?.userId || 120),
       questionGroups: new FormArray(survey?.questionGroups.map(this.createQuestionGroup, this) || [this.createQuestionGroup()], Validators.required)
     })
   }
