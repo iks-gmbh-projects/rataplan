@@ -1,0 +1,48 @@
+<div class='wrapper'>
+    <h3>Title</h3>
+    <div>
+      <span>
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et
+        dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
+        kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+      </span>
+    </div>
+    <div>
+      <h4>Teilnehmer: {{ appointmentMember }}</h4>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input [(ngModel)]="memberName"
+               matInput
+               autocomplete="off">
+      </mat-form-field>
+    </div>
+  <mat-list>
+    <mat-list-item *ngFor='let appointment of appointments'>
+      <div mat-line>{{ appointment.valueOf() }}</div>
+      <button mat-icon-button
+              (click)="openDialog(appointment.valueOf(), appointments.indexOf(appointment))">
+        <mat-icon>info</mat-icon>
+      </button>
+      <mat-button-toggle-group [disabled]="isVoted"
+                               (click)="setVoteDecision()">
+        <mat-button-toggle (click)="rejectAppointment(appointment.valueOf())">
+          <mat-icon>close</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle (click)="acceptAppointment(appointment.valueOf())">
+          <mat-icon>done</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </mat-list-item>
+  </mat-list>
+  <div>
+    <button class='vote-button'
+            type='submit'
+            color='primary'
+            mat-raised-button
+            [disabled]='isVoted'
+            (click)='saveVote()'>Abstimmen
+    </button>
+  </div>
+</div>
