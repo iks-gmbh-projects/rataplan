@@ -33,9 +33,7 @@ public class Survey extends AbstractEntity {
     // id for users to participate in survey
     private String participationId;
 
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    private Long userId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "surveyId")
@@ -66,8 +64,7 @@ public class Survey extends AbstractEntity {
     }
 
     private boolean checkIfComplete() {
-        return this.user != null
-                && !this.questionGroups.isEmpty()
+        return !this.questionGroups.isEmpty()
                 && this.checkIfQuestionGroupsComplete();
     }
 
@@ -92,7 +89,7 @@ public class Survey extends AbstractEntity {
     private boolean checkTimeframe() {
         return this.startDate != null
                 && this.endDate != null
-                && dateTimeInFuture(this.startDate)
+                && dateTimeTodayOrInFuture(this.startDate)
                 && dateTimeInFuture(this.endDate)
                 && startDateBeforeEndDate();
     }
@@ -101,8 +98,12 @@ public class Survey extends AbstractEntity {
         return this.startDate.isBefore(this.endDate);
     }
 
-    private boolean dateTimeInFuture(LocalDateTime dateTime) {
+    private static boolean dateTimeInFuture(LocalDateTime dateTime) {
         return dateTime.isAfter(LocalDateTime.now());
+    }
+
+    private static boolean dateTimeTodayOrInFuture(LocalDateTime dateTime) {
+        return dateTime.isAfter(LocalDateTime.now().minusDays(1));
     }
 
     private boolean validateQuestionGroups() {

@@ -1,9 +1,12 @@
 package iks.surveytool.controller;
 
+import iks.surveytool.domain.AuthUser;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
+import iks.surveytool.services.AuthService;
 import iks.surveytool.services.SurveyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +20,30 @@ public class SurveyController {
 
     private final SurveyService surveyService;
 
+    private final AuthService authService;
+
     @PostMapping
-    public ResponseEntity<SurveyOverviewDTO> createSurvey(@RequestBody CompleteSurveyDTO surveyDTO) {
+    public ResponseEntity<SurveyOverviewDTO> createSurvey(
+            @RequestBody CompleteSurveyDTO surveyDTO,
+            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+    ) {
+        if(jwttoken == null) surveyDTO.setUserId(null);
+        else {
+            final ResponseEntity<AuthUser> user = authService.getUserData(jwttoken);
+            if(!user.getStatusCode().is2xxSuccessful()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            final AuthUser u = user.getBody();
+            if(u == null) return ResponseEntity.internalServerError().build();
+            surveyDTO.setUserId(u.getId());
+        }
         return surveyService.processSurveyDTO(surveyDTO);
     }
 
     @GetMapping(params = {"accessId"})
-    public ResponseEntity<SurveyOverviewDTO> findSurveyByAccessId(@RequestParam String accessId) {
-        return surveyService.processSurveyByAccessId(accessId);
+    public ResponseEntity<SurveyOverviewDTO> findSurveyByAccessId(
+            @RequestParam String accessId,
+            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+    ) {
+        return surveyService.processSurveyByAccessId(accessId, jwttoken);
     }
 
     @GetMapping(params = {"participationId"})

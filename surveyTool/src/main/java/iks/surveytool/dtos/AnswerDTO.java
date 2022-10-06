@@ -1,34 +1,23 @@
 package iks.surveytool.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class AnswerDTO extends AbstractDTO {
 
     private String text;
+    private Map<Long, Boolean> checkboxes;
 
-    private Long userId;
-    private String userName;
-
-    private Long checkboxId;
-    private Long questionId;
-
-    public AnswerDTO(Long id, String text, Long userId, String userName) {
+    public AnswerDTO(Long id, String text) {
         super(id);
         this.text = text;
-        this.userId = userId;
-        this.userName = userName;
-    }
-
-    public AnswerDTO(Long id, String text, Long userId, String userName, Long checkboxId) {
-        super(id);
-        this.text = text;
-        this.userId = userId;
-        this.userName = userName;
-        this.checkboxId = checkboxId;
     }
 }

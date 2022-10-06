@@ -1,14 +1,13 @@
 package iks.surveytool.dtos;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class SurveyOverviewDTO extends AbstractDTO {
 
     private String name;
@@ -23,29 +22,5 @@ public class SurveyOverviewDTO extends AbstractDTO {
     private String participationId;
 
     private Long userId;
-    private String userName;
 
-    public SurveyOverviewDTO(Long id,
-                             String name,
-                             String description,
-                             LocalDateTime startDate,
-                             LocalDateTime endDate,
-                             boolean openAccess,
-                             boolean anonymousParticipation,
-                             String accessId,
-                             String participationId,
-                             Long userId,
-                             String userName) {
-        super(id);
-        this.name = name;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.openAccess = openAccess;
-        this.anonymousParticipation = anonymousParticipation;
-        this.accessId = accessId;
-        this.participationId = participationId;
-        this.userId = userId;
-        this.userName = userName;
-    }
 }
