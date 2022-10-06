@@ -3,7 +3,6 @@
     <h3>{{question.text}}</h3>
     <div>
       <input type="hidden" name="questionId" [ngModel]="question.id">
-      <input type="hidden" name="userId" [ngModel]="userId || 120">
       <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
         <mat-label>Antwort</mat-label>
         <input type="text" ngModel name="text" [required]="question.required" matInput>
