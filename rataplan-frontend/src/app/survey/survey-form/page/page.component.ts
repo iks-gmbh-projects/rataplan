@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Answer, QuestionGroup } from '../../survey.model';
+import { Answer, Checkbox, QuestionGroup } from '../../survey.model';
 
 @Component({
   selector: 'app-survey-form-page',
@@ -14,9 +14,23 @@ export class PageComponent {
 
   public submit(form: NgForm) {
     if (form.valid) {
-      this.onSubmit.emit(form.value);
+      let answers: {[key: string|number]: Answer&{checkboxId?: string|number}} = form.value;
+      for(let key in answers) {
+        if(answers[key].checkboxId) {
+          answers[key].checkboxes = {
+            ...answers[key].checkboxes,
+            [answers[key].checkboxId!]: true
+          };
+          delete answers[key].checkboxId;
+        }
+      }
+      this.onSubmit.emit(answers);
       form.resetForm();
     }
+  }
+
+  public hasTextField(checkboxes: Checkbox[]): boolean {
+    return checkboxes.some(checkbox => checkbox.hasTextField);
   }
 
   public revert() {

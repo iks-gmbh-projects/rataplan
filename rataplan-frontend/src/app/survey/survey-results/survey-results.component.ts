@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { Answer, Survey } from '../survey.model';
+import { Answer, Survey, SurveyResponse } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
 @Component({
@@ -12,8 +12,10 @@ import { SurveyService } from '../survey.service';
 export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
   public survey?: Survey;
   private sub?: Subscription;
-  public answers: { [questionId: string]: {columns: string[], observable: Observable<Answer[]>} } = {};
+  public columns: { [questionId: string | number]: string[] } = {};
+  public answers: SurveyResponse[] = [];
   public busy: boolean = false;
+  public error: any = null;
 
   constructor(private route: ActivatedRoute, private surveys: SurveyService) { }
 
@@ -30,38 +32,37 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
     console.log(changes);
   }
 
+  public checkboxChecked(response: SurveyResponse, questionId: string|number, checkboxId: string|number): boolean {
+    return (response.answers[questionId].checkboxes || {})[checkboxId];
+  }
+
   private fetchAnswers(survey: Survey): void {
     if (this.survey === survey) return;
     this.busy = true;
     this.survey = survey;
-    this.answers = {};
-    for (let group of survey.questionGroups) {
-      for (let question of group.questions) {
-        if (!question.id) continue;
-        const qid = question.id;
-        let columns: string[] = ["user"];
-        if(question.checkboxGroup) {
-          let hasFreeText: boolean = false;
-          for(let checkbox of question.checkboxGroup.checkboxes) {
-            if(checkbox.id) {
-            if(checkbox.hasTextField) hasFreeText = true;
-            columns.push("checkbox"+checkbox.id);
+    this.columns = {};
+    for (let questionGroup of survey.questionGroups) {
+      for (let question of questionGroup.questions) {
+        if (question.id) {
+          this.columns[question.id] = ["user"];
+          if (question.checkboxGroup) {
+            for (let checkbox of question.checkboxGroup.checkboxes) {
+              if (checkbox.id) this.columns[question.id].push("checkbox" + checkbox.id);
             }
           }
-          if(hasFreeText) columns.push("answer");
-        } else {
-          columns.push("answer");
+          this.columns[question.id].push("answer");
         }
-        this.answers[qid] = {
-          columns: columns,
-          observable: this.surveys.fetchAnswers(qid),
-        };
       }
     }
-    this.busy = false;
-  }
-
-  public hasAnswer(questionId: string | number): boolean {
-    return questionId in this.answers;
+    this.answers = [];
+    this.error = null;
+    this.surveys.fetchAnswers(survey).subscribe({
+      next: answers => this.answers = answers,
+      error: err => {
+        this.error = err;
+        this.busy = false;
+      },
+      complete: () => this.busy = false,
+    })
   }
 }

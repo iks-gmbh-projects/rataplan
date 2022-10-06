@@ -7,6 +7,8 @@
     <mat-card-title>{{survey.name}}</mat-card-title>
     <mat-spinner *ngIf="busy; else finished"></mat-spinner>
     <ng-template #finished>
+      <div *ngIf="error; else success">Fehler beim Laden der Daten</div>
+      <ng-template #success>
       <mat-card class="bottomspace" *ngFor="let group of survey.questionGroups">
         <mat-card-title>{{group.title}}</mat-card-title>
         <mat-card-content>
@@ -14,27 +16,27 @@
             <ng-template [ngIf]="question.id">
               <mat-card-title>{{question.text}}</mat-card-title>
               <mat-card-content>
-                <table style="display:block" mat-table matSort [dataSource]="answers[question.id].observable">
+                <table style="display:block" mat-table matSort [dataSource]="answers">
                   <ng-container matColumnDef="user">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef>Beantworter</th>
-                    <td mat-cell *matCellDef="let answer">{{answer.userName || answer.userId}}</td>
+                    <td mat-cell *matCellDef="let answer">{{answer.userId || "Anonym"}}</td>
                   </ng-container>
                   <ng-template [ngIf]="question.checkboxGroup">
                     <ng-container *ngFor="let checkbox of question.checkboxGroup.checkboxes"
                       [matColumnDef]="'checkbox'+checkbox.id!">
                       <th mat-header-cell mat-sort-header *matHeaderCellDef> {{checkbox.text}} </th>
                       <td mat-cell *matCellDef="let answer">
-                        <mat-checkbox [checked]="answer.checkboxId == checkbox.id" readonly="true">
+                        <mat-checkbox [checked]="answer.answers[question.id].checkboxes[checkbox.id!]" readonly="true">
                         </mat-checkbox>
                       </td>
                     </ng-container>
                   </ng-template>
                   <ng-container matColumnDef="answer">
                     <th mat-header-cell mat-sort-header *matHeaderCellDef> Freitextantwort </th>
-                    <td mat-cell *matCellDef="let answer">{{answer.text}}</td>
+                    <td mat-cell *matCellDef="let answer">{{answer.answers[question.id].text}}</td>
                   </ng-container>
-                  <tr mat-header-row *matHeaderRowDef="answers[question.id].columns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: answers[question.id].columns"></tr>
+                  <tr mat-header-row *matHeaderRowDef="columns[question.id]"></tr>
+                  <tr mat-row *matRowDef="let row; columns: columns[question.id]"></tr>
                 </table>
               </mat-card-content>
               <mat-card-actions>
@@ -44,6 +46,7 @@
           </mat-card>
         </mat-card-content>
       </mat-card>
+    </ng-template>
     </ng-template>
   </ng-template>
   <a mat-raised-button color="primary" routerLink="..">Zurück</a>

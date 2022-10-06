@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
-import { Answer, Survey, SurveyHead } from "./survey.model";
+import { environment } from "src/environments/environment";
+import { Answer, Survey, SurveyHead, SurveyResponse } from "./survey.model";
 
-const backendURL: string = "https://umfragetool-backend.herokuapp.com/";
-const surveyURL: string = backendURL + "surveys";
-const answerURL: string = backendURL + "answers";
+const surveyURL: string = environment.surveyBackendURL + "surveys";
+const answerURL: string = environment.surveyBackendURL + "responses";
 
 function ensureDate<T extends SurveyHead>(head: T): T {
   head.startDate = new Date(head.startDate);
@@ -36,25 +36,22 @@ export class SurveyService {
   }
 
   public createSurvey(survey: Survey): Observable<SurveyHead> {
-    console.trace();
     return this.http.post<SurveyHead>(surveyURL, survey)
       .pipe(ensureDateOperator);
   }
 
   public editSurvey(survey: Survey): Observable<SurveyHead> {
-    console.trace();
     return this.http.put<SurveyHead>(surveyURL, survey, {
       params: new HttpParams().append("accessId", survey.accessId!)
     })
       .pipe(ensureDateOperator);
   }
 
-  public answerSurvey(answers: Answer[]): Observable<Answer[]> {
-    console.trace();
-    return this.http.post<Answer[]>(answerURL, answers);
+  public answerSurvey(response: SurveyResponse): Observable<SurveyResponse> {
+    return this.http.post<SurveyResponse>(answerURL, response);
   }
 
-  public fetchAnswers(questionId: string|number): Observable<Answer[]> {
-    return this.http.get<Answer[]>(answerURL+"/questions/"+questionId);
+  public fetchAnswers(survey: Survey): Observable<SurveyResponse[]> {
+    return this.http.get<SurveyResponse[]>(answerURL+"/survey/"+survey.accessId!);
   }
 }

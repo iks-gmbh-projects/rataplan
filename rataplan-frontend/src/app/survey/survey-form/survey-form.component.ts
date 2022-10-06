@@ -38,7 +38,10 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
     if(answers) {
       this.answers = {...this.answers, ...answers};
       if(stepper.selectedIndex >= this.survey.questionGroups.length-1) {
-        this.surveys.answerSurvey(Object.values(this.answers)).subscribe({
+        this.surveys.answerSurvey({
+          surveyId: this.survey.id!,
+          answers: this.answers,
+        }).subscribe({
           next: d => this.router.navigate(["/survey","list"]),
           error: err => {
             stepper.previous();

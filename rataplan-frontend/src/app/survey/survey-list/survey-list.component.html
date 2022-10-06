@@ -1,13 +1,13 @@
 <div class="wrapper">
-  <a class="rightSpace" mat-raised-button color="primary" routerLink="../create">Umfrage Erstellen</a>
-  <button mat-icon-button aria-label="Neu Laden" type="button" (click)="updateList()">
+  <button class="rightSpace" mat-icon-button aria-label="Neu Laden" [disabled]="busy" type="button" (click)="updateList()">
     <mat-icon>{{error ? 'sync_problem' : 'sync'}}</mat-icon>
   </button>
+  <a mat-raised-button color="primary" routerLink="../create">Umfrage Erstellen</a>
   <hr>
   <div>
     <mat-spinner *ngIf="busy; else done"></mat-spinner>
     <ng-template #done>
-      <div *ngIf="error; else success">{{error | json}}</div>
+      <div *ngIf="error; else success">Fehler beim laden der Umfragen</div>
       <ng-template #success>
         <mat-card class="bottomSpace" *ngFor="let survey of surveys">
           <mat-card-title>{{survey.name}}</mat-card-title>
