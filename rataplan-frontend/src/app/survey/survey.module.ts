@@ -29,6 +29,8 @@ import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyRoutingModule } from './survey.routing.module';
 import { SurveyService } from './survey.service';
+import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
+import { SurveyForbiddenComponent } from './survey-forbidden/survey-forbidden.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { SurveyService } from './survey.service';
     DateRangeComponent,
     SurveyPreviewComponent,
     SurveyCreateComponent,
+    SurveyMissingComponent,
+    SurveyForbiddenComponent,
   ],
   imports: [
     CommonModule,
