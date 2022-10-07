@@ -65,4 +65,8 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
       complete: () => this.busy = false,
     })
   }
+
+  public toCheckbox(checked: boolean): string {
+    return checked ? "check_box" : "check_box_outline_blank";
+  }
 }

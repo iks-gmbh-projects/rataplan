@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,6 +20,8 @@ import { DateRangeComponent } from './date-range/date-range.component';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
 import { SurveyCreateFormComponent } from './survey-create/survey-create-form/survey-create-form.component';
+import { SurveyCreateComponent } from './survey-create/survey-create.component';
+import { SurveyPreviewComponent } from './survey-create/survey-preview/survey-preview.component';
 import { PageComponent } from './survey-form/page/page.component';
 import { SurveyFormComponent } from './survey-form/survey-form.component';
 import { SurveyListComponent } from './survey-list/survey-list.component';
@@ -26,8 +29,6 @@ import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyRoutingModule } from './survey.routing.module';
 import { SurveyService } from './survey.service';
-import { SurveyPreviewComponent } from './survey-create/survey-preview/survey-preview.component';
-import { SurveyCreateComponent } from './survey-create/survey-create.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { SurveyCreateComponent } from './survey-create/survey-create.component';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTableModule,
+    MatExpansionModule,
     MatSortModule,
     MatCheckboxModule,
     MatRadioModule,
