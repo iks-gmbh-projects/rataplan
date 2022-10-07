@@ -2,7 +2,7 @@
   <mat-card-content>
     <mat-stepper #stepper="matStepper">
      <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title">
-        <app-survey-form-page [questionGroup]="questionGroup" (onSubmit)="changePage(stepper, $event)">
+        <app-survey-form-page [preview]="true" [questionGroup]="questionGroup" (onSubmit)="changePage(stepper, $event)">
         </app-survey-form-page>
       </mat-step>
     </mat-stepper>
