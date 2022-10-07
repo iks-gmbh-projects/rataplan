@@ -15,7 +15,7 @@ const surveyRoutes: Routes = [{
     {
       path: "access", children: [
         {
-          path: ":accessID", resolve: { survey: AccessIDSurveyResolver }, children: [
+          path: ":accessID", resolve: { survey: AccessIDSurveyResolver }, runGuardsAndResolvers: "always", children: [
             { path: "", pathMatch: "exact", component: SurveyOwnerViewComponent },
             { path: "results", component: SurveyResultsComponent },
             { path: "edit", component: SurveyCreateComponent },
@@ -25,7 +25,7 @@ const surveyRoutes: Routes = [{
     },
     { path: "create", component: SurveyCreateComponent },
     { path: "list", component: SurveyListComponent },
-    { path: "participate/:participationID", resolve: { survey: ParticipationIDSurveyResolver }, component: SurveyFormComponent},
+    { path: "participate/:participationID", resolve: { survey: ParticipationIDSurveyResolver }, component: SurveyFormComponent },
     { path: "missing", component: SurveyMissingComponent },
     { path: "forbidden", component: SurveyForbiddenComponent },
     { path: "closed", component: SurveyClosedComponent },
