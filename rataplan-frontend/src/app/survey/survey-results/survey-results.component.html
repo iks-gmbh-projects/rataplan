@@ -38,12 +38,12 @@
                 <tr mat-header-row *matHeaderRowDef="columns[question.id]"></tr>
                 <tr mat-row *matRowDef="let row; columns: columns[question.id]"></tr>
               </table>
-              <button mat-icon-button color="primary">
-                <mat-icon>download</mat-icon>
-              </button>
             </mat-expansion-panel>
           </div>
         </div>
+        <button mat-icon-button color="primary" (click)="downloadResults()">
+          <mat-icon>download</mat-icon>
+        </button><br>
       </ng-template>
     </ng-template>
   </ng-template>

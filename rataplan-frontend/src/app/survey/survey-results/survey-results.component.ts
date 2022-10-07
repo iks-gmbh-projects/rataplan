@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { Answer, Survey, SurveyResponse } from '../survey.model';
+import { Answer, Question, Survey, SurveyResponse } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
   public survey?: Survey;
   private sub?: Subscription;
   public columns: { [questionId: string | number]: string[] } = {};
+  public columnNames: { [questionId: string | number]: string[] } = {};
   public answers: SurveyResponse[] = [];
   public busy: boolean = false;
   public error: any = null;
@@ -32,7 +33,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
     console.log(changes);
   }
 
-  public checkboxChecked(response: SurveyResponse, questionId: string|number, checkboxId: string|number): boolean {
+  public checkboxChecked(response: SurveyResponse, questionId: string | number, checkboxId: string | number): boolean {
     return (response.answers[questionId].checkboxes || {})[checkboxId];
   }
 
@@ -41,16 +42,22 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
     this.busy = true;
     this.survey = survey;
     this.columns = {};
+    this.columnNames = {};
     for (let questionGroup of survey.questionGroups) {
       for (let question of questionGroup.questions) {
         if (question.id) {
           this.columns[question.id] = ["user"];
+          this.columnNames[question.id] = ["Nutzer"];
           if (question.checkboxGroup) {
             for (let checkbox of question.checkboxGroup.checkboxes) {
-              if (checkbox.id) this.columns[question.id].push("checkbox" + checkbox.id);
+              if (checkbox.id) {
+                this.columns[question.id].push("checkbox" + checkbox.id);
+                this.columnNames[question.id].push("\"" + checkbox.text.replace(/"/, "\"") + "\"");
+              }
             }
           }
           this.columns[question.id].push("answer");
+          this.columnNames[question.id].push("Antwort");
         }
       }
     }
@@ -68,5 +75,44 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
 
   public toCheckbox(checked: boolean): string {
     return checked ? "check_box" : "check_box_outline_blank";
+  }
+
+  private compileResults(question: Question): string[] | null {
+    if (!question.id) return null;
+    const questionId = question.id;
+    return [
+      this.columnNames[questionId].join(", "),
+      ...this.answers.map(answer => {
+        const ret = [
+          answer.userId || "Anonym",
+          ...this.columns[questionId].filter(col => col.startsWith("checkbox")).map(col => !!answer.answers[questionId].checkboxes![col.substring(8)]),
+          answer.answers[questionId].text?.replace(/"/, "\"\"")?.replace(/^|$/, "\"") || "",
+        ];
+        return ret.join(", ");
+      })
+    ];
+  }
+
+  public downloadResults(): void {
+    if (!this.survey) return;
+    let lines = ["", ...this.answers.map(() => "")];
+    for (let group of this.survey?.questionGroups) {
+      for (let question of group.questions) {
+        if (question.id) {
+          const compiledResults = this.compileResults(question);
+          if (compiledResults) lines = lines.map((s, i) => (s ? s + ", " : "") + compiledResults[i]);
+        }
+      }
+    }
+    const blob = new Blob(lines.map(l => l + "\n"), {
+      type: "text/csv",
+      endings: "native",
+    });
+    const url = URL.createObjectURL(blob);
+    const element = document.createElement("a");
+    element.href = url;
+    element.click();
+    element.remove();
+    URL.revokeObjectURL(url);
   }
 }
