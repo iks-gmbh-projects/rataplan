@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
 import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
 
 @Component({
@@ -94,5 +95,9 @@ export class SurveyCreateFormComponent {
       }
     }
     this.onSubmit.emit(survey);
+  }
+
+  public advanceStepperOnReload(stepper: MatStepper): void {
+    setTimeout(() => stepper.next(), 10);
   }
 }

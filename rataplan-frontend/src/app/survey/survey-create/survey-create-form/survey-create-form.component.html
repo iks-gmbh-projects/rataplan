@@ -1,106 +1,131 @@
 <form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="preview()">
-  <mat-form-field appearance="fill">
-    <mat-label>Umfragename</mat-label>
-    <input type="text" matInput formControlName="name">
-  </mat-form-field><br>
-  <mat-form-field appearance="fill">
-    <mat-label>Beschreibung</mat-label>
-    <textarea matInput formControlName="description"></textarea>
-  </mat-form-field><br>
-  <mat-form-field appearance="fill">
-    <mat-label>Zeitraum</mat-label>
-    <mat-date-range-input [rangePicker]="openRange">
-      <input matStartDate formControlName="startDate">
-      <input matEndDate formControlName="endDate">
-    </mat-date-range-input>
-    <mat-datepicker-toggle matSuffix [for]="openRange"></mat-datepicker-toggle>
-    <mat-date-range-picker #openRange></mat-date-range-picker>
-  </mat-form-field><br>
-  <mat-checkbox formControlName="openAccess">Öffentlich</mat-checkbox><br>
-  <mat-checkbox formControlName="anonymousParticipation">Anonym</mat-checkbox><br>
-  <div formArrayName="questionGroups">
-    <mat-card class="bottomspace" *ngFor="let questionGroup of getQuestionGroups().controls; index as i"
-      [formGroupName]="i">
-      <mat-card-content>
-        <mat-form-field appearance="fill">
-          <mat-label>Überschrift</mat-label>
-          <input type="text" matInput formControlName="title">
-        </mat-form-field>
-        <div formArrayName="questions">
-          <mat-card class="bottomspace" *ngFor="let question of getQuestions(questionGroup).controls; index as j"
-            [formGroupName]="j">
-            <mat-card-content>
-              <mat-form-field>
-                <mat-label>Frage</mat-label>
-                <input type="text" matInput formControlName="text">
-              </mat-form-field><br>
-              <mat-checkbox formControlName="required">Erforderlich</mat-checkbox>
-              <mat-card>
-                <mat-card-title>Antwortmöglichkeiten</mat-card-title>
-                <mat-card-subtitle>Freitext wenn keine gegeben</mat-card-subtitle>
-                <mat-card-content formGroupName="checkboxGroup">
-                  <ng-template [ngIf]="getCheckboxes(question).length">
-                    <mat-checkbox formControlName="multipleSelect" #multi="matCheckbox">Mehrfachauswahl</mat-checkbox>
-                    <br>
-                    <ng-template [ngIf]="multi.checked">
-                      <mat-form-field>
-                        <mat-label>Minimale Auswahlanzahl</mat-label>
-                        <input type="number" matInput formControlName="minSelect">
-                      </mat-form-field><br>
-                      <mat-form-field>
-                        <mat-label>Maximale Auswahlanzahl</mat-label>
-                        <input type="number" matInput formControlName="maxSelect">
-                      </mat-form-field><br>
-                    </ng-template>
-                    <div formArrayName="checkboxes">
-                      <div *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
+  <mat-stepper orientation="vertical" #stepper="matStepper">
+    <mat-step label="Kopfdaten">
+      <mat-form-field appearance="fill">
+        <mat-label>Umfragename</mat-label>
+        <input type="text" matInput formControlName="name">
+      </mat-form-field><br>
+      <mat-form-field appearance="fill">
+        <mat-label>Beschreibung</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field><br>
+      <mat-checkbox formControlName="anonymousParticipation">Erlaube anonyme Antworten</mat-checkbox><br><br>
+      <mat-form-field appearance="fill">
+        <mat-label>Zeitraum</mat-label>
+        <mat-date-range-input [rangePicker]="openRange">
+          <input matStartDate formControlName="startDate">
+          <input matEndDate formControlName="endDate">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="openRange"></mat-datepicker-toggle>
+        <mat-date-range-picker #openRange></mat-date-range-picker>
+      </mat-form-field><br>
+      <mat-checkbox formControlName="openAccess">Liste die Umfrage in der Liste auf.</mat-checkbox><br><br>
+      <div style="display: flex;">
+      <button type="button" mat-raised-button color="basic" matStepperPrevious>
+        <mat-icon>navigate_before</mat-icon>
+      </button>
+      <div style="flex: 2;"></div>
+      <button type="button" mat-raised-button color="primary" matStepperNext>
+        <mat-icon>navigate_next</mat-icon>
+      </button>
+    </div>
+    </mat-step>
+    <div formArrayName="questionGroups">
+      <mat-step label="Frageblock {{i+1}}" *ngFor="let questionGroup of getQuestionGroups().controls; index as i"
+        [formGroupName]="i">
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Frageblocküberschrift</mat-label>
+            <input type="text" matInput formControlName="title">
+          </mat-form-field>
+          <div formArrayName="questions">
+            <mat-card class="bottomspace" *ngFor="let question of getQuestions(questionGroup).controls; index as j"
+              [formGroupName]="j">
+              <mat-card-content>
+                <mat-form-field>
+                  <mat-label>Frage {{j+1}}</mat-label>
+                  <input type="text" matInput formControlName="text">
+                </mat-form-field><br>
+                <mat-checkbox formControlName="required">Erforderlich</mat-checkbox>
+                <mat-card>
+                  <mat-card-title>Antwortmöglichkeiten</mat-card-title>
+                  <mat-card-subtitle>Freitext wenn keine gegeben</mat-card-subtitle>
+                  <mat-card-content formGroupName="checkboxGroup">
+                    <ng-template [ngIf]="getCheckboxes(question).length">
+                      <mat-checkbox formControlName="multipleSelect" #multi="matCheckbox">Mehrfachauswahl</mat-checkbox>
+                      <br>
+                      <ng-template [ngIf]="multi.checked">
                         <mat-form-field>
-                          <mat-label>Antwortmöglichkeit {{k+1}}</mat-label>
-                          <input type="text" matInput formControlName="text">
-                        </mat-form-field>
-                        <button mat-icon-button type="button" (click)="getCheckboxes(question).removeAt(k)">
-                          <mat-icon>delete</mat-icon>
-                        </button><br>
-                        <mat-checkbox formControlName="hasTextField">Freitext</mat-checkbox>
+                          <mat-label>Minimale Auswahlanzahl</mat-label>
+                          <input type="number" matInput formControlName="minSelect">
+                        </mat-form-field><br>
+                        <mat-form-field>
+                          <mat-label>Maximale Auswahlanzahl</mat-label>
+                          <input type="number" matInput formControlName="maxSelect">
+                        </mat-form-field><br>
+                      </ng-template>
+                      <div formArrayName="checkboxes">
+                        <div *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
+                          <mat-form-field>
+                            <mat-label>Antwortmöglichkeit {{k+1}}</mat-label>
+                            <input type="text" matInput formControlName="text">
+                          </mat-form-field>
+                          <button mat-icon-button type="button" (click)="getCheckboxes(question).removeAt(k)">
+                            <mat-icon>delete</mat-icon>
+                          </button><br>
+                          <mat-checkbox formControlName="hasTextField">Freitext</mat-checkbox>
+                        </div>
                       </div>
-                    </div>
-                  </ng-template>
-                </mat-card-content>
-                <mat-card-actions>
-                  <button mat-icon-button color="primary" type="button"
-                    (click)="getCheckboxes(question).push(createCheckbox())">
-                    <mat-icon>add</mat-icon>
-                  </button>
-                </mat-card-actions>
-              </mat-card>
-            </mat-card-content>
-            <mat-card-actions>
-              <button mat-icon-button color="warn" type="button" [disabled]="getQuestions(questionGroup).length <= 1"
-                (click)="getQuestions(questionGroup).removeAt(j)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </mat-card-actions>
-          </mat-card>
+                    </ng-template>
+                  </mat-card-content>
+                  <mat-card-actions>
+                    <button mat-icon-button color="primary" type="button"
+                      (click)="getCheckboxes(question).push(createCheckbox())">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </mat-card-actions>
+                </mat-card>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-icon-button color="warn" type="button" [disabled]="getQuestions(questionGroup).length <= 1"
+                  (click)="getQuestions(questionGroup).removeAt(j)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button *ngIf="j+1 == getQuestions(questionGroup).length" mat-icon-button color="primary" type="button"
+                  (click)="getQuestions(questionGroup).push(createQuestion())">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
         </div>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-icon-button color="warn" type="button" [disabled]="getQuestionGroups().length <= 1"
-          (click)="getQuestionGroups().removeAt(i)">
-          <mat-icon>delete</mat-icon>
-        </button>
-        <button mat-icon-button color="primary" type="button"
-          (click)="getQuestions(questionGroup).push(createQuestion())">
-          <mat-icon>add</mat-icon>
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-  <button mat-icon-button color="primary" type="button" (click)="getQuestionGroups().push(createQuestionGroup())">
-    <mat-icon>add</mat-icon>
-  </button>
+        <div style="display: flex; margin-bottom: 1ex;">
+          <button type="button" mat-raised-button color="basic" matStepperPrevious>
+            <mat-icon>navigate_before</mat-icon>
+          </button>
+          <div style="flex: 2;"></div>
+          <button type="button" mat-raised-button color="primary" matStepperNext>
+            <mat-icon>navigate_next</mat-icon>
+          </button>
+        </div>
+        <div style="display: flex;">
+          <button mat-raised-button color="warn" type="button" [disabled]="getQuestionGroups().length <= 1"
+            (click)="getQuestionGroups().removeAt(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <div style="flex: 2;"></div>
+          <button mat-raised-button color="primary" type="button"
+            (click)="getQuestionGroups().push(createQuestionGroup()); advanceStepperOnReload(stepper)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </mat-step>
+    </div>
+
+  </mat-stepper>
   <!--<button mat-mini-fab color="primary" style="margin-right: 1ex"><mat-icon>preview</mat-icon></button>-->
   <a mat-raised-button color="primary" routerLink="..">Abbrechen</a>
   <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid">
-    <mat-icon>preview</mat-icon>
+    Vorschau
   </button>
 </form>
