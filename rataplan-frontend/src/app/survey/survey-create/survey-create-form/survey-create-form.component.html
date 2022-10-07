@@ -21,7 +21,7 @@
       </mat-form-field><br>
       <mat-checkbox formControlName="openAccess">Liste die Umfrage in der Liste auf.</mat-checkbox><br><br>
       <div style="display: flex;">
-      <button type="button" mat-raised-button color="basic" matStepperPrevious>
+      <button type="button" mat-raised-button color="basic" matStepperPrevious disabled>
         <mat-icon>navigate_before</mat-icon>
       </button>
       <div style="flex: 2;"></div>
@@ -104,7 +104,7 @@
             <mat-icon>navigate_before</mat-icon>
           </button>
           <div style="flex: 2;"></div>
-          <button type="button" mat-raised-button color="primary" matStepperNext>
+          <button type="button" mat-raised-button color="primary" matStepperNext [disabled]="getQuestionGroups().length == i+1">
             <mat-icon>navigate_next</mat-icon>
           </button>
         </div>
