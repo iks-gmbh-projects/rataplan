@@ -13,6 +13,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -27,6 +28,7 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     private final AuthService authService;
     private final ModelMapper modelMapper;
 
+    @Transactional
     public ResponseEntity<SurveyResponseDTO> processSurveyResponseDTOs(SurveyResponseDTO surveyResponseDTO) {
         SurveyResponse surveyResponse = modelMapper.map(surveyResponseDTO, SurveyResponse.class);
         if (surveyResponse.validate()) {
@@ -48,6 +50,7 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
         return modelMapper.map(answers, answerDTOList);
     }
 
+    @Transactional
     public ResponseEntity<List<SurveyResponseDTO>> processSurveyResponseDTOs(String accessId, String authToken) {
         final Optional<Survey> optSurvey = surveyRepository.findSurveyByAccessId(accessId);
         if(optSurvey.isEmpty()) return ResponseEntity.notFound().build();

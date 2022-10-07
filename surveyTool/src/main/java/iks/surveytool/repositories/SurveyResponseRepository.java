@@ -9,5 +9,6 @@ import java.util.List;
 public interface SurveyResponseRepository extends JpaRepository<SurveyResponse, Long> {
     boolean existsBySurveyAndUserId(Survey survey, Long userId);
     List<SurveyResponse> findAllBySurvey(Survey survey);
+    Long deleteAllBySurvey(Survey survey);
     List<SurveyResponse> findAllByUserId(Long userId);
 }

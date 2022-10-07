@@ -23,8 +23,7 @@ public class Checkbox extends AbstractEntity {
     @JoinColumn(name = "checkboxGroupId", nullable = false)
     private CheckboxGroup checkboxGroup;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "checkboxId")
+    @ManyToMany(mappedBy = "checkboxes", cascade = CascadeType.ALL)
     private List<Answer> answers;
 
     public Checkbox(String text, boolean hasTextField) {

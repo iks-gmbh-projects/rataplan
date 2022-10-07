@@ -5,12 +5,14 @@ import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.repositories.SurveyRepository;
+import iks.surveytool.repositories.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
@@ -25,10 +27,12 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class SurveyServiceImpl implements SurveyService {
     private final SurveyRepository surveyRepository;
+    private final SurveyResponseRepository surveyResponseRepository;
     private final ModelMapper modelMapper;
     private final AuthService authService;
     private final Random random = new Random();
 
+    @Transactional
     public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
         Survey newSurvey = mapSurveyToEntity(surveyDTO);
         if (newSurvey.validate()) {
@@ -41,17 +45,18 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
 
+    @Transactional
     public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, String jwttoken) {
         SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
         if (surveyOverviewDTO != null) {
-            if(surveyOverviewDTO.getUserId() != null) {
+            if (surveyOverviewDTO.getUserId() != null) {
                 ResponseEntity<AuthUser> userEntity = authService.getUserData(jwttoken);
-                if(!userEntity.getStatusCode().is2xxSuccessful()) {
+                if (!userEntity.getStatusCode().is2xxSuccessful()) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
                 AuthUser user = userEntity.getBody();
-                if(user == null) return ResponseEntity.internalServerError().build();
-                if(surveyOverviewDTO.getUserId().longValue() != user.getId().longValue()) {
+                if (user == null) return ResponseEntity.internalServerError().build();
+                if (surveyOverviewDTO.getUserId().longValue() != user.getId().longValue()) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
             }
@@ -61,6 +66,7 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
 
+    @Transactional
     public ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId) {
         SurveyOverviewDTO surveyDTO = mapSurveyToDTOByParticipationId(participationId);
         if (surveyDTO != null) {
@@ -76,6 +82,7 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
 
+    @Transactional
     public ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys() {
         List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
         return ResponseEntity.ok(openAccessSurveys);
@@ -191,5 +198,38 @@ public class SurveyServiceImpl implements SurveyService {
     private String generateHexSuffix() {
         int randomNumber = random.nextInt(256);
         return Integer.toHexString(randomNumber);
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken) {
+        final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
+        if (optionalSurvey.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        final Survey oldSurvey = optionalSurvey.get();
+        if (oldSurvey.getUserId() != null) {
+            ResponseEntity<AuthUser> userEntity = authService.getUserData(jwttoken);
+            if (!userEntity.getStatusCode().is2xxSuccessful()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            AuthUser user = userEntity.getBody();
+            if (user == null) return ResponseEntity.internalServerError().build();
+            if (oldSurvey.getUserId().longValue() != user.getId().longValue()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+        Survey survey = mapSurveyToEntity(completeSurveyDTO);
+        survey.setId(oldSurvey.getId());
+        survey.setUserId(oldSurvey.getUserId());
+        survey.setAccessId(oldSurvey.getAccessId());
+        survey.setParticipationId(oldSurvey.getParticipationId());
+        survey.setCreationTime(oldSurvey.getCreationTime());
+        survey.setVersion(oldSurvey.getVersion());
+        if (!survey.validate()) return ResponseEntity.unprocessableEntity().build();
+        surveyResponseRepository.deleteAllBySurvey(oldSurvey);
+        survey = saveSurvey(survey);
+        SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTO(survey);
+        return ResponseEntity.ok(surveyOverviewDTO);
     }
 }

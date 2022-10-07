@@ -1,6 +1,8 @@
 package iks.surveytool.services;
 
 import iks.surveytool.domain.AuthUser;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -9,6 +11,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@Log4j2
 public class AuthServiceImpl implements AuthService {
     private final String authUrl;
     private final RestTemplate restTemplate;
@@ -32,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             return restTemplate.exchange(url, HttpMethod.GET, entity, AuthUser.class);
         } catch (RestClientResponseException ex) {
+            log.catching(Level.INFO, ex);
             return ResponseEntity
                     .status(ex.getRawStatusCode())
                     .headers(ex.getResponseHeaders())

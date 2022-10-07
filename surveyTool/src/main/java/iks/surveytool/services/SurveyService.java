@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface SurveyService {
     ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO);
+    ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken);
     ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, String jwttoken);
     ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId);
     ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys();

@@ -27,15 +27,24 @@ public class SurveyController {
             @RequestBody CompleteSurveyDTO surveyDTO,
             @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
     ) {
-        if(jwttoken == null) surveyDTO.setUserId(null);
+        if (jwttoken == null) surveyDTO.setUserId(null);
         else {
             final ResponseEntity<AuthUser> user = authService.getUserData(jwttoken);
-            if(!user.getStatusCode().is2xxSuccessful()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            if (!user.getStatusCode().is2xxSuccessful()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             final AuthUser u = user.getBody();
-            if(u == null) return ResponseEntity.internalServerError().build();
+            if (u == null) return ResponseEntity.internalServerError().build();
             surveyDTO.setUserId(u.getId());
         }
         return surveyService.processSurveyDTO(surveyDTO);
+    }
+
+    @PutMapping(params = {"accessId"})
+    public ResponseEntity<SurveyOverviewDTO> editSurvey(
+            @RequestParam String accessId,
+            @RequestBody CompleteSurveyDTO surveyDTO,
+            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+    ) {
+        return surveyService.processEditSurveyByAccessId(accessId, surveyDTO, jwttoken);
     }
 
     @GetMapping(params = {"accessId"})

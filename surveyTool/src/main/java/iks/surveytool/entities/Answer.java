@@ -23,7 +23,7 @@ public class Answer extends AbstractEntity {
     @JoinColumn(name = "questionId", nullable = false)
     private Question question;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.REFRESH})
     @JoinTable(
             name = "checkboxSelections",
             joinColumns = {
