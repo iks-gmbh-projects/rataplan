@@ -43,7 +43,7 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
       this.isEdit ?
       this.surveys.editSurvey(survey) :
       this.surveys.createSurvey(survey)
-    ).subscribe(surv => this.router.navigate(["..", "access", surv.accessId], {relativeTo: this.route}));
+    ).subscribe(surv => this.router.navigate(["/survey", "access", surv.accessId], {relativeTo: this.route}));
   }
 
   public edit(): void {
