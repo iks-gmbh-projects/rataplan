@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { throwToolbarMixedModesError } from '@angular/material/toolbar';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { SurveyHead } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
@@ -8,22 +10,34 @@ import { SurveyService } from '../survey.service';
   templateUrl: './survey-list.component.html',
   styleUrls: ['./survey-list.component.css']
 })
-export class SurveyListComponent implements OnInit {
+export class SurveyListComponent implements OnInit, OnDestroy {
   public surveys: SurveyHead[] = [];
   public busy: boolean = false;
   public error: any = null;
+  public isOwn: boolean = false;
+  private sub?: Subscription;
 
-  constructor(private surveyService: SurveyService) { }
+  constructor(private surveyService: SurveyService, private activeRoute: ActivatedRoute) { }
 
   public ngOnInit(): void {
+    this.isOwn = this.activeRoute.snapshot.data['own'];
     this.updateList();
+    this.sub = this.activeRoute.data.subscribe(data => {
+      this.isOwn = data['own'];
+      this.updateList();
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.sub?.unsubscribe();
   }
 
   public updateList(): void {
     if (this.busy) return;
     this.busy = true;
     this.error = null;
-    this.surveyService.getOpenSurveys().subscribe({
+    let request = this.isOwn ? this.surveyService.getOwnSurveys() : this.surveyService.getOpenSurveys()
+    request.subscribe({
       next: s => this.surveys = s,
       error: err => {
         this.error = err;

@@ -1,8 +1,11 @@
 <div class="wrapper">
-  <button class="rightSpace" mat-icon-button aria-label="Neu Laden" [disabled]="busy" type="button" (click)="updateList()">
+  <button mat-icon-button aria-label="Neu Laden" [disabled]="busy" type="button"
+    (click)="updateList()">
     <mat-icon>{{error ? 'sync_problem' : 'sync'}}</mat-icon>
   </button>
-  <a mat-raised-button color="primary" routerLink="../create">Umfrage Erstellen</a>
+  <a class="rightSpace" mat-raised-button color="primary" routerLink="../create">Erstellen</a>
+  <a *ngIf="!isOwn" mat-raised-button color="primary" routerLink="../own">Eigene Umfragen</a>
+  <a *ngIf="isOwn" mat-raised-button color="primary" routerLink="../list">Offene Umfragen</a>
   <hr>
   <div>
     <mat-spinner *ngIf="busy; else done"></mat-spinner>
@@ -13,8 +16,10 @@
           <mat-card-title>{{survey.name}}</mat-card-title>
           <mat-card-content>{{survey.description}}</mat-card-content>
           <mat-card-actions>
-            <a mat-raised-button color="primary"
+            <a *ngIf="!isOwn" mat-raised-button color="primary"
               [routerLink]="['..','participate',survey.participationId]">Teilnehmen</a>
+            <a *ngIf="isOwn" mat-raised-button color="primary"
+              [routerLink]="['..', 'access', survey.accessId]">Öffnen</a>
           </mat-card-actions>
         </mat-card>
       </ng-template>

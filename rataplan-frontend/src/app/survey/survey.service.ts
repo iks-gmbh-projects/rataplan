@@ -20,7 +20,13 @@ export class SurveyService {
   constructor(private http: HttpClient) { }
 
   public getOpenSurveys(): Observable<SurveyHead[]> {
-    return this.http.get<Survey[]>(surveyURL, {
+    return this.http.get<SurveyHead[]>(surveyURL, {
+      withCredentials: true,
+    });
+  }
+
+  public getOwnSurveys(): Observable<SurveyHead[]> {
+    return this.http.get<SurveyHead[]>(surveyURL+"/own", {
       withCredentials: true,
     });
   }

@@ -24,7 +24,8 @@ const surveyRoutes: Routes = [{
       ]
     },
     { path: "create", component: SurveyCreateComponent },
-    { path: "list", component: SurveyListComponent },
+    { path: "list", data: { own: false }, component: SurveyListComponent },
+    { path: "own", data: { own: true }, component: SurveyListComponent },
     { path: "participate/:participationID", resolve: { survey: ParticipationIDSurveyResolver }, component: SurveyFormComponent },
     { path: "missing", component: SurveyMissingComponent },
     { path: "forbidden", component: SurveyForbiddenComponent },
