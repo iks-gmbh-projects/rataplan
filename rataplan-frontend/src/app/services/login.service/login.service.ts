@@ -4,6 +4,7 @@ import {FrontendUser} from '../../login/login.component';
 import {AbstractControl, ValidationErrors} from "@angular/forms";
 import {LocalstorageService} from "../localstorage-service/localstorage.service";
 import {catchError, map} from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({providedIn: 'root'})
@@ -23,7 +24,7 @@ export class LoginService {
 
   public loginUser (frontendUser: FrontendUser){
 
-    let url = 'http://localhost:8080/v1/users/login'
+    let url = environment.rataplanBackendURL+'users/login'
 
     const requestOptions = {
       params: new HttpParams()
@@ -36,7 +37,7 @@ export class LoginService {
     }
 
     public logoutUser () {
-    let url = 'http://localhost:8080/v1/users/logout'
+    let url = environment.rataplanBackendURL+'users/logout'
 
       return this.httpClient.get<any>(url,{withCredentials: true}).subscribe(console.log);
 
@@ -44,7 +45,7 @@ export class LoginService {
 
 
     public getUserData() {
-    let url = 'http://localhost:8080/v1/users/profile'
+    let url = environment.rataplanBackendURL+'users/profile'
 
 
       const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};

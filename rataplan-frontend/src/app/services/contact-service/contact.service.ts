@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 import { ContactData } from '../../legals/contact/contact.component';
 
@@ -11,7 +12,7 @@ export class ContactService {
   constructor(private http: HttpClient) { }
 
   public contact(contact: ContactData){
-    const url = 'http://localhost:8080/v1/contacts';
+    const url = environment.rataplanBackendURL+'contacts';
 
     return this.http.post<any>(url, contact);
   }
