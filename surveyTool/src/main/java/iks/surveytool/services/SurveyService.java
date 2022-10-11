@@ -12,5 +12,6 @@ public interface SurveyService {
     ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, String jwttoken);
     ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId);
     ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys();
+    ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(String jwttoken);
 
 }

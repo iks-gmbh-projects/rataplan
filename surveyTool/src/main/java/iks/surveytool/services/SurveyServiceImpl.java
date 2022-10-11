@@ -12,7 +12,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
@@ -32,7 +31,6 @@ public class SurveyServiceImpl implements SurveyService {
     private final AuthService authService;
     private final Random random = new Random();
 
-    @Transactional
     public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
         Survey newSurvey = mapSurveyToEntity(surveyDTO);
         if (newSurvey.validate()) {
@@ -45,7 +43,6 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
 
-    @Transactional
     public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, String jwttoken) {
         SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
         if (surveyOverviewDTO != null) {
@@ -66,7 +63,6 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
 
-    @Transactional
     public ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId) {
         SurveyOverviewDTO surveyDTO = mapSurveyToDTOByParticipationId(participationId);
         if (surveyDTO != null) {
@@ -82,7 +78,6 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
 
-    @Transactional
     public ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys() {
         List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
         return ResponseEntity.ok(openAccessSurveys);
@@ -136,11 +131,15 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
 
-    private List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
-        List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
+    private List<SurveyOverviewDTO> mapSurveysToDTO(List<Survey> surveys) {
         Type surveyOverviewList = new TypeToken<List<SurveyOverviewDTO>>() {
         }.getType();
-        return modelMapper.map(openAccessSurveys, surveyOverviewList);
+        return modelMapper.map(surveys, surveyOverviewList);
+    }
+
+    private List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
+        List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
+        return mapSurveysToDTO(openAccessSurveys);
     }
 
     private Survey mapSurveyToEntity(CompleteSurveyDTO surveyDTO) {
@@ -200,7 +199,6 @@ public class SurveyServiceImpl implements SurveyService {
         return Integer.toHexString(randomNumber);
     }
 
-    @Transactional
     @Override
     public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken) {
         final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
@@ -231,5 +229,18 @@ public class SurveyServiceImpl implements SurveyService {
         survey = saveSurvey(survey);
         SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTO(survey);
         return ResponseEntity.ok(surveyOverviewDTO);
+    }
+
+    @Override
+    public ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(String jwttoken) {
+        ResponseEntity<AuthUser> userEntity = authService.getUserData(jwttoken);
+        if (!userEntity.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        AuthUser user = userEntity.getBody();
+        if (user == null) return ResponseEntity.internalServerError().build();
+        List<Survey> surveys = surveyRepository.findSurveysByUserId(user.getId());
+        List<SurveyOverviewDTO> surveyDTOs = mapSurveysToDTO(surveys);
+        return ResponseEntity.ok(surveyDTOs);
     }
 }

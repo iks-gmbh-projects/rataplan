@@ -64,4 +64,12 @@ public class SurveyController {
     public ResponseEntity<List<SurveyOverviewDTO>> findOpenAccessSurveys() {
         return surveyService.processOpenAccessSurveys();
     }
+
+    @GetMapping("/own")
+    public ResponseEntity<List<SurveyOverviewDTO>> findMySurveys(
+            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwtToken
+    ) {
+        if(jwtToken == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return surveyService.processMySurveys(jwtToken);
+    }
 }

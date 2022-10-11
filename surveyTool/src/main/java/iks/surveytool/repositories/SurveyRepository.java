@@ -13,4 +13,6 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Optional<Survey> findSurveyByAccessId(String accessId);
 
     List<Survey> findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(LocalDateTime localDateTime);
+
+    List<Survey> findSurveysByUserId(Long userId);
 }
