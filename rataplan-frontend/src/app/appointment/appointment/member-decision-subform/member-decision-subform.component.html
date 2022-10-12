@@ -1,20 +1,31 @@
-<h3 mat-dialog-title>{{ data.appointments }}</h3>
+<h3 mat-dialog-title>{{ data.appointment.startDate | date:'dd. MMMM yyyy':'+0200':'de' }}</h3>
 <div mat-dialog-content>
   <span>Lorem ipsum dolor sit amet.</span>
 </div>
 <div>
-  <p></p>
-  <span>Teilnahme:</span>
-</div>
-<div>
-  <mat-list>
-    <mat-list-item *ngIf='data.isVoted'>
-      <div mat-line>{{ data.name }}</div>
-        <mat-button-toggle [ngSwitch]='data.appointmentDecision'
-                           disabled>
-          <mat-icon *ngSwitchCase="accept">done</mat-icon>
-          <mat-icon *ngSwitchDefault>close</mat-icon>
-        </mat-button-toggle>
-    </mat-list-item>
-  </mat-list>
+  <mat-selection-list [multiple]="false">
+    <!--    <mat-list-item *ngFor='let decision of appointmentRequest.appointmentMembers; let i = index'>-->
+    <!--      <div mat-line>{{ decision.name == null ? 'anonymous' : decision.name }}</div>-->
+      <mat-list-option>
+        <mat-icon mat-list-icon
+                  [matBadge]='countDecision(1)'
+                  matBadgeColor='primary'>done
+        </mat-icon>
+        <div mat-line>Accepted</div>
+      </mat-list-option>
+      <mat-list-option>
+        <mat-icon mat-list-icon
+                  [matBadge]='countDecision(3)'
+                  matBadgeColor='primary'>close
+        </mat-icon>
+        <div mat-line>Declined</div>
+      </mat-list-option>
+    <!--    <mat-button-toggle disabled>-->
+    <!--            <mat-icon matBadge="4" matBadgeColor='primary'>done</mat-icon>-->
+    <!--        </mat-button-toggle>-->
+    <!--    <mat-button-toggle disabled>-->
+    <!--    </mat-button-toggle>-->
+
+    <!--    </mat-list-item>-->
+  </mat-selection-list>
 </div>

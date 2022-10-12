@@ -1,6 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
+import { AppointmentModel } from '../../models/appointment.model';
+import { AppointmentDecisionModel } from '../../models/appointment-decision.model';
+import { AppointmentMemberModel } from '../../models/appointment-member.model';
+import { AppointmentRequestModel } from '../../models/appointment-request.model';
+import { AppointmentDecisionType } from '../appointment-request-form/decision-type.enum';
+import { AppointmentService } from './appointment-service/appointment.service';
 import { MemberDecisionSubformComponent } from './member-decision-subform/member-decision-subform.component';
 
 
@@ -9,40 +17,68 @@ import { MemberDecisionSubformComponent } from './member-decision-subform/member
   templateUrl: './appointment.component.html',
   styleUrls: ['./appointment.component.css']
 })
-export class AppointmentComponent implements OnInit {
-
-  appointmentMember = 0;
-  appointments = ['Tennis', 'Basketball', 'Fußball', 'Schwimmen'];
-  appointmentDecision = [0, 0, 0, 0];
+export class AppointmentComponent implements OnInit, OnDestroy {
+  destroySubject: Subject<boolean> = new Subject<boolean>();
+  appointmentRequest = new AppointmentRequestModel();
+  participationToken = '';
+  appointmentMember = new AppointmentMemberModel();
   memberName : string | null = null;
   isVoted = false;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog,
+    private route: ActivatedRoute,
+    private appointmentService: AppointmentService) { }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.participationToken = '' + params.get('id');
+    });
+    console.log(this.participationToken);
+
+    this.appointmentService.getAppointmentByParticipationToken(this.participationToken)
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(data => {
+        this.appointmentRequest = data;
+        sessionStorage.setItem('appointmentMembers',
+          JSON.stringify(this.appointmentRequest.appointmentMembers));
+        console.log(data);
+      });
+
     if (localStorage.getItem('member')) {
       this.memberName = localStorage.getItem('member');
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroySubject.next(true);
+    this.destroySubject.complete();
+  }
+
   saveVote() {
-    this.appointmentMember++;
     this.isVoted = true;
     this.saveName();
+    this.appointmentService.addAppointmentMember(this.appointmentRequest, this.appointmentMember)
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(res => {
+        console.log(res);
+        this.appointmentRequest.appointmentMembers.push(res);
+        sessionStorage.setItem('appointmentMembers',
+          JSON.stringify(this.appointmentRequest.appointmentMembers));
+      });
   }
 
-  openDialog(appointmentTitle: string, index: number) {
-    this.dialog.open(MemberDecisionSubformComponent, {
-      data: {
-        name: this.memberName,
-        appointments: appointmentTitle,
-        appointmentDecision: this.appointmentDecision[index],
-        isVoted: this.isVoted,
+
+  openDialog(appointment: AppointmentModel) {
+    this.dialog.open(MemberDecisionSubformComponent,
+      {
+        data: {
+          appointment: appointment,
+          // appointmentMember: this.appointmentMember,
+          // appointmentDecision: this.appointmentMember.appointmentDecisions[index],
+          // isVoted: this.isVoted,
+        }
       }
-    });
-  }
-
-  setVoteDecision() {
+    );
   }
 
   saveName() {
@@ -53,13 +89,17 @@ export class AppointmentComponent implements OnInit {
     }
   }
 
-  acceptAppointment(appointment: string) {
-    const position = this.appointments.indexOf(appointment);
-    this.appointmentDecision[position] = 1;
+  acceptAppointment(appointment: AppointmentModel) {
+    const appointmentDecision = new AppointmentDecisionModel();
+    appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
+    appointmentDecision.appointmentId = appointment.id;
+    this.appointmentMember.appointmentDecisions.push(appointmentDecision);
   }
 
-  rejectAppointment(appointment: string) {
-    const position = this.appointments.indexOf(appointment);
-    this.appointmentDecision[position] = 3;
+  rejectAppointment(appointment: AppointmentModel) {
+    const appointmentDecision = new AppointmentDecisionModel();
+    appointmentDecision.decision = AppointmentDecisionType.DECLINE;
+    appointmentDecision.appointmentId = appointment.id;
+    this.appointmentMember.appointmentDecisions.push(appointmentDecision);
   }
 }

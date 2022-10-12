@@ -32,7 +32,7 @@ const routes: Routes = [
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
   },
-  { path: 'vote', component: AppointmentComponent },
+  { path: 'vote/:id', component: AppointmentComponent },
   { path: 'terms-and-conditions', component: ConditionsComponent },
   { path: 'imprint', component: ImprintComponent },
   { path: 'privacy', component: PrivacyComponent },

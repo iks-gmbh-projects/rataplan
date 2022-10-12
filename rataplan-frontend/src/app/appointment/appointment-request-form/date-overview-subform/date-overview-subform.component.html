@@ -3,7 +3,7 @@
 <mat-chip-list>
   <mat-chip (removed)="removeDate(date)"
             *ngFor="let date of selectedDates">
-    {{ date | date:'dd. MMMM yyyy':'+0200':'de'}}
+    {{ date | date:'dd. MMMM yyyy':'+0200':'de' }}
     <button matChipRemove>
       <mat-icon>cancel</mat-icon>
     </button>

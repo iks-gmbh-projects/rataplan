@@ -65,7 +65,7 @@ export class AppointmentRequestFormComponent implements OnInit, OnDestroy {
   sendEndOfAppointment() {
     this.router.navigate(['links'], { relativeTo: this.route });
     this.isSend = true;
-    this.appointmentRequestFormService.createAppointmentRequest();
+    // this.appointmentRequestFormService.createAppointmentRequest();
     console.log(this.appointmentRequestFormService.appointmentRequest);
   }
 }

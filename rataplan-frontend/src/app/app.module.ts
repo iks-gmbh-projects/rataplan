@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import localeDE from '@angular/common/locales/de';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -92,6 +93,7 @@ registerLocaleData(localeDE);
     FormsModule,
     MatButtonToggleModule,
     MatDialogModule,
+    MatBadgeModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
