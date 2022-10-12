@@ -15,6 +15,7 @@ import {Subject, throwError} from "rxjs";
 import {User} from "../services/login.service/user.model";
 import {Router} from "@angular/router";
 import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
+import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
 
 
 
@@ -63,13 +64,20 @@ export class LoginComponent implements OnInit {
 
       this.isLoading = true;
     this.loginService.loginUser(frontendUser).subscribe(responseData => {
-
+    this.user
       console.log(responseData);
+    this.userdataStorageService.id = responseData.id;
+    this.userdataStorageService.username = responseData.username;
+    this.userdataStorageService.mail = responseData.mail;
+    this.userdataStorageService.displayName = responseData.displayName;
       this.localStorage.setLocalStorage(responseData)
       this.router.navigateByUrl("/")
       this.isLoggedIn = true;
       this.isLoading = false;
     }, error => {
+      if (error.error.errorCode === "WRONG_CREDENTIALS"){
+        console.log("Fuck you bitch")
+      }
       console.log(error);
       this.isLoading = false;
     })
@@ -120,7 +128,8 @@ export class LoginComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private loginService: LoginService,
               private router: Router,
-              private localStorage: LocalstorageService
+              private localStorage: LocalstorageService,
+              private userdataStorageService: userdataStorageService
                ) {
   }
 
