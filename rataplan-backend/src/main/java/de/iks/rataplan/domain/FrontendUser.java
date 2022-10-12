@@ -22,7 +22,7 @@ public class FrontendUser {
 	}
 	
 	public FrontendUser(AuthUser authUser, BackendUser backendUser) {
-		this.id = backendUser.getId();
+		this.id = authUser.getId();
 		this.mail = authUser.getMail();
 		this.username = authUser.getUsername();
 		this.password = null;

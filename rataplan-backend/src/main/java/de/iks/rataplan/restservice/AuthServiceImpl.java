@@ -1,7 +1,6 @@
 package de.iks.rataplan.restservice;
 
-import de.iks.rataplan.domain.AuthToken;
-import de.iks.rataplan.domain.ResetPasswordData;
+import de.iks.rataplan.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.exceptions.MalformedException;
 
 
@@ -84,6 +81,26 @@ public class AuthServiceImpl implements AuthService {
                     "Password has not been changed.");
         }
 
+        return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> changeEmail(String token , String email) {
+        String url = authUrl + "/users/profile/changeEmail";
+
+        System.out.println(token);
+        System.out.println(email);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(JWT_COOKIE_NAME, token);
+        HttpEntity<String> entity = new HttpEntity<>(email, headers);
+
+        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.POST, entity, Boolean.class);
+        if (response.getBody() == false) {
+            throw new MalformedException(
+                    "Email has not been changed");
+        }
         return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
     }
 

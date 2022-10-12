@@ -2,16 +2,13 @@ package de.iks.rataplan.controller;
 
 import java.util.List;
 
-import de.iks.rataplan.domain.ResetPasswordData;
+import de.iks.rataplan.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import de.iks.rataplan.domain.ContactData;
-import de.iks.rataplan.domain.FrontendUser;
-import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.dto.AppointmentMemberDTO;
 import de.iks.rataplan.dto.AppointmentRequestDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
@@ -212,6 +209,7 @@ public class Controller {
         return new ResponseEntity<>(frontendUser, HttpStatus.OK);
     }
 
+
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
             @ApiResponse(code = 400, message = "Password has not been changed.", response = MalformedException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
@@ -220,6 +218,22 @@ public class Controller {
                                                   @CookieValue(value = JWT_COOKIE_NAME, required = true) String jwtToken) {
 
         boolean success = userControllerService.changePassword(passwords, jwtToken);
+        return new ResponseEntity<>(success, HttpStatus.OK);
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
+            @ApiResponse(code = 400, message = "Email has not been changed", response = MalformedException.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ServiceNotAvailableException.class)})
+    @RequestMapping(value = "users/profile/changeEmail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+    public ResponseEntity<Boolean> changeEmail(@RequestBody String email,
+                                               @CookieValue(value = JWT_COOKIE_NAME, required = true)String jwtToken) {
+
+        System.out.println(email);
+        System.out.println(jwtToken);
+
+        boolean success = userControllerService.changeEmail(email, jwtToken);
+
         return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
