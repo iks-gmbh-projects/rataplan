@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.EmailChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -87,6 +88,17 @@ public class UserServiceImpl implements UserService {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public Boolean changeEmail (String username, String email) {
+        User user = this.getUserData(username);
+        if (user != null) {
+            user.setMail(email);
+            userRepository.saveAndFlush(user);
+            return true;
+        }
+        return false;
     }
 
     @Override
