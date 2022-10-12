@@ -34,6 +34,7 @@ public class AppointmentRequest implements Serializable {
 	private String organizerMail;
 	private Integer backendUserId;
 	private boolean isExpired = false;
+	private String participationToken;
 
 	private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
 
@@ -47,7 +48,7 @@ public class AppointmentRequest implements Serializable {
 		this.title = title;
 		this.description = description;
 		this.deadline = deadline;
-		this.organizerName = organizerMail;
+		this.organizerName = organizerName;
 		this.organizerMail = organizerMail;
 		this.appointments = appointments;
 		this.appointmentMembers = appointmentMembers;
@@ -169,6 +170,15 @@ public class AppointmentRequest implements Serializable {
 
 	public void setExpired(boolean isExpired) {
 		this.isExpired = isExpired;
+	}
+
+	@Column(name = "participationToken")
+	public String getParticipationToken() {
+		return participationToken;
+	}
+
+	public void setParticipationToken(String participationToken) {
+		this.participationToken = participationToken;
 	}
 
 	public AppointmentMember getAppointmentMemberById(long id) {

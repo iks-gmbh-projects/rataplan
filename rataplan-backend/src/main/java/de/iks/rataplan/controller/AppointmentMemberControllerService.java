@@ -34,7 +34,7 @@ public class AppointmentMemberControllerService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public AppointmentMemberDTO createAppointmentMember(AppointmentMemberDTO appointmentMemberDTO, Integer requestId, String jwtToken, String accessToken) {
+	public AppointmentMemberDTO createAppointmentMember(AppointmentMemberDTO appointmentMemberDTO, String participationToken, String jwtToken) {
 
 		BackendUser backendUser = null;
 		AuthUser authUser = null;
@@ -46,7 +46,8 @@ public class AppointmentMemberControllerService {
 			authorizationControllerService.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
 		}
 		
-		AppointmentRequest appointmentRequest = authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
+		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+//				authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		
 		if (jwtToken != null) {
 			this.createValidDTOMember(appointmentRequest, appointmentMemberDTO, backendUser.getId(), authUser.getUsername());
@@ -58,7 +59,7 @@ public class AppointmentMemberControllerService {
 		return modelMapper.map(appointmentMember, AppointmentMemberDTO.class);
 	}
 	
-	public void deleteAppointmentMember(Integer requestId, Integer memberId, String jwtToken, String accessToken) {
+	public void deleteAppointmentMember(String participationToken, Integer memberId, String jwtToken) {
 
 		BackendUser backendUser = null;
 		
@@ -66,7 +67,8 @@ public class AppointmentMemberControllerService {
 			backendUser = authorizationControllerService.getBackendUserAndRefreshCookie(jwtToken);
 		}
 		
-		AppointmentRequest appointmentRequest = authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
+		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+//				.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		AppointmentMember appointmentMember = appointmentRequest.getAppointmentMemberById(memberId);
 		
 		validateAccessToAppointmentMember(appointmentMember, backendUser);
@@ -74,7 +76,7 @@ public class AppointmentMemberControllerService {
 		appointmentMemberService.deleteAppointmentMember(appointmentRequest, appointmentMember);
 	}
 	
-	public AppointmentMemberDTO updateAppointmentMember(Integer requestId, Integer memberId, AppointmentMemberDTO appointmentMemberDTO, String jwtToken, String accessToken) {
+	public AppointmentMemberDTO updateAppointmentMember(String participationToken, Integer memberId, AppointmentMemberDTO appointmentMemberDTO, String jwtToken) {
 
 		BackendUser backendUser = null;
 		
@@ -82,7 +84,8 @@ public class AppointmentMemberControllerService {
 			backendUser = authorizationControllerService.getBackendUserAndRefreshCookie(jwtToken);
 		}
 		
-		AppointmentRequest appointmentRequest = authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
+		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+//				authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		AppointmentMember oldAppointmentMember = appointmentRequest.getAppointmentMemberById(memberId);
 		
 		validateAccessToAppointmentMember(oldAppointmentMember, backendUser);
