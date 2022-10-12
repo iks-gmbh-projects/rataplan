@@ -22,8 +22,8 @@ import de.iks.rataplan.utils.CookieBuilder;
 @Service
 public class AuthorizationControllerService {
 
-	@Autowired
-	private AppointmentRequestService appointmentRequestService;
+//	@Autowired
+//	private AppointmentRequestService appointmentRequestService;
 
 	@Autowired
 	private AuthService authService;
@@ -52,22 +52,22 @@ public class AuthorizationControllerService {
 	 */
 	public AppointmentRequest getAppointmentRequestIfAuthorized(boolean isEdit, Integer requestId, String jwtToken, String accessToken, BackendUser backendUser) {
 
-		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestById(requestId);
-
-		if (appointmentRequest == null) {
-			throw new ResourceNotFoundException("AppointmentRequest does not exist.");
-		}
-
-		if (jwtToken != null) {
-			if (backendUser == null) {
-				backendUser = this.getBackendUserAndRefreshCookie(jwtToken);
-			}
-
-			if (backendUser.hasAccessByRequestId(requestId, isEdit)) {
-				return appointmentRequest;
-			}
-		}
-
+//		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestById(requestId);
+//
+//		if (appointmentRequest == null) {
+//			throw new ResourceNotFoundException("AppointmentRequest does not exist.");
+//		}
+//
+//		if (jwtToken != null) {
+//			if (backendUser == null) {
+//				backendUser = this.getBackendUserAndRefreshCookie(jwtToken);
+//			}
+//
+//			if (backendUser.hasAccessByRequestId(requestId, isEdit)) {
+//				return appointmentRequest;
+//			}
+//		}
+//
 		throw new ForbiddenException();
 	}
 
