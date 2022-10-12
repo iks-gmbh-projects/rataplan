@@ -31,6 +31,7 @@ import { SurveyRoutingModule } from './survey.routing.module';
 import { SurveyService } from './survey.service';
 import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
 import { SurveyForbiddenComponent } from './survey-forbidden/survey-forbidden.component';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,9 @@ import { SurveyForbiddenComponent } from './survey-forbidden/survey-forbidden.co
     MatDividerModule,
     MatStepperModule,
     ClipboardModule,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule,
   ],
   providers: [
     SurveyService,

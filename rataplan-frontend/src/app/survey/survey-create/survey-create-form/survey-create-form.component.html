@@ -11,13 +11,16 @@
       </mat-form-field><br>
       <mat-checkbox formControlName="anonymousParticipation">Erlaube anonyme Antworten</mat-checkbox><br><br>
       <mat-form-field appearance="fill">
-        <mat-label>Zeitraum</mat-label>
-        <mat-date-range-input [rangePicker]="openRange">
-          <input matStartDate formControlName="startDate">
-          <input matEndDate formControlName="endDate">
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="openRange"></mat-datepicker-toggle>
-        <mat-date-range-picker #openRange></mat-date-range-picker>
+        <mat-label>Von</mat-label>
+        <input type="localdatetime" matInput [ngxMatDatetimePicker]="startTime" formControlName="startDate">
+        <mat-datepicker-toggle matSuffix [for]="$any(startTime)"></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker [defaultTime]="[0,0,0]" #startTime></ngx-mat-datetime-picker>
+      </mat-form-field><br>
+      <mat-form-field appearance="fill">
+        <mat-label>Bis</mat-label>
+        <input type="localdatetime" matInput [ngxMatDatetimePicker]="endTime" formControlName="endDate">
+        <mat-datepicker-toggle matSuffix [for]="$any(endTime)"></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker [defaultTime]="[24,0,0]" #endTime></ngx-mat-datetime-picker>
       </mat-form-field><br>
       <mat-checkbox formControlName="openAccess">Liste die Umfrage in der Liste auf.</mat-checkbox><br><br>
       <div style="display: flex;">
