@@ -4,19 +4,21 @@
     <mat-card-content>
       <p>{{survey.description}}</p>
       <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
-    </mat-card-content>
-    <mat-card-footer>
-      <p style="text-align: center">
+      <p>
         Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
         {{survey.anonymousParticipation ?
         " anonym" :
-        ""}}</p>
-    </mat-card-footer>
+        " Angemeldeten"}}</p>
+    </mat-card-content>
   </mat-card>
   <mat-divider class="bottomspace"></mat-divider>
   <mat-stepper #stepper="matStepper" orientation="vertical">
     <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title">
-      <app-survey-form-page [questionGroup]="questionGroup" (onSubmit)="pageSubmit(stepper, $event)"></app-survey-form-page>
+      <app-survey-form-page [questionGroup]="questionGroup" [isFirst]="page==0" (onSubmit)="pageSubmit(stepper, $event)"></app-survey-form-page>
+    </mat-step>
+    <mat-step label="Fertig">
+      <button style="margin:1ex;" mat-raised-button color="basic" matStepperPrevious><mat-icon>navigate_before</mat-icon></button>
+      <button style="margin:1ex;" mat-raised-button color="primary" (click)="submit(stepper)">Einreichen</button>
     </mat-step>
   </mat-stepper>
 </div>

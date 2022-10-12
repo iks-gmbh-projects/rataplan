@@ -27,13 +27,13 @@
         </mat-form-field><br>
       </ng-template>
     </div>
-    <div>
-      <button type="button" mat-raised-button color="basic" (click)="revert()">
-        <mat-icon>navigate_before</mat-icon>
-      </button>
-      <button style="float:right" type="submit" mat-raised-button color="primary">
-        <mat-icon>navigate_next</mat-icon>
-      </button>
-    </div>
+  </div>
+  <div>
+    <button *ngIf="!isFirst" type="button" mat-raised-button color="basic" (click)="revert()">
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+    <button style="float:right" type="submit" mat-raised-button color="primary">
+      <mat-icon>navigate_next</mat-icon>
+    </button>
   </div>
 </form>

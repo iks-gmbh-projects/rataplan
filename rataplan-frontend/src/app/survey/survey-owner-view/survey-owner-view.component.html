@@ -4,7 +4,7 @@
     <mat-card-content>
       <p>{{survey.description}}</p>
       <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
-      <p style="text-align: center">
+      <p>
         Teilnahme
         {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
         {{survey.anonymousParticipation ? "anonym" : ""}}
@@ -16,7 +16,7 @@
       </a>
       <!--ugly workaround for missing angular feature-->
       <a style="display:none" [routerLink]="['/survey','participate', survey.participationId]" #participationLink></a>
-      <button mat-raised-button color="basic" (click)="clipboard.copy(participationLink.href)">
+      <button mat-raised-button color="basic" (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')">
         <mat-icon>content_copy</mat-icon>
       </button>
       <a mat-raised-button color="warn" routerLink="edit">

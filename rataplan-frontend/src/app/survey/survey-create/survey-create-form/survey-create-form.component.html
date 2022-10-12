@@ -1,6 +1,6 @@
 <form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="preview()">
   <mat-stepper orientation="vertical" #stepper="matStepper">
-    <mat-step label="Kopfdaten">
+    <mat-step [label]="formGroup.value.name || 'Kopfdaten'">
       <mat-form-field appearance="fill">
         <mat-label>Umfragename</mat-label>
         <input type="text" matInput formControlName="name">
@@ -23,21 +23,15 @@
         <ngx-mat-datetime-picker [defaultTime]="[24,0,0]" #endTime></ngx-mat-datetime-picker>
       </mat-form-field><br>
       <mat-checkbox formControlName="openAccess">Liste die Umfrage in der Liste auf.</mat-checkbox><br><br>
-      <div style="display: flex;">
-      <button type="button" mat-raised-button color="basic" matStepperPrevious disabled>
-        <mat-icon>navigate_before</mat-icon>
-      </button>
-      <div style="flex: 2;"></div>
-      <button type="button" mat-raised-button color="primary" matStepperNext>
+      <button style="float:right;" type="button" mat-raised-button color="primary" matStepperNext>
         <mat-icon>navigate_next</mat-icon>
       </button>
-    </div>
     </mat-step>
     <div formArrayName="questionGroups">
       <mat-step label="Frageblock {{i+1}}" *ngFor="let questionGroup of getQuestionGroups().controls; index as i"
         [formGroupName]="i">
         <div>
-          <mat-form-field appearance="fill">
+          <mat-form-field style="margin-top: 1em;" appearance="fill">
             <mat-label>Frageblocküberschrift</mat-label>
             <input type="text" matInput formControlName="title">
           </mat-form-field>
@@ -50,8 +44,8 @@
                   <input type="text" matInput formControlName="text">
                 </mat-form-field><br>
                 <mat-checkbox formControlName="required">Erforderlich</mat-checkbox>
-                <mat-card>
-                  <mat-card-title>Antwortmöglichkeiten</mat-card-title>
+                <div>
+                  <h3 style="font-weight: normal">Antwortmöglichkeiten</h3>
                   <mat-card-subtitle>Freitext wenn keine gegeben</mat-card-subtitle>
                   <mat-card-content formGroupName="checkboxGroup">
                     <ng-template [ngIf]="getCheckboxes(question).length">
@@ -68,7 +62,8 @@
                         </mat-form-field><br>
                       </ng-template>
                       <div formArrayName="checkboxes">
-                        <div *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
+                        <div style="margin-bottom: 1ex;"
+                          *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
                           <mat-form-field>
                             <mat-label>Antwortmöglichkeit {{k+1}}</mat-label>
                             <input type="text" matInput formControlName="text">
@@ -81,25 +76,27 @@
                       </div>
                     </ng-template>
                   </mat-card-content>
-                  <mat-card-actions>
-                    <button mat-icon-button color="primary" type="button"
-                      (click)="getCheckboxes(question).push(createCheckbox())">
-                      <mat-icon>add</mat-icon>
-                    </button>
-                  </mat-card-actions>
-                </mat-card>
+                </div>
               </mat-card-content>
               <mat-card-actions>
                 <button mat-icon-button color="warn" type="button" [disabled]="getQuestions(questionGroup).length <= 1"
                   (click)="getQuestions(questionGroup).removeAt(j)">
                   <mat-icon>delete</mat-icon>
                 </button>
-                <button *ngIf="j+1 == getQuestions(questionGroup).length" mat-icon-button color="primary" type="button"
-                  (click)="getQuestions(questionGroup).push(createQuestion())">
+                <button mat-icon-button color="primary" type="button"
+                  (click)="getCheckboxes(question).push(createCheckbox())">
                   <mat-icon>add</mat-icon>
                 </button>
               </mat-card-actions>
             </mat-card>
+            <div style="display: flex;">
+              <div style="flex: 2;"></div>
+              <button mat-mini-fab color="primary" type="button"
+                (click)="getQuestions(questionGroup).push(createQuestion())">
+                <mat-icon>add</mat-icon>
+              </button>
+              <div style="flex: 2;"></div>
+            </div>
           </div>
         </div>
         <div style="display: flex; margin-bottom: 1ex;">
@@ -107,7 +104,8 @@
             <mat-icon>navigate_before</mat-icon>
           </button>
           <div style="flex: 2;"></div>
-          <button type="button" mat-raised-button color="primary" matStepperNext [disabled]="getQuestionGroups().length == i+1">
+          <button type="button" mat-raised-button color="primary" matStepperNext
+            [disabled]="getQuestionGroups().length == i+1">
             <mat-icon>navigate_next</mat-icon>
           </button>
         </div>

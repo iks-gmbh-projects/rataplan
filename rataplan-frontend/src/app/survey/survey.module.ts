@@ -32,6 +32,7 @@ import { SurveyService } from './survey.service';
 import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
 import { SurveyForbiddenComponent } from './survey-forbidden/survey-forbidden.component';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { SurveyAnswerComponent } from './survey-form/survey-answer/survey-answer.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerMod
     SurveyCreateComponent,
     SurveyMissingComponent,
     SurveyForbiddenComponent,
+    SurveyAnswerComponent,
   ],
   imports: [
     CommonModule,

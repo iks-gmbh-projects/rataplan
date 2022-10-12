@@ -30,9 +30,4 @@ export class DateRangeComponent {
       this._endDate = value;
     }
   }
-
-  public getLocalTimestamp(datetime?: Date): number|undefined {
-    if(!datetime) return undefined;
-    return datetime.getTime() - datetime.getTimezoneOffset() * 60000;
-  }
 }

@@ -1,5 +1,6 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Survey } from '../survey.model';
@@ -14,7 +15,7 @@ export class SurveyOwnerViewComponent implements OnInit, OnDestroy {
 
   private sub: Subscription|null = null;
 
-  constructor(private router: Router, private route: ActivatedRoute, public clipboard: Clipboard) { }
+  constructor(private router: Router, private route: ActivatedRoute, public clipboard: Clipboard, public snackBars: MatSnackBar) { }
 
   public ngOnInit(): void {
     this.survey = this.route.snapshot.data['survey'];

@@ -1,8 +1,6 @@
-<mat-form-field appearance="fill">
-  <mat-label>Von</mat-label>
-  <input type="datetime-local" matInput [valueAsNumber]="getLocalTimestamp(startDate)" step="1" readonly>
-</mat-form-field>
-<mat-form-field appearance="fill">
-  <mat-label>Bis</mat-label>
-  <input type="datetime-local" matInput [valueAsNumber]="getLocalTimestamp(endDate)" step="1" readonly>
-</mat-form-field>
+<p>
+  Von: {{ startDate | date : "short" : undefined : "de" }}
+</p>
+<p>
+ Bis: {{ endDate | date : "short" : undefined : "de" }}
+</p>

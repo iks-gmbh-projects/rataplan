@@ -10,6 +10,7 @@ import { Answer, Checkbox, QuestionGroup } from '../../survey.model';
 export class PageComponent {
   @Input() public questionGroup?: QuestionGroup;
   @Input() public preview: boolean = false;
+  @Input() public isFirst: boolean = false;
   @Output() public readonly onSubmit = new EventEmitter<{ [key: string | number]: Answer }>();
 
   public submit(form: NgForm) {
