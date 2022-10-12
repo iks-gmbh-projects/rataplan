@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -92,7 +90,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     private List<Survey> findSurveysByOpenAccessIsTrue() {
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        ZonedDateTime currentDateTime = ZonedDateTime.now();
         return surveyRepository.findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
     }
 
@@ -113,12 +111,9 @@ public class SurveyServiceImpl implements SurveyService {
         Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
         if (surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
-            ZoneId berlinTime = ZoneId.of("Europe/Berlin");
-            LocalDateTime surveyStartDate = survey.getStartDate();
-            ZonedDateTime zonedStartDate = ZonedDateTime.of(surveyStartDate, berlinTime);
-            LocalDateTime surveyEndDate = survey.getEndDate();
-            ZonedDateTime zonedEndDate = ZonedDateTime.of(surveyEndDate, berlinTime);
-            ZonedDateTime currentDateTime = ZonedDateTime.now(berlinTime);
+            ZonedDateTime zonedStartDate = survey.getStartDate();
+            ZonedDateTime zonedEndDate = survey.getEndDate();
+            ZonedDateTime currentDateTime = ZonedDateTime.now();
             if (currentDateTime.isAfter(zonedStartDate) && currentDateTime.isBefore(zonedEndDate)) {
                 return modelMapper.map(survey, CompleteSurveyDTO.class);
             } else {
@@ -151,16 +146,16 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     private void generateIds(Survey survey) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        ZonedDateTime currentDateTime = ZonedDateTime.now();
         String accessId = generateAccessId(currentDateTime);
         survey.setAccessId(accessId);
 
-        LocalDateTime startDateTime = survey.getStartDate();
+        ZonedDateTime startDateTime = survey.getStartDate();
         String participateId = generateParticipationId(startDateTime);
         survey.setParticipationId(participateId);
     }
 
-    private String generateAccessId(LocalDateTime currentDateTime) {
+    private String generateAccessId(ZonedDateTime currentDateTime) {
         String currentDateTimeHex = convertDateTimeToHex(currentDateTime);
         String hexSuffix = generateHexSuffix();
         String accessId = currentDateTimeHex + "-" + hexSuffix;
@@ -173,7 +168,7 @@ public class SurveyServiceImpl implements SurveyService {
         return accessId.toUpperCase();
     }
 
-    private String generateParticipationId(LocalDateTime startDate) {
+    private String generateParticipationId(ZonedDateTime startDate) {
         String currentDateTimeHex = convertDateTimeToHex(startDate);
         String hexSuffix = generateHexSuffix();
         String participationId = currentDateTimeHex + "-" + hexSuffix;
@@ -186,7 +181,7 @@ public class SurveyServiceImpl implements SurveyService {
         return participationId.toUpperCase();
     }
 
-    private String convertDateTimeToHex(LocalDateTime dateTime) {
+    private String convertDateTimeToHex(ZonedDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmkddMMyy");
         String formattedDate = dateTime.format(formatter);
         long formattedDateLong = Long.parseLong(formattedDate);

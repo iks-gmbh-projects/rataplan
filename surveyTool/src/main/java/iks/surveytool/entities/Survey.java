@@ -5,9 +5,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -21,10 +24,10 @@ public class Survey extends AbstractEntity {
     private String description;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime startDate;
+    private ZonedDateTime startDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime endDate;
+    private ZonedDateTime endDate;
 
     private boolean openAccess;
     private boolean anonymousParticipation;
@@ -41,8 +44,8 @@ public class Survey extends AbstractEntity {
 
     public Survey(String name,
                   String description,
-                  LocalDateTime startDate,
-                  LocalDateTime endDate,
+                  ZonedDateTime startDate,
+                  ZonedDateTime endDate,
                   boolean openAccess,
                   boolean anonymousParticipation,
                   String accessId,
@@ -98,12 +101,12 @@ public class Survey extends AbstractEntity {
         return this.startDate.isBefore(this.endDate);
     }
 
-    private static boolean dateTimeInFuture(LocalDateTime dateTime) {
-        return dateTime.isAfter(LocalDateTime.now());
+    private static boolean dateTimeInFuture(ZonedDateTime dateTime) {
+        return dateTime.isAfter(ZonedDateTime.now());
     }
 
-    private static boolean dateTimeTodayOrInFuture(LocalDateTime dateTime) {
-        return dateTime.isAfter(LocalDateTime.now().minusDays(1));
+    private static boolean dateTimeTodayOrInFuture(ZonedDateTime dateTime) {
+        return dateTime.isAfter(ZonedDateTime.now().minusDays(1));
     }
 
     private boolean validateQuestionGroups() {

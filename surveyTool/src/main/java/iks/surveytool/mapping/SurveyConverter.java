@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +21,17 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
     public Survey toSurveyEntity(CompleteSurveyDTO surveyDTO) {
         List<QuestionGroup> questionGroups = toQuestionGroupEntityList(surveyDTO.getQuestionGroups());
 
-        Survey newSurvey = new Survey(surveyDTO.getName(), surveyDTO.getDescription(), surveyDTO.getStartDate(), surveyDTO.getEndDate(),
-                surveyDTO.isOpenAccess(), surveyDTO.isAnonymousParticipation(), surveyDTO.getAccessId(), surveyDTO.getParticipationId(), questionGroups);
+        Survey newSurvey = new Survey(
+                surveyDTO.getName(),
+                surveyDTO.getDescription(),
+                surveyDTO.getStartDate().atZone(ZoneId.systemDefault()),
+                surveyDTO.getEndDate().atZone(ZoneId.systemDefault()),
+                surveyDTO.isOpenAccess(),
+                surveyDTO.isAnonymousParticipation(),
+                surveyDTO.getAccessId(),
+                surveyDTO.getParticipationId(),
+                questionGroups
+        );
 
         newSurvey.setUserId(surveyDTO.getUserId());
 

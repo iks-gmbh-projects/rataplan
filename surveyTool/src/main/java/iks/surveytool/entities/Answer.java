@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -41,6 +42,9 @@ public class Answer extends AbstractEntity {
 
     public boolean validate() {
         if (this.response == null || this.question == null) {
+            return false;
+        }
+        if(Objects.equals(this.response.getSurvey().getId(), this.question.getQuestionGroup().getSurvey().getId())) {
             return false;
         }
         if (!this.question.isHasCheckbox() || this.checkboxes.stream().anyMatch(Checkbox::isHasTextField)) {

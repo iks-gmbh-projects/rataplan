@@ -1,8 +1,12 @@
 package iks.surveytool.dtos;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -13,8 +17,10 @@ public class SurveyOverviewDTO extends AbstractDTO {
     private String name;
     private String description;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME)
+    private Instant startDate;
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME)
+    private Instant endDate;
 
     private boolean openAccess;
     private boolean anonymousParticipation;
