@@ -1,5 +1,6 @@
 package de.iks.rataplan.controller;
 
+import de.iks.rataplan.service.AppointmentRequestService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ import de.iks.rataplan.service.BackendUserService;
 
 @Service
 public class AppointmentMemberControllerService {
+
+	@Autowired
+	private AppointmentRequestService appointmentRequestService;
 
 	@Autowired
 	private AppointmentMemberService appointmentMemberService;
