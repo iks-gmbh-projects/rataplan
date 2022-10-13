@@ -52,18 +52,15 @@ public final class ITConstants {
 	// Static Objects
 	public static final String IKS_MAIL = "iks@iks-gmbh.com";
 
-	public static final AuthUser AUTHUSER_1 = new AuthUser(1, IKS_MAIL, "IKS_1", "password", "firstname", "lastname");
-	public static final AuthUser AUTHUSER_2 = new AuthUser(2, IKS_MAIL, "IKS_2", "pass", "first", "last");
-	public static final AuthUser AUTHUSER_3 = new AuthUser(3, IKS_MAIL, "IKS_3", "p", "f", "l");
+	public static final AuthUser AUTHUSER_1 = new AuthUser(1, IKS_MAIL, "IKS_1", "password", "Hans");
+	public static final AuthUser AUTHUSER_2 = new AuthUser(2, IKS_MAIL, "IKS_2", "pass", "Ha");
+	public static final AuthUser AUTHUSER_3 = new AuthUser(3, IKS_MAIL, "IKS_3", "p", "H");
 
-	public static final FrontendUser FRONTENDUSER_1 = new FrontendUser(1, IKS_MAIL, "IKS_1", null, "firstname",
-			"lastname");
-	public static final FrontendUser FRONTENDUSER_2 = new FrontendUser(2, IKS_MAIL, "IKS_2", null, "first", "last");
+	public static final FrontendUser FRONTENDUSER_1 = new FrontendUser(1, IKS_MAIL, "IKS_1", null, "Hans");
+	public static final FrontendUser FRONTENDUSER_2 = new FrontendUser(2, IKS_MAIL, "IKS_2", null, "Peter");
 
-	public static final FrontendUser FRONTENDUSER_1_NEW = new FrontendUser(null, IKS_MAIL, "IKS_1", "password",
-			"firstname", "lastname");
-	public static final FrontendUser FRONTENDUSER_2_NEW = new FrontendUser(null, IKS_MAIL, "IKS_2", "pass", "first",
-			"last");
+	public static final FrontendUser FRONTENDUSER_1_NEW = new FrontendUser(null, IKS_MAIL, "IKS_1", "password", "Hans");
+	public static final FrontendUser FRONTENDUSER_2_NEW = new FrontendUser(null, IKS_MAIL, "IKS_2", "pass", "Ha");
 
 	public static final long DATE_2050_10_10 = 2549010652L * 1000;
 

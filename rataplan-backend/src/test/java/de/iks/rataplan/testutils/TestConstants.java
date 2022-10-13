@@ -60,9 +60,9 @@ public final class TestConstants {
 	public static final String IKS_NAME = "IKS GmbH";
 	public static final String IKS_MAIL = "iks@iks-gmbh.com";
 
-	public static final AuthUser AUTHUSER_1 = new AuthUser(1, IKS_MAIL, "IKS_1", "password", "firstname", "lastname");
-	public static final AuthUser AUTHUSER_2 = new AuthUser(2, IKS_MAIL, "IKS_2", "pass", "first", "last");
-	public static final AuthUser AUTHUSER_3 = new AuthUser(3, IKS_MAIL, "IKS_3", "p", "f", "l");
+	public static final AuthUser AUTHUSER_1 = new AuthUser(1, IKS_MAIL, "IKS_1", "password", "Hans");
+	public static final AuthUser AUTHUSER_2 = new AuthUser(2, IKS_MAIL, "IKS_2", "pass", "Ha");
+	public static final AuthUser AUTHUSER_3 = new AuthUser(3, IKS_MAIL, "IKS_3", "p", "h");
 
 	public static final BackendUser BACKENDUSER_1_NEW = new BackendUser(1);
 

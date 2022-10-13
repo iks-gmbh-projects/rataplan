@@ -6,8 +6,7 @@ public class AuthUser {
 	private String mail;
 	private String username;
     private String password;
-    private String firstName;
-    private String lastName;
+	private String displayname;
     
 //    public AuthUser(String mail, String username, String password, String firstName, String lastName) {
 //		this.mail = mail;
@@ -18,13 +17,12 @@ public class AuthUser {
 //		this.trimUserCredentials();
 //	}
     
-    public AuthUser(Integer id, String mail, String username, String password, String firstName, String lastName) {
+    public AuthUser(Integer id, String mail, String username, String password, String displayname) {
     	this.id = id;
  		this.mail = mail;
  		this.username = username;
  		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.displayname = displayname;
  		this.trimUserCredentials();
  	}
     
@@ -32,8 +30,7 @@ public class AuthUser {
     	this.mail = frontendUser.getMail();
     	this.username = frontendUser.getUsername();
     	this.password = frontendUser.getPassword();
-		this.firstName = frontendUser.getFirstname();
-		this.lastName = frontendUser.getLastname();
+		this.displayname = frontendUser.getDisplayname();
     	this.trimUserCredentials();
     }
     
@@ -82,28 +79,15 @@ public class AuthUser {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	public String getFirstName() {
-		return firstName;
-	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+	public String getDisplayname() { return displayname; }
 
-	public String getLastName() {
-		return lastName;
-	}
+	public void setDisplayname(String displayname) { this.displayname = displayname; }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
 
 	public void trimUserCredentials() {
 		username = trimAndNull(username);
 		mail = trimAndNull(mail);
-		lastName = trimAndNull(lastName);
-		firstName = trimAndNull(firstName);
 	}
 	
 	public String trimAndNull(String toTrim) {

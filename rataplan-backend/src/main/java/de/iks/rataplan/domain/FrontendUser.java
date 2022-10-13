@@ -9,16 +9,14 @@ public class FrontendUser {
 	private String mail;
 	private String username;
     private String password;
-    private String firstname;
-    private String lastname;
+	private String displayname;
 
-	public FrontendUser(Integer id, String mail, String username, String password, String firstname, String lastname) {
+	public FrontendUser(Integer id, String mail, String username, String password, String displayname) {
 		this.id = id;
 		this.mail = mail;
 		this.username = username;
 		this.password = password;
-		this.firstname = firstname;
-		this.lastname = lastname;
+		this.displayname = displayname;
 	}
 	
 	public FrontendUser(AuthUser authUser, BackendUser backendUser) {
@@ -26,8 +24,7 @@ public class FrontendUser {
 		this.mail = authUser.getMail();
 		this.username = authUser.getUsername();
 		this.password = null;
-		this.firstname = authUser.getFirstName();
-		this.lastname = authUser.getLastName();
+		this.displayname = authUser.getDisplayname();
 	}
 	
     public FrontendUser() {
@@ -67,22 +64,10 @@ public class FrontendUser {
     public void setPassword(String password) {
 		this.password = password;
 	}
-	
-    public String getFirstname() {
-		return firstname;
-	}
-	
-    public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-	
-    public String getLastname() {
-		return lastname;
-	}
-	
-    public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
+
+	public String getDisplayname(){ return displayname; }
+
+	public void setDisplayname(String displayname){ this.displayname = displayname; }
     
 	@Override
 	public String toString() {
@@ -95,10 +80,6 @@ public class FrontendUser {
 		builder.append(username);
 		builder.append(", password=");
 		builder.append(password);
-		builder.append(", firstname=");
-		builder.append(firstname);
-		builder.append(", lastname=");
-		builder.append(lastname);
 		builder.append("]");
 		return builder.toString();
 	}
