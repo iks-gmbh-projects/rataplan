@@ -186,6 +186,12 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 
+    @GetMapping("/users/displayName/{userId}")
+    public String getDisplayName(@PathVariable int userId) {
+        User user = userService.getUserFromId(userId);
+        return user.getDisplayname();
+    }
+
     private HttpHeaders createResponseHeaders(User user) {
         HttpHeaders responseHeaders = new HttpHeaders();
 
