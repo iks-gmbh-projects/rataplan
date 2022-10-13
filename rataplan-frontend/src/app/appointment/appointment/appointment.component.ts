@@ -20,9 +20,9 @@ import { MemberDecisionSubformComponent } from './member-decision-subform/member
 export class AppointmentComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   appointmentRequest = new AppointmentRequestModel();
-  participationToken = '';
   appointmentMember = new AppointmentMemberModel();
-  memberName : string | null = null;
+  participationToken = '';
+  memberName = null;
   isVoted = false;
 
   constructor(public dialog: MatDialog,
@@ -43,10 +43,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
           JSON.stringify(this.appointmentRequest.appointmentMembers));
         console.log(data);
       });
-
-    if (localStorage.getItem('member')) {
-      this.memberName = localStorage.getItem('member');
-    }
   }
 
   ngOnDestroy(): void {
@@ -56,7 +52,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   saveVote() {
     this.isVoted = true;
-    this.saveName();
+    this.appointmentMember.name = this.memberName;
     this.appointmentService.addAppointmentMember(this.appointmentRequest, this.appointmentMember)
       .pipe(takeUntil(this.destroySubject))
       .subscribe(res => {
@@ -70,23 +66,12 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   openDialog(appointment: AppointmentModel) {
     this.dialog.open(MemberDecisionSubformComponent,
-      {
-        data: {
-          appointment: appointment,
-          // appointmentMember: this.appointmentMember,
-          // appointmentDecision: this.appointmentMember.appointmentDecisions[index],
-          // isVoted: this.isVoted,
-        }
+      { data: {
+        appointment: appointment,
+      },
+      autoFocus: false
       }
     );
-  }
-
-  saveName() {
-    if (this.memberName != null && this.memberName.length != 0) {
-      localStorage.setItem('member', this.memberName);
-    } else {
-      localStorage.removeItem('member');
-    }
   }
 
   acceptAppointment(appointment: AppointmentModel) {

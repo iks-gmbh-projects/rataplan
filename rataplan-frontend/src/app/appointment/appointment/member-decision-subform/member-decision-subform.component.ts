@@ -4,15 +4,10 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppointmentModel } from '../../../models/appointment.model';
 import { AppointmentMemberModel } from '../../../models/appointment-member.model';
 import { AppointmentDecisionType } from '../../appointment-request-form/decision-type.enum';
-import { AppointmentService } from '../appointment-service/appointment.service';
 
 
 export interface DialogData {
-  // name: string,
   appointment: AppointmentModel,
-  // appointmentMember: AppointmentMemberModel,
-  // appointmentDecision: AppointmentDecisionModel,
-  // isVoted: boolean;
 }
 
 @Component({
@@ -23,9 +18,10 @@ export interface DialogData {
 export class MemberDecisionSubformComponent implements OnInit {
   appointmentMembers: AppointmentMemberModel[] = [];
   allDecision: AppointmentDecisionType[] = [];
+  clickedAccepted = false;
+  clickedDeclined = false;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private appointmentService: AppointmentService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
     const appointmentMembers = sessionStorage.getItem('appointmentMembers');
@@ -52,5 +48,20 @@ export class MemberDecisionSubformComponent implements OnInit {
       }
     });
     return countAccept;
+  }
+
+  checkMembers(appointmentMembers: AppointmentMemberModel[], number: number) : string[] {
+    const name: string[] = [];
+
+    appointmentMembers.forEach(member => {
+      member.appointmentDecisions.forEach(appointment => {
+        if (appointment.appointmentId == this.data.appointment.id &&
+          appointment.decision == number) {
+          if (member.name == null) name.push('anonym');
+          else name.push(member.name);
+        }
+      });
+    });
+    return name;
   }
 }
