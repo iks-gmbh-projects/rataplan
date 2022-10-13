@@ -13,19 +13,19 @@ export class RegisterService {
   }
 
   public registerUser(frontendUser: FrontendUser) {
-    const url = environment.rataplanBackendURL+'users/register';
+    const url = environment.authBackendURL+'users/register';
 
     return this.http.post<any>(url, frontendUser);
   }
 
   public checkIfMailExists(mail: string) {
-    const url = environment.rataplanBackendURL+'users/mailExists';
+    const url = environment.authBackendURL+'users/mailExists';
 
     return this.http.post<string>(url, mail, { headers: new HttpHeaders({ 'Content-Type': 'application/json;charset=utf-8' }) });
   }
 
   public checkIfUsernameExists(username: string) {
-    const url = environment.rataplanBackendURL+'users/usernameExists';
+    const url = environment.authBackendURL+'users/usernameExists';
 
     return this.http.post<string>(url, username, { headers: new HttpHeaders({ 'Content-Type': 'application/json;charset=utf-8' }) });
   }
