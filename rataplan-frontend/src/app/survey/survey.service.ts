@@ -8,9 +8,7 @@ const surveyURL: string = environment.surveyBackendURL + "surveys";
 const answerURL: string = environment.surveyBackendURL + "responses";
 
 function ensureDate<T extends SurveyHead>(head: T): T {
-  console.log(head.startDate);
   head.startDate = new Date(head.startDate);
-  console.log(head.startDate);
   head.endDate = new Date(head.endDate);
   return head;
 }

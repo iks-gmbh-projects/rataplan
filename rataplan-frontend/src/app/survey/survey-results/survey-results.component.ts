@@ -111,7 +111,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
         const ret = [
           answer.userId || "Anonym",
           ...this.columns[questionId].filter(col => col.startsWith("checkbox")).map(col => !!answer.answers[questionId].checkboxes![col.substring(8)]),
-          answer.answers[questionId].text?.replace(/"/, "\"\"")?.replace(/^|$/, "\"") || "",
+          ...(this.columns[questionId][this.columns[questionId].length-1] === "answer" ? [answer.answers[questionId].text?.replace(/"/, "\"\"")?.replace(/^|$/, "\"")] : []),
         ];
         return ret.join(", ");
       })
@@ -136,6 +136,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
     const url = URL.createObjectURL(blob);
     const element = document.createElement("a");
     element.href = url;
+    element.download = this.survey.name + ".csv";
     element.click();
     element.remove();
     URL.revokeObjectURL(url);
