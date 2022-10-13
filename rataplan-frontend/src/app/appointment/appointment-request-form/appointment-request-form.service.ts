@@ -21,7 +21,8 @@ export class AppointmentRequestFormService {
 
   setGeneralInputValue(title: string, description: string, deadline: Date) {
     this.appointmentRequest.title = title.trim();
-    if (description !== null) this.appointmentRequest.description = description.trim();
+    if (description !== null) description.trim();
+    this.appointmentRequest.description = description;
     this.appointmentRequest.deadline = deadline;
   }
 

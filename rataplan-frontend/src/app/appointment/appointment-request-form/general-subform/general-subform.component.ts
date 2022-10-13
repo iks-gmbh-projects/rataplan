@@ -76,7 +76,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
 
   addAndDeleteDescription() {
     this.showDescription = !this.showDescription;
-    if (!this.showDescription && this.generalSubform.get('description')) {
+    if (!this.showDescription) {
       this.generalSubform.get('description')?.setValue(null);
     }
   }
