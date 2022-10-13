@@ -24,14 +24,14 @@
                 <ng-template [ngIf]="question.checkboxGroup">
                   <ng-container *ngFor="let checkbox of question.checkboxGroup.checkboxes"
                     [matColumnDef]="'checkbox'+checkbox.id!">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{checkbox.text}} </th>
+                    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{checkbox.text}}<br>{{checkboxPercentage(question.id, checkbox.id!)}}% </th>
                     <td mat-cell *matCellDef="let answer">
                       <mat-icon>{{toCheckbox(answer.answers[question.id].checkboxes[checkbox.id!])}}
                       </mat-icon>
                     </td>
                   </ng-container>
                 </ng-template>
-                <ng-container matColumnDef="answer">
+                <ng-container *ngIf="hasTextfield(question)" matColumnDef="answer">
                   <th mat-header-cell mat-sort-header *matHeaderCellDef> Freitextantwort </th>
                   <td mat-cell *matCellDef="let answer">{{answer.answers[question.id].text}}</td>
                 </ng-container>

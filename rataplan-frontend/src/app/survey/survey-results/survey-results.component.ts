@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { Answer, Question, Survey, SurveyResponse } from '../survey.model';
+import { Answer, Checkbox, Question, Survey, SurveyResponse } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
 @Component({
@@ -48,16 +48,20 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
         if (question.id) {
           this.columns[question.id] = ["user"];
           this.columnNames[question.id] = ["Nutzer"];
+          let hasTextfield: boolean = false;
           if (question.checkboxGroup) {
             for (let checkbox of question.checkboxGroup.checkboxes) {
               if (checkbox.id) {
                 this.columns[question.id].push("checkbox" + checkbox.id);
                 this.columnNames[question.id].push("\"" + checkbox.text.replace(/"/, "\"") + "\"");
               }
+              if (checkbox.hasTextField) hasTextfield = true;
             }
+          } else hasTextfield = true;
+          if (hasTextfield) {
+            this.columns[question.id].push("answer");
+            this.columnNames[question.id].push("Antwort");
           }
-          this.columns[question.id].push("answer");
-          this.columnNames[question.id].push("Antwort");
         }
       }
     }
@@ -73,8 +77,29 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
     })
   }
 
+  public hasTextfield(question: Question): boolean {
+    if (!question.checkboxGroup) return true;
+    for (let checkbox of question.checkboxGroup.checkboxes) {
+      if (checkbox.hasTextField) return true;
+    }
+    return false;
+  }
+
   public toCheckbox(checked: boolean): string {
     return checked ? "check_box" : "check_box_outline_blank";
+  }
+
+  public checkboxPercentage(questionId: string | number, checkboxId: string | number): number {
+    let count = 0;
+    let total = 0;
+    for (let response of this.answers) {
+      let answer = response.answers[questionId];
+      if (answer) {
+        total++;
+        if (answer.checkboxes![checkboxId]) count++;
+      }
+    }
+    return count * 100 / total;
   }
 
   private compileResults(question: Question): string[] | null {

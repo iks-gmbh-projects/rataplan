@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Answer, Checkbox, QuestionGroup } from '../../survey.model';
+import { Answer, Checkbox, Question, QuestionGroup } from '../../survey.model';
 
 @Component({
   selector: 'app-survey-form-page',
@@ -31,6 +31,21 @@ export class PageComponent {
 
   public hasTextField(checkboxes: Checkbox[]): boolean {
     return checkboxes.some(checkbox => checkbox.hasTextField);
+  }
+
+  public disableTextField(question: Question, form: NgForm): boolean {
+    let answer: Answer&{checkboxId?: string|number} = form.value[question.id!];
+    if(answer.checkboxId) {
+      answer.checkboxes = {
+        ...answer.checkboxes,
+        [answer.checkboxId!]: true
+      };
+      delete answer.checkboxId;
+    }
+    for(let checkbox of question.checkboxGroup!.checkboxes) {
+      if(checkbox.hasTextField && answer.checkboxes![checkbox.id!]) return false;
+    }
+    return true;
   }
 
   public revert() {

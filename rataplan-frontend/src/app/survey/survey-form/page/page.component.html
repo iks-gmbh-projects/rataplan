@@ -23,7 +23,7 @@
         </ng-template>
         <mat-form-field *ngIf="hasTextField(question.checkboxGroup.checkboxes)" appearance="fill">
           <mat-label>Freitextantwort</mat-label>
-          <input type="text" ngModel name="text" matInput>
+          <input type="text" ngModel name="text" matInput [disabled]="disableTextField(question, form)">
         </mat-form-field><br>
       </ng-template>
     </div>
