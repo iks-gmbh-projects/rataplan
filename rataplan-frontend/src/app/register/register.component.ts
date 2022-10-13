@@ -43,6 +43,7 @@ export class RegisterComponent implements OnInit {
 
   password = new FormControl('', [Validators.required, Validators.minLength(3)]);
   confirmPassword = new FormControl('', Validators.required);
+  displayname: FormControl = new FormControl('', [Validators.required]);
   hide = true;
   hideConfirm = true;
 
@@ -51,6 +52,7 @@ export class RegisterComponent implements OnInit {
     mail: this.mail,
     password: this.password,
     confirmPassword: this.confirmPassword,
+    displayname: this.displayname,
   });
 
   constructor(private formBuilder: FormBuilder,
@@ -65,7 +67,8 @@ export class RegisterComponent implements OnInit {
     const frontendUser: FrontendUser = {
       username: this.username.value,
       mail: this.mail.value,
-      password: this.password.value
+      password: this.password.value,
+      displayname: this.displayname.value,
     };
 
     this.registerService.registerUser(frontendUser).subscribe(responseData => {
@@ -117,10 +120,17 @@ export class RegisterComponent implements OnInit {
     return this.confirmPassword.hasError('pattern') ? 'Passwort stimmt nicht überein' : '';
   }
 
+  getDisplaynameErrorMessage() {
+    if (this.username.hasError('required')) {
+      return 'Dieses Feld darf nicht leer bleiben';
+    }
+    return '';
+  }
 }
 
 export interface FrontendUser {
   username: string;
   mail: string;
   password: string;
+  displayname: string;
 }
