@@ -1,7 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
+
+function minControlValueValidator(min: AbstractControl): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors|null => {
+    if(control.value <= min.value) return {reason: "Less than other form value"};
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-survey-create-form',
@@ -12,6 +19,12 @@ export class SurveyCreateFormComponent {
   private _survey?: Survey;
   public get survey() {
     return this._survey;
+  }
+  public get yesterday(): Date {
+    let ms = Date.now();
+    ms -= 24*3600000;
+    ms -= ms % 60000;
+    return new Date(ms);
   }
   @Input() public set survey(survey: Survey | undefined) {
     if (this._survey === survey) return;
@@ -24,14 +37,16 @@ export class SurveyCreateFormComponent {
   constructor() { }
 
   private createSurvey(survey?: Survey): FormGroup {
+    const startDate = new FormControl(survey?.startDate || null, [Validators.required, Validators.min(this.yesterday.getTime())]);
+    const endDate = new FormControl(survey?.endDate || null, [Validators.required, minControlValueValidator(startDate)]);
     return new FormGroup({
       id: new FormControl(survey?.id),
       accessId: new FormControl(survey?.accessId),
       participationId: new FormControl(survey?.participationId),
       name: new FormControl(survey?.name || null, Validators.required),
       description: new FormControl(survey?.description || null, Validators.required),
-      startDate: new FormControl(survey?.startDate || null, Validators.required),
-      endDate: new FormControl(survey?.endDate || null, Validators.required),
+      startDate: startDate,
+      endDate: endDate,
       openAccess: new FormControl(survey?.openAccess || false),
       anonymousParticipation: new FormControl(survey?.anonymousParticipation || false),
       questionGroups: new FormArray(survey?.questionGroups.map(this.createQuestionGroup, this) || [this.createQuestionGroup()], Validators.required)

@@ -12,13 +12,13 @@
       <mat-checkbox formControlName="anonymousParticipation">Erlaube anonyme Antworten</mat-checkbox><br><br>
       <mat-form-field appearance="fill">
         <mat-label>Von</mat-label>
-        <input type="localdatetime" matInput [ngxMatDatetimePicker]="startTime" formControlName="startDate">
+        <input type="localdatetime" [min]="yesterday" matInput [ngxMatDatetimePicker]="startTime" formControlName="startDate">
         <mat-datepicker-toggle matSuffix [for]="$any(startTime)"></mat-datepicker-toggle>
         <ngx-mat-datetime-picker [defaultTime]="[0,0,0]" #startTime></ngx-mat-datetime-picker>
       </mat-form-field><br>
       <mat-form-field appearance="fill">
         <mat-label>Bis</mat-label>
-        <input type="localdatetime" matInput [ngxMatDatetimePicker]="endTime" formControlName="endDate">
+        <input type="localdatetime" [min]="(formGroup.get('startDate')?.value || yesterday)" matInput [ngxMatDatetimePicker]="endTime" formControlName="endDate">
         <mat-datepicker-toggle matSuffix [for]="$any(endTime)"></mat-datepicker-toggle>
         <ngx-mat-datetime-picker [defaultTime]="[24,0,0]" #endTime></ngx-mat-datetime-picker>
       </mat-form-field><br>
