@@ -59,7 +59,7 @@ public class UserServiceTest {
 	@ExpectedDatabase(value = USER_FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void registerTrimmedUser() throws Exception {
 		User registeredUser = userService
-				.registerUser(new User(2, "fritz@fri.tte", " fritz  ", "password", " fritz", "fritte "));
+				.registerUser(new User(2, "fritz@fri.tte", " fritz  ", "password", " fritz"));
 		assertEquals(registeredUser.getPassword().length(), 60);
 		assertNotNull(registeredUser.getId());
 	}
@@ -68,14 +68,14 @@ public class UserServiceTest {
 	@DatabaseSetup(USER_FILE_INITIAL)
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void registerUserShouldFailUsernameAlreadyExists() {
-		userService.registerUser(new User(1, "neuerpeter@sch.mitz", "PeTEr", "password", "peter", "schmitz"));
+		userService.registerUser(new User(1, "neuerpeter@sch.mitz", "PeTEr", "password", "peter"));
 	}
 
 	@Test(expected = MailAlreadyInUseException.class)
 	@DatabaseSetup(USER_FILE_INITIAL)
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void registerUserShouldFailMailAlreadyExists() {
-		userService.registerUser(new User(1, "PEtEr@scH.MiTz", "neuerpeter", "password", "peter", "schmitz"));
+		userService.registerUser(new User(1, "PEtEr@scH.MiTz", "neuerpeter", "password", "peter"));
 	}
 
 	@Test
@@ -83,12 +83,11 @@ public class UserServiceTest {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithUsername() {
 
-		User dbUser = userService.loginUser(new User(1, null, "PEtEr", "geheim", null, null));
+		User dbUser = userService.loginUser(new User(1, null, "PEtEr", "geheim", null));
 
 		assertEquals("Peter", dbUser.getUsername());
 		assertEquals("peter@sch.mitz", dbUser.getMail());
-		assertEquals("peter", dbUser.getFirstName());
-		assertEquals("schmitz", dbUser.getLastName());
+
 		assertEquals(60, dbUser.getPassword().length());
 	}
 
@@ -97,14 +96,14 @@ public class UserServiceTest {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithUsernameShouldFailUsernameDoesNotExist() {
 
-		userService.loginUser(new User(1, null, "DoesNotExist", "geheim", null, null));
+		userService.loginUser(new User(1, null, "DoesNotExist", "geheim", null));
 	}
 
 	@Test(expected = WrongCredentialsException.class)
 	@DatabaseSetup(USER_FILE_INITIAL)
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithUsernameShouldFailWrongPassword() {
-		userService.loginUser(new User(1, null, "PEtEr", "wrongPassword", null, null));
+		userService.loginUser(new User(1, null, "PEtEr", "wrongPassword", null));
 	}
 
 	@Test
@@ -112,12 +111,11 @@ public class UserServiceTest {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithMail() {
 
-		User dbUser = userService.loginUser(new User(1, "peter@sch.mitz", null, "geheim", null, null));
+		User dbUser = userService.loginUser(new User(1, "peter@sch.mitz", null, "geheim", null));
 
 		assertEquals("Peter", dbUser.getUsername());
 		assertEquals("peter@sch.mitz", dbUser.getMail());
-		assertEquals("peter", dbUser.getFirstName());
-		assertEquals("schmitz", dbUser.getLastName());
+
 		assertEquals(60, dbUser.getPassword().length());
 	}
 
@@ -125,14 +123,14 @@ public class UserServiceTest {
 	@DatabaseSetup(USER_FILE_INITIAL)
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithMailShouldFailWrongPassword() {
-		userService.loginUser(new User(1, "peter@sch.mitz", null, "wrongPassword", null, null));
+		userService.loginUser(new User(1, "peter@sch.mitz", null, "wrongPassword", null));
 	}
 
 	@Test(expected = WrongCredentialsException.class)
 	@DatabaseSetup(USER_FILE_INITIAL)
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithMailShouldFailMailDoesNotExist() {
-		userService.loginUser(new User(1, "does@not.exist", null, "wrongPassword", null, null));
+		userService.loginUser(new User(1, "does@not.exist", null, "wrongPassword", null));
 	}
 
 }

@@ -12,5 +12,5 @@ public final class TestConstants {
 
 	public static final String PATH = "classpath:integration/db/controller";
 	
-	public static final User USER_1 = new User(null, "fritz@fri.tte", "fritz", "password", "fritz", "fritte");
+	public static final User USER_1 = new User(null, "fritz@fri.tte", "fritz", "password", "fritz");
 }

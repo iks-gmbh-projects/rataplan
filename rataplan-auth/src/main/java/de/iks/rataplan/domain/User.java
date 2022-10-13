@@ -27,16 +27,14 @@ public class User implements Serializable {
     private String mail;
     private String username;
     private String password;
-    private String firstName;
-    private String lastName;
+    private String displayname;
 
-    public User(Integer id, String mail, String username, String password, String firstName, String lastName) {
+    public User(Integer id, String mail, String username, String password, String displayname) {
         this.id = id;
         this.mail = mail;
         this.username = username;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.displayname = displayname;
     }
 
     public User() {
@@ -83,28 +81,13 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    @Column(name = "firstName")
-    public String getFirstName() {
-        return firstName;
-    }
+    @Column(name = "displayname")
+    public String getDisplayname(){ return displayname; }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    @Column(name = "lastName")
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    public void setDisplayname(String displayname) { this.displayname = displayname; }
 
     public void trimUserCredentials() {
         username = trimAndNull(username);
-        firstName = trimAndNull(firstName);
-        lastName = trimAndNull(lastName);
         mail = trimAndNull(mail);
     }
 

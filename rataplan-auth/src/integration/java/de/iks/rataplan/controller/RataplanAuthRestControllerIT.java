@@ -83,7 +83,7 @@ public class RataplanAuthRestControllerIT {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void registerUserShouldFailUsernameAlreadyExists() throws Exception {
 
-		String json = gson.toJson(new User(1, "neuerpeter@sch.mitz", "PeTEr", "password", "peter", "schmitz"));
+		String json = gson.toJson(new User(1, "neuerpeter@sch.mitz", "PeTEr", "password", "peter"));
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(REGISTER);
 		requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 		requestBuilder.content(json.getBytes());
@@ -95,7 +95,7 @@ public class RataplanAuthRestControllerIT {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void registerUserShouldFailMailAlreadyExists() throws Exception {
 
-		String json = gson.toJson(new User(1, "pETer@sch.mitz", "PeTEer", "password", "peter", "schmitz"));
+		String json = gson.toJson(new User(1, "pETer@sch.mitz", "PeTEer", "password", "peter"));
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(REGISTER);
 		requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 		requestBuilder.content(json.getBytes());
@@ -107,7 +107,7 @@ public class RataplanAuthRestControllerIT {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUser() throws Exception {
 
-		String json = gson.toJson(new User(1, "pEtEr@sCh.mITz", null, "geheim", null, null));
+		String json = gson.toJson(new User(1, "pEtEr@sCh.mITz", null, "geheim", null));
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(LOGIN);
 		requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 		requestBuilder.content(json.getBytes());
@@ -119,7 +119,7 @@ public class RataplanAuthRestControllerIT {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserShouldFailWrongPassword() throws Exception {
 
-		String json = gson.toJson(new User(1, "peter@sch.mitz", null, "geheIm", null, null));
+		String json = gson.toJson(new User(1, "peter@sch.mitz", null, "geheIm", null));
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(LOGIN);
 		requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 		requestBuilder.content(json.getBytes());
@@ -131,7 +131,7 @@ public class RataplanAuthRestControllerIT {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserShouldFailMailDoesNotExist() throws Exception {
 
-		String json = gson.toJson(new User(1, "peteerr@sch.mitz", null, "geheim", null, null));
+		String json = gson.toJson(new User(1, "peteerr@sch.mitz", null, "geheim", null));
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(LOGIN);
 		requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 		requestBuilder.content(json.getBytes());
@@ -143,7 +143,7 @@ public class RataplanAuthRestControllerIT {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserShouldFailUsernameDoesNotExist() throws Exception {
 
-		String json = gson.toJson(new User(1, null, "doesnotexist", "geheim", null, null));
+		String json = gson.toJson(new User(1, null, "doesnotexist", "geheim", null));
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(LOGIN);
 		requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 		requestBuilder.content(json.getBytes());

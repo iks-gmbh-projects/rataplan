@@ -53,21 +53,19 @@ public class UserRepositoryTest {
 		assertEquals(user.getMail(), USER_1.getMail());
 		// of course password is equal, it does not get encoded
 		assertEquals(user.getPassword(), USER_1.getPassword());
-		assertEquals(user.getLastName(), USER_1.getLastName());
-		assertEquals(user.getFirstName(), USER_1.getFirstName());
 		assertNotNull(user.getId());
 	}
 
 	@Test(expected = DataIntegrityViolationException.class)
 	@DatabaseSetup(USER_FILE_INITIAL)
 	public void createUserShouldFailUsernameAlreadyExists() throws Exception {
-		userRepository.saveAndFlush(new User(null, "new@ma.il", "Peter", "geheim", "peter", "peter"));
+		userRepository.saveAndFlush(new User(null, "new@ma.il", "Peter", "geheim", "peter"));
 	}
 
 	@Test(expected = DataIntegrityViolationException.class)
 	@DatabaseSetup(USER_FILE_INITIAL)
 	public void createUserShouldFailMailAlreadyExists() throws Exception {
-		userRepository.saveAndFlush(new User(null, "peter@sch.mitz", "neuer name", "geheim", "peter", "peter"));
+		userRepository.saveAndFlush(new User(null, "peter@sch.mitz", "neuer name", "geheim", "peter"));
 	}
 
 	@Test
@@ -78,8 +76,6 @@ public class UserRepositoryTest {
 		assertEquals(Integer.valueOf(1), user.getId());
 		assertEquals("Peter", user.getUsername());
 		assertEquals("peter@sch.mitz", user.getMail());
-		assertEquals("peter", user.getFirstName());
-		assertEquals("schmitz", user.getLastName());
 	}
 
 	@Test
@@ -97,8 +93,6 @@ public class UserRepositoryTest {
 		assertEquals(Integer.valueOf(1), user.getId());
 		assertEquals("Peter", user.getUsername());
 		assertEquals("peter@sch.mitz", user.getMail());
-		assertEquals("peter", user.getFirstName());
-		assertEquals("schmitz", user.getLastName());
 	}
 
 	@Test
