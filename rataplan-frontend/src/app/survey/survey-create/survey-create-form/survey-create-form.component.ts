@@ -79,7 +79,7 @@ export class SurveyCreateFormComponent {
 
   public addQuestionGroup(stepper: MatStepper): void {
     this.getQuestionGroups().push(this.createQuestionGroup());
-    if(this.formGroup?.get(['questionGroups', this.getQuestionGroups().length-2])?.valid) setTimeout(() => stepper.next(), 10);
+    if (this.formGroup?.get(['questionGroups', this.getQuestionGroups().length - 2])?.valid) setTimeout(() => stepper.next(), 10);
   }
 
   public getQuestionGroups(): FormArray {
@@ -99,14 +99,21 @@ export class SurveyCreateFormComponent {
     let survey: Survey = this.formGroup.value;
     survey.startDate = new Date(survey.startDate);
     survey.endDate = new Date(survey.endDate);
-    for (let qg of survey.questionGroups) {
+    let j: number = 0;
+    survey.questionGroups.forEach((qg, i) => {
+      qg.id = i;
       for (let q of qg.questions) {
-        if (q.checkboxGroup && q.checkboxGroup.checkboxes.length == 0) {
-          delete q.checkboxGroup;
+        q.id = j;
+        if (q.checkboxGroup) {
+          if (q.checkboxGroup.checkboxes.length == 0) {
+            delete q.checkboxGroup;
+          } else {
+            q.checkboxGroup.checkboxes.forEach((checkbox, k) => checkbox.id = k);
+          }
         }
         q.hasCheckbox = "checkboxGroup" in q;
       }
-    }
+    });
     this.onSubmit.emit(survey);
   }
 }

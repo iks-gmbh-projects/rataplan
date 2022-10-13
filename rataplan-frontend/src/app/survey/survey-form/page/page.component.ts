@@ -43,6 +43,7 @@ export class PageComponent {
       };
       delete answer.checkboxId;
     }
+    if(!answer.checkboxes) return false;
     for(let checkbox of question.checkboxGroup!.checkboxes) {
       if(checkbox.hasTextField && answer.checkboxes![checkbox.id!]) return false;
     }
