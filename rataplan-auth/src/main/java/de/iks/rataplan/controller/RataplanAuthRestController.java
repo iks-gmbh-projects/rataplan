@@ -2,6 +2,7 @@ package de.iks.rataplan.controller;
 
 import de.iks.rataplan.domain.*;
 import de.iks.rataplan.service.AuthTokenService;
+import de.iks.rataplan.utils.CookieBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,8 @@ public class RataplanAuthRestController {
     private final JwtTokenService jwtTokenService;
 
     private static final String JWT_COOKIE_NAME = "jwttoken";
+
+    private final CookieBuilder cookieBuilder;
 
     @RequestMapping(value = "*", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> handle() {
@@ -117,16 +120,15 @@ public class RataplanAuthRestController {
     @RequestMapping(value = "/users/saveAuthToken", method = RequestMethod.POST)
     public AuthToken createAuthToken(@RequestBody String mail) {
 
-        AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
-
-        return response;
+        return authTokenService.saveAuthTokenToUserWithMail(mail);
     }
 
     private HttpHeaders createResponseHeaders(User user) {
         HttpHeaders responseHeaders = new HttpHeaders();
 
         String token = jwtTokenService.generateToken(user);
-        responseHeaders.set("jwttoken", token);
+        responseHeaders.set(JWT_COOKIE_NAME, token);
+        responseHeaders.add("Set-Cookie", cookieBuilder.generateCookieValue(token, false));
 
         return responseHeaders;
     }

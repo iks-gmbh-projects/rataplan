@@ -43,11 +43,15 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 		return generateToken(claims);
 	}
 
+	public Date getTokenExpiration(String token) {
+		Claims claims = getClaimsFromToken(token);
+		return claims.getExpiration();
+	}
+
 	@Override
 	public boolean isTokenValid(String token) {
 		try {
-			Claims claims = getClaimsFromToken(token);
-			return !isTokenExpired(claims.getExpiration());
+			return !isTokenExpired(getTokenExpiration(token));
 		} catch (Exception e) {
 			throw new InvalidTokenException("Invalid JWT");
 		}
