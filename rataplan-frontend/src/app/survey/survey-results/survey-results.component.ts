@@ -89,7 +89,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
     return checked ? "check_box" : "check_box_outline_blank";
   }
 
-  public checkboxPercentage(questionId: string | number, checkboxId: string | number): number {
+  public checkboxPercentage(questionId: string | number, checkboxId: string | number): number|undefined {
     let count = 0;
     let total = 0;
     for (let response of this.answers) {
@@ -99,7 +99,8 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
         if (answer.checkboxes![checkboxId]) count++;
       }
     }
-    return count * 100 / total;
+    if(total > 0) return count * 100 / total;
+    else return undefined;
   }
 
   private compileResults(question: Question): string[] | null {

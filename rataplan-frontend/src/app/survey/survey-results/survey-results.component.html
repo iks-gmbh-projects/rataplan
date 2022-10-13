@@ -4,7 +4,9 @@
     <p>Wie sind sie hierhin gekommen?</p>
   </ng-template>
   <ng-template [ngIf]="survey" [ngIfElse]="missing">
-    <h3>{{survey.name}}</h3>
+    <h3>
+      {{survey.name}}
+    </h3>
     <mat-spinner *ngIf="busy; else finished"></mat-spinner>
     <ng-template #finished>
       <div *ngIf="error; else success">Fehler beim Laden der Daten</div>
@@ -23,29 +25,29 @@
                 </ng-container>
                 <ng-template [ngIf]="question.checkboxGroup">
                   <ng-container *ngFor="let checkbox of question.checkboxGroup.checkboxes"
-                    [matColumnDef]="'checkbox'+checkbox.id!">
-                    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{checkbox.text}}<br>{{checkboxPercentage(question.id, checkbox.id!)}}% </th>
-                    <td mat-cell *matCellDef="let answer">
-                      <mat-icon>{{toCheckbox(answer.answers[question.id].checkboxes[checkbox.id!])}}
-                      </mat-icon>
-                    </td>
-                  </ng-container>
-                </ng-template>
-                <ng-container *ngIf="hasTextfield(question)" matColumnDef="answer">
-                  <th mat-header-cell mat-sort-header *matHeaderCellDef> Freitextantwort </th>
-                  <td mat-cell *matCellDef="let answer">{{answer.answers[question.id].text}}</td>
+                  [matColumnDef]="'checkbox'+checkbox.id!">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef> {{checkbox.text}}<br>{{checkboxPercentage(question.id, checkbox.id!) || '?'}}% </th>
+                  <td mat-cell *matCellDef="let answer">
+                    <mat-icon>{{toCheckbox(answer.answers[question.id].checkboxes[checkbox.id!])}}
+                    </mat-icon>
+                  </td>
                 </ng-container>
-                <tr mat-header-row *matHeaderRowDef="columns[question.id]"></tr>
-                <tr mat-row *matRowDef="let row; columns: columns[question.id]"></tr>
-              </table>
-            </mat-expansion-panel>
-          </div>
+              </ng-template>
+              <ng-container *ngIf="hasTextfield(question)" matColumnDef="answer">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef> Freitextantwort </th>
+                <td mat-cell *matCellDef="let answer">{{answer.answers[question.id].text}}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columns[question.id]"></tr>
+              <tr mat-row *matRowDef="let row; columns: columns[question.id]"></tr>
+            </table>
+          </mat-expansion-panel>
         </div>
-        <button mat-icon-button color="primary" (click)="downloadResults()">
-          <mat-icon>download</mat-icon>
-        </button><br>
-      </ng-template>
+      </div>
     </ng-template>
   </ng-template>
-  <a mat-raised-button color="primary" routerLink="..">Zurück</a>
+</ng-template>
+<a mat-raised-button color="primary" routerLink="..">Zurück</a>
+<button *ngIf="!error" [disabled]="busy" mat-icon-button color="primary" (click)="downloadResults()">
+  <mat-icon>download</mat-icon>
+</button>
 </div>
