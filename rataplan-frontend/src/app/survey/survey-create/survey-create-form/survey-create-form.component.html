@@ -1,6 +1,6 @@
 <form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="preview()">
   <mat-stepper orientation="vertical" #stepper="matStepper">
-    <mat-step [label]="formGroup.value.name || 'Kopfdaten'">
+    <mat-step [label]="formGroup.value.name || 'Kopfdaten'" [completed]="headerComplete()">
       <mat-form-field appearance="fill">
         <mat-label>Umfragename</mat-label>
         <input type="text" matInput formControlName="name">
@@ -23,13 +23,13 @@
         <ngx-mat-datetime-picker [defaultTime]="[24,0,0]" #endTime></ngx-mat-datetime-picker>
       </mat-form-field><br>
       <mat-checkbox formControlName="openAccess">Liste die Umfrage in der Liste auf.</mat-checkbox><br><br>
-      <button style="float:right;" type="button" mat-raised-button color="primary" matStepperNext>
+      <button style="float:right;" type="button" mat-raised-button color="primary" matStepperNext [disabled]="!headerComplete()">
         <mat-icon>navigate_next</mat-icon>
       </button>
     </mat-step>
     <div formArrayName="questionGroups">
-      <mat-step label="Frageblock {{i+1}}" *ngFor="let questionGroup of getQuestionGroups().controls; index as i"
-        [formGroupName]="i">
+      <mat-step label="{{ formGroup.value.questionGroups[i].title || 'Frageblock '+(i+1)}}" *ngFor="let questionGroup of getQuestionGroups().controls; index as i"
+        [formGroupName]="i" [stepControl]="formGroup.get(['questionGroups', i])!">
         <div>
           <mat-form-field style="margin-top: 1em;" appearance="fill">
             <mat-label>Frageblocküberschrift</mat-label>
@@ -105,7 +105,7 @@
           </button>
           <div style="flex: 2;"></div>
           <button type="button" mat-raised-button color="primary" matStepperNext
-            [disabled]="getQuestionGroups().length == i+1">
+            [disabled]="getQuestionGroups().length == i+1 || formGroup.get(['questionGroups', i])!.invalid">
             <mat-icon>navigate_next</mat-icon>
           </button>
         </div>
@@ -116,7 +116,7 @@
           </button>
           <div style="flex: 2;"></div>
           <button mat-raised-button color="primary" type="button"
-            (click)="getQuestionGroups().push(createQuestionGroup()); advanceStepperOnReload(stepper)">
+            (click)="addQuestionGroup(stepper)">
             <mat-icon>add</mat-icon>
           </button>
         </div>

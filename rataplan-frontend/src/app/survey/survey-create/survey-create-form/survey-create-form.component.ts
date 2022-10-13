@@ -69,6 +69,19 @@ export class SurveyCreateFormComponent {
     });
   }
 
+  public headerComplete(): boolean {
+    if (!this.formGroup) return false;
+    return this.formGroup.get("name")!.valid
+      && this.formGroup.get("description")!.valid
+      && this.formGroup.get("startDate")!.valid
+      && this.formGroup.get("endDate")!.valid;
+  }
+
+  public addQuestionGroup(stepper: MatStepper): void {
+    this.getQuestionGroups().push(this.createQuestionGroup());
+    if(this.formGroup?.get(['questionGroups', this.getQuestionGroups().length-2])?.valid) setTimeout(() => stepper.next(), 10);
+  }
+
   public getQuestionGroups(): FormArray {
     return this.formGroup?.get("questionGroups") as FormArray;
   }
@@ -95,9 +108,5 @@ export class SurveyCreateFormComponent {
       }
     }
     this.onSubmit.emit(survey);
-  }
-
-  public advanceStepperOnReload(stepper: MatStepper): void {
-    setTimeout(() => stepper.next(), 10);
   }
 }
