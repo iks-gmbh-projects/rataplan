@@ -5,23 +5,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.iks.rataplan.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.iks.rataplan.domain.Appointment;
-import de.iks.rataplan.domain.AppointmentDecision;
-import de.iks.rataplan.domain.AppointmentMember;
-import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.AppointmentRequestConfig;
-import de.iks.rataplan.domain.Decision;
-import de.iks.rataplan.domain.DecisionType;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.AppointmentRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
-import de.iks.rataplan.repository.BackendUserAccessRepository;
 
 @Service
 @Transactional
@@ -36,13 +28,16 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 	@Autowired
 	private MailService mailService;
 
-	@Override
-	public AppointmentRequest createAppointmentRequest(AppointmentRequest appointmentRequest) {
-		if (!appointmentRequest.getAppointmentMembers().isEmpty()) {
-			throw new MalformedException("Can not create AppointmentRequest with members!");
-		} else if (appointmentRequest.getAppointments().isEmpty()) {
-			throw new MalformedException("Can not create AppointmentRequest without appointments!");
-		}
+    @Autowired
+    private TokenGeneratorService tokenGeneratorService;
+
+    @Override
+    public AppointmentRequest createAppointmentRequest(AppointmentRequest appointmentRequest) {
+        if (!appointmentRequest.getAppointmentMembers().isEmpty()) {
+            throw new MalformedException("Can not create AppointmentRequest with members!");
+        } else if (appointmentRequest.getAppointments().isEmpty()) {
+            throw new MalformedException("Can not create AppointmentRequest without appointments!");
+        }
 
 		for (Appointment appointment : appointmentRequest.getAppointments()) {
 			appointment.setAppointmentRequest(appointmentRequest);
@@ -57,7 +52,9 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			appointment.setId(null);
 		}
 
-		AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.saveAndFlush(appointmentRequest);
+        appointmentRequest.setParticipationToken(tokenGeneratorService.generateParticipationToken());
+
+        AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.saveAndFlush(appointmentRequest);
 
 		if (createdAppointmentRequest.getOrganizerMail() != null) {
 			mailService.sendMailForAppointmentRequestCreation(createdAppointmentRequest);
@@ -83,10 +80,31 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 		return appointmentRequest;
 	}
 
-	@Override
-	public List<AppointmentRequest> getAppointmentRequestsForUser(Integer userId) {
-		return appointmentRequestRepository.findAllByBackendUserId(userId);
-	}
+    @Override
+    public AppointmentRequest getAppointmentRequestByParticipationToken(String participationToken) {
+        AppointmentRequest appointmentRequest = appointmentRequestRepository.findByParticipationToken(participationToken);
+        if (appointmentRequest != null) {
+            return appointmentRequest;
+        }
+
+        Integer requestId;
+        try {
+            requestId = Integer.parseInt(participationToken);
+        } catch (NumberFormatException e) {
+            throw new ResourceNotFoundException("AppointmentRequest by Token does not exist");
+        }
+
+        AppointmentRequest appointmentRequestbyId = getAppointmentRequestById(requestId);
+        if (appointmentRequestbyId.getParticipationToken() == null) {
+            return appointmentRequestbyId;
+        }
+        throw new ResourceNotFoundException("Could not find AppointmentRequest with participationToken: " + participationToken);
+    }
+
+    @Override
+    public List<AppointmentRequest> getAppointmentRequestsForUser(Integer userId) {
+        return appointmentRequestRepository.findAllByBackendUserId(userId);
+    }
 
 	@Override
 	public List<AppointmentRequest> getAppointmentRequestsWhereUserTakesPartIn(Integer userId) {

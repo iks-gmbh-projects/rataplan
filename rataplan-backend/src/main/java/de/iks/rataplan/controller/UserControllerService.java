@@ -106,6 +106,13 @@ public class UserControllerService {
         ResponseEntity<Boolean> response = this.authService.changePassword(jwtToken, passwords);
         return response.getBody();
     }
+    public boolean changeEmail(String email, String jwtToken) {
+        ResponseEntity<Boolean> response = this.authService.changeEmail(jwtToken, email);
+
+        System.out.println(response.toString());
+
+        return response.getBody();
+    }
 
     public boolean resetPassword(ResetPasswordData resetPasswordData) {
 

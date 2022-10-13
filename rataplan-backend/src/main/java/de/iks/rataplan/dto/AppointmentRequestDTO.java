@@ -19,6 +19,7 @@ public class AppointmentRequestDTO implements Serializable {
     private Date deadline;
     private Integer backendUserId;
     private boolean expired;
+    private String participationToken;
     
     private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
 
@@ -144,6 +145,14 @@ public class AppointmentRequestDTO implements Serializable {
 	public void setExpired(boolean expired) {
 		this.expired = expired;
 	}
+
+    public String getParticipationToken() {
+        return participationToken;
+    }
+
+    public void setParticipationToken(String participationToken) {
+        this.participationToken = participationToken;
+    }
 
 	@Override
 	public String toString() {

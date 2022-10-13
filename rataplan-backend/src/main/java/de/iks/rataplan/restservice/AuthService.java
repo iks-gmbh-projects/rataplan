@@ -1,11 +1,8 @@
 package de.iks.rataplan.restservice;
 
-import de.iks.rataplan.domain.AuthToken;
-import de.iks.rataplan.domain.ResetPasswordData;
+import com.sendgrid.Email;
+import de.iks.rataplan.domain.*;
 import org.springframework.http.ResponseEntity;
-
-import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.domain.PasswordChange;
 
 public interface AuthService {
     ResponseEntity<AuthUser> getUserData(String token);
@@ -19,6 +16,8 @@ public interface AuthService {
     ResponseEntity<AuthUser> loginUser(AuthUser authUser);
 
     ResponseEntity<Boolean> changePassword(String token, PasswordChange passwords);
+
+    ResponseEntity<Boolean> changeEmail(String token , String email);
 
     ResponseEntity<AuthToken> saveAuthTokenToUserWithMail(String mail);
 
