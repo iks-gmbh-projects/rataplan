@@ -35,6 +35,13 @@
         <mat-error *ngIf="confirmPassword.invalid">{{getConfirmPasswordErrorMessage()}}</mat-error>
       </mat-form-field>
     </div>
+    <div class="displayname">
+      <mat-form-field appearance="fill">
+        <mat-label>Anzeigename</mat-label>
+        <input matInput [formControl]="displayname">
+        <mat-error *ngIf="displayname.invalid">{{getDisplaynameErrorMessage()}}</mat-error>
+      </mat-form-field>
+    </div>
     <div class="submit-container">
       <button class="submit-button" mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="submit()">
         Registrieren
