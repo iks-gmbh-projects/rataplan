@@ -1,18 +1,12 @@
 package de.iks.rataplan.restservice;
 
-import de.iks.rataplan.domain.*;
+import de.iks.rataplan.domain.AuthToken;
+import de.iks.rataplan.domain.AuthUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import de.iks.rataplan.exceptions.MalformedException;
 
 
 @Service
@@ -43,18 +37,6 @@ public class AuthServiceImpl implements AuthService {
         return restTemplate.postForEntity(url, authUser, AuthUser.class);
     }
 
-    public ResponseEntity<Boolean> checkIfMailExists(String mail) {
-        String url = authUrl + "/users/mailExists";
-
-        return restTemplate.postForEntity(url, mail, Boolean.class);
-    }
-
-    public ResponseEntity<Boolean> checkIfUsernameExists(String username) {
-        String url = authUrl + "/users/usernameExists";
-
-        return restTemplate.postForEntity(url, username, Boolean.class);
-    }
-
     public ResponseEntity<AuthToken> saveAuthTokenToUserWithMail(String mail) {
         String url = authUrl + "/users/saveAuthToken";
 
@@ -65,54 +47,4 @@ public class AuthServiceImpl implements AuthService {
         String url = authUrl + "/users/login";
         return restTemplate.postForEntity(url, authUser, AuthUser.class);
     }
-
-    @Override
-    public ResponseEntity<Boolean> changePassword(String token, PasswordChange passwords) {
-        String url = authUrl + "/users/profile/changePassword";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(JWT_COOKIE_NAME, token);
-        HttpEntity<PasswordChange> entity = new HttpEntity<>(passwords, headers);
-
-        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.POST, entity, Boolean.class);
-        if (response.getBody() == false) {
-            throw new MalformedException(
-                    "Password has not been changed.");
-        }
-
-        return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Boolean> changeEmail(String token , String email) {
-        String url = authUrl + "/users/profile/changeEmail";
-
-        System.out.println(token);
-        System.out.println(email);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(JWT_COOKIE_NAME, token);
-        HttpEntity<String> entity = new HttpEntity<>(email, headers);
-
-        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.POST, entity, Boolean.class);
-        if (response.getBody() == false) {
-            throw new MalformedException(
-                    "Email has not been changed");
-        }
-        return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Boolean> resetPassword(ResetPasswordData resetPasswordData) {
-        String url = authUrl + "/users/resetPassword";
-
-        HttpEntity<ResetPasswordData> entity = new HttpEntity<>(resetPasswordData);
-
-        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.POST, entity, Boolean.class);
-
-        return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
-    }
-
 }

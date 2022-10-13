@@ -141,31 +141,6 @@ public class Controller {
         return new ResponseEntity<>(updatedAppointmentMemberDTO, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = FrontendUser.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/register", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<FrontendUser> registerUser(@RequestBody FrontendUser frontendUser) {
-
-        FrontendUser createdFrontendUser = userControllerService.registerUser(frontendUser);
-        return new ResponseEntity<>(createdFrontendUser, HttpStatus.CREATED);
-    }
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/mailExists", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public boolean checkIfMailExists(@RequestBody String mail) {
-
-        return userControllerService.checkIfMailExists(mail);
-    }
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/usernameExists", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public boolean checkIfUsernameExists(@RequestBody String username) {
-
-        return userControllerService.checkIfUsernameExists(username);
-    }
-
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @RequestMapping(value = "/users/forgotPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -174,72 +149,6 @@ public class Controller {
         boolean response = userControllerService.sendForgotPasswordMail(mail);
 
         return response;
-    }
-
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = FrontendUser.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<FrontendUser> loginUser(@RequestBody FrontendUser frontendUser) {
-
-        FrontendUser fetchedFrontendUser = userControllerService.loginUser(frontendUser);
-        return new ResponseEntity<>(fetchedFrontendUser, HttpStatus.OK);
-    }
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/logout", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> logoutUser() {
-
-        userControllerService.logoutUser();
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = FrontendUser.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/profile", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<FrontendUser> getUserData(
-            @CookieValue(value = JWT_COOKIE_NAME, required = true) String jwtToken) {
-
-        FrontendUser frontendUser = userControllerService.getUserData(jwtToken);
-        return new ResponseEntity<>(frontendUser, HttpStatus.OK);
-    }
-
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
-            @ApiResponse(code = 400, message = "Password has not been changed.", response = MalformedException.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/profile/changePassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Boolean> changePassword(@RequestBody PasswordChange passwords,
-                                                  @CookieValue(value = JWT_COOKIE_NAME, required = true) String jwtToken) {
-
-        boolean success = userControllerService.changePassword(passwords, jwtToken);
-        return new ResponseEntity<>(success, HttpStatus.OK);
-    }
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
-            @ApiResponse(code = 400, message = "Email has not been changed", response = MalformedException.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "users/profile/changeEmail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-
-    public ResponseEntity<Boolean> changeEmail(@RequestBody String email,
-                                               @CookieValue(value = JWT_COOKIE_NAME, required = true)String jwtToken) {
-
-        System.out.println(email);
-        System.out.println(jwtToken);
-
-        boolean success = userControllerService.changeEmail(email, jwtToken);
-
-        return new ResponseEntity<>(success, HttpStatus.OK);
-    }
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
-            @ApiResponse(code = 400, message = "Password has not been changed.", response = MalformedException.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/resetPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
-        boolean success = userControllerService.resetPassword(resetPasswordData);
-        return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),

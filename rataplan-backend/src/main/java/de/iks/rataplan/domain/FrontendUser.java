@@ -19,7 +19,7 @@ public class FrontendUser {
 		this.displayname = displayname;
 	}
 	
-	public FrontendUser(AuthUser authUser, BackendUser backendUser) {
+	public FrontendUser(AuthUser authUser) {
 		this.id = authUser.getId();
 		this.mail = authUser.getMail();
 		this.username = authUser.getUsername();

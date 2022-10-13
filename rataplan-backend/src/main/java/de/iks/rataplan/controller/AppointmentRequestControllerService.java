@@ -40,7 +40,7 @@ public class AppointmentRequestControllerService {
         BackendUser backendUser = null;
 
         if (jwtToken != null) {
-            backendUser = authorizationControllerService.getBackendUserAndRefreshCookie(jwtToken);
+            backendUser = authorizationControllerService.getBackendUser(jwtToken);
             appointmentRequestDTO.setBackendUserId(backendUser.getId());
         }
 
@@ -71,7 +71,7 @@ public class AppointmentRequestControllerService {
 			throw new ForbiddenException();
 		}
 
-		BackendUser backendUser = authorizationControllerService.getBackendUserAndRefreshCookie(jwtToken);
+		BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
 		List<AppointmentRequest> appointmentRequests = appointmentRequestService
 				.getAppointmentRequestsForUser(backendUser.getId());
@@ -90,7 +90,7 @@ public class AppointmentRequestControllerService {
 			throw new ForbiddenException();
 		}
 
-		BackendUser backendUser = authorizationControllerService.getBackendUserAndRefreshCookie(jwtToken);
+		BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
 		List<AppointmentRequest> appointmentRequests = appointmentRequestService
 				.getAppointmentRequestsWhereUserTakesPartIn(backendUser.getId());

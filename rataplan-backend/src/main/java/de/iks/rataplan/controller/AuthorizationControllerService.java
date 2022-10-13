@@ -4,18 +4,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.AppointmentRequestConfig;
 import de.iks.rataplan.domain.AuthUser;
 import de.iks.rataplan.domain.BackendUser;
-import de.iks.rataplan.domain.ErrorCode;
 import de.iks.rataplan.exceptions.ForbiddenException;
-import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.restservice.AuthService;
-import de.iks.rataplan.service.AppointmentRequestService;
 import de.iks.rataplan.service.BackendUserService;
 import de.iks.rataplan.utils.CookieBuilder;
 
@@ -77,16 +72,10 @@ public class AuthorizationControllerService {
 	 * @param jwtToken
 	 * @return
 	 */
-	public BackendUser getBackendUserAndRefreshCookie(String jwtToken) {
+	public BackendUser getBackendUser(String jwtToken) {
 		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-
-		this.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
 
 		AuthUser authUser = authServiceResponse.getBody();
 		return backendUserService.getBackendUserByAuthUserId(authUser.getId());
-	}
-
-	public void refreshCookie(String jwtToken) {
-		servletResponse.addHeader("Set-Cookie", cookieBuilder.generateCookieValue(jwtToken, false));
 	}
 }

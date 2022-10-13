@@ -36,7 +36,7 @@ public class MailServiceImplSendGrid implements MailService {
     @Override
     public void sendMailForAppointmentRequestCreation(AppointmentRequest appointmentRequest) {
 
-        Mail mail = (Mail) mailBuilder.buildMailForAppointmentRequestCreation(appointmentRequest);
+        Mail mail = mailBuilder.buildMailForAppointmentRequestCreation(appointmentRequest);
 
         SendGrid sendGrid = new SendGrid(sendGridApiKey);
         Request request = new Request();
@@ -56,7 +56,7 @@ public class MailServiceImplSendGrid implements MailService {
     @Override
     public void sendMailForAppointmentRequestExpired(AppointmentRequest appointmentRequest) {
 
-        Mail mail = (Mail) mailBuilder.buildMailForAppointmentRequestExpired(appointmentRequest);
+        Mail mail = mailBuilder.buildMailForAppointmentRequestExpired(appointmentRequest);
 
         SendGrid sendGrid = new SendGrid(sendGridApiKey);
         Request request = new Request();
@@ -99,7 +99,7 @@ public class MailServiceImplSendGrid implements MailService {
     @Override
     public void sendMailForContactRequest(ContactData contactData) {
 
-        Mail mail = (Mail) mailBuilder.buildMailForContactRequest(contactData);
+        Mail mail = mailBuilder.buildMailForContactRequest(contactData);
 
         SendGrid sendGrid = new SendGrid(sendGridApiKey);
         Request request = new Request();
@@ -119,7 +119,7 @@ public class MailServiceImplSendGrid implements MailService {
     @Override
     public void sendMailForResetPassword(ResetPasswordMailData resetPasswordMailData) {
 
-        Mail mail = (Mail) mailBuilder.buildMailForResetPassword(resetPasswordMailData);
+        Mail mail = mailBuilder.buildMailForResetPassword(resetPasswordMailData);
 
 
         SendGrid sendGrid = new SendGrid(sendGridApiKey);

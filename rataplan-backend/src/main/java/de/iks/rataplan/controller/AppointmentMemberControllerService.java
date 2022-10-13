@@ -47,7 +47,6 @@ public class AppointmentMemberControllerService {
 			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken); 
 			authUser = authServiceResponse.getBody();
 			backendUser = backendUserService.getBackendUserByAuthUserId(authUser.getId());
-			authorizationControllerService.refreshCookie(authServiceResponse.getHeaders().getFirst("jwttoken"));
 		}
 		
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
@@ -68,7 +67,7 @@ public class AppointmentMemberControllerService {
 		BackendUser backendUser = null;
 		
 		if (jwtToken != null) {
-			backendUser = authorizationControllerService.getBackendUserAndRefreshCookie(jwtToken);
+			backendUser = authorizationControllerService.getBackendUser(jwtToken);
 		}
 		
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
@@ -85,7 +84,7 @@ public class AppointmentMemberControllerService {
 		BackendUser backendUser = null;
 		
 		if (jwtToken != null) {
-			backendUser = authorizationControllerService.getBackendUserAndRefreshCookie(jwtToken);
+			backendUser = authorizationControllerService.getBackendUser(jwtToken);
 		}
 		
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
