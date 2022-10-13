@@ -1,0 +1,45 @@
+<div class='wrapper'>
+    <h3>{{ appointmentRequest.title }}</h3>
+    <div>
+      <span>
+        {{ appointmentRequest.description }}
+      </span>
+    </div>
+    <div>
+      <h4>Teilnehmer: {{ appointmentRequest.appointmentMembers.length }}</h4>
+    </div>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input [(ngModel)]="memberName"
+               matInput
+               autocomplete="off">
+      </mat-form-field>
+    </div>
+  <mat-list>
+    <mat-list-item *ngFor="let appointment of appointmentRequest.appointments; let i = index">
+      <div mat-line>{{ appointment.startDate | date:'dd. MMMM yyyy':'+0200':'de' }}</div>
+      <button mat-icon-button
+              (click)="openDialog(appointment)">
+        <mat-icon>info</mat-icon>
+      </button>
+      <mat-button-toggle-group [disabled]="isVoted">
+        <mat-button-toggle (click)="rejectAppointment(appointment)">
+          <mat-icon>close</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle (click)="acceptAppointment(appointment)">
+          <mat-icon>done</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </mat-list-item>
+  </mat-list>
+  <div>
+    <button class="vote-button"
+            type="submit"
+            color="primary"
+            mat-raised-button
+            [disabled]="isVoted"
+            (click)="saveVote()">Abstimmen
+    </button>
+  </div>
+</div>

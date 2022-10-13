@@ -1,0 +1,35 @@
+<div>
+  <h3 mat-dialog-title>{{ data.appointment.startDate | date:'dd. MMMM yyyy':'+0200':'de' }}</h3>
+  <mat-selection-list [multiple]='false'>
+    <mat-list-option (click)='clickedAccepted = !clickedAccepted'>
+      <mat-icon mat-list-icon
+                [matBadge]='countDecision(1)'
+                matBadgeColor='primary'>done
+      </mat-icon>
+      <div mat-line>Accepted</div>
+    </mat-list-option>
+    <div>
+      <ng-template [ngIf]='clickedAccepted'>
+        <p style='text-align: center'
+           *ngFor='let member of checkMembers(appointmentMembers, 1)'>
+          {{ member }}
+        </p>
+      </ng-template>
+    </div>
+    <mat-list-option (click)='clickedDeclined = !clickedDeclined'>
+      <mat-icon mat-list-icon
+                [matBadge]='countDecision(3)'
+                matBadgeColor='primary'>close
+      </mat-icon>
+      <div mat-line>Declined</div>
+    </mat-list-option>
+    <div>
+      <ng-template [ngIf]='clickedDeclined'>
+        <p style='text-align: center'
+           *ngFor='let member of checkMembers(appointmentMembers, 3)'>
+          {{ member }}
+        </p>
+      </ng-template>
+    </div>
+  </mat-selection-list>
+</div>
