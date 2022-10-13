@@ -58,7 +58,7 @@ public class SurveyResponseConverter extends AbstractConverter<SurveyResponseDTO
                                 checkboxes
                                         .entrySet()
                                         .stream()
-                                        .filter(Map.Entry::getValue)
+                                        .filter(e -> Boolean.TRUE.equals(e.getValue()))
                                         .map(Map.Entry::getKey)
                                         .map(checkboxRepository::getById)
                                         .collect(Collectors.toList())
