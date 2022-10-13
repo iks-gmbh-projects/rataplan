@@ -27,7 +27,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 
 	static final String SECRET = "cd+Pr1js+w2qfT2BoCD+tPcYp9LbjpmhSMEJqUob1mcxZ7+Wmik4AYdjX+DlDjmE4yporzQ9tm7v3z/j+QbdYg==";
 
-	static final Integer EXPIRATION = 600;
+	static final Integer EXPIRATION = 60000;
 
 	static final String CLAIM_KEY_USERNAME = "username";
 	static final String CLAIM_KEY_MAIL = "mail";

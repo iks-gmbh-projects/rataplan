@@ -1,7 +1,6 @@
 package de.iks.rataplan.controller;
 
-import de.iks.rataplan.domain.AuthToken;
-import de.iks.rataplan.domain.ResetPasswordData;
+import de.iks.rataplan.domain.*;
 import de.iks.rataplan.service.AuthTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -10,8 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import de.iks.rataplan.domain.PasswordChange;
-import de.iks.rataplan.domain.User;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import de.iks.rataplan.service.JwtTokenService;
 import de.iks.rataplan.service.UserService;
@@ -89,6 +86,18 @@ public class RataplanAuthRestController {
         String username = jwtTokenService.getUsernameFromToken(token);
         boolean success = this.userService.changePassword(username, passwords);
         return new ResponseEntity<>(success, HttpStatus.OK);
+    }
+    @RequestMapping(value = "/users/profile/changeEmail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> changeEmail(@RequestHeader(value = JWT_COOKIE_NAME, required = true) String token,
+                                               @RequestBody String email) {
+
+        if (!jwtTokenService.isTokenValid(token)) {
+            throw new InvalidTokenException("Invalid token");
+        }
+        String username = jwtTokenService.getUsernameFromToken(token);
+        boolean success = this.userService.changeEmail(username, email);
+        return new ResponseEntity<>(success,HttpStatus.OK);
+
     }
 
     @RequestMapping(value = "/users/resetPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
