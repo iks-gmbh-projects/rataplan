@@ -11,6 +11,7 @@
         " Angemeldeten"}}</p>
     </mat-card-content>
   </mat-card>
+  <a class="bottomspace" mat-raised-button color="primary" routerLink="/survey/list">Zurück</a>
   <mat-divider class="bottomspace"></mat-divider>
   <mat-stepper #stepper="matStepper" orientation="vertical">
     <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title">
