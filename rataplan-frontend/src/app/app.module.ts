@@ -16,6 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -43,6 +44,7 @@ import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { LoginComponent } from "./login/login.component";
 
 registerLocaleData(localeDE);
 
@@ -55,6 +57,7 @@ registerLocaleData(localeDE);
     PrivacyComponent,
     MainNavComponent,
     ContactComponent,
+    LoginComponent,
     RegisterComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
@@ -93,6 +96,7 @@ registerLocaleData(localeDE);
     FormsModule,
     MatButtonToggleModule,
     MatDialogModule,
+    MatMenuModule,
     MatBadgeModule,
   ],
   providers: [
@@ -100,5 +104,4 @@ registerLocaleData(localeDE);
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule { }

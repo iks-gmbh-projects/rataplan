@@ -10,12 +10,14 @@ import { GeneralSubformComponent } from './appointment/appointment-request-form/
 import { LinkSubformComponent } from './appointment/appointment-request-form/link-subform/link-subform.component';
 import { AppointmentRequestAuthGuard } from './appointment/auth-guard/appointment-request-auth-guard.service';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-import { HomepageComponent } from './homepage/homepage.component';
-import { ConditionsComponent } from './legals/conditions/conditions.component';
-import { ContactComponent } from './legals/contact/contact.component';
-import { ImprintComponent } from './legals/imprint/imprint.component';
-import { PrivacyComponent } from './legals/privacy/privacy.component';
-import { RegisterComponent } from './register/register.component';
+import {ConditionsComponent} from "./legals/conditions/conditions.component";
+import {HomepageComponent} from "./homepage/homepage.component";
+import {ImprintComponent} from "./legals/imprint/imprint.component";
+import {PrivacyComponent} from "./legals/privacy/privacy.component";
+import {ContactComponent} from "./legals/contact/contact.component";
+import {RegisterComponent} from "./register/register.component";
+import {LoginComponent} from "./login/login.component";
+import {AuthGuardService} from "./services/auth-guard-service/auth-guard-service";
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 const routes: Routes = [
@@ -38,13 +40,13 @@ const routes: Routes = [
   { path: 'privacy', component: PrivacyComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent, canActivate: [AuthGuardService]},
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule { }
