@@ -53,7 +53,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
             for (let checkbox of question.checkboxGroup.checkboxes) {
               if (checkbox.id) {
                 this.columns[question.id].push("checkbox" + checkbox.id);
-                this.columnNames[question.id].push("\"" + checkbox.text.replace(/"/, "\"") + "\"");
+                this.columnNames[question.id].push(this.safeEscape(checkbox.text));
               }
               if (checkbox.hasTextField) hasTextfield = true;
             }
@@ -103,6 +103,16 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
     else return "?";
   }
 
+  private safeEscape(str: string): string {
+    return "\""+str.replace(/"/, "\"\"")+"\"";
+  }
+
+  private escape(str?: string): string|undefined|null {
+    if(str === undefined) return str;
+    if(str === null) return null;
+    return this.safeEscape(str);
+  }
+
   private compileResults(question: Question): string[] | null {
     if (!question.id) return null;
     const questionId = question.id;
@@ -112,7 +122,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
         const ret = [
           answer.userId || "Anonym",
           ...this.columns[questionId].filter(col => col.startsWith("checkbox")).map(col => !!answer.answers[questionId].checkboxes![col.substring(8)]),
-          ...(this.columns[questionId][this.columns[questionId].length-1] === "answer" ? [answer.answers[questionId].text?.replace(/"/, "\"\"")?.replace(/^|$/, "\"")] : []),
+          ...(this.columns[questionId][this.columns[questionId].length-1] === "answer" ? [this.escape(answer.answers[questionId].text)] : []),
         ];
         return ret.join(", ");
       })
