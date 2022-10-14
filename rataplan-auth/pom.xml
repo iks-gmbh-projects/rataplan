@@ -27,6 +27,7 @@
         <jjwt.version>0.6.0</jjwt.version>
 		<flyway.version>4.2.0</flyway.version>
 		<springfox.swagger2.version>2.7.0</springfox.swagger2.version>
+		<sendgrid.version>4.0.1</sendgrid.version>
 	</properties>
 
 	<dependencies>
@@ -147,6 +148,19 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox.swagger2.version}</version>
 			<scope>compile</scope>
+		</dependency>
+
+		<!-- SendGrid MailSender -->
+		<dependency>
+			<groupId>com.sendgrid</groupId>
+			<artifactId>sendgrid-java</artifactId>
+			<version>${sendgrid.version}</version>
+		</dependency>
+
+		<!-- Thymeleaf -->
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring4</artifactId>
 		</dependency>
 
 		<dependency>

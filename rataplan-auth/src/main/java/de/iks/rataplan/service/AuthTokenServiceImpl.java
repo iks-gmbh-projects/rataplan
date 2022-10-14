@@ -30,6 +30,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         while (authTokenRepository.findByToken(token) != null) {
             token = generateAuthToken(4);
         }
+        authTokenRepository.deleteById(id);
         AuthToken authToken = new AuthToken(id, token);
         return authTokenRepository.save(authToken);
     }
@@ -37,6 +38,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     @Override
     public boolean verifyAuthToken(String token) {
         AuthToken authToken = authTokenRepository.findByToken(token);
+        if(authToken == null) return false;
         Date currentDate = new java.util.Date();
         currentDate.setTime(currentDate.getTime() - tokenLifetime);
         return (authToken.getCreatedDateTime().getTime() - currentDate.getTime() > 0);

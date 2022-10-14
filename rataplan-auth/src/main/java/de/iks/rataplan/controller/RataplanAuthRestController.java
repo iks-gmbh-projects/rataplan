@@ -3,6 +3,7 @@ package de.iks.rataplan.controller;
 import de.iks.rataplan.domain.*;
 import de.iks.rataplan.exceptions.RataplanAuthException;
 import de.iks.rataplan.service.AuthTokenService;
+import de.iks.rataplan.service.MailService;
 import de.iks.rataplan.utils.CookieBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +27,7 @@ public class RataplanAuthRestController {
 
     private final AuthTokenService authTokenService;
 
+    private final MailService mailService;
 
     private final JwtTokenService jwtTokenService;
 
@@ -139,6 +141,18 @@ public class RataplanAuthRestController {
 
     }
 
+    @PostMapping("/users/forgotPassword")
+    public boolean sendForgotPasswordMail(@RequestBody String mail) {
+        AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
+
+        ResetPasswordMailData resetPasswordMailData = new ResetPasswordMailData();
+        resetPasswordMailData.setMail(mail);
+        resetPasswordMailData.setToken(response.getToken());
+
+        mailService.sendMailForResetPassword(resetPasswordMailData);
+        return true;
+    }
+
     @RequestMapping(value = "/users/resetPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
         if (this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
@@ -149,13 +163,7 @@ public class RataplanAuthRestController {
 
             return new ResponseEntity<>(success, HttpStatus.OK);
         }
-        return new ResponseEntity<>(false, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/users/saveAuthToken", method = RequestMethod.POST)
-    public AuthToken createAuthToken(@RequestBody String mail) {
-
-        return authTokenService.saveAuthTokenToUserWithMail(mail);
+        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 
     private HttpHeaders createResponseHeaders(User user) {
