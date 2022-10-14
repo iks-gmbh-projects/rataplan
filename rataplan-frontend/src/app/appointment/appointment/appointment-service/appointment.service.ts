@@ -22,8 +22,12 @@ export class AppointmentService {
   }
 
   addAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
+    let token = appointmentRequest.participationToken;
+    if (token === null) {
+      token = '' + appointmentRequest.id;
+    }
     const url = 'http://localhost:8080/v1/appointmentRequests/' +
-      appointmentRequest.participationToken + '/appointmentMembers';
+      token + '/appointmentMembers';
 
     return this.http.post<AppointmentMemberModel>(url, appointmentMember, {
       headers: new HttpHeaders({

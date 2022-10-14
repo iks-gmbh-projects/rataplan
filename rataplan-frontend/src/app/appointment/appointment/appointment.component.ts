@@ -20,7 +20,7 @@ import { MemberDecisionSubformComponent } from './member-decision-subform/member
 export class AppointmentComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   appointmentRequest = new AppointmentRequestModel();
-  appointmentMember = new AppointmentMemberModel();
+  member = new AppointmentMemberModel();
   participationToken = '';
   memberName = null;
   isVoted = false;
@@ -42,6 +42,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('appointmentMembers',
           JSON.stringify(this.appointmentRequest.appointmentMembers));
         console.log(data);
+        if (!this.appointmentRequest.expired) {
+          this.setAppointments();
+        }
       });
   }
 
@@ -52,8 +55,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   saveVote() {
     this.isVoted = true;
-    this.appointmentMember.name = this.memberName;
-    this.appointmentService.addAppointmentMember(this.appointmentRequest, this.appointmentMember)
+    this.member.name = this.memberName;
+    this.setNoAnswer();
+    this.appointmentService.addAppointmentMember(this.appointmentRequest, this.member)
       .pipe(takeUntil(this.destroySubject))
       .subscribe(res => {
         console.log(res);
@@ -63,6 +67,19 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       });
   }
 
+  setAppointments() {
+    for (let i = 0; i < this.appointmentRequest.appointments.length; i++) {
+      this.member.appointmentDecisions.push(new AppointmentDecisionModel());
+      this.member.appointmentDecisions[i].appointmentId = this.appointmentRequest.appointments[i].id;
+    }
+  }
+  setNoAnswer() {
+    this.member.appointmentDecisions.forEach(appointment => {
+      if (appointment.decision === null) {
+        appointment.decision = AppointmentDecisionType.NO_ANSWER;
+      }
+    });
+  }
 
   openDialog(appointment: AppointmentModel) {
     this.dialog.open(MemberDecisionSubformComponent,
@@ -74,17 +91,21 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     );
   }
 
-  acceptAppointment(appointment: AppointmentModel) {
-    const appointmentDecision = new AppointmentDecisionModel();
-    appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
-    appointmentDecision.appointmentId = appointment.id;
-    this.appointmentMember.appointmentDecisions.push(appointmentDecision);
-  }
+  setDecision(appointment: AppointmentModel, decision: number) {
+    const appointmentDecision = this.member.appointmentDecisions[
+      this.appointmentRequest.appointments.indexOf(appointment)
+    ];
 
-  rejectAppointment(appointment: AppointmentModel) {
-    const appointmentDecision = new AppointmentDecisionModel();
-    appointmentDecision.decision = AppointmentDecisionType.DECLINE;
-    appointmentDecision.appointmentId = appointment.id;
-    this.appointmentMember.appointmentDecisions.push(appointmentDecision);
+    switch (decision) {
+    case 1:
+      appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
+      break;
+    case 2:
+      appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
+      break;
+    default:
+      appointmentDecision.decision = AppointmentDecisionType.DECLINE;
+      break;
+    }
   }
 }
