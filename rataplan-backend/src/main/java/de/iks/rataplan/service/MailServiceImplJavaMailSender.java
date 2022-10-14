@@ -2,7 +2,6 @@ package de.iks.rataplan.service;
 
 import javax.mail.internet.MimeMessage;
 
-import de.iks.rataplan.domain.ResetPasswordMailData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -44,11 +43,6 @@ public class MailServiceImplJavaMailSender implements MailService {
 
     @Override
     public void sendMailForContactRequest(ContactData contactData) {
-        // TODO not implemented yet
-    }
-
-    @Override
-    public void sendMailForResetPassword(ResetPasswordMailData resetPasswordMailData) {
         // TODO not implemented yet
     }
 

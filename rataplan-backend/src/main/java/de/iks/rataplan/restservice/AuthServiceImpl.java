@@ -32,19 +32,9 @@ public class AuthServiceImpl implements AuthService {
         return restTemplate.exchange(url, HttpMethod.GET, entity, AuthUser.class);
     }
 
-    public ResponseEntity<AuthUser> registerUser(AuthUser authUser) {
-        String url = authUrl + "/users/register";
-        return restTemplate.postForEntity(url, authUser, AuthUser.class);
-    }
-
     public ResponseEntity<AuthToken> saveAuthTokenToUserWithMail(String mail) {
         String url = authUrl + "/users/saveAuthToken";
 
         return restTemplate.postForEntity(url, mail, AuthToken.class);
-    }
-
-    public ResponseEntity<AuthUser> loginUser(AuthUser authUser) {
-        String url = authUrl + "/users/login";
-        return restTemplate.postForEntity(url, authUser, AuthUser.class);
     }
 }

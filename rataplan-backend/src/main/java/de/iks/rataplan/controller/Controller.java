@@ -32,9 +32,6 @@ public class Controller {
     private AppointmentMemberControllerService appointmentMemberControllerService;
 
     @Autowired
-    private UserControllerService userControllerService;
-
-    @Autowired
     private GeneralControllerService generalControllerService;
 
     @ApiResponses({@ApiResponse(code = 200, message = "OK")})
@@ -139,16 +136,6 @@ public class Controller {
 
         AppointmentMemberDTO updatedAppointmentMemberDTO = appointmentMemberControllerService.updateAppointmentMember(participationToken, memberId, appointmentMemberDTO, jwtToken);
         return new ResponseEntity<>(updatedAppointmentMemberDTO, HttpStatus.OK);
-    }
-
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/forgotPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public boolean sendForgotPasswordMail(@RequestBody String mail) {
-
-        boolean response = userControllerService.sendForgotPasswordMail(mail);
-
-        return response;
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),

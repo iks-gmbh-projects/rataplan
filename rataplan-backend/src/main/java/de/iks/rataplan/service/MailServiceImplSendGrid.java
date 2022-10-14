@@ -3,7 +3,6 @@ package de.iks.rataplan.service;
 import java.io.IOException;
 import java.util.List;
 
-import de.iks.rataplan.domain.ResetPasswordMailData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -114,28 +113,6 @@ public class MailServiceImplSendGrid implements MailService {
         } catch (IOException ex) {
             throw new MailPreparationException(ex);
         }
-    }
-
-    @Override
-    public void sendMailForResetPassword(ResetPasswordMailData resetPasswordMailData) {
-
-        Mail mail = mailBuilder.buildMailForResetPassword(resetPasswordMailData);
-
-
-        SendGrid sendGrid = new SendGrid(sendGridApiKey);
-        Request request = new Request();
-
-        try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            if (isInProdMode()) {
-                sendGrid.api(request);
-            }
-        } catch (IOException ex) {
-            throw new MailPreparationException(ex);
-        }
-
     }
 
     private boolean isInProdMode() {
