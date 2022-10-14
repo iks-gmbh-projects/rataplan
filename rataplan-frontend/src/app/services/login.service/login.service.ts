@@ -24,7 +24,7 @@ export class LoginService {
 
   public loginUser (frontendUser: FrontendUser){
 
-    let url = environment.rataplanBackendURL+'users/login'
+    let url = environment.authBackendURL+'users/login'
 
     const requestOptions = {
       params: new HttpParams()
@@ -37,7 +37,7 @@ export class LoginService {
     }
 
     public logoutUser () {
-    let url = environment.rataplanBackendURL+'users/logout'
+    let url = environment.authBackendURL+'users/logout'
 
       return this.httpClient.get<any>(url,{withCredentials: true}).subscribe(console.log);
 
@@ -45,7 +45,7 @@ export class LoginService {
 
 
     public getUserData() {
-    let url = environment.rataplanBackendURL+'users/profile'
+    let url = environment.authBackendURL+'users/profile'
 
 
       const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
