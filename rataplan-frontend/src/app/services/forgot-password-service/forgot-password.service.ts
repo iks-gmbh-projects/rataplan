@@ -11,7 +11,7 @@ export class ForgotPasswordService {
   }
 
   forgotPassword(mail: String) {
-    let url = environment.rataplanBackendURL+'users/forgotPassword';
+    let url = environment.authBackendURL+'users/forgotPassword';
 
     return this.httpClient.post<String>(url, mail, {headers: new HttpHeaders({"Content-Type": "application/json;charset=utf-8"})})
   }
