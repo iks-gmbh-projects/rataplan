@@ -42,6 +42,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import { MainNavComponent } from './main-nav/main-nav.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 registerLocaleData(localeDE);
 
@@ -66,6 +67,7 @@ registerLocaleData(localeDE);
     DateOverviewSubformComponent,
     EmailSubformComponent,
     LinkSubformComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,

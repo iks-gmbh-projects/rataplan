@@ -18,6 +18,7 @@ import {RegisterComponent} from "./register/register.component";
 import {LoginComponent} from "./login/login.component";
 import {AuthGuardService} from "./services/auth-guard-service/auth-guard-service";
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import {ChangePasswordComponent} from "./change-password/change-password.component";
 
 const routes: Routes = [
   { path: '', component: HomepageComponent },
@@ -41,6 +42,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [AuthGuardService]},
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'change-password', component: ChangePasswordComponent }
 ];
 
 @NgModule({
