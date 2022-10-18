@@ -21,7 +21,8 @@ export class AppointmentRequestFormService {
 
   setGeneralInputValue(title: string, description: string, deadline: Date) {
     this.appointmentRequest.title = title.trim();
-    if (description !== null) this.appointmentRequest.description = description.trim();
+    if (description !== null) description.trim();
+    this.appointmentRequest.description = description;
     this.appointmentRequest.deadline = deadline;
   }
 
@@ -57,14 +58,10 @@ export class AppointmentRequestFormService {
   createAppointmentRequest() {
     const url = 'http://localhost:8080/v1/appointmentRequests';
 
-    return this.http.post(url, this.appointmentRequest, {
+    return this.http.post<AppointmentRequestModel>(url, this.appointmentRequest, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json;charset=utf-8'
       })
-    }).subscribe(response => {
-      this.selectedDates = [];
-      this.appointmentRequest = new AppointmentRequestModel();
-      console.log(response);
     });
   }
 }

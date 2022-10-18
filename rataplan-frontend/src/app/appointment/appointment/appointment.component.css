@@ -1,0 +1,16 @@
+.wrapper {
+  padding: 50px;
+}
+
+.vote-button {
+  margin-top: 20px;
+  float: right;
+}
+
+.vote-change-button {
+  margin-top: 20px;
+}
+
+.member {
+  max-height: 50px;
+}

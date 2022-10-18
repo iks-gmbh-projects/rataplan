@@ -4,9 +4,8 @@ export class AppointmentMemberModel {
   id: number | undefined;
   appointmentRequestId: number | undefined;
   backendUserId: number | undefined;
-  name: string | undefined;
+  name: string | undefined | null;
   appointmentDecisions: AppointmentDecisionModel[];
-  displayedName: string | undefined;
 
   constructor() {
     this.appointmentDecisions = [];

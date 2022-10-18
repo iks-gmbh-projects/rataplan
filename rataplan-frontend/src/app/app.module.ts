@@ -1,13 +1,26 @@
 import { registerLocaleData } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import localeDE from '@angular/common/locales/de';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { BrowserModule } from '@angular/platform-browser';
@@ -15,6 +28,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AppointmentComponent } from './appointment/appointment/appointment.component';
+import { MemberDecisionSubformComponent } from './appointment/appointment/member-decision-subform/member-decision-subform.component';
 import { AppointmentRequestFormComponent, } from './appointment/appointment-request-form/appointment-request-form.component';
 import { DateOverviewSubformComponent } from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
 import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
@@ -24,21 +39,10 @@ import { LinkSubformComponent } from './appointment/appointment-request-form/lin
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
+import { ContactComponent } from './legals/contact/contact.component';
 import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatListModule} from '@angular/material/list';
-import {MatIconModule} from '@angular/material/icon';
-import { ContactComponent } from './legals/contact/contact.component';
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {LoginComponent} from "./login/login.component";
-import {MatMenuModule} from "@angular/material/menu";
-
-
+import { LoginComponent } from './login/login.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
@@ -67,6 +71,8 @@ registerLocaleData(localeDE);
     DateOverviewSubformComponent,
     EmailSubformComponent,
     LinkSubformComponent,
+    AppointmentComponent,
+    MemberDecisionSubformComponent,
     ChangePasswordComponent,
   ],
   imports: [
@@ -91,7 +97,11 @@ registerLocaleData(localeDE);
     MatCheckboxModule,
     MatFormFieldModule,
     FormsModule,
+    MatButtonToggleModule,
+    MatDialogModule,
     MatMenuModule,
+    MatBadgeModule,
+    MatExpansionModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
