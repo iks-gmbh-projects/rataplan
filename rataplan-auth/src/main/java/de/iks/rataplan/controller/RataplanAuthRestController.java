@@ -97,7 +97,18 @@ public class RataplanAuthRestController {
         String username = jwtTokenService.getUsernameFromToken(token);
         boolean success = this.userService.changeEmail(username, email);
         return new ResponseEntity<>(success,HttpStatus.OK);
+    }
 
+    @RequestMapping(value = "/users/profile/changeDisplayName", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> changeDisplayName(@RequestHeader(value = JWT_COOKIE_NAME, required = true) String token,
+                                                     @RequestBody String displayName) {
+        if (!jwtTokenService.isTokenValid(token)) {
+            throw new InvalidTokenException("Invalid token");
+        }
+        String username = jwtTokenService.getUsernameFromToken(token);
+        boolean success = this.userService.changeDisplayName(username, displayName);
+
+        return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/users/resetPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
