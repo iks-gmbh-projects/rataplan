@@ -114,6 +114,12 @@ public class UserControllerService {
         return response.getBody();
     }
 
+    public boolean changeDisplayName(String displayName, String jwtToken) {
+        ResponseEntity<Boolean> response = this.authService.changeDisplayName(jwtToken,displayName);
+
+        return response.getBody();
+    }
+
     public boolean resetPassword(ResetPasswordData resetPasswordData) {
 
         ResponseEntity<Boolean> response = this.authService.resetPassword(resetPasswordData);

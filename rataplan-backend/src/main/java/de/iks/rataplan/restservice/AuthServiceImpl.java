@@ -1,6 +1,7 @@
 package de.iks.rataplan.restservice;
 
 import de.iks.rataplan.domain.*;
+import org.apache.http.client.methods.HttpHead;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -100,6 +101,22 @@ public class AuthServiceImpl implements AuthService {
         if (response.getBody() == false) {
             throw new MalformedException(
                     "Email has not been changed");
+        }
+        return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
+    }
+    @Override
+    public ResponseEntity<Boolean> changeDisplayName(String token, String displayName) {
+        String url = authUrl + "/users/profile/changeDisplayName";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(JWT_COOKIE_NAME, token);
+        HttpEntity<String> entity = new HttpEntity<>(displayName,headers);
+
+        ResponseEntity<Boolean> response = restTemplate.exchange(url, HttpMethod.POST, entity, Boolean.class);
+        if (response.getBody() == false) {
+            throw new MalformedException(
+                    "Displayname has not been changed");
         }
         return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
     }

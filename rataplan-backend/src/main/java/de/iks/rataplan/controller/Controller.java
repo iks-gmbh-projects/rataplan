@@ -234,6 +234,19 @@ public class Controller {
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
+    @ApiResponse(code = 400, message = "Displayname has not been changed", response = MalformedException.class),
+    @ApiResponse(code = 500, message = "Internal Server Error", response = ServiceNotAvailableException.class)})
+    @RequestMapping(value = "users/profile/changeDisplayName", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+    public ResponseEntity<Boolean> changeDisplayName(@RequestBody String displayName,
+                                                     @CookieValue(value = JWT_COOKIE_NAME, required = true) String jwtToken) {
+
+        boolean success = userControllerService.changeDisplayName(displayName,jwtToken);
+
+        return new ResponseEntity<>(success, HttpStatus.OK);
+    }
+
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
             @ApiResponse(code = 400, message = "Password has not been changed.", response = MalformedException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @RequestMapping(value = "/users/resetPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

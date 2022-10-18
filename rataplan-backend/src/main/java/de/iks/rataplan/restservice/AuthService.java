@@ -19,6 +19,8 @@ public interface AuthService {
 
     ResponseEntity<Boolean> changeEmail(String token , String email);
 
+    ResponseEntity<Boolean> changeDisplayName(String token, String displayName);
+
     ResponseEntity<AuthToken> saveAuthTokenToUserWithMail(String mail);
 
     ResponseEntity<Boolean> resetPassword(ResetPasswordData resetPasswordData);
