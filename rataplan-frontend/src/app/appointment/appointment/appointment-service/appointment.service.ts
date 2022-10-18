@@ -8,13 +8,12 @@ import { AppointmentRequestModel } from '../../../models/appointment-request.mod
   providedIn: 'root'
 })
 export class AppointmentService {
+  url = 'http://localhost:8080/v1/appointmentRequests/';
 
   constructor(private http: HttpClient) { }
 
   getAppointmentByParticipationToken(participationToken : string) {
-    const url = 'http://localhost:8080/v1/appointmentRequests/';
-
-    return this.http.get<AppointmentRequestModel>(url + participationToken, {
+    return this.http.get<AppointmentRequestModel>(this.url + participationToken, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json;charset=utf-8'
       })
@@ -22,17 +21,40 @@ export class AppointmentService {
   }
 
   addAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
-    let token = appointmentRequest.participationToken;
-    if (token === null) {
-      token = '' + appointmentRequest.id;
-    }
-    const url = 'http://localhost:8080/v1/appointmentRequests/' +
-      token + '/appointmentMembers';
+    const token = this.getParticipationToken(appointmentRequest);
 
-    return this.http.post<AppointmentMemberModel>(url, appointmentMember, {
-      headers: new HttpHeaders({
+    return this.http.post<AppointmentMemberModel>(this.url + token + '/appointmentMembers', appointmentMember,
+      { headers: new HttpHeaders({
         'Content-Type': 'application/json;charset=utf-8'
       })
-    });
+      });
+  }
+
+  updateAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
+    const token = this.getParticipationToken(appointmentRequest);
+
+    return this.http.put<AppointmentMemberModel>(this.url + token + '/appointmentMembers/' + appointmentMember.id, appointmentMember,
+      { headers: new HttpHeaders({
+        'Content-Type': 'application/json;charset=utf-8'
+      })
+      });
+  }
+
+  deleteAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
+    const token = this.getParticipationToken(appointmentRequest);
+
+    return this.http.delete<AppointmentMemberModel>(this.url + token + '/appointmentMembers/' + appointmentMember.id,
+      { headers: new HttpHeaders({
+        'Content-Type': 'application/json;charset=utf-8'
+      })
+      });
+  }
+
+  getParticipationToken(appointmentRequest: AppointmentRequestModel) {
+    const token = appointmentRequest.participationToken;
+    if (token !== null) {
+      return token;
+    }
+    return '' + appointmentRequest.id;
   }
 }

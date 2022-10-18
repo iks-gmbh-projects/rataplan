@@ -1,17 +1,40 @@
 <div class='wrapper'>
-  <h3>{{ appointmentRequest.title }}</h3>
-  <div>
-      <span>{{ appointmentRequest.description }}</span>
-  </div>
-  <div *ngIf='appointmentRequest.organizerName !== null' >
+  <mat-card>
+    <mat-card-title>{{ appointmentRequest.title }}</mat-card-title>
+    <mat-card-content>
+      <p></p>
+      <p>{{ appointmentRequest.description }}</p>
+      <p>{{ appointmentRequest.organizerName }}</p>
+    </mat-card-content>
+    <mat-card-subtitle>Teilnahme bis zum {{ appointmentRequest.deadline | date:'dd MMMM yyyy':'+0200':'de' }}</mat-card-subtitle>
+    <div *ngIf='appointmentRequest.organizerName !== null'>
       <span>Erstellt von {{ appointmentRequest.organizerName }}</span>
-  </div>
-  <div *ngIf='appointmentRequest.expired'>
-    <p></p>
-    <span style='color: red'>Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
-  </div>
-  <div>
-    <h4>Teilnehmer: {{ appointmentRequest.appointmentMembers.length }}</h4>
+    </div>
+    <div *ngIf='appointmentRequest.expired'>
+      <p></p>
+      <span style='color: red'>Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
+    </div>
+  </mat-card>
+  <div style='margin-top: 20px; margin-bottom: 20px'>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Teilnehmer
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-list *ngFor='let member of this.appointmentRequest.appointmentMembers'
+                multiple='false'>
+        <mat-list-item class='member'>
+          <button mat-icon-button (click)='deleteMember(member)'>
+            <mat-icon mat-list-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button (click)='editMember(member)'>
+            <mat-icon mat-list-icon>edit_square</mat-icon>
+          </button>
+          {{ member.name }}
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
   </div>
   <div>
     <mat-form-field appearance='fill'>
@@ -25,20 +48,27 @@
     <span>keine Eingaben werden als nicht Entschieden gespeichert</span>
   </div>
   <mat-list>
-    <mat-list-item *ngFor='let appointment of appointmentRequest.appointments; let i = index'>
-      <div mat-line  style='font-size: 90%'>{{ appointment.startDate | date:'dd.MM.yyyy':'+0200':'de' }}</div>
+    <mat-list-item *ngFor='let appointment of appointmentRequest.appointments'>
+      <div mat-line
+           style='font-size: 90%'>
+        {{ appointment.startDate | date:'dd.MM.yyyy':'+0200':'de' }}
+      </div>
       <button mat-icon-button
               (click)='openDialog(appointment)'>
         <mat-icon>info</mat-icon>
       </button>
-      <mat-button-toggle-group [disabled]='isVoted || appointmentRequest.expired' style='scale: 90%'>
-        <mat-button-toggle (click)='setDecision(appointment, 1)'>
+      <mat-button-toggle-group style='scale: 90%'>
+        <mat-button-toggle (click)='setDecision(appointment, 1)'
+                           [checked]='checkVoteOfMember(appointment, 1)'
+                           [disabled]='isVoted || appointmentRequest.expired'>
           <mat-icon>done</mat-icon>
         </mat-button-toggle>
-<!--        <mat-button-toggle (click)='setDecision(appointment, 2)'>-->
-<!--          (<mat-icon>done</mat-icon>)-->
-<!--        </mat-button-toggle>-->
-        <mat-button-toggle (click)='setDecision(appointment, 3)'>
+        <!--        <mat-button-toggle (click)='setDecision(appointment, 2)'>-->
+        <!--          (<mat-icon>done</mat-icon>)-->
+        <!--        </mat-button-toggle>-->
+        <mat-button-toggle (click)='setDecision(appointment, 3)'
+                           [checked]='checkVoteOfMember(appointment, 3)'
+                           [disabled]='isVoted || appointmentRequest.expired'>
           <mat-icon>close</mat-icon>
         </mat-button-toggle>
       </mat-button-toggle-group>
@@ -50,7 +80,7 @@
             color='primary'
             mat-raised-button
             [disabled]='isVoted || appointmentRequest.expired'
-            (click)='saveVote()'>Abstimmen
+            (click)='saveVote()'>{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
     </button>
   </div>
 </div>
