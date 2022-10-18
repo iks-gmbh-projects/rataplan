@@ -16,7 +16,7 @@ export class ChangePasswordComponent implements OnInit {
   hideConfirmPassword = true;
 
   oldPassword: FormControl = new FormControl('', Validators.required);
-  newPassword: FormControl = new FormControl('', Validators.required);
+  newPassword: FormControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
   confirmPassword: FormControl = new FormControl('', Validators.required);
 
   changePasswordForm = this.formBuilder.group({
@@ -49,8 +49,6 @@ export class ChangePasswordComponent implements OnInit {
     if (this.oldPassword.hasError('required')) {
       return 'Dieses Feld darf nicht leer bleiben';
     } else if (this.oldPassword.hasError('wrongPassword')) {
-      return 'Falsches Passwort';
-    } else if (this.changePasswordForm.hasError('wrongPassword')) {
       return 'Falsches Passwort';
     }
     return '';
