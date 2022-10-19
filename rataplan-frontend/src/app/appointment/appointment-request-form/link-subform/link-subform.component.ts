@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
+import { AppointmentRequestModel } from '../../../models/appointment-request.model';
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
 
 @Component({
@@ -21,8 +22,9 @@ export class LinkSubformComponent implements OnInit, OnDestroy {
       .subscribe(
         data => {
           this.link = this.link + data.participationToken;
-          // this.appointmentRequest = new AppointmentRequestModel();
           console.log(data);
+          this.appointmentFormService.appointmentRequest = new AppointmentRequestModel();
+          this.appointmentFormService.selectedDates = [];
         });
   }
 

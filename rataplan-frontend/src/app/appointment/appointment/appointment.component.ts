@@ -20,10 +20,12 @@ import { MemberDecisionSubformComponent } from './member-decision-subform/member
 export class AppointmentComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   appointmentRequest = new AppointmentRequestModel();
-  appointmentMember = new AppointmentMemberModel();
+  member = new AppointmentMemberModel();
+  memberName = this.member.name;
+
   participationToken = '';
-  memberName = null;
   isVoted = false;
+  isEditMember = false;
 
   constructor(public dialog: MatDialog,
     private route: ActivatedRoute,
@@ -33,15 +35,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.participationToken = '' + params.get('id');
     });
-    console.log(this.participationToken);
 
     this.appointmentService.getAppointmentByParticipationToken(this.participationToken)
       .pipe(takeUntil(this.destroySubject))
-      .subscribe(data => {
-        this.appointmentRequest = data;
-        sessionStorage.setItem('appointmentMembers',
-          JSON.stringify(this.appointmentRequest.appointmentMembers));
-        console.log(data);
+      .subscribe(appointmentRequest => {
+        this.appointmentRequest = appointmentRequest;
+        sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest.appointmentMembers));
+        if (!this.appointmentRequest.expired) {
+          this.setAppointments();
+        }
       });
   }
 
@@ -52,17 +54,39 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   saveVote() {
     this.isVoted = true;
-    this.appointmentMember.name = this.memberName;
-    this.appointmentService.addAppointmentMember(this.appointmentRequest, this.appointmentMember)
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(res => {
-        console.log(res);
-        this.appointmentRequest.appointmentMembers.push(res);
-        sessionStorage.setItem('appointmentMembers',
-          JSON.stringify(this.appointmentRequest.appointmentMembers));
-      });
+    this.member.name = this.memberName;
+    this.setNoAnswer();
+
+    if (this.isEditMember) {
+      this.appointmentService.updateAppointmentMember(this.appointmentRequest, this.member)
+        .pipe(takeUntil(this.destroySubject))
+        .subscribe(() => {
+          sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest.appointmentMembers));
+        });
+    } else {
+      this.appointmentService.addAppointmentMember(this.appointmentRequest, this.member)
+        .pipe(takeUntil(this.destroySubject))
+        .subscribe(member => {
+          this.appointmentRequest.appointmentMembers.push(member);
+          sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest.appointmentMembers));
+        });
+    }
   }
 
+  setAppointments() {
+    for (let i = 0; i < this.appointmentRequest.appointments.length; i++) {
+      this.member.appointmentDecisions.push(new AppointmentDecisionModel());
+      this.member.appointmentDecisions[i].appointmentId = this.appointmentRequest.appointments[i].id;
+    }
+  }
+
+  setNoAnswer() {
+    this.member.appointmentDecisions.forEach(appointment => {
+      if (appointment.decision === null) {
+        appointment.decision = AppointmentDecisionType.NO_ANSWER;
+      }
+    });
+  }
 
   openDialog(appointment: AppointmentModel) {
     this.dialog.open(MemberDecisionSubformComponent,
@@ -74,17 +98,50 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     );
   }
 
-  acceptAppointment(appointment: AppointmentModel) {
-    const appointmentDecision = new AppointmentDecisionModel();
-    appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
-    appointmentDecision.appointmentId = appointment.id;
-    this.appointmentMember.appointmentDecisions.push(appointmentDecision);
+  setDecision(appointment: AppointmentModel, decision: number) {
+    const index = this.appointmentRequest.appointments.indexOf(appointment);
+    const appointmentDecision = this.member.appointmentDecisions[index];
+
+    switch (decision) {
+    case 1:
+      appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
+      break;
+    case 2:
+      appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
+      break;
+    default:
+      appointmentDecision.decision = AppointmentDecisionType.DECLINE;
+      break;
+    }
   }
 
-  rejectAppointment(appointment: AppointmentModel) {
-    const appointmentDecision = new AppointmentDecisionModel();
-    appointmentDecision.decision = AppointmentDecisionType.DECLINE;
-    appointmentDecision.appointmentId = appointment.id;
-    this.appointmentMember.appointmentDecisions.push(appointmentDecision);
+  deleteMember(member: AppointmentMemberModel) {
+    if (this.member == member) {
+      this.member = new AppointmentMemberModel();
+      this.memberName = null;
+      this.isEditMember = false;
+    }
+    this.appointmentService.deleteAppointmentMember(this.appointmentRequest, member)
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        const index = this.appointmentRequest.appointmentMembers.indexOf(member);
+        this.appointmentRequest.appointmentMembers.splice(index, 1);
+        sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest.appointmentMembers));
+      });
+  }
+
+  editMember(member: AppointmentMemberModel) {
+    this.isVoted = false;
+    this.isEditMember = true;
+    if (member.name != undefined) this.memberName = member.name;
+
+    this.member = member;
+  }
+
+  checkVoteOfMember(appointment: AppointmentModel, number: number) {
+    if (!this.isEditMember) return undefined;
+
+    const index = this.appointmentRequest.appointments.indexOf(appointment);
+    return this.member.appointmentDecisions[index].decision === number;
   }
 }

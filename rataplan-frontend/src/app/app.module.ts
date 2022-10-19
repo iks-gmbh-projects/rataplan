@@ -12,6 +12,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -41,10 +42,11 @@ import { ConditionsComponent } from './legals/conditions/conditions.component';
 import { ContactComponent } from './legals/contact/contact.component';
 import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
+import { LoginComponent } from './login/login.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { LoginComponent } from "./login/login.component";
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 registerLocaleData(localeDE);
 
@@ -70,7 +72,8 @@ registerLocaleData(localeDE);
     EmailSubformComponent,
     LinkSubformComponent,
     AppointmentComponent,
-    MemberDecisionSubformComponent
+    MemberDecisionSubformComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -98,6 +101,7 @@ registerLocaleData(localeDE);
     MatDialogModule,
     MatMenuModule,
     MatBadgeModule,
+    MatExpansionModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },

@@ -2,12 +2,15 @@
   padding: 50px;
 }
 
-.mat-list-item {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
 .vote-button {
   margin-top: 20px;
   float: right;
+}
+
+.vote-change-button {
+  margin-top: 20px;
+}
+
+.member {
+  max-height: 50px;
 }
