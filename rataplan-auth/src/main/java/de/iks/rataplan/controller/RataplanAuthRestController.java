@@ -141,8 +141,17 @@ public class RataplanAuthRestController {
     }
 
     @RequestMapping(value = "/users/profile/changeDisplayName", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> changeDisplayName(@RequestHeader(value = JWT_COOKIE_NAME, required = true) String token,
-                                                     @RequestBody String displayName) {
+    public ResponseEntity<Boolean> changeDisplayName(
+            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+            @RequestBody String displayName
+    ) {
+        String token;
+        if (tokenHeader == null) token = tokenCookie;
+        else if (tokenCookie == null) token = tokenHeader;
+        else if (tokenCookie.equals(tokenHeader)) token = tokenCookie;
+        else throw new RataplanAuthException("Different tokens provided by cookie and header.");
+
         if (!jwtTokenService.isTokenValid(token)) {
             throw new InvalidTokenException("Invalid token");
         }
