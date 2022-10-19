@@ -19,6 +19,8 @@ public interface UserService {
 
     Boolean changeEmail (String token, String email);
 
+    Boolean changeDisplayName(String token, String email);
+
     Boolean changePasswordByToken(User user, String password);
 
     User getUserFromId(int userId);

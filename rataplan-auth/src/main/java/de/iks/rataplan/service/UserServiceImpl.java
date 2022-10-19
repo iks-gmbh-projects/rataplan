@@ -102,6 +102,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean changeDisplayName(String username, String displayName) {
+        User user = this.getUserData(username);
+        if (user!= null) {
+            user.setDisplayname(displayName);
+            userRepository.saveAndFlush(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public Boolean changePasswordByToken(User user, String password) {
         if (user != null) {
             user.setPassword(passwordEncoder.encode(password));
