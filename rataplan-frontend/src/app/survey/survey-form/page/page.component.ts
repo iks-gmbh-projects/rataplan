@@ -17,7 +17,7 @@ export class PageComponent {
     if (this.preview || form.valid) {
       let answers: {[key: string|number]: Answer&{checkboxId?: string|number}} = form.value;
       for(let key in answers) {
-        if(answers[key].checkboxId) {
+        if(answers[key].checkboxId !== undefined && answers[key].checkboxId !== null) {
           answers[key].checkboxes = {
             ...answers[key].checkboxes,
             [answers[key].checkboxId!]: true
@@ -36,7 +36,7 @@ export class PageComponent {
   public disableTextField(question: Question, form: NgForm): boolean {
     let answer: Answer&{checkboxId?: string|number} = form.value[question.id!];
     if(!answer) return false;
-    if(answer.checkboxId) {
+    if(answer.checkboxId !== undefined && answer.checkboxId !== null) {
       answer.checkboxes = {
         ...answer.checkboxes,
         [answer.checkboxId!]: true

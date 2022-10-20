@@ -38,9 +38,9 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
   }
 
   public submit(survey?: Survey): void {
-    survey = JSON.parse(JSON.stringify(survey)); // create copy of the input that we can modify freely
     if (!survey) return this.edit();
-    for (let qg of survey.questionGroups) {
+    survey = JSON.parse(JSON.stringify(survey)); // create copy of the input that we can modify freely
+    for (let qg of survey!.questionGroups) {
       delete qg.id;
       for (let question of qg.questions) {
         delete question.id;
@@ -53,8 +53,8 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
     }
     (
       this.isEdit ?
-        this.surveys.editSurvey(survey) :
-        this.surveys.createSurvey(survey)
+        this.surveys.editSurvey(survey!) :
+        this.surveys.createSurvey(survey!)
     ).subscribe({
       next: surv => {
         this.router.navigate(["/survey", "access", surv.accessId], { relativeTo: this.route });
