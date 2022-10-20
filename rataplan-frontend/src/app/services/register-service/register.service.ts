@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 import { FrontendUser } from '../../register/register.component';
 
@@ -12,19 +13,19 @@ export class RegisterService {
   }
 
   public registerUser(frontendUser: FrontendUser) {
-    const url = 'http://localhost:8080/v1/users/register';
+    const url = environment.authBackendURL+'users/register';
 
     return this.http.post<any>(url, frontendUser);
   }
 
   public checkIfMailExists(mail: string) {
-    const url = 'http://localhost:8080/v1/users/mailExists';
+    const url = environment.authBackendURL+'users/mailExists';
 
     return this.http.post<string>(url, mail, { headers: new HttpHeaders({ 'Content-Type': 'application/json;charset=utf-8' }) });
   }
 
   public checkIfUsernameExists(username: string) {
-    const url = 'http://localhost:8080/v1/users/usernameExists';
+    const url = environment.authBackendURL+'users/usernameExists';
 
     return this.http.post<string>(url, username, { headers: new HttpHeaders({ 'Content-Type': 'application/json;charset=utf-8' }) });
   }

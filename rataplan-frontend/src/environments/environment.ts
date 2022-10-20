@@ -5,6 +5,8 @@
 export const environment = {
   production: false,
   surveyBackendURL: "http://localhost:8082/",
+  authBackendURL: "http://localhost:8081/v1/",
+  rataplanBackendURL: "http://localhost:8080/v1/",
 };
 
 /*
