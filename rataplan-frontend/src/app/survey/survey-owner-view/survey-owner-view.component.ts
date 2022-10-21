@@ -12,6 +12,7 @@ import { Survey } from '../survey.model';
 })
 export class SurveyOwnerViewComponent implements OnInit, OnDestroy {
   public survey: Survey|null = null;
+  public expired: boolean = false;
 
   private sub: Subscription|null = null;
 
@@ -19,7 +20,12 @@ export class SurveyOwnerViewComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.survey = this.route.snapshot.data['survey'];
-    this.sub = this.route.data.subscribe(d => this.survey = d['survey']);
+    this.expired = this.survey!.endDate < new Date();
+    this.sub = this.route.data.subscribe(d => {
+      this.survey = d['survey'];
+      this.expired = this.survey!.endDate < new Date();
+    });
+    setInterval(() => this.expired = this.survey!.endDate < new Date(), 1000);
   }
 
   public ngOnDestroy(): void {
