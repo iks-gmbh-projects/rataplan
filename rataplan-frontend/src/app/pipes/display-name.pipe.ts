@@ -2,18 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Pipe, PipeTransform } from '@angular/core';
 import { EMPTY, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { DisplayNameService } from '../services/displayname-service/displayname.service';
 
 @Pipe({
   name: 'displayName'
 })
 export class DisplayNamePipe implements PipeTransform {
-  constructor(private http: HttpClient) {}
+  constructor(private displayNames: DisplayNameService) {}
 
   transform(userId?: string|number|null): Observable<string> {
-    if(userId === undefined || userId === null) return EMPTY;
-    return this.http.get(environment.authBackendURL+"users/displayName/"+userId, {
-      responseType: "text",
-    });
+    return this.displayNames.getDisplayName(userId);
   }
 
 }
