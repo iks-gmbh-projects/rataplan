@@ -5,8 +5,9 @@
       <p></p>
       <p>{{ appointmentRequest.description }}</p>
     </mat-card-content>
-    <mat-card-subtitle *ngIf='!appointmentRequest.expired'>Teilnahme bis
-      zum {{ appointmentRequest.deadline | date:'dd MMMM yyyy':'+0200':'de' }}</mat-card-subtitle>
+    <mat-card-subtitle *ngIf='!appointmentRequest.expired'>
+      Abstimmung aktiv bis: {{ appointmentRequest.deadline | date:'dd MMMM yyyy':'+0200':'de' }}
+    </mat-card-subtitle>
     <mat-card-subtitle *ngIf='appointmentRequest.expired'>
       <span class='mat-error'>Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
     </mat-card-subtitle>
@@ -18,7 +19,7 @@
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Teilnehmer
+          Teilnehmer : {{ appointmentRequest.appointmentMembers.length }}
         </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-list *ngFor='let member of this.appointmentRequest.appointmentMembers'
@@ -41,7 +42,7 @@
   </div>
   <div>
     <mat-form-field appearance='fill'>
-      <mat-label>Teilnehmername</mat-label>
+      <mat-label>Name</mat-label>
       <input [(ngModel)]='memberName'
              matInput
              autocomplete='off'>
@@ -63,7 +64,7 @@
       <mat-button-toggle-group style='scale: 90%'>
         <mat-button-toggle (click)='setDecision(appointment, 1)'
                            [checked]='checkVoteOfMember(appointment, 1)'
-                           [disabled]='isVoted || appointmentRequest.expired'>
+                           [disabled]='appointmentRequest.expired'>
           <mat-icon>done</mat-icon>
         </mat-button-toggle>
         <!--        <mat-button-toggle (click)='setDecision(appointment, 2)'>-->
@@ -71,7 +72,7 @@
         <!--        </mat-button-toggle>-->
         <mat-button-toggle (click)='setDecision(appointment, 3)'
                            [checked]='checkVoteOfMember(appointment, 3)'
-                           [disabled]='isVoted || appointmentRequest.expired'>
+                           [disabled]='appointmentRequest.expired'>
           <mat-icon>close</mat-icon>
         </mat-button-toggle>
       </mat-button-toggle-group>
@@ -82,7 +83,7 @@
             type='submit'
             color='primary'
             mat-raised-button
-            [disabled]='isVoted || appointmentRequest.expired'
+            [disabled]='appointmentRequest.expired'
             (click)='saveVote()'>{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
     </button>
   </div>
