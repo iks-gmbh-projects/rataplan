@@ -33,6 +33,7 @@ import { SurveyMissingComponent } from './survey-missing/survey-missing.componen
 import { SurveyForbiddenComponent } from './survey-forbidden/survey-forbidden.component';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { SurveyAnswerComponent } from './survey-form/survey-answer/survey-answer.component';
+import { AppCommonModule } from '../app-common.module';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,7 @@ import { SurveyAnswerComponent } from './survey-form/survey-answer/survey-answer
     SurveyAnswerComponent,
   ],
   imports: [
-    CommonModule,
+    AppCommonModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,

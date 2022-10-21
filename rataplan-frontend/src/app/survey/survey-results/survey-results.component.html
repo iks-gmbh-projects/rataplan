@@ -21,7 +21,7 @@
               <table mat-table matSort [dataSource]="answers">
                 <ng-container matColumnDef="user">
                   <th mat-header-cell mat-sort-header *matHeaderCellDef>Beantworter</th>
-                  <td mat-cell *matCellDef="let answer">{{answer.userId || "Anonym"}}</td>
+                  <td mat-cell *matCellDef="let answer">{{(answer.userId | displayName | async) || "Anonym"}}</td>
                 </ng-container>
                 <ng-template [ngIf]="question.checkboxGroup">
                   <ng-container *ngFor="let checkbox of question.checkboxGroup.checkboxes"

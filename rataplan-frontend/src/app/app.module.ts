@@ -48,6 +48,7 @@ import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ProfileComponent } from './profile/profile.component';
+import { AppCommonModule } from './app-common.module';
 
 registerLocaleData(localeDE);
 
@@ -80,6 +81,7 @@ registerLocaleData(localeDE);
   imports: [
     BrowserModule,
     AppRoutingModule,
+    AppCommonModule,
     BrowserAnimationsModule,
     MatButtonModule,
     MatToolbarModule,

@@ -28,6 +28,8 @@
       <span class="fillRemainingSpace" ></span>
       <button  (click)="onClick()" [matMenuTriggerFor]="menu" #trigger = "matMenuTrigger" class="loginIcon" mat-icon-button color="FFFFFF" aria-label="Example icon button with a home icon">
         <mat-icon>perm_identity</mat-icon>
+        {{localstorageService.isLoggedIn() | displayName | async}}
+        <!--dirty hack as there is no decent way to get accurate data about the logged in user through a service-->
       </button>
       <mat-menu #menu="matMenu" >
         <button mat-menu-item routerLink="/profile"><mat-icon>account_circle</mat-icon>Profil</button>
