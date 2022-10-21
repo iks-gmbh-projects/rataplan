@@ -1,6 +1,7 @@
 package iks.surveytool.utils.builder;
 
 import iks.surveytool.entities.QuestionGroup;
+import iks.surveytool.entities.Survey;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,13 @@ public class QuestionGroupBuilder {
         newQuestionGroup.setId(id);
         newQuestionGroup.setTitle(title);
         newQuestionGroup.setQuestions(new ArrayList<>());
+        return newQuestionGroup;
+    }
+
+    public QuestionGroup createQuestionGroupIn(Survey survey, Long id, String title) {
+        QuestionGroup newQuestionGroup = createQuestionGroup(id, title);
+        newQuestionGroup.setSurvey(survey);
+        survey.getQuestionGroups().add(newQuestionGroup);
         return newQuestionGroup;
     }
 }

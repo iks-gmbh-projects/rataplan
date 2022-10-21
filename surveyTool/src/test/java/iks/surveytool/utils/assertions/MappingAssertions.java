@@ -3,6 +3,8 @@ package iks.surveytool.utils.assertions;
 import iks.surveytool.dtos.*;
 import iks.surveytool.entities.*;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,15 +14,14 @@ public class MappingAssertions {
         assertEquals(surveyDTO.getId(), survey.getId());
         assertEquals(surveyDTO.getName(), survey.getName());
         assertEquals(surveyDTO.getDescription(), survey.getDescription());
-        assertEquals(surveyDTO.getStartDate(), survey.getStartDate());
-        assertEquals(surveyDTO.getEndDate(), survey.getEndDate());
+        assertEquals(surveyDTO.getStartDate(), survey.getStartDate().toInstant());
+        assertEquals(surveyDTO.getEndDate(), survey.getEndDate().toInstant());
         assertEquals(surveyDTO.isOpenAccess(), survey.isOpenAccess());
         assertEquals(surveyDTO.isAnonymousParticipation(), survey.isAnonymousParticipation());
         assertEquals(surveyDTO.getAccessId(), survey.getAccessId());
         assertEquals(surveyDTO.getParticipationId(), survey.getParticipationId());
 
-        assertEquals(surveyDTO.getUserId(), survey.getUser().getId());
-        assertEquals(surveyDTO.getUserName(), survey.getUser().getName());
+        assertEquals(surveyDTO.getUserId(), survey.getUserId());
 
         List<QuestionGroupDTO> questionGroupDTOs = surveyDTO.getQuestionGroups();
         List<QuestionGroup> questionGroups = survey.getQuestionGroups();
@@ -71,19 +72,23 @@ public class MappingAssertions {
         assertEquals(checkboxDTO.isHasTextField(), checkbox.isHasTextField());
     }
 
+    private static Instant toInstant(ZonedDateTime dateTime) {
+        if(dateTime == null) return null;
+        return dateTime.toInstant();
+    }
+
     public static void assertSurvey(Survey survey, CompleteSurveyDTO surveyDTO) {
         assertEquals(survey.getId(), surveyDTO.getId());
         assertEquals(survey.getName(), surveyDTO.getName());
         assertEquals(survey.getDescription(), surveyDTO.getDescription());
-        assertEquals(survey.getStartDate(), surveyDTO.getStartDate());
-        assertEquals(survey.getEndDate(), surveyDTO.getEndDate());
+        assertEquals(toInstant(survey.getStartDate()), surveyDTO.getStartDate());
+        assertEquals(toInstant(survey.getEndDate()), surveyDTO.getEndDate());
         assertEquals(survey.isOpenAccess(), surveyDTO.isOpenAccess());
         assertEquals(survey.isAnonymousParticipation(), surveyDTO.isAnonymousParticipation());
         assertEquals(survey.getAccessId(), surveyDTO.getAccessId());
         assertEquals(survey.getParticipationId(), surveyDTO.getParticipationId());
 
-        assertEquals(survey.getUser().getId(), surveyDTO.getUserId());
-        assertEquals(survey.getUser().getName(), surveyDTO.getUserName());
+        assertEquals(survey.getUserId(), surveyDTO.getUserId());
 
         List<QuestionGroup> questionGroups = survey.getQuestionGroups();
         List<QuestionGroupDTO> questionGroupDTOs = surveyDTO.getQuestionGroups();
@@ -144,13 +149,9 @@ public class MappingAssertions {
         assertEquals(answerDTO.getId(), answer.getId());
         assertEquals(answerDTO.getText(), answer.getText());
 
-        assertEquals(answerDTO.getUserId(), answer.getUser().getId());
-        assertEquals(answerDTO.getUserName(), answer.getUser().getName());
-
-        if (answer.getCheckbox() != null) {
-            assertEquals(answerDTO.getCheckboxId(), answer.getCheckbox().getId());
+        if (answer.getCheckboxes() != null) {
+            assertEquals(answerDTO.getCheckboxes(), answer.getCheckboxes());
         }
-        assertEquals(answerDTO.getQuestionId(), answer.getQuestion().getId());
     }
 
     public static void assertAnswers(List<Answer> answers, List<AnswerDTO> answerDTOs) {
@@ -163,22 +164,8 @@ public class MappingAssertions {
         assertEquals(answer.getId(), answerDTO.getId());
         assertEquals(answer.getText(), answerDTO.getText());
 
-        assertEquals(answer.getUser().getId(), answerDTO.getUserId());
-        assertEquals(answer.getUser().getName(), answerDTO.getUserName());
-
-        if (answerDTO.getCheckboxId() != null) {
-            assertEquals(answer.getCheckbox().getId(), answerDTO.getCheckboxId());
+        if (answerDTO.getCheckboxes() != null) {
+            assertEquals(answer.getCheckboxes(), answerDTO.getCheckboxes());
         }
-        assertEquals(answer.getQuestion().getId(), answerDTO.getQuestionId());
-    }
-
-    public static void assertUserDTO(UserDTO userDTO, User user) {
-        assertEquals(userDTO.getId(), user.getId());
-        assertEquals(userDTO.getName(), user.getName());
-    }
-
-    public static void assertUser(User user, UserDTO userDTO) {
-        assertEquals(user.getId(), userDTO.getId());
-        assertEquals(user.getName(), userDTO.getName());
     }
 }

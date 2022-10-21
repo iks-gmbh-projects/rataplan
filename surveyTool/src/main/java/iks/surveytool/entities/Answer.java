@@ -47,6 +47,7 @@ public class Answer extends AbstractEntity {
         if(!Objects.equals(this.response.getSurvey().getId(), this.question.getQuestionGroup().getSurvey().getId())) {
             return false;
         }
+        if(this.question.isHasCheckbox() && (this.checkboxes == null)) return false;
         if (!this.question.isHasCheckbox() || this.checkboxes.stream().anyMatch(Checkbox::isHasTextField)) {
             return this.checkIfAnswerTextValid();
         }

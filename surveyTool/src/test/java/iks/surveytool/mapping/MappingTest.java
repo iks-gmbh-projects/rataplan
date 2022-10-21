@@ -12,8 +12,10 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Testing Mapper")
@@ -45,10 +47,8 @@ public class MappingTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         CompleteSurveyDTO surveyDTO = modelMapper.map(survey, CompleteSurveyDTO.class);
@@ -94,19 +94,18 @@ public class MappingTest {
         CompleteSurveyDTO surveyDTO = new CompleteSurveyDTO();
         surveyDTO.setId(1L);
         surveyDTO.setName("Test Survey");
-        surveyDTO.setStartDate(LocalDateTime.of(2050, 1, 1, 12, 0));
-        surveyDTO.setEndDate(surveyDTO.getStartDate().plusWeeks(1L));
+        ZonedDateTime startDate = ZonedDateTime.of(2050, 1, 1, 12, 0, 0, 0, ZoneId.systemDefault());
+        surveyDTO.setStartDate(startDate.toInstant());
+        surveyDTO.setEndDate(startDate.plusWeeks(1L).toInstant());
         surveyDTO.setOpenAccess(false);
         surveyDTO.setAnonymousParticipation(true);
         surveyDTO.setAccessId("Dummy String");
         surveyDTO.setParticipationId("Dummy String");
         surveyDTO.setUserId(1L);
-        surveyDTO.setUserName("Max Mustermann");
         surveyDTO.setQuestionGroups(List.of(questionGroupDTO));
 
         Survey surveyConverted = modelMapper.map(surveyDTO, Survey.class);
-        System.out.println(surveyConverted.getUser().getId());
-        System.out.println(surveyConverted.getUser().getName());
+        System.out.println(surveyConverted.getUserId());
 
         MappingAssertions.assertSurvey(surveyConverted, surveyDTO);
     }
@@ -129,14 +128,10 @@ public class MappingTest {
                 .createQuestion(2L, "Test Question", false, true);
         secondQuestion.setCheckboxGroup(checkboxGroup);
 
-        User user = new User();
-        user.setId(1L);
-        user.setName("Test User");
-
         Answer firstAnswer = new AnswerBuilder()
-                .createAnswer(1L, "Test Answer", user, firstQuestion, null);
+                .createAnswer(1L, "Test Answer", firstQuestion, null, null);
         Answer secondAnswer = new AnswerBuilder()
-                .createAnswer(2L, null, user, secondQuestion, firstCheckbox);
+                .createAnswer(2L, null, secondQuestion, null, List.of(firstCheckbox));
 
         List<Answer> answers = List.of(firstAnswer, secondAnswer);
 
@@ -152,14 +147,8 @@ public class MappingTest {
     void mapAnswerDTOsToAnswers() {
         AnswerDTO firstAnswerDTO = new AnswerDTO();
         firstAnswerDTO.setText("Text");
-        firstAnswerDTO.setUserId(1L);
-        firstAnswerDTO.setUserName("Test User");
-        firstAnswerDTO.setQuestionId(1L);
         AnswerDTO secondAnswerDTO = new AnswerDTO();
-        secondAnswerDTO.setUserId(1L);
-        secondAnswerDTO.setUserName("Test User");
-        secondAnswerDTO.setQuestionId(2L);
-        secondAnswerDTO.setCheckboxId(1L);
+        secondAnswerDTO.setCheckboxes(Map.of(1L, true));
 
         List<AnswerDTO> answerDTOs = List.of(secondAnswerDTO, secondAnswerDTO);
 
@@ -169,28 +158,4 @@ public class MappingTest {
 
         MappingAssertions.assertAnswers(answers, answerDTOs);
     }
-
-    @Test
-    @DisplayName("User to UserDTO")
-    void mapUserToUserDTO() {
-        User user = new UserBuilder()
-                .createUser(1L, "Test User");
-
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-
-        MappingAssertions.assertUserDTO(userDTO, user);
-    }
-
-    @Test
-    @DisplayName("UserDTO to User")
-    void mapUserDTOToUser() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(1L);
-        userDTO.setName("Test User");
-
-        User user = modelMapper.map(userDTO, User.class);
-
-        MappingAssertions.assertUser(user, userDTO);
-    }
-
 }

@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -20,10 +21,8 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - Survey missing QuestionGroups")
     void surveyIsMissingQuestionGroups() {
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey without QuestionGroup", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Survey without QuestionGroup", 1L);
 
         assertFalse(survey.validate());
     }
@@ -40,10 +39,8 @@ class ValidationTest {
         QuestionGroup questionGroupWithoutQuestion = new QuestionGroupBuilder()
                 .createQuestionGroup(2L, "QuestionGroup without Question");
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with empty QuestionGroup", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with empty QuestionGroup", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion, questionGroupWithoutQuestion));
 
         assertFalse(survey.validate());
@@ -63,10 +60,8 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with no checkboxes for question", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with no checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
@@ -90,10 +85,8 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
@@ -121,10 +114,8 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
@@ -142,10 +133,8 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(firstQuestion, secondQuestion));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
@@ -203,7 +192,7 @@ class ValidationTest {
                 .createDefaultSurvey();
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        survey.setStartDate(LocalDateTime.of(2000, 1, 1, 12, 0));
+        survey.setStartDate(ZonedDateTime.of(2000, 1, 1, 12, 0, 0, 0, ZoneId.systemDefault()));
 
         assertFalse(survey.validate());
     }
@@ -271,10 +260,8 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
@@ -302,10 +289,8 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
@@ -333,10 +318,8 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
@@ -364,10 +347,8 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
@@ -395,17 +376,15 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertFalse(survey.validate());
     }
 
     @Test
-    @DisplayName("Failed validation - User missing")
+    @DisplayName("Successful validation - User missing")
     void surveyMissingUser() {
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
@@ -432,7 +411,7 @@ class ValidationTest {
                 .createSurveyWithDefaultDate(1L, "User missing");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(survey.validate());
+        assertTrue(survey.validate());
     }
 
     @Test
@@ -459,41 +438,21 @@ class ValidationTest {
                 .createQuestionGroup(1L, "QuestionGroup with Question");
         questionGroupWithQuestion.setQuestions(List.of(question));
 
-        User user = new UserBuilder().createUser(1L, "Test Person");
-
         Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", user);
+                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
         assertTrue(survey.validate());
     }
 
     @Test
-    @DisplayName("Failed validation - User missing name")
-    void userMissingName() {
-        User user = new UserBuilder()
-                .createUser(1L, null);
-
-        assertFalse(user.validate());
-    }
-
-    @Test
-    @DisplayName("Successful validation - User")
-    void userIsComplete() {
-        User user = new UserBuilder()
-                .createUser(1L, "Test User");
-
-        assertTrue(user.validate());
-    }
-
-    @Test
-    @DisplayName("Failed validation - Answer missing user")
+    @DisplayName("Failed validation - Answer missing response")
     void answerMissingUser() {
         Question question = new QuestionBuilder()
                 .createQuestion(1L, "Test Question", false, false);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, "Test Answer", null, question, null);
+                .createAnswer(1L, "Test Answer", question, null, null);
 
         assertFalse(answer.validate());
     }
@@ -501,14 +460,20 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - Answer missing Checkbox")
     void answerMissingQuestion() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
 
-        User user = new UserBuilder()
-                .createUser(1L, "Test User");
+        QuestionGroup group = new QuestionGroupBuilder()
+                .createQuestionGroupIn(survey, 1L, "Bla");
+
+        Question question = new QuestionBuilder()
+                .createQuestionIn(group, 1L, "Test Question", false, true);
+
+        SurveyResponse response = new SurveyResponseBuilder()
+                .createResponse(1L, survey, null);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, "Test Answer", user, question, null);
+                .createAnswer(1L, "Test Answer", question, response, null);
 
         assertFalse(answer.validate());
     }
@@ -516,17 +481,23 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - Answer missing Text when Checkbox has text field")
     void answerMissingTextWhenCheckboxHasTextField() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
 
-        User user = new UserBuilder()
-                .createUser(1L, "Test User");
+        QuestionGroup group = new QuestionGroupBuilder()
+                .createQuestionGroupIn(survey, 1L, "Bla");
+
+        Question question = new QuestionBuilder()
+                .createQuestionIn(group, 1L, "Test Question", false, true);
 
         Checkbox checkbox = new CheckboxBuilder()
                 .createCheckbox(1L, "Test Checkbox", true);
 
+        SurveyResponse response = new SurveyResponseBuilder()
+                .createResponse(1L, survey, null);
+
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, null, user, question, checkbox);
+                .createAnswer(1L, null, question, response, List.of(checkbox));
 
         assertFalse(answer.validate());
     }
@@ -534,14 +505,20 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - Answer missing Text when text Question")
     void answerMissingTextWhenQuestionWithTextField() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
 
-        User user = new UserBuilder()
-                .createUser(1L, "Test User");
+        QuestionGroup group = new QuestionGroupBuilder()
+                .createQuestionGroupIn(survey, 1L, "Bla");
+
+        Question question = new QuestionBuilder()
+                .createQuestionIn(group, 1L, "Test Question", false, false);
+
+        SurveyResponse response = new SurveyResponseBuilder()
+                .createResponse(1L, survey, null);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, null, user, question, null);
+                .createAnswer(1L, null, question, response, null);
 
         assertFalse(answer.validate());
     }
@@ -549,14 +526,20 @@ class ValidationTest {
     @Test
     @DisplayName("Successful validation - Complete Answer to text Question")
     void answerToTextQuestionIsComplete() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
 
-        User user = new UserBuilder()
-                .createUser(1L, "Test User");
+        QuestionGroup group = new QuestionGroupBuilder()
+                .createQuestionGroupIn(survey, 1L, "Bla");
+
+        Question question = new QuestionBuilder()
+                .createQuestionIn(group, 1L, "Test Question", false, false);
+
+        SurveyResponse response = new SurveyResponseBuilder()
+                .createResponse(1L, survey, null);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, "Test", user, question, null);
+                .createAnswer(1L, "Test", question, response, null);
 
         assertTrue(answer.validate());
     }
@@ -564,17 +547,23 @@ class ValidationTest {
     @Test
     @DisplayName("Successful validation - Complete Answer to multiple choice Question")
     void answerToChoiceQuestionIsComplete() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
 
-        User user = new UserBuilder()
-                .createUser(1L, "Test User");
+        QuestionGroup group = new QuestionGroupBuilder()
+                .createQuestionGroupIn(survey, 1L, "Bla");
+
+        Question question = new QuestionBuilder()
+                .createQuestionIn(group, 1L, "Test Question", false, true);
 
         Checkbox checkbox = new CheckboxBuilder()
                 .createCheckbox(1L, "Test Checkbox", false);
 
+        SurveyResponse response = new SurveyResponseBuilder()
+                .createResponse(1L, survey, null);
+
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, null, user, question, checkbox);
+                .createAnswer(1L, null, question, response, List.of(checkbox));
 
         assertTrue(answer.validate());
     }
