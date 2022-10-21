@@ -11,12 +11,13 @@ import { Survey } from '../survey.model';
   styleUrls: ['./survey-owner-view.component.css']
 })
 export class SurveyOwnerViewComponent implements OnInit, OnDestroy {
-  public survey: Survey|null = null;
+  public survey?: Survey;
   public expired: boolean = false;
 
-  private sub: Subscription|null = null;
+  private sub?: Subscription;
+  private timeout?: any;
 
-  constructor(private router: Router, private route: ActivatedRoute, public clipboard: Clipboard, public snackBars: MatSnackBar) { }
+  constructor(private route: ActivatedRoute, public clipboard: Clipboard, public snackBars: MatSnackBar) { }
 
   public ngOnInit(): void {
     this.survey = this.route.snapshot.data['survey'];
@@ -25,10 +26,11 @@ export class SurveyOwnerViewComponent implements OnInit, OnDestroy {
       this.survey = d['survey'];
       this.expired = this.survey!.endDate < new Date();
     });
-    setInterval(() => this.expired = this.survey!.endDate < new Date(), 1000);
+    this.timeout = setInterval(() => this.expired = this.survey!.endDate < new Date(), 1000);
   }
 
   public ngOnDestroy(): void {
     this.sub?.unsubscribe();
+    clearInterval(this.timeout);
   }
 }
