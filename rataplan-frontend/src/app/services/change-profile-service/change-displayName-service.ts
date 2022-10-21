@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {environment} from "../../../environments/environment";
 
 @Injectable({providedIn: "root"})
 
@@ -10,7 +11,7 @@ export class ChangeDisplayNameService {
 
 
   changeDisplayName(displayName: String){
-    const url = 'http://localhost:8080/v1/users/profile/changeDisplayName'
+    const url = environment.authBackendURL+ 'users/profile/changeDisplayName'
 
     const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
 

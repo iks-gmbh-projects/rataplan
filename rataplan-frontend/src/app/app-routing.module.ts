@@ -47,7 +47,7 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [ProfilePasswordAuthService]},
   { path: 'reset-password', component: ResetPasswordComponent},
-  { path: 'change-password', component: ChangePasswordComponent },
+  { path: 'change-password', component: ChangePasswordComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'survey', loadChildren: () => import("./survey/survey.module").then(m => m.SurveyModule) },
 ];
 
