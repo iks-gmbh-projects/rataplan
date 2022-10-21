@@ -51,7 +51,9 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
     }
 
     private QuestionGroup toQuestionGroupEntity(QuestionGroupDTO questionGroupDTO) {
-        return new QuestionGroup(questionGroupDTO.getTitle(), toQuestionEntityList(questionGroupDTO.getQuestions()));
+        QuestionGroup questionGroup = new QuestionGroup(questionGroupDTO.getTitle(), toQuestionEntityList(questionGroupDTO.getQuestions()));
+        questionGroup.setId(questionGroupDTO.getId());
+        return questionGroup;
     }
 
     private List<Question> toQuestionEntityList(List<QuestionDTO> questionDTOs) {
@@ -60,7 +62,7 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
 
     private Question toQuestionEntity(QuestionDTO questionDTO) {
         Question question = new Question(questionDTO.getText(), questionDTO.isRequired(), questionDTO.isHasCheckbox());
-
+        question.setId(questionDTO.getId());
         if (questionDTO.isHasCheckbox()) {
             CheckboxGroup checkboxGroup = toCheckboxGroupEntity(questionDTO.getCheckboxGroup());
             // Set references for the one-to-one-relationship
@@ -72,8 +74,10 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
     }
 
     private CheckboxGroup toCheckboxGroupEntity(CheckboxGroupDTO checkboxGroupDTO) {
-        return new CheckboxGroup(checkboxGroupDTO.isMultipleSelect(), checkboxGroupDTO.getMinSelect(),
+        CheckboxGroup checkboxGroup = new CheckboxGroup(checkboxGroupDTO.isMultipleSelect(), checkboxGroupDTO.getMinSelect(),
                 checkboxGroupDTO.getMaxSelect(), toCheckboxEntityList(checkboxGroupDTO.getCheckboxes()));
+        checkboxGroup.setId(checkboxGroupDTO.getId());
+        return checkboxGroup;
     }
 
     private List<Checkbox> toCheckboxEntityList(List<CheckboxDTO> checkboxDTOs) {
@@ -81,7 +85,9 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
     }
 
     private Checkbox toCheckboxEntity(CheckboxDTO checkboxDTO) {
-        return new Checkbox(checkboxDTO.getText(), checkboxDTO.isHasTextField());
+        Checkbox checkbox = new Checkbox(checkboxDTO.getText(), checkboxDTO.isHasTextField());
+        checkbox.setId(checkboxDTO.getId());
+        return checkbox;
     }
 
 }

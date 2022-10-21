@@ -5,9 +5,12 @@ import iks.surveytool.entities.*;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class MappingAssertions {
     public static void assertCompleteSurveyDTO(CompleteSurveyDTO surveyDTO, Survey survey) {
@@ -73,7 +76,7 @@ public class MappingAssertions {
     }
 
     private static Instant toInstant(ZonedDateTime dateTime) {
-        if(dateTime == null) return null;
+        if (dateTime == null) return null;
         return dateTime.toInstant();
     }
 
@@ -139,9 +142,28 @@ public class MappingAssertions {
         assertEquals(checkbox.isHasTextField(), checkboxDTO.isHasTextField());
     }
 
-    public static void assertAnswerDTOs(List<AnswerDTO> answerDTOs, List<Answer> answers) {
-        for (int i = 0; i < answers.size(); i++) {
-            assertAnswerDTO(answerDTOs.get(i), answers.get(i));
+    private static <U, V> V passNull(Function<U, V> mapper, U u) {
+        if (u == null) return null;
+        return mapper.apply(u);
+    }
+
+    public static void assertSurveyResponseDTO(SurveyResponseDTO responseDTO, SurveyResponse response) {
+        assertEquals(response.getId(), responseDTO.getId());
+        assertEquals(passNull(Survey::getId, response.getSurvey()), responseDTO.getSurveyId());
+        assertEquals(response.getUserId(), responseDTO.getUserId());
+        List<AnswerDTO> answerDTOs = responseDTO.getAnswers()
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(AnswerDTO::getId))
+                .collect(Collectors.toList());
+        List<Answer> answers = response.getAnswers()
+                .stream()
+                .sorted(Comparator.comparing(Answer::getId))
+                .collect(Collectors.toList());
+        assertEquals(answerDTOs.size(), answers.size());
+        Iterator<Answer> answerIterator = answers.iterator();
+        for (AnswerDTO answerDTO : answerDTOs) {
+            assertAnswerDTO(answerDTO, answerIterator.next());
         }
     }
 
@@ -150,13 +172,35 @@ public class MappingAssertions {
         assertEquals(answerDTO.getText(), answer.getText());
 
         if (answer.getCheckboxes() != null) {
-            assertEquals(answerDTO.getCheckboxes(), answer.getCheckboxes());
+            Set<Long> ids = new HashSet<>(answer.getCheckboxes().size());
+            for (Checkbox checkbox : answer.getCheckboxes()) {
+                ids.add(checkbox.getId());
+                assertEquals(Boolean.TRUE, answerDTO.getCheckboxes().get(checkbox.getId()));
+            }
+            for (Map.Entry<Long, Boolean> entry : answerDTO.getCheckboxes().entrySet()) {
+                if (ids.contains(entry.getKey())) continue;
+                assertNotEquals(Boolean.TRUE, entry.getValue());
+            }
         }
     }
 
-    public static void assertAnswers(List<Answer> answers, List<AnswerDTO> answerDTOs) {
-        for (int i = 0; i < answerDTOs.size(); i++) {
-            assertAnswer(answers.get(i), answerDTOs.get(i));
+    public static void assertSurveyResponse(SurveyResponse response, SurveyResponseDTO responseDTO) {
+        assertEquals(responseDTO.getId(), response.getId());
+        assertEquals(responseDTO.getSurveyId(), passNull(Survey::getId, response.getSurvey()));
+        assertEquals(responseDTO.getUserId(), response.getUserId());
+        List<AnswerDTO> answerDTOs = responseDTO.getAnswers()
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(AnswerDTO::getId))
+                .collect(Collectors.toList());
+        List<Answer> answers = response.getAnswers()
+                .stream()
+                .sorted(Comparator.comparing(Answer::getId))
+                .collect(Collectors.toList());
+        assertEquals(answerDTOs.size(), answers.size());
+        Iterator<AnswerDTO> answerDTOIterator = answerDTOs.iterator();
+        for (Answer answer : answers) {
+            assertAnswer(answer, answerDTOIterator.next());
         }
     }
 
@@ -165,7 +209,15 @@ public class MappingAssertions {
         assertEquals(answer.getText(), answerDTO.getText());
 
         if (answerDTO.getCheckboxes() != null) {
-            assertEquals(answer.getCheckboxes(), answerDTO.getCheckboxes());
+            Set<Long> ids = new HashSet<>(answer.getCheckboxes().size());
+            for (Checkbox checkbox : answer.getCheckboxes()) {
+                ids.add(checkbox.getId());
+                assertEquals(Boolean.TRUE, answerDTO.getCheckboxes().get(checkbox.getId()));
+            }
+            for (Map.Entry<Long, Boolean> entry : answerDTO.getCheckboxes().entrySet()) {
+                if (ids.contains(entry.getKey())) continue;
+                assertNotEquals(Boolean.TRUE, entry.getValue());
+            }
         }
     }
 }

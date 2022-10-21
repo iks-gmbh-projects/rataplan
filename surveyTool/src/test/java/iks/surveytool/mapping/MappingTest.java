@@ -1,5 +1,6 @@
 package iks.surveytool.mapping;
 
+import iks.surveytool.config.MappingConfig;
 import iks.surveytool.dtos.*;
 import iks.surveytool.entities.*;
 import iks.surveytool.utils.assertions.MappingAssertions;
@@ -9,9 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 
-import java.lang.reflect.Type;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -21,7 +20,17 @@ import java.util.Map;
 @DisplayName("Testing Mapper")
 public class MappingTest {
 
-    private final ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new MappingConfig(
+            new SurveyConverter(),
+            new ToZonedTimeConverter(),
+            new ToInstantConverter(),
+            new SurveyResponseConverter(
+                    new MockQuestionRepository(),
+                    new MockCheckboxRepository(),
+                    new MockSurveyRepository()
+            ),
+            new SurveyResponseDTOConverter()
+    ).modelMapper();
 
     @Test
     @DisplayName("Survey to CompleteSurveyDTO")
@@ -114,6 +123,8 @@ public class MappingTest {
     @Test
     @DisplayName("AnswerList to AnswerDTOList")
     void mapAnswerListToAnswerDTOs() {
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
         Checkbox firstCheckbox = new CheckboxBuilder()
                 .createCheckbox(1L, "First Test Checkbox", false);
         Checkbox secondCheckbox = new CheckboxBuilder()
@@ -123,40 +134,46 @@ public class MappingTest {
                 .createCheckboxGroup(1L, false, 0, 2);
         checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox));
 
+        QuestionGroup group = new QuestionGroupBuilder()
+                .createQuestionGroupIn(survey, 1L, "Bla");
+
         Question firstQuestion = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestionIn(group, 1L, "Test Question", false, false);
         Question secondQuestion = new QuestionBuilder()
-                .createQuestion(2L, "Test Question", false, true);
+                .createQuestionIn(group, 2L, "Test Question", false, true);
         secondQuestion.setCheckboxGroup(checkboxGroup);
 
-        Answer firstAnswer = new AnswerBuilder()
-                .createAnswer(1L, "Test Answer", firstQuestion, null, null);
-        Answer secondAnswer = new AnswerBuilder()
-                .createAnswer(2L, null, secondQuestion, null, List.of(firstCheckbox));
+        SurveyResponse response = new SurveyResponseBuilder()
+                .createResponse(1L, survey, null);
 
-        List<Answer> answers = List.of(firstAnswer, secondAnswer);
+        new AnswerBuilder()
+                .createAnswerIn(response, 1L, "Test Answer", firstQuestion, null);
+        new AnswerBuilder()
+                .createAnswerIn(response, 2L, null, secondQuestion, List.of(firstCheckbox));
 
-        Type answerDTOListType = new TypeToken<List<AnswerDTO>>() {
-        }.getType();
-        List<AnswerDTO> answerDTOList = modelMapper.map(answers, answerDTOListType);
+        SurveyResponseDTO responseDTO = modelMapper.map(response, SurveyResponseDTO.class);
 
-        MappingAssertions.assertAnswerDTOs(answerDTOList, answers);
+        MappingAssertions.assertSurveyResponseDTO(responseDTO, response);
     }
 
     @Test
     @DisplayName("AnswerDTOList to AnswerList")
     void mapAnswerDTOsToAnswers() {
         AnswerDTO firstAnswerDTO = new AnswerDTO();
+        firstAnswerDTO.setId(1L);
         firstAnswerDTO.setText("Text");
         AnswerDTO secondAnswerDTO = new AnswerDTO();
+        secondAnswerDTO.setId(2L);
         secondAnswerDTO.setCheckboxes(Map.of(1L, true));
 
-        List<AnswerDTO> answerDTOs = List.of(secondAnswerDTO, secondAnswerDTO);
+        SurveyResponseDTO surveyResponseDTO = new SurveyResponseDTO();
+        surveyResponseDTO.setAnswers(Map.of(
+                firstAnswerDTO.getId(), firstAnswerDTO,
+                secondAnswerDTO.getId(), secondAnswerDTO
+        ));
 
-        Type answerListType = new TypeToken<List<Answer>>() {
-        }.getType();
-        List<Answer> answers = modelMapper.map(answerDTOs, answerListType);
+        SurveyResponse surveyResponse = modelMapper.map(surveyResponseDTO, SurveyResponse.class);
 
-        MappingAssertions.assertAnswers(answers, answerDTOs);
+        MappingAssertions.assertSurveyResponse(surveyResponse, surveyResponseDTO);
     }
 }

@@ -41,6 +41,7 @@ public class SurveyResponseConverter extends AbstractConverter<SurveyResponseDTO
                     String text = answerDTO.getValue().getText();
 
                     Answer answer = new Answer(text);
+                    answer.setId(answerDTO.getValue().getId());
                     answer.setResponse(response);
 
                     Long questionId = answerDTO.getKey();

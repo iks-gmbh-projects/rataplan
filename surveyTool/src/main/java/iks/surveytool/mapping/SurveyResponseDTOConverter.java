@@ -22,6 +22,7 @@ public class SurveyResponseDTOConverter extends AbstractConverter<SurveyResponse
 
     private SurveyResponseDTO toSurveyResponseDTO(final SurveyResponse surveyResponse) {
         SurveyResponseDTO response = new SurveyResponseDTO();
+        response.setId(surveyResponse.getId());
         response.setSurveyId(surveyResponse.getSurvey().getId());
         response.setUserId(surveyResponse.getUserId());
         response.setAnswers(surveyResponse

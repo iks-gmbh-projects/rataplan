@@ -448,11 +448,17 @@ class ValidationTest {
     @Test
     @DisplayName("Failed validation - Answer missing response")
     void answerMissingUser() {
+        Survey survey = new SurveyBuilder()
+                .createDefaultSurvey();
+
+        QuestionGroup group = new QuestionGroupBuilder()
+                .createQuestionGroupIn(survey, 1L, "Bla");
+
         Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
+                .createQuestionIn(group, 1L, "Test Question", false, false);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, "Test Answer", question, null, null);
+                .createAnswer(1L, "Test Answer", question, null);
 
         assertFalse(answer.validate());
     }
@@ -473,7 +479,7 @@ class ValidationTest {
                 .createResponse(1L, survey, null);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, "Test Answer", question, response, null);
+                .createAnswerIn(response, 1L, "Test Answer", question, null);
 
         assertFalse(answer.validate());
     }
@@ -497,7 +503,7 @@ class ValidationTest {
                 .createResponse(1L, survey, null);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, null, question, response, List.of(checkbox));
+                .createAnswerIn(response, 1L, null, question, List.of(checkbox));
 
         assertFalse(answer.validate());
     }
@@ -518,7 +524,7 @@ class ValidationTest {
                 .createResponse(1L, survey, null);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, null, question, response, null);
+                .createAnswerIn(response, 1L, null, question, null);
 
         assertFalse(answer.validate());
     }
@@ -539,7 +545,7 @@ class ValidationTest {
                 .createResponse(1L, survey, null);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, "Test", question, response, null);
+                .createAnswerIn(response, 1L, "Test", question, null);
 
         assertTrue(answer.validate());
     }
@@ -563,7 +569,7 @@ class ValidationTest {
                 .createResponse(1L, survey, null);
 
         Answer answer = new AnswerBuilder()
-                .createAnswer(1L, null, question, response, List.of(checkbox));
+                .createAnswerIn(response, 1L, null, question, List.of(checkbox));
 
         assertTrue(answer.validate());
     }
