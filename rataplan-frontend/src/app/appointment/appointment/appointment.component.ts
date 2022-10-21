@@ -15,7 +15,7 @@ import { MemberDecisionSubformComponent } from './member-decision-subform/member
 @Component({
   selector: 'app-appointment',
   templateUrl: './appointment.component.html',
-  styleUrls: ['./appointment.component.css']
+  styleUrls: ['./appointment.component.scss']
 })
 export class AppointmentComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();

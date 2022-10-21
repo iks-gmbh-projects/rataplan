@@ -1,0 +1,24 @@
+.wrapper {
+  padding: 50px;
+}
+
+.vote-button {
+  margin-top: 20px;
+  float: right;
+}
+
+.vote-change-button {
+  margin-top: 20px;
+}
+
+.mat-list-base {
+  padding: 0;
+}
+
+::ng-deep .member {
+  span {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+}

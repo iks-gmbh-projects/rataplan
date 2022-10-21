@@ -4,15 +4,14 @@
     <mat-card-content>
       <p></p>
       <p>{{ appointmentRequest.description }}</p>
-      <p>{{ appointmentRequest.organizerName }}</p>
     </mat-card-content>
-    <mat-card-subtitle>Teilnahme bis zum {{ appointmentRequest.deadline | date:'dd MMMM yyyy':'+0200':'de' }}</mat-card-subtitle>
+    <mat-card-subtitle *ngIf='!appointmentRequest.expired'>Teilnahme bis
+      zum {{ appointmentRequest.deadline | date:'dd MMMM yyyy':'+0200':'de' }}</mat-card-subtitle>
+    <mat-card-subtitle *ngIf='appointmentRequest.expired'>
+      <span class='mat-error'>Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
+    </mat-card-subtitle>
     <div *ngIf='appointmentRequest.organizerName !== null'>
       <span>Erstellt von {{ appointmentRequest.organizerName }}</span>
-    </div>
-    <div *ngIf='appointmentRequest.expired'>
-      <p></p>
-      <span style='color: red'>Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
     </div>
   </mat-card>
   <div style='margin-top: 20px; margin-bottom: 20px'>
@@ -25,20 +24,24 @@
       <mat-list *ngFor='let member of this.appointmentRequest.appointmentMembers'
                 multiple='false'>
         <mat-list-item class='member'>
-          <button mat-icon-button (click)='deleteMember(member)'>
-            <mat-icon mat-list-icon>delete</mat-icon>
-          </button>
-          <button mat-icon-button (click)='editMember(member)'>
-            <mat-icon mat-list-icon>edit_square</mat-icon>
-          </button>
           {{ member.name }}
+          <div>
+            <button mat-icon-button
+                    (click)='editMember(member)'>
+              <mat-icon mat-list-icon>edit_square</mat-icon>
+            </button>
+            <button mat-icon-button
+                    (click)='deleteMember(member)'>
+              <mat-icon mat-list-icon>delete</mat-icon>
+            </button>
+          </div>
         </mat-list-item>
       </mat-list>
     </mat-expansion-panel>
   </div>
   <div>
     <mat-form-field appearance='fill'>
-      <mat-label>Name</mat-label>
+      <mat-label>Teilnehmername</mat-label>
       <input [(ngModel)]='memberName'
              matInput
              autocomplete='off'>
