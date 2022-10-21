@@ -105,6 +105,7 @@ public class MappingTest {
         surveyDTO.setQuestionGroups(List.of(questionGroupDTO));
 
         Survey surveyConverted = modelMapper.map(surveyDTO, Survey.class);
+
         System.out.println(surveyConverted.getUserId());
 
         MappingAssertions.assertSurvey(surveyConverted, surveyDTO);
