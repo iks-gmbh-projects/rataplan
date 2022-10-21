@@ -1,16 +1,11 @@
 package iks.surveytool.dtos;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class AbstractDTO {
     private Long id;
-
-    public AbstractDTO(Long id) {
-        this.id = id;
-    }
 }
