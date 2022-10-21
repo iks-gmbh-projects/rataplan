@@ -71,7 +71,7 @@ export class LoginService {
     if ((control.value as string).indexOf(' ') >= 0) {
       return {cannotContainWhitespace: true}
     }
-    return null
+    return null;
   }
 
 }

@@ -48,39 +48,44 @@ export class LoginComponent implements OnInit {
 
 
   login() {
+    if (this.inputField.valid && this.password.valid) {
 
-    let frontendUser: FrontendUser = {
-      username : this.inputField.value,
-      password : this.password.value
 
-    }
-    if(this.inputField.value.indexOf('@') !== -1) {
-
-       frontendUser = {
-        mail: this.inputField.value,
+      let frontendUser: FrontendUser = {
+        username: this.inputField.value,
         password: this.password.value
-      }
-    }
 
-      this.isLoading = true;
-    this.loginService.loginUser(frontendUser).subscribe(responseData => {
-    this.user
-      console.log(responseData);
-    this.userdataStorageService.id = responseData.id;
-    this.userdataStorageService.username = responseData.username;
-    this.userdataStorageService.mail = responseData.mail;
-    this.userdataStorageService.displayName = responseData.displayName;
-      this.localStorage.setLocalStorage(responseData)
-      this.router.navigateByUrl("/")
-      this.isLoggedIn = true;
-      this.isLoading = false;
-    }, error => {
-      if (error.error.errorCode === "WRONG_CREDENTIALS"){
-        console.log("Fuck you bitch")
       }
-      console.log(error);
-      this.isLoading = false;
-    })
+      if (this.inputField.value.indexOf('@') !== -1) {
+        frontendUser = {
+          mail: this.inputField.value,
+          password: this.password.value
+        }
+      }
+      this.isLoading = true;
+      this.loginService.loginUser(frontendUser).subscribe(responseData => {
+        console.log(responseData);
+        this.userdataStorageService.id = responseData.id;
+        this.userdataStorageService.username = responseData.username;
+        this.userdataStorageService.mail = responseData.mail;
+        this.userdataStorageService.displayName = responseData.displayName;
+        this.localStorage.setLocalStorage(responseData)
+        this.router.navigateByUrl("/")
+        this.isLoggedIn = true;
+        this.isLoading = false;
+      }, error => {
+        this.handleError(error);
+        console.log(error);
+        this.isLoading = false;
+      })
+    }
+  }
+
+  private handleError(errorRes: HttpErrorResponse) {
+    if (errorRes.error.errorCode === "WRONG_CREDENTIALS") {
+
+      console.log("Fuck you bitches")
+    }
   }
 
   // private handleError(errorRes: HttpErrorResponse) {
@@ -138,10 +143,12 @@ export class LoginComponent implements OnInit {
 }
   export interface FrontendUser {
 
+
     username?: string;
     id?: number;
      mail?: string;
      password: string;
+     displayname?: string;
 
 }
 

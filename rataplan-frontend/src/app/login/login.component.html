@@ -1,5 +1,5 @@
 <div class="lds-ring" *ngIf="isLoading" ><div></div><div></div><div></div><div></div></div>
-<form class="form-container" *ngIf="!isLoading">
+<form class="form-container" *ngIf="!isLoading" (submit)="login()">
   <div class="content">
     <div>
       <h2 class="header">Login</h2>
@@ -7,7 +7,7 @@
     <div class="username">
       <mat-form-field appearance="fill">
         <mat-label>Benutzername/Email</mat-label>
-        <input matInput placeholder="Username/E-Mail"
+        <input matInput placeholder="Benutzername/E-Mail"
                autocomplete="off"
                [formControl]="inputField">
         <mat-error *ngIf="inputField.invalid">{{inputFieldError()}}</mat-error>
@@ -29,4 +29,5 @@
       <button type="button"  class="submit-button" mat-raised-button color="primary" [disabled]="loginForm.invalid" (click)="login()">Login</button>
     </div>
   </div>
+  <mat-error ></mat-error>
 </form>

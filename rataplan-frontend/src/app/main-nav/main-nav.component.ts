@@ -35,8 +35,8 @@ export class MainNavComponent {
   onLogout() {
     this.loginService.logoutUser()
 
-    localStorage.removeItem("username");
-    localStorage.removeItem("id")
+    localStorage.clear()
+
  }
   onClick(){
     if (!this.localstorageService.isLoggedIn()){

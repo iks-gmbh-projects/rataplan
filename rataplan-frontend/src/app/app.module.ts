@@ -47,6 +47,7 @@ import { MainNavComponent } from './main-nav/main-nav.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ProfileComponent } from './profile/profile.component';
 
 registerLocaleData(localeDE);
 
@@ -71,6 +72,7 @@ registerLocaleData(localeDE);
     DateOverviewSubformComponent,
     EmailSubformComponent,
     LinkSubformComponent,
+    ProfileComponent,
     AppointmentComponent,
     MemberDecisionSubformComponent,
     ChangePasswordComponent,

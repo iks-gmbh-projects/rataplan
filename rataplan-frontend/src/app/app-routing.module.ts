@@ -18,7 +18,9 @@ import {ContactComponent} from "./legals/contact/contact.component";
 import {RegisterComponent} from "./register/register.component";
 import {LoginComponent} from "./login/login.component";
 import {AuthGuardService} from "./services/auth-guard-service/auth-guard-service";
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import {ResetPasswordComponent } from './reset-password/reset-password.component';
+import {ProfileComponent} from "./profile/profile.component";
+import {ProfilePasswordAuthService} from "./services/auth-guard-service/profile-password-auth-service";
 import {ChangePasswordComponent} from "./change-password/change-password.component";
 
 const routes: Routes = [
@@ -41,9 +43,10 @@ const routes: Routes = [
   { path: 'privacy', component: PrivacyComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'login', component: LoginComponent, canActivate: [AuthGuardService]},
+  { path: 'login', component: LoginComponent, canActivate: [AuthGuardService],},
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'profile', component: ProfileComponent, canActivate: [ProfilePasswordAuthService]},
+  { path: 'reset-password', component: ResetPasswordComponent},
   { path: 'change-password', component: ChangePasswordComponent },
   { path: 'survey', loadChildren: () => import("./survey/survey.module").then(m => m.SurveyModule) },
 ];

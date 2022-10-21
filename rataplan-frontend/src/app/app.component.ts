@@ -20,10 +20,7 @@ export class AppComponent  implements OnInit{
 
 
       }, error => {
-        localStorage.removeItem('id')
-        localStorage.removeItem('username')
-        localStorage.removeItem('mail')
-        localStorage.removeItem('displayName')
+        localStorage.clear()
       })
 
     }
