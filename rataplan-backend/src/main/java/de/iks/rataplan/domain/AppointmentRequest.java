@@ -35,6 +35,7 @@ public class AppointmentRequest implements Serializable {
 	private Integer backendUserId;
 	private boolean isExpired = false;
 	private String participationToken;
+	private String editToken;
 
 	private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
 
@@ -179,6 +180,15 @@ public class AppointmentRequest implements Serializable {
 
 	public void setParticipationToken(String participationToken) {
 		this.participationToken = participationToken;
+	}
+
+	@Column(name = "editToken")
+	public String getEditToken() {
+		return editToken;
+	}
+
+	public void setEditToken(String editToken) {
+		this.editToken = editToken;
 	}
 
 	public AppointmentMember getAppointmentMemberById(long id) {

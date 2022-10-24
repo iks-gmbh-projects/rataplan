@@ -110,4 +110,11 @@ public class AppointmentRequestControllerService {
 
         return appointmentRequestDTO;
     }
+
+	public AppointmentRequestDTO getAppointmentRequestByEditToken(String editToken) {
+		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByEditToken(editToken);
+		AppointmentRequestDTO appointmentRequestDTO = modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
+
+		return appointmentRequestDTO;
+	}
 }

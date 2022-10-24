@@ -71,6 +71,19 @@ public class Controller {
 //        return new ResponseEntity<>(appointmentRequestDTO, HttpStatus.OK);
 //    }
 
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
+            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
+            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
+    @RequestMapping(value = "/appointmentRequests/edit/{editToken}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<AppointmentRequestDTO> getAppointmentRequestByIdForEdit(@PathVariable String editToken,
+                                                                                  @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+
+        AppointmentRequestDTO appointmentRequestDTO = appointmentRequestControllerService
+                .getAppointmentRequestByEditToken(editToken);
+        return new ResponseEntity<>(appointmentRequestDTO, HttpStatus.OK);
+    }
+
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentRequestDTO.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @RequestMapping(value = "/appointmentRequests", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -83,22 +96,22 @@ public class Controller {
         return new ResponseEntity<>(createdAppointmentRequestDTO, HttpStatus.CREATED);
     }
 
-    @ApiResponses(value = {@ApiResponse(code = 202, message = "ACCEPTED", response = AppointmentRequestDTO.class),
-            @ApiResponse(code = 400, message = "There are no Appointments in this AppointmentRequest.", response = MalformedException.class),
-            @ApiResponse(code = 400, message = "AppointmentType does not fit the AppointmentRequest.", response = MalformedException.class),
-            @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
-            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
-            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/appointmentRequests/{requestId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AppointmentRequestDTO> updateAppointmentRequest(@PathVariable Integer requestId,
-                                                                          @RequestBody AppointmentRequestDTO appointmentRequestDTO,
-                                                                          @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken,
-                                                                          @RequestHeader(value = ACCESS_TOKEN, required = false) String accessToken) {
-
-        AppointmentRequestDTO updatedAppointmentRequestDTO = appointmentRequestControllerService
-                .updateAppointmentRequest(appointmentRequestDTO, requestId, jwtToken, accessToken);
-        return new ResponseEntity<>(updatedAppointmentRequestDTO, HttpStatus.ACCEPTED);
-    }
+//    @ApiResponses(value = {@ApiResponse(code = 202, message = "ACCEPTED", response = AppointmentRequestDTO.class),
+//            @ApiResponse(code = 400, message = "There are no Appointments in this AppointmentRequest.", response = MalformedException.class),
+//            @ApiResponse(code = 400, message = "AppointmentType does not fit the AppointmentRequest.", response = MalformedException.class),
+//            @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
+//            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
+//            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
+//    @RequestMapping(value = "/appointmentRequests/{requestId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    public ResponseEntity<AppointmentRequestDTO> updateAppointmentRequest(@PathVariable Integer requestId,
+//                                                                          @RequestBody AppointmentRequestDTO appointmentRequestDTO,
+//                                                                          @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken,
+//                                                                          @RequestHeader(value = ACCESS_TOKEN, required = false) String accessToken) {
+//
+//        AppointmentRequestDTO updatedAppointmentRequestDTO = appointmentRequestControllerService
+//                .updateAppointmentRequest(appointmentRequestDTO, requestId, jwtToken, accessToken);
+//        return new ResponseEntity<>(updatedAppointmentRequestDTO, HttpStatus.ACCEPTED);
+//    }
 
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentMemberDTO.class),
             @ApiResponse(code = 400, message = "AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.", response = MalformedException.class),

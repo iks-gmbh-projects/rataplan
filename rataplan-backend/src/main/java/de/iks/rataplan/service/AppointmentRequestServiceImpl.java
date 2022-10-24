@@ -52,7 +52,8 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			appointment.setId(null);
 		}
 
-        appointmentRequest.setParticipationToken(tokenGeneratorService.generateParticipationToken());
+		appointmentRequest.setParticipationToken(tokenGeneratorService.generateParticipationToken(8));
+		appointmentRequest.setEditToken(tokenGeneratorService.generateParticipationToken(10));
 
         AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.saveAndFlush(appointmentRequest);
 
@@ -100,6 +101,15 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
         }
         throw new ResourceNotFoundException("Could not find AppointmentRequest with participationToken: " + participationToken);
     }
+
+	@Override
+	public AppointmentRequest getAppointmentRequestByEditToken(String editToken) {
+		AppointmentRequest appointmentRequest = appointmentRequestRepository.findByEditToken(editToken);
+		if (appointmentRequest != null) {
+			return appointmentRequest;
+		}
+		throw new ResourceNotFoundException("Could not find AppointmentRequest with editToken: " + editToken);
+	}
 
     @Override
     public List<AppointmentRequest> getAppointmentRequestsForUser(Integer userId) {
