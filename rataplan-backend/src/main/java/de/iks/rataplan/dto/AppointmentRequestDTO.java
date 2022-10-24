@@ -20,7 +20,8 @@ public class AppointmentRequestDTO implements Serializable {
     private Integer backendUserId;
     private boolean expired;
     private String participationToken;
-    
+    private String editToken;
+
     private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
 
     private List<String> consigneeList = new ArrayList<>();
@@ -152,6 +153,14 @@ public class AppointmentRequestDTO implements Serializable {
 
     public void setParticipationToken(String participationToken) {
         this.participationToken = participationToken;
+    }
+
+    public String getEditToken() {
+        return editToken;
+    }
+
+    public void setEditToken(String editToken) {
+        this.editToken = editToken;
     }
 
 	@Override

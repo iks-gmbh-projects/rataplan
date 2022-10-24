@@ -15,4 +15,6 @@ public interface AppointmentRequestRepository extends JpaRepository<AppointmentR
 	List<AppointmentRequest> findByDeadlineBeforeAndExpiredFalse(Date deadline);// find by deadline == xx and organizermail not null
 
 	AppointmentRequest findByParticipationToken(String participationToken);
+
+	AppointmentRequest findByEditToken(String editToken);
 }

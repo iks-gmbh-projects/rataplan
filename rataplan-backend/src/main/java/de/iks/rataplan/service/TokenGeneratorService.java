@@ -13,24 +13,26 @@ public class TokenGeneratorService {
     @Autowired
     private AppointmentRequestRepository appointmentRequestRepository;
 
-    public String generateParticipationToken() {
+    public String generateParticipationToken(int length) {
         int leftLimit = 48; // number 0
         int rightLimit = 122; // letter z
-        int stringLength = 8;
 
         while (true) {
-            String participationToken = new Random()
+            String token = new Random()
                     .ints(leftLimit, rightLimit + 1)
                     .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                    .limit(stringLength)
+                    .limit(length)
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString();
-            System.out.println(participationToken);
 
-            AppointmentRequest appointmentRequest = appointmentRequestRepository.findByParticipationToken(participationToken);
-            System.out.println(appointmentRequest);
+            AppointmentRequest appointmentRequest;
+            if (length == 8) {
+                appointmentRequest = appointmentRequestRepository.findByParticipationToken(token);
+            } else {
+                appointmentRequest = appointmentRequestRepository.findByEditToken(token);
+            }
             if (appointmentRequest == null) {
-                return participationToken;
+                return token;
             }
         }
     }
