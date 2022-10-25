@@ -12,6 +12,6 @@ public final class ITConstants {
 	public static final String VERSION = "/v1";
 	public static final String USERS = VERSION + "/users";
 
-	public static final User USER_1 = new User(null, "fritz@fri.tte", "fritz", "password", "DerFritz");
+	public static final User USER_1 = new User(null, "fritz@fri.tte", "fritz", "password", "fritz");
 	
 }

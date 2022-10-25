@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,6 +39,7 @@ import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.IntegrationConfig;
 import de.iks.rataplan.domain.User;
 
+@SpringBootTest
 @ActiveProfiles("integration")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, IntegrationConfig.class })

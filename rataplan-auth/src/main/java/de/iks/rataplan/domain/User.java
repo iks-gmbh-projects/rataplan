@@ -89,6 +89,7 @@ public class User implements Serializable {
     public void trimUserCredentials() {
         username = trimAndNull(username);
         mail = trimAndNull(mail);
+        displayname = trimAndNull(displayname);
     }
 
     public String trimAndNull(String toTrim) {
