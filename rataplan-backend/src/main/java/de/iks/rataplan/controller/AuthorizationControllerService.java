@@ -45,7 +45,7 @@ public class AuthorizationControllerService {
 	 * @param backendUser
 	 * @return
 	 */
-	public AppointmentRequest getAppointmentRequestIfAuthorized(boolean isEdit, Integer requestId, String jwtToken, String accessToken, BackendUser backendUser) {
+//	public AppointmentRequest getAppointmentRequestIfAuthorized(boolean isEdit, Integer requestId, String jwtToken, String accessToken, BackendUser backendUser) {
 
 //		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestById(requestId);
 //
@@ -63,8 +63,8 @@ public class AuthorizationControllerService {
 //			}
 //		}
 //
-		throw new ForbiddenException();
-	}
+//		throw new ForbiddenException();
+//	}
 
 	/**
 	 * Should be called whenever authService.getUserData() is called to refresh cookie

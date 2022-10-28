@@ -56,15 +56,15 @@ public class AppointmentRequestControllerService {
 		return createdDTORequest;
 	}
 
-	public AppointmentRequestDTO updateAppointmentRequest(AppointmentRequestDTO appointmentRequestDTO, Integer requestId, String jwtToken, String accessToken) {
-
-		AppointmentRequest dbAppointmentRequest = authorizationControllerService.getAppointmentRequestIfAuthorized(true, requestId, jwtToken, accessToken, null);
-
-		AppointmentRequest newAppointmentRequest = modelMapper.map(appointmentRequestDTO, AppointmentRequest.class);
-		newAppointmentRequest = appointmentRequestService.updateAppointmentRequest(dbAppointmentRequest, newAppointmentRequest);
-
-		return modelMapper.map(newAppointmentRequest, AppointmentRequestDTO.class);
-	}
+//	public AppointmentRequestDTO updateAppointmentRequest(AppointmentRequestDTO appointmentRequestDTO, Integer requestId, String jwtToken, String accessToken) {
+//
+//		AppointmentRequest dbAppointmentRequest = authorizationControllerService.getAppointmentRequestIfAuthorized(true, requestId, jwtToken, accessToken, null);
+//
+//		AppointmentRequest newAppointmentRequest = modelMapper.map(appointmentRequestDTO, AppointmentRequest.class);
+//		newAppointmentRequest = appointmentRequestService.updateAppointmentRequest(dbAppointmentRequest, newAppointmentRequest);
+//
+//		return modelMapper.map(newAppointmentRequest, AppointmentRequestDTO.class);
+//	}
 
 	public List<AppointmentRequestDTO> getAppointmentRequestsCreatedByUser(String jwtToken) {
 		if (jwtToken == null) {
