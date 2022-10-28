@@ -28,6 +28,7 @@ public final class TestConstants {
 	public static final String AUTHORIZATION = "/authorization";
 	public static final String BACKENDUSERS = "/backendUsers";
 	public static final String CONTROLLERSERVICE = "/controllerService";
+	public static final String GENERATORTOKEN = "/generatorToken";
 	public static final String CREATE = "/create";
 	public static final String DECISION = "/decision";
 	public static final String DELETE = "/delete";

@@ -13,27 +13,34 @@ public class TokenGeneratorService {
     @Autowired
     private AppointmentRequestRepository appointmentRequestRepository;
 
-    public String generateParticipationToken(int length) {
+    private final Random random = new Random();
+
+    public String generateToken(int length) {
         int leftLimit = 48; // number 0
         int rightLimit = 122; // letter z
 
         while (true) {
-            String token = new Random()
+            String token = random
                     .ints(leftLimit, rightLimit + 1)
                     .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                     .limit(length)
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString();
-
-            AppointmentRequest appointmentRequest;
-            if (length == 8) {
-                appointmentRequest = appointmentRequestRepository.findByParticipationToken(token);
-            } else {
-                appointmentRequest = appointmentRequestRepository.findByEditToken(token);
-            }
-            if (appointmentRequest == null) {
+            if (isTokenUnique(token, length)) {
                 return token;
             }
         }
+    }
+
+    public boolean isTokenUnique(String token, int length) {
+        AppointmentRequest appointmentRequest;
+        if (length == 8) {
+            appointmentRequest = appointmentRequestRepository.findByParticipationToken(token);
+        } else if (length == 10) {
+            appointmentRequest = appointmentRequestRepository.findByEditToken(token);
+        } else {
+            throw new Error("appointmentRequest token does not fit the form");
+        }
+        return appointmentRequest == null;
     }
 }

@@ -52,8 +52,8 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			appointment.setId(null);
 		}
 
-		appointmentRequest.setParticipationToken(tokenGeneratorService.generateParticipationToken(8));
-		appointmentRequest.setEditToken(tokenGeneratorService.generateParticipationToken(10));
+		appointmentRequest.setParticipationToken(tokenGeneratorService.generateToken(8));
+		appointmentRequest.setEditToken(tokenGeneratorService.generateToken(10));
 
         AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.saveAndFlush(appointmentRequest);
 
