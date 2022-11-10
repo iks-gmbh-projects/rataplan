@@ -31,7 +31,6 @@ import de.iks.rataplan.exceptions.MailAlreadyInUseException;
 import de.iks.rataplan.exceptions.UsernameAlreadyInUseException;
 import de.iks.rataplan.exceptions.WrongCredentialsException;
 
-@SpringBootTest
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, TestConfig.class })

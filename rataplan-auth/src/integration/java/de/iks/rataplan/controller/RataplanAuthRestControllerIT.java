@@ -39,7 +39,6 @@ import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.IntegrationConfig;
 import de.iks.rataplan.domain.User;
 
-@SpringBootTest
 @ActiveProfiles("integration")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, IntegrationConfig.class })
