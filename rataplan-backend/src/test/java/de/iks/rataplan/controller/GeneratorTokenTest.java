@@ -55,10 +55,11 @@ public class GeneratorTokenTest {
     public void generateParticipationToken() throws Exception {
         AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 
-        appointmentRequest.setParticipationToken(tokenGeneratorService.generateToken(8));
+        String token = tokenGeneratorService.generateToken(8);
+        appointmentRequest.setParticipationToken(token);
         appointmentRequestRepository.saveAndFlush(appointmentRequest);
 
-        AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.findOne(1);
+        AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.findByParticipationToken(token);
         assertNotNull(createdAppointmentRequest.getParticipationToken());
     }
 
@@ -67,10 +68,11 @@ public class GeneratorTokenTest {
     public void generateEditToken() throws Exception {
         AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 
-        appointmentRequest.setEditToken(tokenGeneratorService.generateToken(10));
+        String token = tokenGeneratorService.generateToken(10);
+        appointmentRequest.setEditToken(token);
         appointmentRequestRepository.saveAndFlush(appointmentRequest);
 
-        AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.findOne(1);
+        AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.findByEditToken(token);
         assertNotNull(createdAppointmentRequest.getEditToken());
     }
 
