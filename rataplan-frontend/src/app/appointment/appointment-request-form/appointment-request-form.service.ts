@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
 
@@ -56,12 +57,13 @@ export class AppointmentRequestFormService {
   }
 
   createAppointmentRequest() {
-    const url = 'http://localhost:8080/v1/appointmentRequests';
-
-    return this.http.post<AppointmentRequestModel>(url, this.appointmentRequest, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json;charset=utf-8'
-      })
-    });
+    return this.http.post<AppointmentRequestModel>(
+      environment.rataplanBackendURL + 'appointmentRequests',
+      this.appointmentRequest,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json;charset=utf-8',
+        }),
+      });
   }
 }
