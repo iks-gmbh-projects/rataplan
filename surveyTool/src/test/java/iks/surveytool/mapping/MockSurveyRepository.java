@@ -23,12 +23,17 @@ public class MockSurveyRepository extends MockRepository.MockAbstractEntityRepos
     }
 
     @Override
-    public List<Survey> findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(ZonedDateTime localDateTime) {
+    public List<Survey> findAllByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(ZonedDateTime localDateTime) {
         return null;
     }
 
     @Override
-    public List<Survey> findSurveysByUserId(Long userId) {
+    public List<Survey> findAllByUserId(Long userId) {
         return null;
+    }
+
+    @Override
+    public long deleteSurveysByUserId(Long userId) {
+        return 0;
     }
 }

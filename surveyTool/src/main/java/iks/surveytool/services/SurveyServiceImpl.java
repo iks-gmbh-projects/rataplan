@@ -7,8 +7,11 @@ import iks.surveytool.entities.Survey;
 import iks.surveytool.repositories.SurveyRepository;
 import iks.surveytool.repositories.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class SurveyServiceImpl implements SurveyService {
     private final SurveyRepository surveyRepository;
     private final SurveyResponseRepository surveyResponseRepository;
@@ -45,12 +49,10 @@ public class SurveyServiceImpl implements SurveyService {
         SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
         if (surveyOverviewDTO != null) {
             if (surveyOverviewDTO.getUserId() != null) {
-                ResponseEntity<AuthUser> userEntity = authService.getUserData(jwttoken);
-                if (!userEntity.getStatusCode().is2xxSuccessful()) {
+                AuthUser user = authService.getUserData(jwttoken);
+                if (user == null) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
-                AuthUser user = userEntity.getBody();
-                if (user == null) return ResponseEntity.internalServerError().build();
                 if (surveyOverviewDTO.getUserId().longValue() != user.getId().longValue()) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
@@ -91,7 +93,7 @@ public class SurveyServiceImpl implements SurveyService {
 
     private List<Survey> findSurveysByOpenAccessIsTrue() {
         ZonedDateTime currentDateTime = ZonedDateTime.now();
-        return surveyRepository.findSurveysByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
+        return surveyRepository.findAllByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
     }
 
     private SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
@@ -202,12 +204,10 @@ public class SurveyServiceImpl implements SurveyService {
         }
         final Survey oldSurvey = optionalSurvey.get();
         if (oldSurvey.getUserId() != null) {
-            ResponseEntity<AuthUser> userEntity = authService.getUserData(jwttoken);
-            if (!userEntity.getStatusCode().is2xxSuccessful()) {
+            AuthUser user = authService.getUserData(jwttoken);
+            if (user == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-            AuthUser user = userEntity.getBody();
-            if (user == null) return ResponseEntity.internalServerError().build();
             if (oldSurvey.getUserId().longValue() != user.getId().longValue()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
@@ -228,14 +228,36 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(String jwttoken) {
-        ResponseEntity<AuthUser> userEntity = authService.getUserData(jwttoken);
-        if (!userEntity.getStatusCode().is2xxSuccessful()) {
+        AuthUser user = authService.getUserData(jwttoken);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        AuthUser user = userEntity.getBody();
-        if (user == null) return ResponseEntity.internalServerError().build();
-        List<Survey> surveys = surveyRepository.findSurveysByUserId(user.getId());
+        List<Survey> surveys = surveyRepository.findAllByUserId(user.getId());
         List<SurveyOverviewDTO> surveyDTOs = mapSurveysToDTO(surveys);
         return ResponseEntity.ok(surveyDTOs);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteSurveysByUserId(long id) {
+        try {
+            surveyRepository.deleteSurveysByUserId(id);
+            return ResponseEntity.accepted().body(id);
+        } catch(DataAccessException ex) {
+            log.catching(Level.INFO, ex);
+            return ResponseEntity.internalServerError().body(ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> anonymizeSurveysByUserId(long id) {
+        try {
+            final List<Survey> surveys = surveyRepository.findAllByUserId(id);
+            surveys.forEach(survey -> survey.setUserId(null));
+            surveyRepository.saveAllAndFlush(surveys);
+            return ResponseEntity.accepted().body(id);
+        } catch(DataAccessException ex) {
+            log.catching(Level.INFO, ex);
+            return ResponseEntity.internalServerError().body(ex.getMostSpecificCause().getMessage());
+        }
     }
 }

@@ -13,5 +13,6 @@ public interface SurveyService {
     ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId);
     ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys();
     ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(String jwttoken);
-
+    ResponseEntity<?> deleteSurveysByUserId(long id);
+    ResponseEntity<?> anonymizeSurveysByUserId(long id);
 }

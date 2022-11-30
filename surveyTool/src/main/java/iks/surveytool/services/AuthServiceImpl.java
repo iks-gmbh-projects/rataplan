@@ -18,13 +18,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     public AuthServiceImpl(
-            @Value("${rataplan.auth.url}") String authUrl,
-            RestTemplate restTemplate) {
+        @Value("${rataplan.auth.url}") String authUrl,
+        RestTemplate restTemplate
+    ) {
         this.authUrl = authUrl;
         this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity<AuthUser> getUserData(String token) {
+    public AuthUser getUserData(String token) {
         String url = authUrl + "/users/profile";
 
         HttpHeaders headers = new HttpHeaders();
@@ -33,13 +34,22 @@ public class AuthServiceImpl implements AuthService {
 
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         try {
-            return restTemplate.exchange(url, HttpMethod.GET, entity, AuthUser.class);
+            final ResponseEntity<AuthUser> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                AuthUser.class
+            );
+            if (response.getStatusCode().is2xxSuccessful()) return response.getBody();
+            else return null;
         } catch (RestClientResponseException ex) {
             log.catching(Level.INFO, ex);
-            return ResponseEntity
-                    .status(ex.getRawStatusCode())
-                    .headers(ex.getResponseHeaders())
-                    .build();
+            return null;
         }
+    }
+
+    @Override
+    public boolean validateBackendSecret(String secret) {
+        return true; // TODO verify that the secret string comes from the auth backend
     }
 }

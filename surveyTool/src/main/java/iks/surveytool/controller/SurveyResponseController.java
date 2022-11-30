@@ -21,17 +21,13 @@ public class SurveyResponseController {
 
     @PostMapping
     public ResponseEntity<SurveyResponseDTO> addAnswers(
-            @RequestBody SurveyResponseDTO surveyResponseDTO,
-            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+        @RequestBody SurveyResponseDTO surveyResponseDTO,
+        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
     ) {
-        if(jwttoken == null) surveyResponseDTO.setUserId(null);
+        if (jwttoken == null) surveyResponseDTO.setUserId(null);
         else {
-            final ResponseEntity<AuthUser> userEntity = authService.getUserData(jwttoken);
-            if(!userEntity.getStatusCode().is2xxSuccessful()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-            final AuthUser user = userEntity.getBody();
-            if(user == null) return ResponseEntity.internalServerError().build();
+            final AuthUser user = authService.getUserData(jwttoken);
+            if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             surveyResponseDTO.setUserId(user.getId());
         }
         return responseService.processSurveyResponseDTOs(surveyResponseDTO);
@@ -39,8 +35,8 @@ public class SurveyResponseController {
 
     @GetMapping("/survey/{accessId}")
     public ResponseEntity<List<SurveyResponseDTO>> findAnswersBySurveyId(
-            @PathVariable String accessId,
-            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwtToken
+        @PathVariable String accessId,
+        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwtToken
     ) {
         return responseService.processSurveyResponseDTOs(accessId, jwtToken);
     }

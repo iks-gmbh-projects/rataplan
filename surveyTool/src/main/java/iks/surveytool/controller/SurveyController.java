@@ -24,33 +24,31 @@ public class SurveyController {
 
     @PostMapping
     public ResponseEntity<SurveyOverviewDTO> createSurvey(
-            @RequestBody CompleteSurveyDTO surveyDTO,
-            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+        @RequestBody CompleteSurveyDTO surveyDTO,
+        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
     ) {
         if (jwttoken == null) surveyDTO.setUserId(null);
         else {
-            final ResponseEntity<AuthUser> user = authService.getUserData(jwttoken);
-            if (!user.getStatusCode().is2xxSuccessful()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            final AuthUser u = user.getBody();
-            if (u == null) return ResponseEntity.internalServerError().build();
-            surveyDTO.setUserId(u.getId());
+            final AuthUser user = authService.getUserData(jwttoken);
+            if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            surveyDTO.setUserId(user.getId());
         }
         return surveyService.processSurveyDTO(surveyDTO);
     }
 
     @PutMapping(params = {"accessId"})
     public ResponseEntity<SurveyOverviewDTO> editSurvey(
-            @RequestParam String accessId,
-            @RequestBody CompleteSurveyDTO surveyDTO,
-            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+        @RequestParam String accessId,
+        @RequestBody CompleteSurveyDTO surveyDTO,
+        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
     ) {
         return surveyService.processEditSurveyByAccessId(accessId, surveyDTO, jwttoken);
     }
 
     @GetMapping(params = {"accessId"})
     public ResponseEntity<SurveyOverviewDTO> findSurveyByAccessId(
-            @RequestParam String accessId,
-            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+        @RequestParam String accessId,
+        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
     ) {
         return surveyService.processSurveyByAccessId(accessId, jwttoken);
     }
@@ -67,9 +65,9 @@ public class SurveyController {
 
     @GetMapping("/own")
     public ResponseEntity<List<SurveyOverviewDTO>> findMySurveys(
-            @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwtToken
+        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwtToken
     ) {
-        if(jwtToken == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        if (jwtToken == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return surveyService.processMySurveys(jwtToken);
     }
 }

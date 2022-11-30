@@ -8,8 +8,10 @@ import iks.surveytool.repositories.SurveyRepository;
 import iks.surveytool.repositories.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -56,10 +58,8 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
         if(optSurvey.isEmpty()) return ResponseEntity.notFound().build();
         final Survey survey = optSurvey.get();
         if(survey.getUserId() != null) {
-            final ResponseEntity<AuthUser> userEntity = authService.getUserData(authToken);
-            if(!userEntity.getStatusCode().is2xxSuccessful()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            final AuthUser user = userEntity.getBody();
-            if(user == null) return ResponseEntity.internalServerError().build();
+            final AuthUser user = authService.getUserData(authToken);
+            if(user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             if(survey.getUserId().longValue() != user.getId().longValue()) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(mapSurveyResponsesToDTOBySurvey(survey));
@@ -72,5 +72,29 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
 
     private List<SurveyResponse> findSurveyResponsesBySurvey(Survey survey) {
         return surveyResponseRepository.findAllBySurvey(survey);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteSurveyResponsesByUserId(long id) {
+        try{
+            surveyResponseRepository.deleteAllByUserId(id);
+            return ResponseEntity.accepted().body(id);
+        } catch(DataAccessException ex) {
+            log.catching(Level.INFO, ex);
+            return ResponseEntity.internalServerError().body(ex.getMostSpecificCause().getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> anonymizeSurveyResponsesByUserId(long id) {
+        try {
+            final List<SurveyResponse> surveyResponses = surveyResponseRepository.findAllByUserId(id);
+            surveyResponses.forEach(surveyResponse -> surveyResponse.setUserId(null));
+            surveyResponseRepository.saveAllAndFlush(surveyResponses);
+            return ResponseEntity.accepted().body(id);
+        } catch(DataAccessException ex) {
+            log.catching(Level.INFO, ex);
+            return ResponseEntity.internalServerError().body(ex.getMostSpecificCause().getMessage());
+        }
     }
 }
