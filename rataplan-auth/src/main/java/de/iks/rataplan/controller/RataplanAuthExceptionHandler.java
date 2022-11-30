@@ -16,12 +16,13 @@ public class RataplanAuthExceptionHandler extends ResponseEntityExceptionHandler
 	@ExceptionHandler(RataplanAuthException.class)
 	public ResponseEntity<Error> rataplanAuthException(RataplanAuthException e) {
 		Error error = new Error(e.getErrorCode(), e.toString());
-		return new ResponseEntity<Error>(error, e.getHttpStatus());
+		return new ResponseEntity<>(error, e.getHttpStatus());
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Error> genericException(Exception e) {
+		e.printStackTrace();
 		Error error = new Error(ErrorCode.UNEXPECTED_ERROR, e.toString());
-		return new ResponseEntity<Error>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 }

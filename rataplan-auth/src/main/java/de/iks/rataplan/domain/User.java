@@ -2,12 +2,7 @@ package de.iks.rataplan.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,13 +23,23 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String displayname;
+    private boolean encrypted;
 
-    public User(Integer id, String mail, String username, String password, String displayname) {
+    public User(Integer id, String mail, String username, String password, String displayname, boolean encrypted) {
         this.id = id;
         this.mail = mail;
         this.username = username;
         this.password = password;
         this.displayname = displayname;
+        this.encrypted = encrypted;
+    }
+
+    public User(Integer id, String mail, String username, String password, String displayname) {
+        this(id, mail, username, password, displayname, false);
+    }
+
+    public User(User cpy) {
+        this(cpy.getId(), cpy.getMail(), cpy.getUsername(), cpy.getPassword(), cpy.getDisplayname(), cpy.isEncrypted());
     }
 
     public User() {
@@ -95,11 +100,19 @@ public class User implements Serializable {
     public String trimAndNull(String toTrim) {
         if (toTrim != null) {
             toTrim = toTrim.trim();
-            if (toTrim == "") {
+            if (toTrim.isEmpty()) {
                 return null;
             }
         }
         return toTrim;
+    }
+
+    public boolean isEncrypted() {
+        return encrypted;
+    }
+
+    public void setEncrypted(boolean encrypted) {
+        this.encrypted = encrypted;
     }
 	
 	/*@Override
