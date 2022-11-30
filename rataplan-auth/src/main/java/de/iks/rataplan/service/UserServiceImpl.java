@@ -1,17 +1,17 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.domain.EmailChange;
+import de.iks.rataplan.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.domain.User;
-import de.iks.rataplan.exceptions.InvalidTokenException;
-import de.iks.rataplan.exceptions.MailAlreadyInUseException;
-import de.iks.rataplan.exceptions.UsernameAlreadyInUseException;
-import de.iks.rataplan.exceptions.WrongCredentialsException;
 import de.iks.rataplan.repository.UserRepository;
 
 @Service
@@ -23,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SurveyToolMessageService surveyToolMessageService;
 
     @Override
     public User registerUser(User user) {
@@ -91,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean changeEmail (String username, String email) {
+    public Boolean changeEmail(String username, String email) {
         User user = this.getUserData(username);
         if (user != null) {
             user.setMail(email);
@@ -104,7 +107,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean changeDisplayName(String username, String displayName) {
         User user = this.getUserData(username);
-        if (user!= null) {
+        if (user != null) {
             user.setDisplayname(displayName);
             userRepository.saveAndFlush(user);
             return true;
@@ -128,4 +131,33 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
+    @Override
+    public void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException {
+        ResponseEntity<?> surveyToolResponse;
+        switch (request.getSurveyToolChoice()) {
+        default:
+        case DELETE:
+            surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
+            break;
+        case ANONYMIZE:
+            surveyToolResponse = surveyToolMessageService.anonymizeUserData(user.getId());
+            break;
+        }
+        if (!surveyToolResponse.getStatusCode().is2xxSuccessful()) {
+            throw new UserDeletionException(
+                "SurveyTool returned " +
+                    surveyToolResponse.getStatusCode() +
+                    " " +
+                    (surveyToolResponse.hasBody() ?
+                        surveyToolResponse.getBody() :
+                        ""
+                    )
+            );
+        }
+        try {
+            userRepository.delete(user);
+        } catch(DataAccessException ex) {
+            throw new UserDeletionException(ex);
+        }
+    }
 }

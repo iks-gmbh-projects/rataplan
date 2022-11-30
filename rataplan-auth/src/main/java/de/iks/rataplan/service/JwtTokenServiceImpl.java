@@ -97,4 +97,8 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 		return claims;
 	}
 
+	@Override
+	public String generateIdToken() {
+		return ""; //Preparation for validation via cryptography
+	}
 }

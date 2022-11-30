@@ -13,4 +13,6 @@ public interface JwtTokenService {
 	public Date getTokenExpiration(String token);
 
 	public boolean isTokenValid(String token);
+
+	public String generateIdToken();
 }

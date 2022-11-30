@@ -1,8 +1,10 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.domain.EmailChange;
 import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.domain.User;
+import de.iks.rataplan.exceptions.UserDeletionException;
 
 public interface UserService {
     User registerUser(User user);
@@ -24,4 +26,6 @@ public interface UserService {
     Boolean changePasswordByToken(User user, String password);
 
     User getUserFromId(int userId);
+
+    void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException;
 }
