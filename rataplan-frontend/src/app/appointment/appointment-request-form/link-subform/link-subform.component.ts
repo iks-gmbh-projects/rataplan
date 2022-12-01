@@ -12,7 +12,7 @@ import { AppointmentRequestFormService } from '../appointment-request-form.servi
 export class LinkSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   participationLink = '/vote/';
-  editLink = '/vote/edit';
+  editLink = '/vote/edit/';
 
   constructor(private appointmentFormService: AppointmentRequestFormService) {
   }

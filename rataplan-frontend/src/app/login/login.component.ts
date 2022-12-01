@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
-  EmailValidator,
+
   FormBuilder,
   FormControl,
-  ValidationErrors,
-  Validator,
+
   Validators
 } from "@angular/forms";
 
 import {LoginService} from "../services/login.service/login.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Subject, throwError} from "rxjs";
+import {Subject} from "rxjs";
 import {User} from "../services/login.service/user.model";
 import {Router} from "@angular/router";
 import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
@@ -84,7 +82,6 @@ export class LoginComponent implements OnInit {
   private handleError(errorRes: HttpErrorResponse) {
     if (errorRes.error.errorCode === "WRONG_CREDENTIALS") {
 
-      console.log("Fuck you bitches")
     }
   }
 
