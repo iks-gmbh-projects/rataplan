@@ -85,7 +85,7 @@ public class UserServiceTest {
 
 		User dbUser = userService.loginUser(new User(1, null, "PEtEr", "geheim", null));
 
-		assertEquals("Peter", dbUser.getUsername());
+		assertEquals("peter", dbUser.getUsername());
 		assertEquals("peter@sch.mitz", dbUser.getMail());
 
 		assertEquals(60, dbUser.getPassword().length());
@@ -113,7 +113,7 @@ public class UserServiceTest {
 
 		User dbUser = userService.loginUser(new User(1, "peter@sch.mitz", null, "geheim", null));
 
-		assertEquals("Peter", dbUser.getUsername());
+		assertEquals("peter", dbUser.getUsername());
 		assertEquals("peter@sch.mitz", dbUser.getMail());
 
 		assertEquals(60, dbUser.getPassword().length());

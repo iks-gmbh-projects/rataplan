@@ -22,6 +22,10 @@ public class DBEncrypter implements ApplicationRunner {
     public void run(ApplicationArguments applicationArguments) {
         log.info("Encrypting DB");
         userRepository.findByEncrypted(false)
+            .peek(user -> {
+                user.setUsername(user.getUsername().toLowerCase());
+                user.setMail(user.getMail().toLowerCase());
+            })
             .map(cryptoService::ensureEncrypted)
             .forEach(userRepository::save);
         log.info("Done");

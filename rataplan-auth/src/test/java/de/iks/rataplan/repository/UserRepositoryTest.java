@@ -71,9 +71,9 @@ public class UserRepositoryTest {
 	@DatabaseSetup(USER_FILE_INITIAL)
 	public void getOneByMail() {
 		User user = userRepository.findOneByMail("PeTer@SCh.mitz");
-
+		assertNotNull(user);
 		assertEquals(Integer.valueOf(1), user.getId());
-		assertEquals("Peter", user.getUsername());
+		assertEquals("peter", user.getUsername());
 		assertEquals("peter@sch.mitz", user.getMail());
 	}
 
@@ -89,8 +89,9 @@ public class UserRepositoryTest {
 	public void getOneByUsername() {
 		User user = userRepository.findOneByUsername("PeTER");
 
+		assertNotNull(user);
 		assertEquals(Integer.valueOf(1), user.getId());
-		assertEquals("Peter", user.getUsername());
+		assertEquals("peter", user.getUsername());
 		assertEquals("peter@sch.mitz", user.getMail());
 	}
 
