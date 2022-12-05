@@ -3,13 +3,11 @@ package de.iks.rataplan.repository;
 import static de.iks.rataplan.testutils.TestConstants.FILE_EXPECTED;
 import static de.iks.rataplan.testutils.TestConstants.FILE_INITIAL;
 import static de.iks.rataplan.testutils.TestConstants.USER_1;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -47,7 +45,7 @@ public class UserRepositoryTest {
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
 	@ExpectedDatabase(value = USER_FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void createUser() throws Exception {
+	public void createUser() {
 		User user = userRepository.saveAndFlush(USER_1);
 
 		assertEquals(user.getUsername(), USER_1.getUsername());
@@ -59,19 +57,19 @@ public class UserRepositoryTest {
 
 	@Test(expected = DataIntegrityViolationException.class)
 	@DatabaseSetup(USER_FILE_INITIAL)
-	public void createUserShouldFailUsernameAlreadyExists() throws Exception {
+	public void createUserShouldFailUsernameAlreadyExists() {
 		userRepository.saveAndFlush(new User(null, "new@ma.il", "Peter", "geheim", "peter"));
 	}
 
 	@Test(expected = DataIntegrityViolationException.class)
 	@DatabaseSetup(USER_FILE_INITIAL)
-	public void createUserShouldFailMailAlreadyExists() throws Exception {
+	public void createUserShouldFailMailAlreadyExists() {
 		userRepository.saveAndFlush(new User(null, "peter@sch.mitz", "neuer name", "geheim", "peter"));
 	}
 
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
-	public void getOneByMail() throws Exception {
+	public void getOneByMail() {
 		User user = userRepository.findOneByMail("PeTer@SCh.mitz");
 
 		assertEquals(Integer.valueOf(1), user.getId());
@@ -81,14 +79,14 @@ public class UserRepositoryTest {
 
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
-	public void getOneByMailShouldFailMailNotInUse() throws Exception {
+	public void getOneByMailShouldFailMailNotInUse() {
 		User user = userRepository.findOneByMail("does@not.exist");
-		assertEquals(null, user);
+		assertNull(user);
 	}
 
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
-	public void getOneByUsername() throws Exception {
+	public void getOneByUsername() {
 		User user = userRepository.findOneByUsername("PeTER");
 
 		assertEquals(Integer.valueOf(1), user.getId());
@@ -98,8 +96,8 @@ public class UserRepositoryTest {
 
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
-	public void getOneByUsernameShouldFailMailNotInUse() throws Exception {
+	public void getOneByUsernameShouldFailMailNotInUse() {
 		User user = userRepository.findOneByUsername("doesnotexist");
-		assertEquals(null, user);
+		assertNull(user);
 	}
 }

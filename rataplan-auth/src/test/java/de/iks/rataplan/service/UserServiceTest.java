@@ -9,7 +9,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -49,7 +48,7 @@ public class UserServiceTest {
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
 	@ExpectedDatabase(value = USER_FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void registerUser() throws Exception {
+	public void registerUser() {
 		User registeredUser = userService.registerUser(USER_1);
 		assertEquals(registeredUser.getPassword().length(), 60);
 		assertNotNull(registeredUser.getId());
@@ -58,7 +57,7 @@ public class UserServiceTest {
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
 	@ExpectedDatabase(value = USER_FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void registerTrimmedUser() throws Exception {
+	public void registerTrimmedUser() {
 		User registeredUser = userService
 				.registerUser(new User(2, "fritz@fri.tte", " fritz  ", "password", " fritz"));
 		assertEquals(registeredUser.getPassword().length(), 60);
