@@ -7,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.Date;
+import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
@@ -25,10 +24,9 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     @Override
     public AuthToken saveAuthTokenToUserWithMail(String mail) {
         int id = userRepository.findOneByMail(mail).getId();
-        //length 4 creates a token with 6 symbols and i dont know why
-        String token = generateAuthToken(4);
+        String token = generateAuthToken(6);
         while (authTokenRepository.findByToken(token) != null) {
-            token = generateAuthToken(4);
+            token = generateAuthToken(6);
         }
         authTokenRepository.deleteById(id);
         AuthToken authToken = new AuthToken(id, token);
@@ -46,10 +44,15 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Override
     public String generateAuthToken(int length) {
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] token = new byte[length];
-        secureRandom.nextBytes(token);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(token);
+        int leftLimit = 48; // number 0
+        int rightLimit = 122; // letter z
+
+        Random random = new Random();
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(length)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 
     @Override
