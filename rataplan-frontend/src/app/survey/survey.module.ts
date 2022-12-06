@@ -23,7 +23,7 @@ import { SurveyCreateComponent } from './survey-create/survey-create.component';
 import { SurveyPreviewComponent } from './survey-create/survey-preview/survey-preview.component';
 import { PageComponent } from './survey-form/page/page.component';
 import { SurveyFormComponent } from './survey-form/survey-form.component';
-import { SurveyListComponent } from './survey-list/survey-list.component';
+import { DashboardComponent } from '../dashboard/dashboard.component';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyRoutingModule } from './survey.routing.module';
@@ -36,7 +36,7 @@ import { AppCommonModule } from '../app-common.module';
 
 @NgModule({
   declarations: [
-    SurveyListComponent,
+    DashboardComponent,
     SurveyFormComponent,
     SurveyOwnerViewComponent,
     SurveyCreateFormComponent,

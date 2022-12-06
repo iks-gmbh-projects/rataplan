@@ -1,18 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { SurveyHead } from '../survey.model';
-import { SurveyService } from '../survey.service';
-import {AppointmentRequestModel} from "../../models/appointment-request.model";
-import {DashboardService} from "../../services/dashboard-service/dashboard.service";
+import { SurveyHead } from '../survey/survey.model';
+import { SurveyService } from '../survey/survey.service';
+import {AppointmentRequestModel} from "../models/appointment-request.model";
+import {DashboardService} from "../services/dashboard-service/dashboard.service";
 import {formatDate} from "@angular/common";
 
 @Component({
   selector: 'app-survey-list',
-  templateUrl: './survey-list.component.html',
-  styleUrls: ['./survey-list.component.css']
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css']
 })
-export class SurveyListComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy {
   public surveys: SurveyHead[] = [];
   public createdVotes: AppointmentRequestModel[] = [];
   public participatedVotes: AppointmentRequestModel[] = [];
