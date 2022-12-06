@@ -39,9 +39,10 @@ export class AppointmentRequestFormService {
     this.appointmentRequest.appointments = appointments;
   }
 
-  setEmailInputValue(name: string, email: string) {
+  setEmailInputValue(name: string, email: string, emailGroup: string[]) {
     this.appointmentRequest.organizerName = name.trim();
     this.appointmentRequest.organizerMail = email.trim();
+    this.appointmentRequest.consigneeList = emailGroup;
   }
 
   emitValidation(val: string) {

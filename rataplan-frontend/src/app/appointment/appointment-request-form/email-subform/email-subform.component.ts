@@ -1,4 +1,4 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -13,12 +13,13 @@ import { AppointmentRequestFormService } from '../appointment-request-form.servi
 })
 export class EmailSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+  readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
   emails: string[] = [];
 
   emailSubform = new FormGroup({
     'name': new FormControl(null),
     'email': new FormControl(null, Validators.email),
+    'emailGroup': new FormControl(null, Validators.email)
   });
 
   constructor(private appointmentRequestFormService: AppointmentRequestFormService) {
@@ -51,6 +52,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     this.appointmentRequestFormService.setEmailInputValue(
       this.emailSubform.get('name')?.value,
       this.emailSubform.get('email')?.value,
+      this.emails
     );
   }
 
