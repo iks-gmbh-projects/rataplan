@@ -26,15 +26,10 @@ export class AppointmentService {
 
   addAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
     const token = this.getParticipationToken(appointmentRequest);
+    const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
 
     return this.http.post<AppointmentMemberModel>(
-      this.url + token + '/appointmentMembers',
-      appointmentMember,
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json;charset=utf-8',
-        }),
-      });
+      this.url + token + '/appointmentMembers', appointmentMember, httpOptions);
   }
 
   updateAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {

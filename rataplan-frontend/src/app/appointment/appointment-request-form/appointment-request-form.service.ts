@@ -57,13 +57,9 @@ export class AppointmentRequestFormService {
   }
 
   createAppointmentRequest() {
+    const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+
     return this.http.post<AppointmentRequestModel>(
-      environment.rataplanBackendURL + 'appointmentRequests',
-      this.appointmentRequest,
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json;charset=utf-8',
-        }),
-      });
+      environment.rataplanBackendURL + 'appointmentRequests', this.appointmentRequest, httpOptions);
   }
 }

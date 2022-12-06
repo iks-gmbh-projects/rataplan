@@ -5,6 +5,7 @@
   </button>
   <a class="rightSpace" mat-raised-button color="primary" routerLink="../create">Erstellen</a>
   <hr>
+  <h3>Umfragen</h3>
   <div>
     <mat-spinner *ngIf="busy; else done"></mat-spinner>
     <ng-template #done>
@@ -12,6 +13,7 @@
       <ng-template #success>
         <mat-card class="bottomSpace" *ngFor="let survey of surveys">
           <mat-card-title>{{survey.name}}</mat-card-title>
+          <mat-card-subtitle>Teilnahme: {{survey.startDate | date:'dd.LL.yyyy'}} - {{survey.endDate | date:'dd.LL.yyyy'}}</mat-card-subtitle>
           <mat-card-content>{{survey.description}}</mat-card-content>
           <mat-card-actions>
             <a *ngIf="!isOwn" mat-raised-button color="primary"
@@ -23,4 +25,36 @@
       </ng-template>
     </ng-template>
   </div>
+  <h3>Erstellte Abstimmungen</h3>
+  <mat-card class="bottomSpace" *ngFor="let vote of createdVotes">
+    <mat-card-title>{{vote.title}}</mat-card-title>
+    <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+    <mat-card-content>{{vote.description}}</mat-card-content>
+    <mat-card-actions>
+      <a mat-raised-button
+         color="primary"
+         [routerLink]="['/vote', vote.participationToken]">
+         Anzeigen
+      </a>
+      <a *ngIf="!vote.expired"
+         mat-raised-button
+         color="primary">
+         <!-- sobalt es editieren gibt [routerLink]="['appointmentRequests/edit', vote.editToken]"-->
+         Editieren
+      </a>
+    </mat-card-actions>
+  </mat-card>
+  <h3>Teilgenommene Abstimmungen</h3>
+  <mat-card class="bottomSpace" *ngFor="let vote of participatedVotes">
+    <mat-card-title>{{vote.title}}</mat-card-title>
+    <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+    <mat-card-content>{{vote.description}}</mat-card-content>
+    <mat-card-actions>
+      <a mat-raised-button
+         color="primary"
+         [routerLink]="['/vote', vote.participationToken]">
+        Anzeigen
+      </a>
+    </mat-card-actions>
+  </mat-card>
 </div>
