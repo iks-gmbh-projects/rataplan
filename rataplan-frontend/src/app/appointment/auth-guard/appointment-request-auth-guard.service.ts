@@ -21,6 +21,6 @@ export class AppointmentRequestAuthGuard implements CanActivate {
     if (title && deadline) {
       return true;
     }
-    return this.router.createUrlTree(['create-appointment/general']);
+    return this.router.createUrlTree(['create-vote/general']);
   }
 }

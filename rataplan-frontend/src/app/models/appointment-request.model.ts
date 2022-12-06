@@ -14,6 +14,7 @@ export class AppointmentRequestModel {
   backendUserid: number | undefined;
   expired: boolean | undefined;
   participationToken: string | undefined;
+  editToken: string | undefined;
 
   appointmentRequestConfig: AppointmentRequestConfig | null;
   appointments: AppointmentModel[];

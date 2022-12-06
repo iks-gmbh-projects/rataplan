@@ -11,7 +11,8 @@ import { AppointmentRequestFormService } from '../appointment-request-form.servi
 })
 export class LinkSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
-  link = '/vote/';
+  participationLink = '/vote/';
+  editLink = '/vote/edit/';
 
   constructor(private appointmentFormService: AppointmentRequestFormService) {
   }
@@ -21,7 +22,8 @@ export class LinkSubformComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject))
       .subscribe(
         data => {
-          this.link = this.link + data.participationToken;
+          this.participationLink += data.participationToken;
+          this.editLink += data.editToken;
           console.log(data);
           this.appointmentFormService.appointmentRequest = new AppointmentRequestModel();
           this.appointmentFormService.selectedDates = [];
