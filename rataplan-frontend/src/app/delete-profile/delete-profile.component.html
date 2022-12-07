@@ -1,17 +1,33 @@
-<form (ngSubmit)="submit()" [formGroup]="formGroup">
-  <mat-radio-group formControlName="backendChoice">
-    <mat-label>Was soll mit bereits erstellten Abstimmungen und Antworten auf diese geschehen?</mat-label>
-    <mat-radio-button value="DELETE">Löschen</mat-radio-button>
-    <mat-radio-button value="ANONYMIZE">Anonymisieren</mat-radio-button>
-  </mat-radio-group>
-  <mat-radio-group formControlName="surveyToolChoice">
-    <mat-label>Was soll mit bereits erstellten Umfragen und Antworten auf diese geschehen?</mat-label>
-    <mat-radio-button value="DELETE">Löschen</mat-radio-button>
-    <mat-radio-button value="ANONYMIZE">Anonymisieren</mat-radio-button>
-  </mat-radio-group>
-  <mat-form-field>
-    <mat-label>Bitte geben sie ihr Passwort zur bestätigung ein.</mat-label>
-    <input type="password" matInput placeholder="Passwort" formControlName="password">
-  </mat-form-field>
-  <button type="submit" mat-raised-button color="warn">Profil endgültig löschen</button>
-</form>
+<div class="form-container">
+  <h1 class="headline">Profil löschen</h1>
+  <form (ngSubmit)="submit()" [formGroup]="formGroup">
+    <div>
+      <label for="backendChoice">Was soll mit bereits erstellten Abstimmungen und Antworten auf diese geschehen?</label><br>
+      <mat-radio-group id="backendChoice" formControlName="backendChoice">
+        <mat-radio-button value="DELETE">Löschen</mat-radio-button>
+        <br>
+        <mat-radio-button value="ANONYMIZE">Anonymisieren</mat-radio-button>
+        <br>
+      </mat-radio-group>
+    </div>
+    <div>
+      <label for="surveyToolChoice">Was soll mit bereits erstellten Umfragen und Antworten auf diese
+        geschehen?</label><br>
+      <mat-radio-group id="surveyToolChoice" formControlName="surveyToolChoice">
+        <mat-radio-button value="DELETE">Löschen</mat-radio-button>
+        <br>
+        <mat-radio-button value="ANONYMIZE">Anonymisieren</mat-radio-button>
+        <br>
+      </mat-radio-group>
+    </div>
+    <div class="password">
+      <mat-form-field>
+        <mat-label>Bitte geben sie ihr Passwort zur bestätigung ein.</mat-label>
+        <input type="password" matInput placeholder="Passwort" formControlName="password">
+      </mat-form-field>
+    </div>
+    <div class="submit-container">
+      <button type="submit" mat-raised-button color="warn">Profil endgültig löschen</button>
+    </div>
+  </form>
+</div>
