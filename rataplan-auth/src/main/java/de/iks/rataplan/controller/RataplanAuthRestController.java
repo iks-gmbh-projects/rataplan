@@ -102,7 +102,7 @@ public class RataplanAuthRestController {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         String username = jwtTokenService.getUsernameFromToken(token);
         User dbUser = userService.getUserData(username);
-
+        userService.verifyPasswordOrThrow(dbUser, request.getPassword());
         try {
             userService.deleteUser(dbUser, request);
         } catch(UserDeletionException ex) {

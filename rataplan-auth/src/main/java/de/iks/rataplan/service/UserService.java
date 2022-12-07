@@ -1,10 +1,10 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.DeleteUserRequest;
-import de.iks.rataplan.domain.EmailChange;
 import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.exceptions.UserDeletionException;
+import de.iks.rataplan.exceptions.WrongCredentialsException;
 
 public interface UserService {
     User registerUser(User user);
@@ -14,6 +14,9 @@ public interface UserService {
     boolean checkIfUsernameExists(String username);
 
     User loginUser(User user);
+    
+    boolean verifyPassword(User user, String password);
+    void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;
 
     User getUserData(String username);
 

@@ -10,8 +10,9 @@ import lombok.*;
 public class DeleteUserRequest {
     public enum Method {
         DELETE,
-        ANONYMIZE;
+        ANONYMIZE
     }
     private Method surveyToolChoice;
     private Method backendChoice;
+    private String password;
 }

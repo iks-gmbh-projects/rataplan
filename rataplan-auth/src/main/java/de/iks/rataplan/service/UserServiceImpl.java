@@ -72,7 +72,18 @@ public class UserServiceImpl implements UserService {
             throw new WrongCredentialsException("These credentials have no match!");
         }
     }
-
+    
+    @Override
+    public boolean verifyPassword(User user, String password) {
+        return passwordEncoder.matches(user.getPassword(), password);
+    }
+    @Override
+    public void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException {
+        if(!verifyPassword(user, password)) {
+            throw new WrongCredentialsException("These credentials have no match!");
+        }
+    }
+    
     @Override
     public User getUserData(String username) {
         User dbUser;
