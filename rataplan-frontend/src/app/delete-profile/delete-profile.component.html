@@ -1,0 +1,17 @@
+<form (ngSubmit)="submit()" [formGroup]="formGroup">
+  <mat-radio-group formControlName="backendChoice">
+    <mat-label>Was soll mit bereits erstellten Abstimmungen und Antworten auf diese geschehen?</mat-label>
+    <mat-radio-button value="DELETE">Löschen</mat-radio-button>
+    <mat-radio-button value="ANONYMIZE">Anonymisieren</mat-radio-button>
+  </mat-radio-group>
+  <mat-radio-group formControlName="surveyToolChoice">
+    <mat-label>Was soll mit bereits erstellten Umfragen und Antworten auf diese geschehen?</mat-label>
+    <mat-radio-button value="DELETE">Löschen</mat-radio-button>
+    <mat-radio-button value="ANONYMIZE">Anonymisieren</mat-radio-button>
+  </mat-radio-group>
+  <mat-form-field>
+    <mat-label>Bitte geben sie ihr Passwort zur bestätigung ein.</mat-label>
+    <input type="password" matInput placeholder="Passwort" formControlName="password">
+  </mat-form-field>
+  <button type="submit" mat-raised-button color="warn">Profil endgültig löschen</button>
+</form>
