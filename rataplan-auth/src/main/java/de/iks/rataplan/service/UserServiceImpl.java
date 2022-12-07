@@ -1,7 +1,6 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.DeleteUserRequest;
-import de.iks.rataplan.domain.EmailChange;
 import de.iks.rataplan.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -26,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SurveyToolMessageService surveyToolMessageService;
+    
+    @Autowired
+    private BackendMessageService backendMessageService;
 
     @Override
     public User registerUser(User user) {
@@ -150,6 +152,27 @@ public class UserServiceImpl implements UserService {
                     " " +
                     (surveyToolResponse.hasBody() ?
                         surveyToolResponse.getBody() :
+                        ""
+                    )
+            );
+        }
+        ResponseEntity<?> backendResponse;
+        switch (request.getBackendChoice()) {
+        default:
+        case DELETE:
+            backendResponse = backendMessageService.deleteUserData(user.getId());
+            break;
+        case ANONYMIZE:
+            backendResponse = backendMessageService.anonymizeUserData(user.getId());
+            break;
+        }
+        if (!backendResponse.getStatusCode().is2xxSuccessful()) {
+            throw new UserDeletionException(
+                "Backend returned " +
+                    backendResponse.getStatusCode() +
+                    " " +
+                    (backendResponse.hasBody() ?
+                        backendResponse.getBody() :
                         ""
                     )
             );
