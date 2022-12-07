@@ -3,6 +3,7 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.ResetPasswordMailData;
 import de.iks.rataplan.utils.MailBuilderSendInBlue;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
@@ -15,7 +16,8 @@ import sibModel.SendSmtpEmail;
 @Primary
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "RATAPLAN.PROD", matchIfMissing = true)
+@ConditionalOnProperty(value = "RATAPLAN.PROD", havingValue = "true")
+@ConditionalOnBean(TransactionalEmailsApi.class)
 public class MailServiceImplSendInBlue implements MailService {
     
     private final MailBuilderSendInBlue mailBuilder;
