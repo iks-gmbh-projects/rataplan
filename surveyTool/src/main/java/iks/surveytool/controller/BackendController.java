@@ -24,7 +24,7 @@ public class BackendController {
         else return ae;
     }
 
-    @DeleteMapping("/:userId")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteData(@PathVariable long userId, @RequestBody String secret) {
         if(!authService.validateBackendSecret(secret)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         return mergeEmpty(
@@ -33,7 +33,7 @@ public class BackendController {
         );
     }
 
-    @PostMapping("/:userId/anonymize")
+    @PostMapping("/{userId}/anonymize")
     public ResponseEntity<?> anonymizeData(@PathVariable long userId, @RequestBody String secret) {
         if(!authService.validateBackendSecret(secret)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         return mergeEmpty(
