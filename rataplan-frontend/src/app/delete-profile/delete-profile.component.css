@@ -1,0 +1,20 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.mat-form-field, .mat-radio-group {
+  width: 80vw;
+  max-width: 400px;
+}
+
+.password {
+  margin-top: 21.5px;
+}
+
+.submit-container {
+  display: flex;
+  justify-content: flex-end;
+}
