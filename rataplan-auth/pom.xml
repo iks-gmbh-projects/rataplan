@@ -28,6 +28,7 @@
 		<flyway.version>4.2.0</flyway.version>
 		<springfox.swagger2.version>2.7.0</springfox.swagger2.version>
 		<sendgrid.version>4.0.1</sendgrid.version>
+		<sendinblue.version>6.0.0</sendinblue.version>
 	</properties>
 
 	<dependencies>
@@ -152,9 +153,10 @@
 
 		<!-- SendGrid MailSender -->
 		<dependency>
-			<groupId>com.sendgrid</groupId>
-			<artifactId>sendgrid-java</artifactId>
-			<version>${sendgrid.version}</version>
+			<groupId>com.sendinblue</groupId>
+			<artifactId>sib-api-v3-sdk</artifactId>
+			<version>${sendinblue.version}</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- Thymeleaf -->
@@ -168,7 +170,13 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 
 	<build>
