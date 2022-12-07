@@ -9,4 +9,5 @@ public interface UserRepository {
     boolean existsByMail(String mail);
     boolean existsByUsername(String username);
     User saveAndFlush(User user);
+    void delete(User user);
 }
