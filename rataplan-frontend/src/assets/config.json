@@ -1,5 +1,5 @@
 {
-  "authBackend": "https://rataplan-auth.herokuapp.com/v1/",
-  "appointmentBackend": "https://rataplan-backend-test.herokuapp.com/v1/",
-  "surveyBackend": "https://umfragetool-backend.herokuapp.com/"
+  "authBackend": "http://localhost:8081/v1/",
+  "appointmentBackend": "http://localhost:8080/v1/",
+  "surveyBackend": "http://localhost:8082/"
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { environment } from "../../../environments/environment";
 import { ReplaySubject, take } from "rxjs";
 
 type config = {
@@ -27,17 +26,14 @@ export class BackendUrlService {
   );
 
   constructor(http: HttpClient) {
-    if (environment.production) {
-      http.get<config>(window.location.origin)
-        .subscribe(conf => {
+    http.get<config>(window.location.origin+"/assets/config.json")
+      .subscribe({
+        next: conf => {
           this._authURL.next(conf.authBackend);
           this._appointmentURL.next(conf.appointmentBackend);
           this._surveyURL.next(conf.surveyBackend);
-        })
-    } else {
-      this._authURL.next(environment.authBackendURL);
-      this._appointmentURL.next(environment.rataplanBackendURL);
-      this._surveyURL.next(environment.surveyBackendURL);
-    }
+        },
+        error: console.log,
+      });
   }
 }
