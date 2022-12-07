@@ -182,5 +182,9 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			}
 		}
 	}
-
+	
+	@Override
+	public void deleteAppointmentRequest(AppointmentRequest request) {
+		appointmentRequestRepository.delete(request);
+	}
 }

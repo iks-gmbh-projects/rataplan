@@ -66,6 +66,25 @@ public class AppointmentRequest implements Serializable {
 		this.organizerMail = organizerMail;
 		this.appointmentRequestConfig = appointmentRequestConfig;
 	}
+    
+    public AppointmentRequest(AppointmentRequest copy) {
+        this(
+            copy.title,
+            copy.description,
+            copy.deadline,
+            copy.organizerName,
+            copy.organizerMail,
+            copy.appointmentRequestConfig,
+            copy.appointments,
+            copy.appointmentMembers,
+            copy.isExpired
+        );
+		this.backendUserId = copy.backendUserId;
+		this.consigneeList = copy.consigneeList;
+		this.editToken = copy.editToken;
+		this.id = copy.id;
+		this.participationToken = copy.participationToken;
+    }
 
 	public AppointmentRequest() {
 		// required for Hibernate
@@ -222,8 +241,7 @@ public class AppointmentRequest implements Serializable {
      * checks if the AppointmentDecisions have the same size and appointmentId's
      * than the corresponding Appointments in this AppointmentRequest
      *
-     * @param appointments
-     * @param decisions
+     * @param appointmentMember
      * @return
      */
 	public boolean validateDecisionsForAppointmentMember(AppointmentMember appointmentMember) {
