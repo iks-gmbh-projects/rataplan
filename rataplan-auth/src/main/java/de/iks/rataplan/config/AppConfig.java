@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
+import org.springframework.web.client.RestTemplate;
 
 @Profile({"dev", "prod", "test", "integration"})
 @Configuration
@@ -95,4 +96,8 @@ public class AppConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
+    @Bean
+    public RestTemplate restTemplate() {
+       return new RestTemplate();
+    }
 }
