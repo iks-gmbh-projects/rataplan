@@ -49,6 +49,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AppCommonModule } from './app-common.module';
+import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 
 registerLocaleData(localeDE);
 
@@ -77,6 +78,7 @@ registerLocaleData(localeDE);
     AppointmentComponent,
     MemberDecisionSubformComponent,
     ChangePasswordComponent,
+    DeleteProfileComponent,
   ],
   imports: [
     BrowserModule,

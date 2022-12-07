@@ -22,6 +22,7 @@ import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
+import { DeleteProfileComponent } from "./delete-profile/delete-profile.component";
 
 // function matcherFunction(url: UrlSegment[]) {
 //
@@ -75,6 +76,7 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [ProfilePasswordAuthService] },
+  { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'survey', loadChildren: () => import('./survey/survey.module').then(m => m.SurveyModule) },
 ];
 
