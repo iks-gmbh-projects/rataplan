@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public boolean verifyPassword(User user, String password) {
-        return passwordEncoder.matches(user.getPassword(), password);
+        return passwordEncoder.matches(password, user.getPassword());
     }
     @Override
     public void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException {

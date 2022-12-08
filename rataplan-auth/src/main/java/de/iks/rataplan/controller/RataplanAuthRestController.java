@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import de.iks.rataplan.service.JwtTokenService;
 import de.iks.rataplan.service.UserService;
+import org.springframework.web.client.ResourceAccessException;
 
 @RequiredArgsConstructor
 @RestController
@@ -105,7 +106,7 @@ public class RataplanAuthRestController {
         userService.verifyPasswordOrThrow(dbUser, request.getPassword());
         try {
             userService.deleteUser(dbUser, request);
-        } catch(UserDeletionException ex) {
+        } catch(UserDeletionException | ResourceAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
 
