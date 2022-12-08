@@ -50,6 +50,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ProfileComponent } from './profile/profile.component';
 import { AppCommonModule } from './app-common.module';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 registerLocaleData(localeDE);
 
@@ -108,6 +109,7 @@ registerLocaleData(localeDE);
     MatMenuModule,
     MatBadgeModule,
     MatExpansionModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
