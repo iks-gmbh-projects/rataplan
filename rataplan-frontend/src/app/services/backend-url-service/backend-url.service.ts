@@ -18,10 +18,10 @@ export class BackendUrlService {
   readonly authURL$ = this._authURL.pipe(
     take(1)
   );
-  readonly appointmentURL$ = this._authURL.pipe(
+  readonly appointmentURL$ = this._appointmentURL.pipe(
     take(1)
   );
-  readonly surveyURL$ = this._authURL.pipe(
+  readonly surveyURL$ = this._surveyURL.pipe(
     take(1)
   );
 
