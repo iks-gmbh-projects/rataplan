@@ -9,6 +9,7 @@ import de.iks.rataplan.service.BackendUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,11 +38,12 @@ public class BackendController {
         final BackendUser user = backendUserService.getBackendUserByAuthUserId(userId);
         if(user != null) {
             appointmentRequestService.getAppointmentRequestsWhereUserTakesPartIn(user.getId())
-                .forEach(r -> r.getAppointmentMembers()
-                    .stream()
-                    .filter(m -> Objects.equals(m.getBackendUserId(), user.getId()))
-                    .forEach(m -> appointmentMemberService.deleteAppointmentMember(r, m))
-                );
+                .stream()
+                .map(AppointmentRequest::getAppointmentMembers)
+                .flatMap(List::stream)
+                .filter(m -> Objects.equals(m.getBackendUserId(), user.getId()))
+                .mapToInt(AppointmentMember::getId)
+                .forEach(appointmentMemberService::anonymizeAppointmentMember);
             appointmentRequestService.getAppointmentRequestsForUser(user.getId())
                 .forEach(appointmentRequestService::deleteAppointmentRequest);
             backendUserService.deleteBackendUser(user);
@@ -55,28 +57,13 @@ public class BackendController {
         final BackendUser user = backendUserService.getBackendUserByAuthUserId(userId);
         if(user != null) {
             appointmentRequestService.getAppointmentRequestsWhereUserTakesPartIn(user.getId())
-                .forEach(r -> r.getAppointmentMembers()
-                    .stream()
-                    .filter(m -> Objects.equals(m.getBackendUserId(), user.getId()))
-                    .forEach(m -> {
-                        AppointmentMember n = new AppointmentMember(m);
-                        n.setName("Anonym");
-                        n.setBackendUserId(null);
-                        appointmentMemberService.updateAppointmentMember(
-                            r,
-                            m,
-                            n
-                        );
-                    })
-                );
-            appointmentRequestService.getAppointmentRequestsForUser(user.getId())
-                .forEach(r -> {
-                    AppointmentRequest n = new AppointmentRequest(r);
-                    n.setBackendUserId(null);
-                    n.setOrganizerName("Anonym");
-                    n.setOrganizerMail(null);
-                    appointmentRequestService.updateAppointmentRequest(r, n);
-                });
+                .stream()
+                .map(AppointmentRequest::getAppointmentMembers)
+                .flatMap(List::stream)
+                .filter(m -> Objects.equals(m.getBackendUserId(), user.getId()))
+                .mapToInt(AppointmentMember::getId)
+                .forEach(appointmentMemberService::anonymizeAppointmentMember);
+            appointmentRequestService.anonymizeAppointmentRequests(user.getId());
             backendUserService.deleteBackendUser(user);
         }
         return ResponseEntity.ok(userId);

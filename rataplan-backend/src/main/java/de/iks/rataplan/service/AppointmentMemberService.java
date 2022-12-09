@@ -11,4 +11,6 @@ public interface AppointmentMemberService {
 
 	public AppointmentMember updateAppointmentMember(AppointmentRequest appointmentRequest,
 			AppointmentMember dbAppointmentMember, AppointmentMember newAppointmentMember);
+	
+	public void anonymizeAppointmentMember(int memberId);
 }

@@ -73,7 +73,15 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
         this.updateAppointmentDecisionsForMember(dbAppointmentMember.getAppointmentDecisions(), newAppointmentMember.getAppointmentDecisions());
         return appointmentMemberRepository.saveAndFlush(dbAppointmentMember);
     }
-
+    
+    @Override
+    public void anonymizeAppointmentMember(int id) {
+        AppointmentMember member = appointmentMemberRepository.findOne(id);
+        member.setName("Anonym");
+        member.setBackendUserId(null);
+        appointmentMemberRepository.saveAndFlush(member);
+    }
+    
     /**
      * updates the oldDecisions decisions to the new ones based on the
      * appointmentId's
