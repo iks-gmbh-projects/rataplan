@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+
+import { AppointmentRequestModel } from '../models/appointment-request.model';
+import { DashboardService } from '../services/dashboard-service/dashboard.service';
 import { SurveyHead } from '../survey/survey.model';
 import { SurveyService } from '../survey/survey.service';
-import {AppointmentRequestModel} from "../models/appointment-request.model";
-import {DashboardService} from "../services/dashboard-service/dashboard.service";
-import {formatDate} from "@angular/common";
 
 @Component({
   selector: 'app-survey-list',
@@ -16,10 +16,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public surveys: SurveyHead[] = [];
   public createdVotes: AppointmentRequestModel[] = [];
   public participatedVotes: AppointmentRequestModel[] = [];
-  public currentDate: string = formatDate(new Date(),'dd-MM-yyyy','de_DE');
-  public busy: boolean = false;
+  public busy = false;
   public error: any = null;
-  public isOwn: boolean = false;
+  public isOwn = false;
   private sub?: Subscription;
 
   constructor(private surveyService: SurveyService, private dashboardService: DashboardService, private activeRoute: ActivatedRoute) { }
@@ -41,7 +40,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.busy) return;
     this.busy = true;
     this.error = null;
-    let request = this.isOwn ? this.surveyService.getOwnSurveys() : this.surveyService.getOpenSurveys()
+    const request = this.isOwn ? this.surveyService.getOwnSurveys() : this.surveyService.getOpenSurveys();
     request.subscribe({
       next: s => this.surveys = s,
       error: err => {
