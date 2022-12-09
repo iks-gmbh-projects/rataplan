@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { DeleteProfileService } from "../services/delete-profile-service/delete-profile.service";
+import { DeleteProfileService, deletionChoices } from "../services/delete-profile-service/delete-profile.service";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
@@ -26,16 +26,24 @@ export class DeleteProfileComponent {
 
   submit() {
     this.busy = true;
-    this.deleteProfileService.deleteProfile(this.formGroup.value)
+    const request: deletionChoices = this.formGroup.value;
+    this.formGroup.disable();
+    this.deleteProfileService.deleteProfile(request)
       .subscribe({
+        next: _ => {
+          this.busy = false;
+          this.formGroup.enable();
+          this.router.navigate(["/"]);
+        },
         error: err => {
           console.log(err);
           this.busy = false;
+          this.formGroup.enable();
           this.snackbar.open("Es ist ein Fehler aufgetreten", "OK");
         },
         complete: () => {
           this.busy = false;
-          this.router.navigate([]);
+          this.formGroup.enable();
         },
       });
   }
