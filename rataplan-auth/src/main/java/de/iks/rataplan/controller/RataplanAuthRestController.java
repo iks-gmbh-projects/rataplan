@@ -189,9 +189,10 @@ public class RataplanAuthRestController {
     }
 
     @GetMapping("/users/displayName/{userId}")
-    public String getDisplayName(@PathVariable int userId) {
+    public ResponseEntity<?> getDisplayName(@PathVariable int userId) {
         User user = userService.getUserFromId(userId);
-        return user.getDisplayname();
+        if(user == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(user.getDisplayname());
     }
 
     private HttpHeaders createResponseHeaders(User user) {
