@@ -6,6 +6,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
+import de.iks.rataplan.repository.BackendUserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,16 @@ public class BackendControllerTest {
     @Autowired
     private BackendController backendController;
     
+    @Autowired
+    private BackendUserRepository rawrepository;
+    
     @Test
     @DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void testDelete() {
         backendController.deleteData(2, null);
+        rawrepository.findAll()
+            .forEach(System.out::println);
     }
     
     @Test
@@ -44,5 +50,7 @@ public class BackendControllerTest {
     @ExpectedDatabase(value = FILE_PATH + ANONYMIZE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void testAnonymize() {
         backendController.anonymizeData(2, null);
+        rawrepository.findAll()
+            .forEach(System.out::println);
     }
 }

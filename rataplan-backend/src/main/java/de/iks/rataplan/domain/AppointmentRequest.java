@@ -42,6 +42,7 @@ public class AppointmentRequest implements Serializable {
 	private List<String> consigneeList = new ArrayList<>();
 	private List<Appointment> appointments = new ArrayList<>();
 	private List<AppointmentMember> appointmentMembers = new ArrayList<>();
+	private List<BackendUserAccess> accessList = new ArrayList<>();
 
 	public AppointmentRequest(String title, String description, Date deadline, String organizerName,
 			String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
@@ -75,15 +76,16 @@ public class AppointmentRequest implements Serializable {
             copy.organizerName,
             copy.organizerMail,
             copy.appointmentRequestConfig,
-            copy.appointments,
-            copy.appointmentMembers,
+            new ArrayList<>(copy.appointments),
+			new ArrayList<>(copy.appointmentMembers),
             copy.isExpired
         );
 		this.backendUserId = copy.backendUserId;
-		this.consigneeList = copy.consigneeList;
+		this.consigneeList = new ArrayList<>(copy.consigneeList);
 		this.editToken = copy.editToken;
 		this.id = copy.id;
 		this.participationToken = copy.participationToken;
+		this.accessList = new ArrayList<>(copy.accessList);
     }
 
 	public AppointmentRequest() {
@@ -236,8 +238,17 @@ public class AppointmentRequest implements Serializable {
 	public void setConsigneeList(List<String> consigneeList) {
 		this.consigneeList = consigneeList;
 	}
-
-    /**
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequestId", cascade = CascadeType.ALL)
+	public List<BackendUserAccess> getAccessList() {
+		return accessList;
+	}
+	
+	public void setAccessList(List<BackendUserAccess> accessList) {
+		this.accessList = accessList;
+	}
+	
+	/**
      * checks if the AppointmentDecisions have the same size and appointmentId's
      * than the corresponding Appointments in this AppointmentRequest
      *
