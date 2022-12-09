@@ -4,9 +4,9 @@
     <div>
       <label for="backendChoice">Was soll mit bereits erstellten Abstimmungen und Antworten auf diese geschehen?</label><br>
       <mat-radio-group id="backendChoice" formControlName="backendChoice">
-        <mat-radio-button value="DELETE" [disabled]="busy">Löschen</mat-radio-button>
+        <mat-radio-button value="DELETE">Löschen</mat-radio-button>
         <br>
-        <mat-radio-button value="ANONYMIZE" [disabled]="busy">Anonymisieren</mat-radio-button>
+        <mat-radio-button value="ANONYMIZE">Anonymisieren</mat-radio-button>
         <br>
       </mat-radio-group>
     </div>
@@ -14,16 +14,16 @@
       <label for="surveyToolChoice">Was soll mit bereits erstellten Umfragen und Antworten auf diese
         geschehen?</label><br>
       <mat-radio-group id="surveyToolChoice" formControlName="surveyToolChoice">
-        <mat-radio-button value="DELETE" [disabled]="busy">Löschen</mat-radio-button>
+        <mat-radio-button value="DELETE">Löschen</mat-radio-button>
         <br>
-        <mat-radio-button value="ANONYMIZE" [disabled]="busy">Anonymisieren</mat-radio-button>
+        <mat-radio-button value="ANONYMIZE">Anonymisieren</mat-radio-button>
         <br>
       </mat-radio-group>
     </div>
     <div class="password">
       <mat-form-field>
         <mat-label>Bitte geben sie ihr Passwort zur bestätigung ein.</mat-label>
-        <input type="password" matInput placeholder="Passwort" formControlName="password" [disabled]="busy">
+        <input type="password" matInput placeholder="Passwort" formControlName="password">
       </mat-form-field>
     </div>
     <div class="submit-container">
