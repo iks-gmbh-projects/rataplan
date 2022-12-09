@@ -8,7 +8,7 @@
       <a mat-list-item routerLink="/create-vote" (click)="drawer.close()">Neue Abstimmung</a>
       <a *ngIf="!localstorageService.isLoggedIn()" mat-list-item routerLink="/register" (click)="drawer.close()">Registrieren</a>
       <a *ngIf="!localstorageService.isLoggedIn()" mat-list-item routerLink="/login" (click)="drawer.close()">Login</a>
-      <a mat-list-item routerLink="/survey" (click)="drawer.close()">Dashboard</a>
+      <a mat-list-item routerLink="/survey" (click)="drawer.close()">Umfrage</a>
       <a mat-list-item routerLink="/terms-and-conditions" (click)="drawer.close()">AGB</a>
       <a mat-list-item routerLink="/imprint" (click)="drawer.close()">Impressum</a>
       <a mat-list-item routerLink="/contact" (click)="drawer.close()">Kontakt</a>
@@ -32,7 +32,8 @@
       </button>
       <mat-menu #menu="matMenu" >
         <button mat-menu-item routerLink="/profile"><mat-icon>account_circle</mat-icon>Profil</button>
-        <button mat-menu-item routerLink="/survey/own"><mat-icon>campaign</mat-icon>Dashboard</button>
+        <button mat-menu-item routerLink="/survey/own"><mat-icon>campaign</mat-icon>Meine Umfragen</button>
+        <button mat-menu-item routerLink="/test"><mat-icon>campaign</mat-icon>Meine Votes</button>
         <button mat-menu-item routerLink="/" (click)="onLogout()"><mat-icon>logout</mat-icon>Logout</button>
       </mat-menu>
     </mat-toolbar>
