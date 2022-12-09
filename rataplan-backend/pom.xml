@@ -29,7 +29,7 @@
 		<dbunit.spring.test.version>1.3.0</dbunit.spring.test.version>
 		<modelmapper.version>0.7.7</modelmapper.version>
 		<springfox.swagger2.version>2.7.0</springfox.swagger2.version>
-		<sendgrid.version>4.0.1</sendgrid.version>
+		<sendinblue.version>6.0.0</sendinblue.version>
 		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
 	</properties>
 
@@ -61,11 +61,12 @@
 			<version>${javax.mail.version}</version>
 		</dependency>
 
-		<!-- SendGrid MailSender -->
+		<!-- SendInBlue MailSender -->
 		<dependency>
-			<groupId>com.sendgrid</groupId>
-			<artifactId>sendgrid-java</artifactId>
-			<version>${sendgrid.version}</version>
+			<groupId>com.sendinblue</groupId>
+			<artifactId>sib-api-v3-sdk</artifactId>
+			<version>${sendinblue.version}</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<!-- Spring -->
