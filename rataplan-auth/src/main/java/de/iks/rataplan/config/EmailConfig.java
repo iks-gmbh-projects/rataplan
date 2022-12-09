@@ -12,15 +12,15 @@ import sibModel.SendSmtpEmailSender;
 
 @Configuration
 public class EmailConfig {
-    @Value("${mail.sendinblue.api_key}")
-    private String apiKey;
     @Value("${mail.address}")
     private String address;
     @Value("${mail.name}")
     private String name;
     @Bean
     @ConditionalOnProperty("mail.sendinblue.api_key")
-    public ApiClient apiClient() {
+    public ApiClient apiClient(
+        @Value("${mail.sendinblue.api_key}") String apiKey
+    ) {
         ApiClient ret = sendinblue.Configuration.getDefaultApiClient();
         ret.setApiKey(apiKey);
         return ret;
