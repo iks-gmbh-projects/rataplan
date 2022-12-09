@@ -25,7 +25,7 @@ public class BackendController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteData(@PathVariable long userId, @RequestBody String secret) {
+    public ResponseEntity<?> deleteData(@PathVariable long userId, @RequestBody(required = false) String secret) {
         if(!authService.validateBackendSecret(secret)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         return mergeEmpty(
             () -> surveyService.deleteSurveysByUserId(userId),
@@ -34,7 +34,7 @@ public class BackendController {
     }
 
     @PostMapping("/{userId}/anonymize")
-    public ResponseEntity<?> anonymizeData(@PathVariable long userId, @RequestBody String secret) {
+    public ResponseEntity<?> anonymizeData(@PathVariable long userId, @RequestBody(required = false) String secret) {
         if(!authService.validateBackendSecret(secret)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         return mergeEmpty(
             () -> surveyService.anonymizeSurveysByUserId(userId),
