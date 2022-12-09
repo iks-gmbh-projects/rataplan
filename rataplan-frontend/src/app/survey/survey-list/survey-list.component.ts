@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { DashboardService } from '../../services/dashboard-service/dashboard.service';
 import { SurveyHead } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
@@ -18,7 +17,7 @@ export class SurveyListComponent implements OnInit, OnDestroy {
   public isOwn = false;
   private sub?: Subscription;
 
-  constructor(private surveyService: SurveyService, private dashboardService: DashboardService, private activeRoute: ActivatedRoute) { }
+  constructor(private surveyService: SurveyService, private activeRoute: ActivatedRoute) { }
 
   public ngOnInit(): void {
     this.isOwn = this.activeRoute.snapshot.data['own'];
