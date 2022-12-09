@@ -77,7 +77,7 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
     @Override
     public void anonymizeAppointmentMember(int id) {
         AppointmentMember member = appointmentMemberRepository.findOne(id);
-        member.setName("Anonym");
+        member.setName(null);
         member.setBackendUserId(null);
         appointmentMemberRepository.saveAndFlush(member);
     }

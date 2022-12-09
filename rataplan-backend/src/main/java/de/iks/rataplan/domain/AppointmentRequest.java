@@ -67,26 +67,6 @@ public class AppointmentRequest implements Serializable {
 		this.organizerMail = organizerMail;
 		this.appointmentRequestConfig = appointmentRequestConfig;
 	}
-    
-    public AppointmentRequest(AppointmentRequest copy) {
-        this(
-            copy.title,
-            copy.description,
-            copy.deadline,
-            copy.organizerName,
-            copy.organizerMail,
-            copy.appointmentRequestConfig,
-            new ArrayList<>(copy.appointments),
-			new ArrayList<>(copy.appointmentMembers),
-            copy.isExpired
-        );
-		this.backendUserId = copy.backendUserId;
-		this.consigneeList = new ArrayList<>(copy.consigneeList);
-		this.editToken = copy.editToken;
-		this.id = copy.id;
-		this.participationToken = copy.participationToken;
-		this.accessList = new ArrayList<>(copy.accessList);
-    }
 
 	public AppointmentRequest() {
 		// required for Hibernate

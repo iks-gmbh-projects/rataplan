@@ -37,14 +37,6 @@ public class AppointmentMember implements Serializable {
         this.name = "";
         this.appointmentRequest = appointmentRequest;
     }
-    
-    public AppointmentMember(AppointmentMember copy) {
-        this.id = copy.id;
-        this.appointmentRequest = copy.appointmentRequest;
-        this.appointmentDecisions = copy.appointmentDecisions;
-        this.name = copy.name;
-        this.backendUserId = copy.backendUserId;
-    }
 
     public AppointmentMember() {
         //required for Hibernate

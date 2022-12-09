@@ -193,7 +193,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 		getAppointmentRequestsForUser(userId)
 			.stream()
 			.peek(r -> r.setBackendUserId(null))
-			.peek(r -> r.setOrganizerName("Anonym"))
+			.peek(r -> r.setOrganizerName(null))
 			.peek(r -> r.setOrganizerMail(null))
 			.forEach(appointmentRequestRepository::save);
 	}
