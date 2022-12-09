@@ -2,20 +2,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { AppointmentRequestModel } from '../models/appointment-request.model';
-import { DashboardService } from '../services/dashboard-service/dashboard.service';
-import { SurveyHead } from '../survey/survey.model';
-import { SurveyService } from '../survey/survey.service';
+import { DashboardService } from '../../services/dashboard-service/dashboard.service';
+import { SurveyHead } from '../survey.model';
+import { SurveyService } from '../survey.service';
 
 @Component({
   selector: 'app-survey-list',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  templateUrl: './survey-list.component.html',
+  styleUrls: ['./survey-list.component.css']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class SurveyListComponent implements OnInit, OnDestroy {
   public surveys: SurveyHead[] = [];
-  public createdVotes: AppointmentRequestModel[] = [];
-  public participatedVotes: AppointmentRequestModel[] = [];
   public busy = false;
   public error: any = null;
   public isOwn = false;
@@ -48,14 +45,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.busy = false;
       },
       complete: () => this.busy = false,
-    });
-
-    this.dashboardService.getCreatedVotes().subscribe(res => {
-      this.createdVotes = res;
-    });
-
-    this.dashboardService.getParticipatedVotes().subscribe(res => {
-      this.participatedVotes = res;
     });
   }
 }
