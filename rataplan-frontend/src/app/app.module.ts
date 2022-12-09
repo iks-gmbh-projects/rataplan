@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import localeDE from '@angular/common/locales/de';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,6 +27,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
+import { AppCommonModule } from './app-common.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppointmentComponent } from './appointment/appointment/appointment.component';
 import { MemberDecisionSubformComponent } from './appointment/appointment/member-decision-subform/member-decision-subform.component';
@@ -36,6 +37,7 @@ import { DatepickerSubformComponent } from './appointment/appointment-request-fo
 import { EmailSubformComponent } from './appointment/appointment-request-form/email-subform/email-subform.component';
 import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
 import { LinkSubformComponent } from './appointment/appointment-request-form/link-subform/link-subform.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
@@ -44,11 +46,10 @@ import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { LoginComponent } from './login/login.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
+import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
-import { ProfileComponent } from './profile/profile.component';
-import { AppCommonModule } from './app-common.module';
+import { VoteListComponent } from './vote-list/vote-list.component';
 
 registerLocaleData(localeDE);
 
@@ -77,6 +78,7 @@ registerLocaleData(localeDE);
     AppointmentComponent,
     MemberDecisionSubformComponent,
     ChangePasswordComponent,
+    VoteListComponent
   ],
   imports: [
     BrowserModule,
@@ -111,5 +113,6 @@ registerLocaleData(localeDE);
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
   ],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule { }

@@ -22,6 +22,7 @@ import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
+import { VoteListComponent } from './vote-list/vote-list.component';
 
 // function matcherFunction(url: UrlSegment[]) {
 //
@@ -52,6 +53,7 @@ const routes: Routes = [
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
   },
+  { path: 'vote/own', component: VoteListComponent },
   { path: 'vote/:id', component: AppointmentComponent },
   { path: 'vote/edit/:id', component: AppointmentRequestFormComponent,
     children: [
