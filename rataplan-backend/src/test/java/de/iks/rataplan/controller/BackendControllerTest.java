@@ -34,15 +34,14 @@ public class BackendControllerTest {
     private BackendController backendController;
     
     @Autowired
-    private BackendUserRepository rawrepository;
+    private BackendUserRepository rawRepository;
     
     @Test
     @DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void testDelete() {
         backendController.deleteData(2, null);
-        rawrepository.findAll()
-            .forEach(System.out::println);
+        rawRepository.flush(); //transaction is not automatically flushed by testing environment before comparison
     }
     
     @Test
@@ -50,7 +49,6 @@ public class BackendControllerTest {
     @ExpectedDatabase(value = FILE_PATH + ANONYMIZE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void testAnonymize() {
         backendController.anonymizeData(2, null);
-        rawrepository.findAll()
-            .forEach(System.out::println);
+        rawRepository.flush(); //transaction is not automatically flushed by testing environment before comparison
     }
 }
