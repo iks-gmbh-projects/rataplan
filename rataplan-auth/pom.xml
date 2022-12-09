@@ -151,7 +151,7 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- SendGrid MailSender -->
+		<!-- SendInBlue MailSender -->
 		<dependency>
 			<groupId>com.sendinblue</groupId>
 			<artifactId>sib-api-v3-sdk</artifactId>
