@@ -1,5 +1,6 @@
 package iks.surveytool.utils.builder;
 
+import iks.surveytool.entities.EncryptedString;
 import iks.surveytool.entities.Question;
 import iks.surveytool.entities.QuestionGroup;
 
@@ -10,7 +11,7 @@ public class QuestionBuilder {
                                    boolean hasCheckbox) {
         Question newQuestion = new Question();
         newQuestion.setId(id);
-        newQuestion.setText(text);
+        newQuestion.setText(text == null ? null : new EncryptedString(text, false));
         newQuestion.setRequired(required);
         newQuestion.setHasCheckbox(hasCheckbox);
         return newQuestion;

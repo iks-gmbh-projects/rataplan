@@ -1,5 +1,6 @@
 package iks.surveytool.utils.builder;
 
+import iks.surveytool.entities.EncryptedString;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
 
@@ -10,7 +11,7 @@ public class QuestionGroupBuilder {
                                              String title) {
         QuestionGroup newQuestionGroup = new QuestionGroup();
         newQuestionGroup.setId(id);
-        newQuestionGroup.setTitle(title);
+        newQuestionGroup.setTitle(title == null ? null : new EncryptedString(title, false));
         newQuestionGroup.setQuestions(new ArrayList<>());
         return newQuestionGroup;
     }

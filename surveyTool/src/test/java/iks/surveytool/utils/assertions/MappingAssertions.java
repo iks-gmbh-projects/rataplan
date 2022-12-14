@@ -9,14 +9,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MappingAssertions {
     public static void assertCompleteSurveyDTO(CompleteSurveyDTO surveyDTO, Survey survey) {
         assertEquals(surveyDTO.getId(), survey.getId());
-        assertEquals(surveyDTO.getName(), survey.getName());
-        assertEquals(surveyDTO.getDescription(), survey.getDescription());
+        assertEquals(surveyDTO.getName(), passNull(EncryptedString::getString, survey.getName()));
+        assertEquals(surveyDTO.getDescription(), passNull(EncryptedString::getString, survey.getDescription()));
         assertEquals(surveyDTO.getStartDate(), survey.getStartDate().toInstant());
         assertEquals(surveyDTO.getEndDate(), survey.getEndDate().toInstant());
         assertEquals(surveyDTO.isOpenAccess(), survey.isOpenAccess());
@@ -35,7 +34,7 @@ public class MappingAssertions {
 
     private static void assertQuestionGroupDTO(QuestionGroupDTO questionGroupDTO, QuestionGroup questionGroup) {
         assertEquals(questionGroupDTO.getId(), questionGroup.getId());
-        assertEquals(questionGroupDTO.getTitle(), questionGroup.getTitle());
+        assertEquals(questionGroupDTO.getTitle(), passNull(EncryptedString::getString, questionGroup.getTitle()));
 
         List<QuestionDTO> questionDTOs = questionGroupDTO.getQuestions();
         List<Question> questions = questionGroup.getQuestions();
@@ -46,7 +45,7 @@ public class MappingAssertions {
 
     private static void assertQuestionDTO(QuestionDTO questionDTO, Question question) {
         assertEquals(questionDTO.getId(), question.getId());
-        assertEquals(questionDTO.getText(), question.getText());
+        assertEquals(questionDTO.getText(), passNull(EncryptedString::getString, question.getText()));
         assertEquals(questionDTO.isRequired(), question.isRequired());
         assertEquals(questionDTO.isHasCheckbox(), question.isHasCheckbox());
 
@@ -71,7 +70,7 @@ public class MappingAssertions {
     }
 
     private static void assertCheckboxDTO(CheckboxDTO checkboxDTO, Checkbox checkbox) {
-        assertEquals(checkboxDTO.getText(), checkbox.getText());
+        assertEquals(checkboxDTO.getText(), passNull(EncryptedString::getString, checkbox.getText()));
         assertEquals(checkboxDTO.isHasTextField(), checkbox.isHasTextField());
     }
 
@@ -82,8 +81,13 @@ public class MappingAssertions {
 
     public static void assertSurvey(Survey survey, CompleteSurveyDTO surveyDTO) {
         assertEquals(survey.getId(), surveyDTO.getId());
-        assertEquals(survey.getName(), surveyDTO.getName());
-        assertEquals(survey.getDescription(), surveyDTO.getDescription());
+        assertTrue(survey.getName().isEncrypted());
+        assertEquals(survey.getName().getString(), surveyDTO.getName());
+        if(surveyDTO.getDescription() == null) assertNull(survey.getDescription());
+        else {
+            assertTrue(survey.getDescription().isEncrypted());
+            assertEquals(survey.getDescription().getString(), surveyDTO.getDescription());
+        }
         assertEquals(toInstant(survey.getStartDate()), surveyDTO.getStartDate());
         assertEquals(toInstant(survey.getEndDate()), surveyDTO.getEndDate());
         assertEquals(survey.isOpenAccess(), surveyDTO.isOpenAccess());
@@ -102,7 +106,8 @@ public class MappingAssertions {
 
     private static void assertQuestionGroup(QuestionGroup questionGroup, QuestionGroupDTO questionGroupDTO) {
         assertEquals(questionGroup.getId(), questionGroupDTO.getId());
-        assertEquals(questionGroup.getTitle(), questionGroupDTO.getTitle());
+        assertTrue(questionGroup.getTitle().isEncrypted());
+        assertEquals(questionGroup.getTitle().getString(), questionGroupDTO.getTitle());
 
         List<Question> questions = questionGroup.getQuestions();
         List<QuestionDTO> questionDTOs = questionGroupDTO.getQuestions();
@@ -113,7 +118,8 @@ public class MappingAssertions {
 
     private static void assertQuestion(Question question, QuestionDTO questionDTO) {
         assertEquals(question.getId(), questionDTO.getId());
-        assertEquals(question.getText(), questionDTO.getText());
+        assertTrue(question.getText().isEncrypted());
+        assertEquals(question.getText().getString(), questionDTO.getText());
         assertEquals(question.isRequired(), questionDTO.isRequired());
         assertEquals(question.isHasCheckbox(), questionDTO.isHasCheckbox());
 
@@ -138,7 +144,8 @@ public class MappingAssertions {
     }
 
     private static void assertCheckbox(Checkbox checkbox, CheckboxDTO checkboxDTO) {
-        assertEquals(checkbox.getText(), checkboxDTO.getText());
+        assertTrue(checkbox.getText().isEncrypted());
+        assertEquals(checkbox.getText().getString(), checkboxDTO.getText());
         assertEquals(checkbox.isHasTextField(), checkboxDTO.isHasTextField());
     }
 
@@ -169,7 +176,7 @@ public class MappingAssertions {
 
     private static void assertAnswerDTO(AnswerDTO answerDTO, Answer answer) {
         assertEquals(answerDTO.getId(), answer.getId());
-        assertEquals(answerDTO.getText(), answer.getText());
+        assertEquals(answerDTO.getText(), passNull(EncryptedString::getString, answer.getText()));
 
         if (answer.getCheckboxes() != null) {
             Set<Long> ids = new HashSet<>(answer.getCheckboxes().size());
@@ -206,8 +213,12 @@ public class MappingAssertions {
 
     private static void assertAnswer(Answer answer, AnswerDTO answerDTO) {
         assertEquals(answer.getId(), answerDTO.getId());
-        assertEquals(answer.getText(), answerDTO.getText());
-
+        if(answerDTO.getText() == null) assertNull(answer.getText());
+        else {
+            assertTrue(answer.getText().isEncrypted());
+            assertEquals(answer.getText().getString(), answerDTO.getText());
+        }
+        
         if (answerDTO.getCheckboxes() != null) {
             Set<Long> ids = new HashSet<>(answer.getCheckboxes().size());
             for (Checkbox checkbox : answer.getCheckboxes()) {

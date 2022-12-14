@@ -1,5 +1,6 @@
 package iks.surveytool.utils.builder;
 
+import iks.surveytool.entities.EncryptedString;
 import iks.surveytool.entities.Survey;
 
 import java.time.ZoneId;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 
 public class SurveyBuilder {
 
-    String description = "Default Beschreibung";
+    EncryptedString description = new EncryptedString("Default Beschreibung", false);
     ZonedDateTime startDate = ZonedDateTime.of(2050, 1, 1, 12, 0, 0, 0, ZoneId.systemDefault());
     ZonedDateTime endDate = startDate.plusWeeks(1L);
     boolean openAccess = false;
@@ -18,7 +19,7 @@ public class SurveyBuilder {
     public Survey createDefaultSurvey() {
         Survey newSurvey = new Survey();
         newSurvey.setId(1L);
-        newSurvey.setName("Test Survey");
+        newSurvey.setName(new EncryptedString("Test Survey", false));
         newSurvey.setUserId(1L);
         setDefaults(newSurvey);
         return newSurvey;
@@ -28,7 +29,7 @@ public class SurveyBuilder {
                                               String name) {
         Survey newSurvey = new Survey();
         newSurvey.setId(id);
-        newSurvey.setName(name);
+        newSurvey.setName(name == null ? null : new EncryptedString(name, false));
         setDefaults(newSurvey);
         return newSurvey;
     }
@@ -38,7 +39,7 @@ public class SurveyBuilder {
                                                      Long userId) {
         Survey newSurvey = new Survey();
         newSurvey.setId(id);
-        newSurvey.setName(name);
+        newSurvey.setName(name == null ? null : new EncryptedString(name, false));
         newSurvey.setUserId(userId);
         setDefaults(newSurvey);
         return newSurvey;

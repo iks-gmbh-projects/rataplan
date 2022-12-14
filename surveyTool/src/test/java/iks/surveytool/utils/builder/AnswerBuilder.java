@@ -1,9 +1,6 @@
 package iks.surveytool.utils.builder;
 
-import iks.surveytool.entities.Answer;
-import iks.surveytool.entities.Checkbox;
-import iks.surveytool.entities.Question;
-import iks.surveytool.entities.SurveyResponse;
+import iks.surveytool.entities.*;
 
 import java.util.List;
 
@@ -11,7 +8,7 @@ public class AnswerBuilder {
     public Answer createAnswer(Long id, String text, Question question, List<Checkbox> checkboxes) {
         Answer newAnswer = new Answer();
         newAnswer.setId(id);
-        newAnswer.setText(text);
+        newAnswer.setText(text == null ? null : new EncryptedString(text, false));
         newAnswer.setQuestion(question);
         newAnswer.setCheckboxes(checkboxes);
         return newAnswer;
