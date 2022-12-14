@@ -1,5 +1,6 @@
 package iks.surveytool.entities;
 
+import iks.surveytool.mapping.crypto.DBEncryptedStringConverter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +16,8 @@ import java.util.List;
 public class Question extends AbstractEntity {
 
     @NotNull
-    private String text;
+    @Convert(converter = DBEncryptedStringConverter.class)
+    private EncryptedString text;
     @NotNull
     private boolean required;
     @NotNull
@@ -32,7 +34,7 @@ public class Question extends AbstractEntity {
     @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
     private CheckboxGroup checkboxGroup;
 
-    public Question(String text, boolean required, boolean hasCheckbox) {
+    public Question(EncryptedString text, boolean required, boolean hasCheckbox) {
         this.text = text;
         this.required = required;
         this.hasCheckbox = hasCheckbox;
@@ -50,6 +52,6 @@ public class Question extends AbstractEntity {
     }
 
     private boolean validateData() {
-        return this.text != null && this.text.length() <= 500;
+        return this.text != null && this.text.getString().length() <= 500;
     }
 }

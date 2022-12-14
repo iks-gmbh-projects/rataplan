@@ -1,14 +1,12 @@
 package iks.surveytool.entities;
 
+import iks.surveytool.mapping.crypto.DBEncryptedStringConverter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -20,8 +18,10 @@ import java.util.List;
 public class Survey extends AbstractEntity {
 
     @NotNull
-    private String name;
-    private String description;
+    @Convert(converter=DBEncryptedStringConverter.class)
+    private EncryptedString name;
+    @Convert(converter=DBEncryptedStringConverter.class)
+    private EncryptedString description;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private ZonedDateTime startDate;
@@ -41,9 +41,12 @@ public class Survey extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "surveyId")
     private List<QuestionGroup> questionGroups;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
+    private List<SurveyResponse> surveyResponses;
 
-    public Survey(String name,
-                  String description,
+    public Survey(EncryptedString name,
+                  EncryptedString description,
                   ZonedDateTime startDate,
                   ZonedDateTime endDate,
                   boolean openAccess,
@@ -85,8 +88,8 @@ public class Survey extends AbstractEntity {
 
     private boolean checkNameAndDescription() {
         return this.name != null
-                && this.name.length() <= 255
-                && this.description.length() <= 3000;
+                && this.name.getString().length() <= 255
+                && this.description.getString().length() <= 3000;
     }
 
     private boolean checkTimeframe() {

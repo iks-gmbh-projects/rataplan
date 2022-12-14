@@ -1,5 +1,6 @@
 package iks.surveytool.entities;
 
+import iks.surveytool.mapping.crypto.DBEncryptedStringConverter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +13,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class QuestionGroup extends AbstractEntity {
-
-    private String title;
+    
+    @Convert(converter= DBEncryptedStringConverter.class)
+    private EncryptedString title;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "surveyId", nullable = false)
@@ -24,7 +26,7 @@ public class QuestionGroup extends AbstractEntity {
     @OrderBy("id")
     private List<Question> questions;
 
-    public QuestionGroup(String title, List<Question> questions) {
+    public QuestionGroup(EncryptedString title, List<Question> questions) {
         this.title = title;
         this.questions = questions;
     }
@@ -42,7 +44,7 @@ public class QuestionGroup extends AbstractEntity {
     }
 
     private boolean validateData() {
-        return this.title != null && this.title.length() <= 255;
+        return this.title != null && this.title.getString().length() <= 255;
     }
 
     private boolean validateQuestions() {

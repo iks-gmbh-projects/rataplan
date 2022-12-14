@@ -1,5 +1,6 @@
 package iks.surveytool.entities;
 
+import iks.surveytool.mapping.crypto.DBEncryptedStringConverter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,8 +14,9 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 public class Answer extends AbstractEntity {
-
-    private String text;
+    
+    @Convert(converter = DBEncryptedStringConverter.class)
+    private EncryptedString text;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "responseId", nullable = false)
@@ -36,7 +38,7 @@ public class Answer extends AbstractEntity {
     )
     private List<Checkbox> checkboxes;
 
-    public Answer(String text) {
+    public Answer(EncryptedString text) {
         this.text = text;
     }
 
@@ -55,6 +57,6 @@ public class Answer extends AbstractEntity {
     }
 
     private boolean checkIfAnswerTextValid() {
-        return this.text != null && this.text.length() <= 1500;
+        return this.text != null && this.text.getString().length() <= 1500;
     }
 }
