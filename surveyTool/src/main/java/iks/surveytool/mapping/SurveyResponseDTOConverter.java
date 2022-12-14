@@ -4,6 +4,7 @@ import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.dtos.SurveyResponseDTO;
 import iks.surveytool.entities.Checkbox;
 import iks.surveytool.entities.SurveyResponse;
+import iks.surveytool.mapping.crypto.FromEncryptedStringConverter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class SurveyResponseDTOConverter extends AbstractConverter<SurveyResponse, SurveyResponseDTO> {
+    private final FromEncryptedStringConverter fromEncryptedStringConverter;
 
     @Override
     protected SurveyResponseDTO convert(SurveyResponse source) {
@@ -32,7 +34,7 @@ public class SurveyResponseDTOConverter extends AbstractConverter<SurveyResponse
                         answer -> answer.getQuestion().getId(),
                         answer -> {
 
-                            String text = answer.getText();
+                            String text = fromEncryptedStringConverter.convert(answer.getText());
 
                             AnswerDTO answerDTO = new AnswerDTO(answer.getId(), text);
 

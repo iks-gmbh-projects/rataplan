@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class ToEncryptedStringConverter extends AbstractConverter<String, EncryptedString> {
     private final CryptoService cryptoService;
     @Override
-    protected EncryptedString convert(String source) {
+    public EncryptedString convert(String source) {
         if(source == null) return null;
         return new EncryptedString(cryptoService.encryptDB(source), true);
     }

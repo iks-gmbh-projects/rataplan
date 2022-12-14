@@ -4,6 +4,7 @@ import iks.surveytool.dtos.SurveyResponseDTO;
 import iks.surveytool.entities.Answer;
 import iks.surveytool.entities.Question;
 import iks.surveytool.entities.SurveyResponse;
+import iks.surveytool.mapping.crypto.ToEncryptedStringConverter;
 import iks.surveytool.repositories.CheckboxRepository;
 import iks.surveytool.repositories.QuestionRepository;
 import iks.surveytool.repositories.SurveyRepository;
@@ -22,6 +23,7 @@ public class SurveyResponseConverter extends AbstractConverter<SurveyResponseDTO
     private final QuestionRepository questionRepository;
     private final CheckboxRepository checkboxRepository;
     private final SurveyRepository surveyRepository;
+    private final ToEncryptedStringConverter toEncryptedStringConverter;
 
     @Override
     protected SurveyResponse convert(SurveyResponseDTO source) {
@@ -40,7 +42,7 @@ public class SurveyResponseConverter extends AbstractConverter<SurveyResponseDTO
 
                     String text = answerDTO.getValue().getText();
 
-                    Answer answer = new Answer(text);
+                    Answer answer = new Answer(toEncryptedStringConverter.convert(text));
                     answer.setId(answerDTO.getValue().getId());
                     answer.setResponse(response);
 
