@@ -25,24 +25,24 @@ public class DBEncrypter implements ApplicationRunner {
                 survey::getName,
                 survey::setName
             );
-            altered = altered || ensureEncrypted(
+            altered |= ensureEncrypted(
                 survey::getDescription,
                 survey::setDescription
             );
             for(QuestionGroup questionGroup: survey.getQuestionGroups()) {
-                altered = altered || ensureEncrypted(
+                altered |= ensureEncrypted(
                     questionGroup::getTitle,
                     questionGroup::setTitle
                 );
                 for(Question question: questionGroup.getQuestions()) {
-                    altered = altered || ensureEncrypted(
+                    altered |= ensureEncrypted(
                         question::getText,
                         question::setText
                     );
                     CheckboxGroup checkboxGroup = question.getCheckboxGroup();
                     if(checkboxGroup == null) continue;
                     for(Checkbox checkbox: checkboxGroup.getCheckboxes()) {
-                        altered = altered || ensureEncrypted(
+                        altered |= ensureEncrypted(
                             checkbox::getText,
                             checkbox::setText
                         );
@@ -51,7 +51,7 @@ public class DBEncrypter implements ApplicationRunner {
             }
             for(SurveyResponse surveyResponse: survey.getSurveyResponses()) {
                 for(Answer answer: surveyResponse.getAnswers()) {
-                    altered = altered || ensureEncrypted(
+                    altered |= ensureEncrypted(
                         answer::getText,
                         answer::setText
                     );
