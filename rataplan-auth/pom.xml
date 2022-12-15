@@ -27,7 +27,7 @@
         <jjwt.version>0.6.0</jjwt.version>
 		<flyway.version>4.2.0</flyway.version>
 		<springfox.swagger2.version>2.7.0</springfox.swagger2.version>
-		<sendgrid.version>4.0.1</sendgrid.version>
+		<!--<sendgrid.version>4.0.1</sendgrid.version>-->
 		<sendinblue.version>6.0.0</sendinblue.version>
 	</properties>
 
