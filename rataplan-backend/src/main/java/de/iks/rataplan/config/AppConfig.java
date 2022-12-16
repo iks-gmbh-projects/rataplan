@@ -4,6 +4,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
+import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -100,10 +102,12 @@ public class AppConfig {
 	 * @return ModelMapper instance
 	 */
 	@Bean
-	public ModelMapper modelMapper() {
+	public ModelMapper modelMapper(ToEncryptedStringConverter toEncryptedStringConverter, FromEncryptedStringConverter fromEncryptedStringConverter) {
 		ModelMapper mapper = new ModelMapper();
 		mapper.addConverter(decisionConverter.toDAO);
 		mapper.addConverter(decisionConverter.toDTO);
+		mapper.addConverter(toEncryptedStringConverter);
+		mapper.addConverter(fromEncryptedStringConverter);
 		return mapper;
 	}
 
