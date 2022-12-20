@@ -4,7 +4,7 @@ import { exhaustMap, Subject } from 'rxjs';
 
 import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
-import { BackendUrlService } from "../../services/backend-url-service/backend-url.service";
+import { BackendUrlService } from '../../services/backend-url-service/backend-url.service';
 
 @Injectable({
   providedIn: 'root',
@@ -39,10 +39,10 @@ export class AppointmentRequestFormService {
     this.appointmentRequest.appointments = appointments;
   }
 
-  setEmailInputValue(name: string, email: string, emailGroup: string[]) {
-    this.appointmentRequest.organizerName = name.trim();
-    this.appointmentRequest.organizerMail = email.trim();
-    this.appointmentRequest.consigneeList = emailGroup;
+  setEmailInputValue(name: string, email: string, consigneeList: string[]) {
+    this.appointmentRequest.organizerName = name;
+    this.appointmentRequest.organizerMail = email;
+    this.appointmentRequest.consigneeList = consigneeList;
   }
 
   emitValidation(val: string) {
