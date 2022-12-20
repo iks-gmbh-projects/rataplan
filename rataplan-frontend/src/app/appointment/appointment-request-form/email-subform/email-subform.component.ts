@@ -2,6 +2,7 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
@@ -14,33 +15,27 @@ import { AppointmentRequestFormService } from '../appointment-request-form.servi
 export class EmailSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
-  emails: string[] = [];
+  consigneeList: string[] = [];
 
   emailSubform = new FormGroup({
     'name': new FormControl(null),
     'email': new FormControl(null, Validators.email),
-    'emailGroup': new FormControl(null, Validators.email)
+    'consigneeList': new FormControl(null, Validators.email)
   });
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService) {
+  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
+    private router: Router) {
   }
 
   ngOnInit(): void {
     const appointmentRequest = this.appointmentRequestFormService.appointmentRequest;
-    const name = appointmentRequest.organizerName;
-    const email = appointmentRequest.organizerMail;
 
-    this.emailSubform.get('name')?.setValue(name);
-    this.emailSubform.get('email')?.setValue(email);
+    this.emailSubform.get('name')?.setValue(appointmentRequest.organizerName);
+    this.emailSubform.get('email')?.setValue(appointmentRequest.organizerMail);
+    this.consigneeList = appointmentRequest.consigneeList;
     this.emailSubform.statusChanges
       .pipe(takeUntil(this.destroySubject))
       .subscribe(val => this.appointmentRequestFormService.emitValidation(val));
-
-    this.appointmentRequestFormService.submitButtonObservable
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(() => {
-        this.setEmailForm();
-      });
   }
 
   ngOnDestroy(): void {
@@ -52,21 +47,31 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     this.appointmentRequestFormService.setEmailInputValue(
       this.emailSubform.get('name')?.value,
       this.emailSubform.get('email')?.value,
-      this.emails
+      this.consigneeList
     );
   }
 
   remove(email: string) {
-    const index = this.emails.indexOf(email);
+    const index = this.consigneeList.indexOf(email);
     if (index >= 0) {
-      this.emails.splice(index, 1);
+      this.consigneeList.splice(index, 1);
     }
   }
 
   add(email: MatChipInputEvent) {
-    if (email.value) {
-      this.emails.push(email.value);
+    if (email.value && this.consigneeList.indexOf(email.value) < 0 && this.emailSubform.get('consigneeList')?.valid) {
+      this.consigneeList.push(email.value.toLowerCase());
     }
+    this.emailSubform.get('consigneeList')?.setErrors(null);
     email.chipInput?.clear();
+  }
+
+  backPage() {
+    this.router.navigateByUrl('create-vote/overview');
+  }
+
+  sendEndOfAppointment() {
+    this.setEmailForm();
+    this.router.navigateByUrl('create-vote/links');
   }
 }
