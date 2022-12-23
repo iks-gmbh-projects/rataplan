@@ -5,20 +5,10 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import de.iks.rataplan.exceptions.MalformedException;
+import de.iks.rataplan.mapping.crypto.DBEncryptedStringConverter;
 
 @Entity
 @Table(name = "appointmentRequest")
@@ -27,11 +17,11 @@ public class AppointmentRequest implements Serializable {
 	private static final long serialVersionUID = 6229127764261785894L;
 
 	private Integer id;
-	private String title;
-	private String description;
+	private EncryptedString title;
+	private EncryptedString description;
 	private Date deadline;
-	private String organizerName;
-	private String organizerMail;
+	private EncryptedString organizerName;
+	private EncryptedString organizerMail;
 	private Integer backendUserId;
 	private boolean isExpired = false;
 	private String participationToken;
@@ -43,8 +33,8 @@ public class AppointmentRequest implements Serializable {
 	private List<Appointment> appointments = new ArrayList<>();
 	private List<AppointmentMember> appointmentMembers = new ArrayList<>();
 
-	public AppointmentRequest(String title, String description, Date deadline, String organizerName,
-			String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
+	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
+							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
 			List<AppointmentMember> appointmentMembers, boolean isExpired) {
 		this.title = title;
 		this.description = description;
@@ -57,8 +47,8 @@ public class AppointmentRequest implements Serializable {
 		this.isExpired = isExpired;
 	}
 
-	public AppointmentRequest(String title, String description, Date deadline, String organizerName,
-			String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
+							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
 		this.title = title;
 		this.description = description;
 		this.deadline = deadline;
@@ -83,20 +73,22 @@ public class AppointmentRequest implements Serializable {
 	}
 
 	@Column(name = "title")
-	public String getTitle() {
+	@Convert(converter = DBEncryptedStringConverter.class)
+	public EncryptedString getTitle() {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(EncryptedString title) {
 		this.title = title;
 	}
 
 	@Column(name = "description")
-	public String getDescription() {
+	@Convert(converter = DBEncryptedStringConverter.class)
+	public EncryptedString getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(EncryptedString description) {
 		this.description = description;
 	}
 
@@ -110,20 +102,22 @@ public class AppointmentRequest implements Serializable {
 	}
 
 	@Column(name = "organizerName")
-	public String getOrganizerName() {
+	@Convert(converter = DBEncryptedStringConverter.class)
+	public EncryptedString getOrganizerName() {
 		return organizerName;
 	}
 
-	public void setOrganizerName(String organizerName) {
+	public void setOrganizerName(EncryptedString organizerName) {
 		this.organizerName = organizerName;
 	}
 
 	@Column(name = "organizerMail")
-	public String getOrganizerMail() {
+	@Convert(converter = DBEncryptedStringConverter.class)
+	public EncryptedString getOrganizerMail() {
 		return organizerMail;
 	}
 
-	public void setOrganizerMail(String organizerMail) {
+	public void setOrganizerMail(EncryptedString organizerMail) {
 		this.organizerMail = organizerMail;
 	}
 	

@@ -1,20 +1,12 @@
 package de.iks.rataplan.domain;
 
+import de.iks.rataplan.mapping.crypto.DBEncryptedStringConverter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "appointmentMember")
@@ -24,17 +16,17 @@ public class AppointmentMember implements Serializable {
 
     private Integer id;
     private Integer backendUserId;
-    private String name;
+    private EncryptedString name;
     private AppointmentRequest appointmentRequest;
     private List<AppointmentDecision> appointmentDecisions = new ArrayList<>();
 
-    public AppointmentMember(String name, AppointmentRequest appointmentRequest) {
+    public AppointmentMember(EncryptedString name, AppointmentRequest appointmentRequest) {
         this.name = name;
         this.appointmentRequest = appointmentRequest;
     }
 
     public AppointmentMember(AppointmentRequest appointmentRequest) {
-        this.name = "";
+        this.name = null;
         this.appointmentRequest = appointmentRequest;
     }
 
@@ -54,11 +46,12 @@ public class AppointmentMember implements Serializable {
     }
 
 	@Column(name ="name", nullable = false)
-    public String getName() {
+    @Convert(converter = DBEncryptedStringConverter.class)
+    public EncryptedString getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(EncryptedString name) {
         this.name = name;
     }
 

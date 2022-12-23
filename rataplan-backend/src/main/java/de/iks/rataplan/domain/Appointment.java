@@ -1,21 +1,13 @@
 package de.iks.rataplan.domain;
 
+import de.iks.rataplan.mapping.crypto.DBEncryptedStringConverter;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "appointment")
@@ -26,19 +18,19 @@ public class Appointment implements Serializable {
     private Integer id;
     private Timestamp startDate;
     private Timestamp endDate;
-    private String description;
-    private String url;
+    private EncryptedString description;
+    private EncryptedString url;
     
     private AppointmentRequest appointmentRequest;
     private List<AppointmentDecision> appointmentDecisions = new ArrayList<>();
 
-    public Appointment(Timestamp startDate, String description, AppointmentRequest appointmentRequest) {
+    public Appointment(Timestamp startDate, EncryptedString description, AppointmentRequest appointmentRequest) {
         this.startDate = startDate;
         this.description = description;
         this.appointmentRequest = appointmentRequest;
     }
 
-    public Appointment(String description, AppointmentRequest appointmentRequest) {
+    public Appointment(EncryptedString description, AppointmentRequest appointmentRequest) {
         this.description = description;
         this.appointmentRequest = appointmentRequest;
     }
@@ -81,20 +73,22 @@ public class Appointment implements Serializable {
     }
 
     @Column(name = "description", nullable = true)
-    public String getDescription() {
+    @Convert(converter = DBEncryptedStringConverter.class)
+    public EncryptedString getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(EncryptedString description) {
         this.description = description;
     }
 	
 	@Column(name = "url", nullable = true)
-	public String getUrl() {
+    @Convert(converter = DBEncryptedStringConverter.class)
+	public EncryptedString getUrl() {
 		return url;
 	}
 	
-	public void setUrl(String url) {
+	public void setUrl(EncryptedString url) {
 		this.url = url;
 	}
 
