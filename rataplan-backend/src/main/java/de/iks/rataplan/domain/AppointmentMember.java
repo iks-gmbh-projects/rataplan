@@ -25,11 +25,6 @@ public class AppointmentMember implements Serializable {
         this.appointmentRequest = appointmentRequest;
     }
 
-    public AppointmentMember(AppointmentRequest appointmentRequest) {
-        this.name = null;
-        this.appointmentRequest = appointmentRequest;
-    }
-
     public AppointmentMember() {
         //required for Hibernate
     }
