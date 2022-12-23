@@ -20,6 +20,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.iks.rataplan.domain.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.domain.Appointment;
-import de.iks.rataplan.domain.AppointmentConfig;
-import de.iks.rataplan.domain.AppointmentMember;
-import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.AppointmentRequestConfig;
-import de.iks.rataplan.domain.DecisionType;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 
@@ -87,7 +82,7 @@ public class AppointmentRequestServiceTest {
 		List<AppointmentMember> appointmentMembers = appointmentRequest.getAppointmentMembers();
 
 		AppointmentMember appointmentMember = new AppointmentMember();
-		appointmentMember.setName("Fritz macht den Fehler");
+		appointmentMember.setName(new EncryptedString("Fritz macht den Fehler", false));
 		appointmentMembers.add(appointmentMember);
 
 		appointmentRequest.setAppointmentMembers(appointmentMembers);
@@ -100,11 +95,11 @@ public class AppointmentRequestServiceTest {
 	public void createAppointmentRequestShouldFailWrongAppointmentConfig() throws Exception {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 
-		Appointment appointment = new Appointment("iks Hilden", appointmentRequest);
-		appointment.setUrl("thiswontwork.com");
+		Appointment appointment = new Appointment(new EncryptedString("iks Hilden", false), appointmentRequest);
+		appointment.setUrl(new EncryptedString("thiswontwork.com", false));
 
 		appointmentRequest
-				.setAppointments(appointmentList(appointment, new Appointment("homeoffice", appointmentRequest)));
+				.setAppointments(appointmentList(appointment, new Appointment(new EncryptedString("homeoffice", false), appointmentRequest)));
 
 		appointmentRequestService.createAppointmentRequest(appointmentRequest);
 	}
@@ -166,15 +161,15 @@ public class AppointmentRequestServiceTest {
 
 		AppointmentRequest appointmentRequest = new AppointmentRequest();
 		appointmentRequest.setId(1);
-		appointmentRequest.setTitle("IKS-Thementag");
+		appointmentRequest.setTitle(new EncryptedString("IKS-Thementag", false));
 		appointmentRequest.setDeadline(new Date(DATE_2050_10_10));
-		appointmentRequest.setDescription("Fun with code");
-		appointmentRequest.setOrganizerMail(IKS_MAIL);
+		appointmentRequest.setDescription(new EncryptedString("Fun with code", false));
+		appointmentRequest.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
 		appointmentRequest.setAppointmentRequestConfig(appointmentRequestConfig);
 
 		AppointmentMember appointmentMember = new AppointmentMember();
 		appointmentMember.setId(1);
-		appointmentMember.setName("RubberBandMan");
+		appointmentMember.setName(new EncryptedString("RubberBandMan", false));
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 
 		List<AppointmentMember> appointmentMembers = new ArrayList<AppointmentMember>();
@@ -182,13 +177,13 @@ public class AppointmentRequestServiceTest {
 
 		appointmentRequest.setAppointmentMembers(appointmentMembers);
 
-		Appointment appointment1 = new Appointment("universe", appointmentRequest);
+		Appointment appointment1 = new Appointment(new EncryptedString("universe", false), appointmentRequest);
 		appointment1.setAppointmentRequest(appointmentRequest);
 
-		Appointment appointment2 = new Appointment("earth", appointmentRequest);
+		Appointment appointment2 = new Appointment(new EncryptedString("earth", false), appointmentRequest);
 		appointment2.setAppointmentRequest(appointmentRequest);
 
-		Appointment appointment3 = new Appointment("spaceship", appointmentRequest);
+		Appointment appointment3 = new Appointment(new EncryptedString("spaceship", false), appointmentRequest);
 		appointment3.setAppointmentRequest(appointmentRequest);
 
 		appointmentRequest.setAppointments(appointmentList(appointment1, appointment2, appointment3));

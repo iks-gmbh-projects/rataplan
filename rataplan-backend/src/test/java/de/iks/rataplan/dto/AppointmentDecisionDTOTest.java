@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.Timestamp;
 
+import de.iks.rataplan.domain.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
@@ -20,10 +21,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.domain.Appointment;
-import de.iks.rataplan.domain.AppointmentDecision;
-import de.iks.rataplan.domain.AppointmentMember;
-import de.iks.rataplan.domain.Decision;
 import de.iks.rataplan.testutils.RataplanAssert;
 
 @ActiveProfiles("test")
@@ -40,10 +37,10 @@ public class AppointmentDecisionDTOTest {
 
     @Test
     public void mapToDTO_AppointmentDecision_mapped() {
-        Appointment appointment = new Appointment(new Timestamp(123123L), "iks Hilden", null);
+        Appointment appointment = new Appointment(new Timestamp(123123L), new EncryptedString("iks Hilden", false), null);
         appointment.setId(1);
 
-        AppointmentMember member = new AppointmentMember("Hans", null);
+        AppointmentMember member = new AppointmentMember(new EncryptedString("Hans", false), null);
         member.setId(1);
 
         AppointmentDecision decision = new AppointmentDecision(Decision.ACCEPT, appointment, member);

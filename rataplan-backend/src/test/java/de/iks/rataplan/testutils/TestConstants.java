@@ -4,13 +4,7 @@ import static de.iks.rataplan.utils.AppointmentRequestBuilder.appointmentList;
 
 import java.sql.Date;
 
-import de.iks.rataplan.domain.Appointment;
-import de.iks.rataplan.domain.AppointmentConfig;
-import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.AppointmentRequestConfig;
-import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.domain.BackendUser;
-import de.iks.rataplan.domain.DecisionType;
+import de.iks.rataplan.domain.*;
 
 public final class TestConstants {
 
@@ -68,12 +62,13 @@ public final class TestConstants {
 	public static final BackendUser BACKENDUSER_1_NEW = new BackendUser(1);
 
 	public static final AppointmentRequest createSimpleAppointmentRequest() {
-		AppointmentRequest appointmentRequest = new AppointmentRequest("Coding Dojo", "Fun with code",
-				new Date(DATE_2050_10_10),IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(
-						new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
+		AppointmentRequest appointmentRequest = new AppointmentRequest(
+				new EncryptedString("Coding Dojo", false), new EncryptedString("Fun with code", false),
+				new Date(DATE_2050_10_10), new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
+				new AppointmentRequestConfig(new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
 
-		appointmentRequest.setAppointments(appointmentList(new Appointment("iks Hilden", appointmentRequest),
-				new Appointment("homeoffice", appointmentRequest)));
+		appointmentRequest.setAppointments(appointmentList(new Appointment(new EncryptedString("iks Hilden", false), appointmentRequest),
+				new Appointment(new EncryptedString("homeoffice", false), appointmentRequest)));
 		return appointmentRequest;
 	}
 }

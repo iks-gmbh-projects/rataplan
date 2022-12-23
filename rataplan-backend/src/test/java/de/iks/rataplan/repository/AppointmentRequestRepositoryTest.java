@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import de.iks.rataplan.domain.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.domain.Appointment;
-import de.iks.rataplan.domain.AppointmentConfig;
-import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.AppointmentRequestConfig;
-import de.iks.rataplan.domain.DecisionType;
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -63,13 +59,14 @@ public class AppointmentRequestRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + CREATE + "/extended"
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequestWithExtendedConfigAndOneAppointment() throws Exception {
-		AppointmentRequest appointmentRequest = new AppointmentRequest("Coding Dojo", "Fun with code",
-				new Date(DATE_2050_10_10), IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(
+		AppointmentRequest appointmentRequest = new AppointmentRequest(new EncryptedString("Coding Dojo", false),
+				new EncryptedString("Fun with code", false), new Date(DATE_2050_10_10),
+				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false), new AppointmentRequestConfig(
 						new AppointmentConfig(true, true, true, true, true, true), DecisionType.EXTENDED));
 
-		Appointment appointment = new Appointment("Let's Do Something", appointmentRequest);
-		appointment.setDescription("Let's Do Something");
-		appointment.setUrl("www.maybe.here");
+		Appointment appointment = new Appointment(new EncryptedString("Let's Do Something", false), appointmentRequest);
+		appointment.setDescription(new EncryptedString("Let's Do Something", false));
+		appointment.setUrl(new EncryptedString("www.maybe.here", false));
 		appointment.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
 		appointment.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
 
@@ -153,7 +150,7 @@ public class AppointmentRequestRepositoryTest {
 	public void updateAppointmentRequest() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
-		appointmentRequest.setTitle("IKS-Thementag");
+		appointmentRequest.setTitle(new EncryptedString("IKS-Thementag", false));
 
 		appointmentRequestRepository.saveAndFlush(appointmentRequest);
 	}
@@ -164,7 +161,7 @@ public class AppointmentRequestRepositoryTest {
 	public void updateAppointmentRequestShouldFailNoDeadline() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
-		appointmentRequest.setTitle("IKS-Thementag");
+		appointmentRequest.setTitle(new EncryptedString("IKS-Thementag", false));
 		appointmentRequest.setDeadline(null);
 
 		appointmentRequestRepository.saveAndFlush(appointmentRequest);

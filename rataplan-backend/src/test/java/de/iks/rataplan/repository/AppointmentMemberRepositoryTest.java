@@ -14,6 +14,7 @@ import static de.iks.rataplan.testutils.TestConstants.UPDATE;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.iks.rataplan.domain.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.domain.AppointmentDecision;
-import de.iks.rataplan.domain.AppointmentMember;
-import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.Decision;
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -77,7 +74,7 @@ public class AppointmentMemberRepositoryTest {
 		decision2.setAppointmentMember(appointmentMember);
 		decisions.add(decision2);
 
-		appointmentMember.setName("Hans");
+		appointmentMember.setName(new EncryptedString("Hans", false));
 		appointmentMember.setAppointmentDecisions(decisions);
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 		appointmentRequest.getAppointmentMembers().add(appointmentMember);
@@ -113,7 +110,7 @@ public class AppointmentMemberRepositoryTest {
 		decisions.add(decision);
 		decisions.add(decision2);
 
-		appointmentMember.setName("Hans");
+		appointmentMember.setName(new EncryptedString("Hans", false));
 		appointmentMember.setAppointmentDecisions(decisions);
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 		appointmentRequest.getAppointmentMembers().add(appointmentMember);
@@ -155,7 +152,7 @@ public class AppointmentMemberRepositoryTest {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
 		AppointmentMember appointmentMember = appointmentRequest.getAppointmentMemberById(1);
-		appointmentMember.setName("Fritz");
+		appointmentMember.setName(new EncryptedString("Fritz", false));
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 
 		List<AppointmentDecision> decisions = appointmentMember.getAppointmentDecisions();
@@ -173,7 +170,7 @@ public class AppointmentMemberRepositoryTest {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
 		AppointmentMember appointmentMember = appointmentRequest.getAppointmentMemberById(1);
-		appointmentMember.setName("Fritz");
+		appointmentMember.setName(new EncryptedString("Fritz", false));
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 
 		List<AppointmentDecision> decicions = appointmentMember.getAppointmentDecisions();

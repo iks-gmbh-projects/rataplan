@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import de.iks.rataplan.domain.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
@@ -16,14 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.domain.Appointment;
-import de.iks.rataplan.domain.AppointmentConfig;
-import de.iks.rataplan.domain.AppointmentDecision;
-import de.iks.rataplan.domain.AppointmentMember;
-import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.AppointmentRequestConfig;
-import de.iks.rataplan.domain.Decision;
-import de.iks.rataplan.domain.DecisionType;
 import de.iks.rataplan.testutils.RataplanAssert;
 
 @ActiveProfiles("test")
@@ -58,7 +51,7 @@ public class AppointmentRequestDTOTest {
 	@Test
 	public void mapToDTO_AppointmentRequestWithAppointment_mapped() {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
-		Appointment appointment = new Appointment(new Timestamp(123123123L), "iks Hilden", appointmentRequest);
+		Appointment appointment = new Appointment(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
 		appointmentRequest.getAppointments().add(appointment);
 
 		AppointmentRequestDTO dtoRequest = mapper.map(appointmentRequest, AppointmentRequestDTO.class);
@@ -104,13 +97,15 @@ public class AppointmentRequestDTOTest {
 
 	@Test
 	public void mapToDTO_AppointmentRequestFull_mapped() {
-		AppointmentRequest appointmentRequest = new AppointmentRequest("Title", "Description", new Date(123456789L),
-				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, true, false, false, false), DecisionType.EXTENDED));
-		Appointment appointment1 = new Appointment(new Timestamp(123123123L), "iks Hilden", appointmentRequest);
-		Appointment appointment2 = new Appointment(new Timestamp(321321321L), "Berufsschule D�sseldorf", appointmentRequest);
+		AppointmentRequest appointmentRequest = new AppointmentRequest(new EncryptedString("Title", false),
+				new EncryptedString("Description", false), new Date(123456789L),
+				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
+				new AppointmentRequestConfig(new AppointmentConfig(true, false, true, false, false, false), DecisionType.EXTENDED));
+		Appointment appointment1 = new Appointment(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
+		Appointment appointment2 = new Appointment(new Timestamp(321321321L), new EncryptedString("Berufsschule D�sseldorf", false), appointmentRequest);
 
-		AppointmentMember member1 = new AppointmentMember("Ingo", appointmentRequest);
-		AppointmentMember member2 = new AppointmentMember("Fabian", appointmentRequest);
+		AppointmentMember member1 = new AppointmentMember(new EncryptedString("Ingo", false), appointmentRequest);
+		AppointmentMember member2 = new AppointmentMember(new EncryptedString("Fabian", false), appointmentRequest);
 
 		AppointmentDecision decision11 = new AppointmentDecision(Decision.NO_ANSWER, appointment1, member1);
 		AppointmentDecision decision12 = new AppointmentDecision(Decision.ACCEPT_IF_NECESSARY, appointment1, member2);

@@ -10,6 +10,7 @@ import static de.iks.rataplan.testutils.TestConstants.PATH;
 import static de.iks.rataplan.testutils.TestConstants.SERVICE;
 import static de.iks.rataplan.testutils.TestConstants.UPDATE;
 
+import de.iks.rataplan.domain.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,6 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.domain.AppointmentDecision;
-import de.iks.rataplan.domain.AppointmentMember;
-import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.Decision;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
@@ -60,7 +57,7 @@ public class AppointmentMemberServiceTest {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
 		AppointmentMember member = new AppointmentMember();
-		member.setName("Max");
+		member.setName(new EncryptedString("Max", false));
 
 		AppointmentDecision decision = new AppointmentDecision();
 		decision.setAppointment(appointmentRequest.getAppointmentById(1));
@@ -83,7 +80,7 @@ public class AppointmentMemberServiceTest {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
 		AppointmentMember member = new AppointmentMember();
-		member.setName("Max");
+		member.setName(new EncryptedString("Max", false));
 
 		AppointmentDecision decision = new AppointmentDecision();
 		decision.setAppointment(appointmentRequest.getAppointmentById(1));
@@ -112,7 +109,7 @@ public class AppointmentMemberServiceTest {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
 		AppointmentMember member = new AppointmentMember();
-		member.setName("Max");
+		member.setName(new EncryptedString("Max", false));
 
 		AppointmentDecision decision = new AppointmentDecision();
 		decision.setAppointment(appointmentRequest.getAppointmentById(1));
@@ -155,7 +152,7 @@ public class AppointmentMemberServiceTest {
 	public void updateAppointmentMember() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
-		AppointmentMember newAppointmentMember = new AppointmentMember("RubberBandMan", appointmentRequest);
+		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
 		AppointmentDecision decision1 = new AppointmentDecision(Decision.NO_ANSWER,
 				appointmentRequest.getAppointments().get(0), newAppointmentMember);
@@ -174,7 +171,7 @@ public class AppointmentMemberServiceTest {
 	public void updateAppointmentMemberShouldFailTooManyDecisions() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
-		AppointmentMember newAppointmentMember = new AppointmentMember("RubberBandMan", appointmentRequest);
+		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
 		AppointmentDecision decision1 = new AppointmentDecision(Decision.NO_ANSWER,
 				appointmentRequest.getAppointments().get(0), newAppointmentMember);
@@ -196,7 +193,7 @@ public class AppointmentMemberServiceTest {
 	public void updateAppointmentMemberShouldFailIsExpired() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
-		AppointmentMember newAppointmentMember = new AppointmentMember("RubberBandMan", appointmentRequest);
+		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
 		AppointmentDecision decision1 = new AppointmentDecision(Decision.NO_ANSWER,
 				appointmentRequest.getAppointments().get(0), newAppointmentMember);
