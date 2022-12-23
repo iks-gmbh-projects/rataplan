@@ -1,5 +1,6 @@
 package de.iks.rataplan.controller;
 
+import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.service.AppointmentRequestService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class AppointmentMemberControllerService {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+
+	@Autowired
+	private FromEncryptedStringConverter fromEncryptedStringConverter;
 	
 	public AppointmentMemberDTO createAppointmentMember(AppointmentMemberDTO appointmentMemberDTO, String participationToken, String jwtToken) {
 
@@ -96,7 +100,7 @@ public class AppointmentMemberControllerService {
 		appointmentMemberDTO.setId(oldAppointmentMember.getId());
 		
 		if (jwtToken != null && oldAppointmentMember.getBackendUserId() == backendUser.getId()) {
-			appointmentMemberDTO.setName(oldAppointmentMember.getName());
+			appointmentMemberDTO.setName(fromEncryptedStringConverter.convert(oldAppointmentMember.getName()));
 			appointmentMemberDTO.setBackendUserId(oldAppointmentMember.getBackendUserId());
 		} else {
 			appointmentMemberDTO.setBackendUserId(null);

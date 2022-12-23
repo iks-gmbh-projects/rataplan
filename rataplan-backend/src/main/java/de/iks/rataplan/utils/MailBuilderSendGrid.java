@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.iks.rataplan.domain.ResetPasswordMailData;
+import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,9 @@ public class MailBuilderSendGrid {
 
     @Autowired
     private TemplateEngine templateEngine;
+
+    @Autowired
+    private FromEncryptedStringConverter fromEncryptedStringConverter;
 
     public List<Mail> buildMailListForAppointmentRequestInvitations(AppointmentRequest appointmentRequest) {
         String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
@@ -93,7 +97,8 @@ public class MailBuilderSendGrid {
         Personalization personalization = new Personalization();
 
         Email toMail = new Email();
-        toMail.setEmail(appointmentRequest.getOrganizerMail());
+        toMail.setEmail(fromEncryptedStringConverter.convert(appointmentRequest.getOrganizerMail()));
+//        toMail.setEmail(appointmentRequest.getOrganizerMail());
         personalization.addTo(toMail);
 
         mail.addPersonalization(personalization);
@@ -134,7 +139,7 @@ public class MailBuilderSendGrid {
         Personalization personalization = new Personalization();
 
         Email toMail = new Email();
-        toMail.setEmail(appointmentRequest.getOrganizerMail());
+//        toMail.setEmail(appointmentRequest.getOrganizerMail());
         personalization.addTo(toMail);
 
         mail.addPersonalization(personalization);

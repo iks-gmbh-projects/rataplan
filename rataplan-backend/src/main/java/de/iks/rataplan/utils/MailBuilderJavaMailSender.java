@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailPreparationException;
@@ -34,10 +35,14 @@ public class MailBuilderJavaMailSender {
 	@Autowired
 	private JavaMailSender mailSender;
 
+	@Autowired
+	private FromEncryptedStringConverter fromEncryptedStringConverter;
+
 	public MimeMessage buildMailForAppointmentRequestCreation(AppointmentRequest appointmentRequest) {
 		String url = baseUrl + "/appointmentrequest";
 		String adminUrl = baseUrl + "/appointmentrequest";
-		String to = appointmentRequest.getOrganizerMail();
+		String to = fromEncryptedStringConverter.convert(appointmentRequest.getOrganizerMail());
+//		String to = appointmentRequest.getOrganizerMail();
 		Integer appointmentRequestId = appointmentRequest.getId();
 
 		Context ctx = new Context();
