@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-datepicker-subform',
@@ -11,8 +12,10 @@ export class DatepickerSubformComponent implements OnInit {
   minDate: Date;
   maxDate: Date;
   daysSelected;
+  isPageValid = true;
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService) {
+  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
+              private router: Router) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
     this.maxDate = new Date(currentYear + 2, 11, 31);
@@ -39,7 +42,17 @@ export class DatepickerSubformComponent implements OnInit {
     if (index === -1) this.daysSelected.push(date);
     else this.daysSelected.splice(index, 1);
 
+    console.log(this.daysSelected);
+
+
     this.appointmentRequestFormService.updateLength();
     calendar.updateTodaysDate();
   }
+  backPage(){
+    this.router.navigateByUrl("create-vote/configurationOptions")
+  }
+  nextPage(){
+    this.router.navigateByUrl("create-vote/email")
+}
+
 }

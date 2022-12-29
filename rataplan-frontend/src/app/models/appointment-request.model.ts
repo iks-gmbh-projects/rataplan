@@ -16,7 +16,7 @@ export class AppointmentRequestModel {
   participationToken: string | undefined;
   editToken: string | undefined;
 
-  appointmentRequestConfig: AppointmentRequestConfig | null;
+  appointmentRequestConfig: AppointmentRequestConfig;
   appointments: AppointmentModel[];
   appointmentMembers: AppointmentMemberModel[];
 

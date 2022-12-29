@@ -59,4 +59,11 @@
       </div>
     </div>
   </div>
+  <button [disabled]="!isPageValid"
+          class="next-button"
+          type="button"
+          color="primary"
+          mat-raised-button
+          (click)="nextPage()">Weiter
+  </button>
 </form>

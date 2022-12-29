@@ -1,0 +1,40 @@
+<div>
+  <div *ngIf="startDate">
+  <p>Hier Startdatum</p>
+</div>
+<div *ngIf="startTime">
+  <p>Hier Startzeit</p>
+</div>
+<div *ngIf="description" >
+  <p>Hier Beschreibung</p>
+</div>
+<div *ngIf="link">
+  <p>Hier Link</p>
+</div>
+<div *ngIf="endDate">
+  <p>Hier Enddatum</p>
+</div>
+<div *ngIf="endTime">
+  <p>Hier Endzeit</p>
+</div>
+      <button
+              mat-raised-button
+              (click)="backPage()">Zurück
+      </button>
+      <button
+              [disabled]="!isPageValid"
+              class="next-button"
+              type="submit"
+              color="primary"
+              mat-raised-button
+              (click)="nextPage()">Weiter
+      </button>
+</div>
+{{startDate}}
+{{startTime}}
+{{description}}
+{{link}}
+{{endDate}}
+{{endTime}}
+<p>hello</p>
+

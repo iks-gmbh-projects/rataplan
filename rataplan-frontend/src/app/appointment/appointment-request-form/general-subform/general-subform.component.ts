@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-general-subform',
@@ -15,6 +16,8 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   minDate: Date;
   maxDate: Date;
+  isEdit: boolean = false;
+  isPageValid = true;
 
   generalSubform = new FormGroup({
     'title': new FormControl(null, [Validators.required, this.noWhiteSpace]),
@@ -25,7 +28,8 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
 
   showDescription = false;
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService) {
+  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
+              private router: Router) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
     this.maxDate = new Date(currentYear + 2, 11, 31);
@@ -85,5 +89,12 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     const isWhiteSpace = (control.value || '').trim().length === 0;
     const isValid = !isWhiteSpace;
     return isValid ? null : { 'whitespace': true };
+  }
+
+  nextPage(){
+    this.appointmentRequestFormService.submitValues();
+    console.log(this.generalSubform.get('title'));
+    console.log(this.generalSubform.get('deadline'))
+    this.router.navigateByUrl("/create-vote/configurationOptions")
   }
 }

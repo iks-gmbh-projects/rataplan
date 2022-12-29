@@ -1,11 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-
-  FormBuilder,
-  FormControl,
-
-  Validators
-} from "@angular/forms";
+import {FormBuilder, FormControl, Validators} from "@angular/forms";
 
 import {LoginService} from "../services/login.service/login.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -67,8 +61,8 @@ export class LoginComponent implements OnInit {
         this.userdataStorageService.username = responseData.username;
         this.userdataStorageService.mail = responseData.mail;
         this.userdataStorageService.displayName = responseData.displayName;
-        this.localStorage.setLocalStorage(responseData)
-        this.router.navigateByUrl("/")
+        this.localStorage.setLocalStorage(responseData);
+        this.router.navigateByUrl('/')
         this.isLoggedIn = true;
         this.isLoading = false;
       }, error => {

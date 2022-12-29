@@ -25,6 +25,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {NgxMaterialTimepickerComponent, NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -50,7 +51,10 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ProfileComponent } from './profile/profile.component';
 import { AppCommonModule } from './app-common.module';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { ConfigSubformComponent} from "./appointment/appointment-request-form/config-subform/config-subform.component";
+import {OverviewSubformComponent} from "./appointment/appointment-request-form/overview-subform/overview-subform.component";
 
 registerLocaleData(localeDE);
 
@@ -79,6 +83,8 @@ registerLocaleData(localeDE);
     AppointmentComponent,
     MemberDecisionSubformComponent,
     ChangePasswordComponent,
+    ConfigSubformComponent,
+    OverviewSubformComponent,
     DeleteProfileComponent,
   ],
   imports: [
@@ -109,6 +115,9 @@ registerLocaleData(localeDE);
     MatMenuModule,
     MatBadgeModule,
     MatExpansionModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    NgxMaterialTimepickerModule,
     MatProgressSpinnerModule,
   ],
   providers: [

@@ -2,9 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { exhaustMap, Subject } from 'rxjs';
 
-import { AppointmentModel } from '../../models/appointment.model';
+import {AppointmentConfig, AppointmentModel} from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
 import { BackendUrlService } from '../../services/backend-url-service/backend-url.service';
+import {GeneralSubformComponent} from "./general-subform/general-subform.component";
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,7 @@ export class AppointmentRequestFormService {
 
   appointmentRequest: AppointmentRequestModel = new AppointmentRequestModel();
   selectedDates: Date[] = [];
+  selectedTimes: Date [] = [];
 
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }
@@ -39,6 +41,26 @@ export class AppointmentRequestFormService {
     this.appointmentRequest.appointments = appointments;
   }
 
+  // setTime(selectedTimes: string[]) {
+  //   this.appointmentRequest.appointments.forEach( x => {
+  //     x.startDate = selectedTimes[i];
+  //
+  //   })
+  // }
+
+  setTime(selectedTimes: Date[], selectedDates: Date[]) {
+    const appointments: AppointmentModel[] = [];
+    for (let i = 0; i <selectedDates.length; i++) {
+      const date = new AppointmentModel();
+      date.startDate = selectedDates[i] +
+        ('00' + selectedTimes[i].getHours()) + '-' +
+        ('00' + selectedTimes[i].getMinutes());
+      console.log(date);
+      appointments.push(date);
+    }
+    this.appointmentRequest.appointments = appointments;
+  }
+
   setEmailInputValue(name: string, email: string, consigneeList: string[]) {
     this.appointmentRequest.organizerName = name;
     this.appointmentRequest.organizerMail = email;
@@ -57,7 +79,16 @@ export class AppointmentRequestFormService {
     this.submitButtonObservable.next();
   }
 
+  setAppointmentConfig(appointmentConfig: AppointmentConfig) {
+    this.appointmentRequest.appointmentRequestConfig.appointmentConfig = appointmentConfig;
+  }
+
+  getAppointmentConfig(){
+    return this.appointmentRequest.appointmentRequestConfig.appointmentConfig;
+  }
+
   createAppointmentRequest() {
+    this.setSelectedDates(this.selectedDates);
     return this.urlService.appointmentURL$.pipe(
       exhaustMap(baseURL => {
         return this.http.post<AppointmentRequestModel>(

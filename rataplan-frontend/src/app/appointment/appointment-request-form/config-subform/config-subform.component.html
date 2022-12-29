@@ -1,0 +1,31 @@
+<div class="center">
+  <h2>Konfigurationseinstellungen</h2>
+  <div [formGroup] = "formGroup">
+<mat-checkbox formControlName="isStartDateChecked" color="primary" labelPosition="before" checked>Startdatum</mat-checkbox>
+<p></p>
+<mat-checkbox formControlName="isStartTimeChecked" color="primary"  labelPosition="before">Startzeit</mat-checkbox>
+<p></p>
+<mat-checkbox formControlName="isDescriptionChecked" color="primary"  labelPosition="before">Beschreibung</mat-checkbox>
+<p></p>
+<mat-checkbox formControlName="isUrlChecked" color="primary"  labelPosition="before">Link</mat-checkbox>
+<p></p>
+<mat-checkbox formControlName="isEndDateChecked" color="primary"  labelPosition="before">Enddatum</mat-checkbox>
+<p></p>
+<mat-checkbox formControlName="isEndTimeChecked" color="primary" labelPosition="before">Endzeit</mat-checkbox>
+  </div>
+  <div>
+        <button
+                mat-raised-button
+                (click)="backPage()">Zurück
+        </button>
+      <button  [disabled]="!isPageValid"
+              class="right"
+              type="button"
+              color="primary"
+              mat-raised-button
+              (click)="nextPage()">Weiter
+      </button>
+  </div>
+</div>
+
+

@@ -1,7 +1,7 @@
 export enum AppointmentRequestNavigationEnum {
   General = 'general',
-  Datepicker = 'datepicker',
-  Overview = 'overview',
+  Config = 'configurationOptions',
+  OverviewSub = 'configuration',
   Email = 'email',
   Links = 'links'
 }

@@ -4,6 +4,12 @@
   <mat-chip (removed)="removeDate(date)"
             *ngFor="let date of selectedDates">
     {{ date | date:'dd. MMMM yyyy':'+0200':'de' }}
+    <mat-form-field>
+      <div class="distance">
+        <input matInput placeholder="24hr format" [ngxTimepicker]="fullTime" [format]="24" formControlName="time" >
+        <ngx-material-timepicker [theme]="blueTheme" #fullTime></ngx-material-timepicker>
+      </div>
+    </mat-form-field>
     <button matChipRemove>
       <mat-icon>cancel</mat-icon>
     </button>
@@ -11,4 +17,18 @@
 </mat-chip-list>
 <div *ngIf="selectedDates.length == 0">
   <p class="mat-error">Es existieren keine Events mehr, bitte tragen Sie neue ein.</p>
+</div>
+<div>
+
+
+<button mat-raised-button
+        (click)="backPage()">Zurück
+</button>
+<button class='next-button'
+        type='button'
+        color='primary'
+        mat-raised-button
+        [disabled]='isValid'
+        (click)=nextPage()>Fertig
+</button>
 </div>

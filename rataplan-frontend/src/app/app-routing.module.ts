@@ -22,6 +22,8 @@ import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
+import {ConfigSubformComponent} from "./appointment/appointment-request-form/config-subform/config-subform.component";
+import {OverviewSubformComponent} from "./appointment/appointment-request-form/overview-subform/overview-subform.component";
 import { DeleteProfileComponent } from "./delete-profile/delete-profile.component";
 
 // function matcherFunction(url: UrlSegment[]) {
@@ -47,6 +49,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'general', pathMatch: 'full' },
       { path: 'general', component: GeneralSubformComponent },
       { path: 'datepicker', component: DatepickerSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
+      { path: 'configurationOptions', component: ConfigSubformComponent},
+      { path: 'configuration', component: OverviewSubformComponent},
       { path: 'overview', component: DateOverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'email', component: EmailSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'links', component: LinkSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
