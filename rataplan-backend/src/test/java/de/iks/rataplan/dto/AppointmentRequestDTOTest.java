@@ -66,7 +66,7 @@ public class AppointmentRequestDTOTest {
 		assertEquals(appointments[0].getAppointmentRequest().getId(), dtoAppointments[0].getRequestId());
 		assertEquals(appointments[0].getStartDate(), dtoAppointments[0].getStartDate());
 		assertEquals(appointments[0].getId(), dtoAppointments[0].getId());
-		assertEquals(appointments[0].getDescription(), dtoAppointments[0].getDescription());
+		assertEquals(appointments[0].getDescription().getString(), dtoAppointments[0].getDescription());
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public class AppointmentRequestDTOTest {
 		assertEquals(dtoAppointments[0].getRequestId(), appointments[0].getAppointmentRequest().getId());
 		assertEquals(dtoAppointments[0].getStartDate(), appointments[0].getStartDate());
 		assertEquals(dtoAppointments[0].getId(), appointments[0].getId());
-		assertEquals(dtoAppointments[0].getDescription(), appointments[0].getDescription());
+		assertEquals(dtoAppointments[0].getDescription(), appointments[0].getDescription().getString());
 	}
 
 	@Test

@@ -10,6 +10,8 @@ import de.iks.rataplan.dto.AppointmentDTO;
 import de.iks.rataplan.dto.AppointmentDecisionDTO;
 import de.iks.rataplan.dto.AppointmentMemberDTO;
 import de.iks.rataplan.dto.AppointmentRequestDTO;
+import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
+import de.iks.rataplan.service.MockCryptoService;
 
 public class RataplanAssert {
 
@@ -47,10 +49,10 @@ public class RataplanAssert {
 	 * @param dtoRequest
 	 */
 	public static void assertAppointmentRequest(AppointmentRequest request, AppointmentRequestDTO dtoRequest) {
-		assertEquals("AppointmentRequest.title", request.getTitle(), dtoRequest.getTitle());
-		assertEquals("AppointmentRequest.description", request.getDescription(), dtoRequest.getDescription());
+		assertEquals("AppointmentRequest.title", request.getTitle().getString(), dtoRequest.getTitle());
+		assertEquals("AppointmentRequest.description", request.getDescription().getString(), dtoRequest.getDescription());
 		assertEquals("AppointmentRequest.deadline", request.getDeadline(), dtoRequest.getDeadline());
-		assertEquals("AppointmentRequest.organizerMail", request.getOrganizerMail(), dtoRequest.getOrganizerMail());
+		assertEquals("AppointmentRequest.organizerMail", request.getOrganizerMail().getString(), dtoRequest.getOrganizerMail());
 		assertEquals("AppointmentRequest.id", request.getId(), dtoRequest.getId());
 		assertEquals("AppointmentRequest.config.appointmentType", request.getAppointmentRequestConfig().getAppointmentConfig(),
 				dtoRequest.getAppointmentRequestConfig().getAppointmentConfig());
@@ -68,10 +70,10 @@ public class RataplanAssert {
 	 * @param request
 	 */
 	public static void assertAppointmentRequestDTO(AppointmentRequestDTO dtoRequest, AppointmentRequest request) {
-		assertEquals("AppointmentRequestDTO.title", dtoRequest.getTitle(), request.getTitle());
-		assertEquals("AppointmentRequestDTO.description", dtoRequest.getDescription(), request.getDescription());
+		assertEquals("AppointmentRequestDTO.title", dtoRequest.getTitle(), request.getTitle().getString());
+		assertEquals("AppointmentRequestDTO.description", dtoRequest.getDescription(), request.getDescription().getString());
 		assertEquals("AppointmentRequestDTO.deadline", dtoRequest.getDeadline(), request.getDeadline());
-		assertEquals("AppointmentRequestDTO.organizerMail", dtoRequest.getOrganizerMail(), request.getOrganizerMail());
+		assertEquals("AppointmentRequestDTO.organizerMail", dtoRequest.getOrganizerMail(), request.getOrganizerMail().getString());
 		assertEquals("AppointmentRequestDTO.id", dtoRequest.getId(), request.getId());
 		assertEquals("AppointmentRequestDTO.config.appointmentType", dtoRequest.getAppointmentRequestConfig().getAppointmentConfig(),
 				request.getAppointmentRequestConfig().getAppointmentConfig());
@@ -92,7 +94,7 @@ public class RataplanAssert {
 		assertEquals("Appointment.Id", appointment.getId(), dtoAppointment.getId());
 		assertEquals("Appointment.StartDate", appointment.getStartDate(), dtoAppointment.getStartDate());
 		assertEquals("Appointment.EndDate", appointment.getEndDate(), dtoAppointment.getEndDate());
-		assertEquals("Appointment.Location", appointment.getDescription(), dtoAppointment.getDescription());
+		assertEquals("Appointment.Location", appointment.getDescription().getString(), dtoAppointment.getDescription());
 		assertEquals("Appointment.AppointmentRequest.Id", appointment.getAppointmentRequest().getId(),
 				dtoAppointment.getRequestId());
 	}
@@ -106,7 +108,7 @@ public class RataplanAssert {
 		assertEquals("AppointmentDTO.Id", dtoAppointment.getId(), appointment.getId());
 		assertEquals("Appointment.StartDate", appointment.getStartDate(), dtoAppointment.getStartDate());
 		assertEquals("Appointment.EndDate", appointment.getEndDate(), dtoAppointment.getEndDate());
-		assertEquals("AppointmentDTO.Location", dtoAppointment.getDescription(), appointment.getDescription());
+		assertEquals("AppointmentDTO.Location", dtoAppointment.getDescription(), appointment.getDescription().getString());
 		assertEquals("AppointmentDTO.AppointmentRequestId", dtoAppointment.getRequestId(),
 				appointment.getAppointmentRequest().getId());
 	}
@@ -118,7 +120,7 @@ public class RataplanAssert {
 	 */
 	public static void assertAppointmentMember(AppointmentMember member, AppointmentMemberDTO dtoMember) {
 		assertEquals("AppointmentMember.Id", member.getId(), dtoMember.getId());
-		assertEquals("AppointmentMember.Name", member.getName(), dtoMember.getName());
+		assertEquals("AppointmentMember.Name", member.getName().getString(), dtoMember.getName());
 		assertEquals("AppointmentMember.AppointmentRequest.Id", member.getAppointmentRequest().getId(),
 				dtoMember.getAppointmentRequestId());
 		assertEquals("AppointmentMember.AppointmentDecisions.size", member.getAppointmentDecisions().size(),
@@ -132,7 +134,7 @@ public class RataplanAssert {
 	 */
 	public static void assertAppointmentMemberDTO(AppointmentMemberDTO dtoMember, AppointmentMember member) {
 		assertEquals("AppointmentMemberDTO.Id", dtoMember.getId(), member.getId());
-		assertEquals("AppointmentMemberDTO.Name", dtoMember.getName(), member.getName());
+		assertEquals("AppointmentMemberDTO.Name", dtoMember.getName(), member.getName().getString());
 		assertEquals("AppointmentMemberDTO.AppointmentRequestId", dtoMember.getAppointmentRequestId(),
 				member.getAppointmentRequest().getId());
 		assertEquals("AppointmentMemberDTO.AppointmentDecisions.size", dtoMember.getAppointmentDecisions().size(),

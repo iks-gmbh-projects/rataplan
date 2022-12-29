@@ -7,6 +7,11 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import de.iks.rataplan.mapping.DecisionConverter;
+import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
+import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
+import de.iks.rataplan.service.MockCryptoService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -23,7 +28,24 @@ public class TestConfig {
 
 	@Autowired
 	Environment environment;
-	
+
+    @Autowired
+    private DecisionConverter decisionConverter;
+
+    private final MockCryptoService mockCryptoService = new MockCryptoService();
+    private final FromEncryptedStringConverter fromEncryptedStringConverter = new FromEncryptedStringConverter(mockCryptoService);
+    private final ToEncryptedStringConverter toEncryptedStringConverter = new ToEncryptedStringConverter(mockCryptoService);
+
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.addConverter(decisionConverter.toDAO);
+        mapper.addConverter(decisionConverter.toDTO);
+        mapper.addConverter(toEncryptedStringConverter);
+        mapper.addConverter(fromEncryptedStringConverter);
+        return mapper;
+    }
+
 	@Bean
 	public HttpServletResponse httpServletResponse() {
 		return new MockHttpServletResponse();
