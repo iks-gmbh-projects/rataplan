@@ -1,16 +1,22 @@
 package de.iks.rataplan.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "backendUserAccess")
 public class BackendUserAccess {
-
+	@CreationTimestamp
+	@Column(updatable = false)
+	private Instant creationTime;
+	@UpdateTimestamp
+	private Instant lastUpdated;
+	@Version
+	private Integer version;
+	
 	private Integer id;
 	private Integer appointmentRequestId;
 	private Integer backendUserId;
@@ -28,7 +34,31 @@ public class BackendUserAccess {
 		// Nothing to do here
 	}
 	
-    @Id
+	public Instant getCreationTime() {
+		return creationTime;
+	}
+	
+	public void setCreationTime(Instant creationTime) {
+		this.creationTime = creationTime;
+	}
+	
+	public Instant getLastUpdated() {
+		return lastUpdated;
+	}
+	
+	public void setLastUpdated(Instant lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+	
+	public Integer getVersion() {
+		return version;
+	}
+	
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
+	@Id
     @Column(name = "id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	public Integer getId() {

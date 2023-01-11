@@ -1,27 +1,29 @@
 package de.iks.rataplan.domain;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "appointmentMember")
 public class AppointmentMember implements Serializable {
 
     private static final long serialVersionUID = 7136999956850896370L;
-
+    
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Instant creationTime;
+    @UpdateTimestamp
+    private Instant lastUpdated;
+    @Version
+    private Integer version;
+    
     private Integer id;
     private Integer backendUserId;
     private String name;
@@ -41,7 +43,31 @@ public class AppointmentMember implements Serializable {
     public AppointmentMember() {
         //required for Hibernate
     }
-
+    
+    public Instant getCreationTime() {
+        return creationTime;
+    }
+    
+    public void setCreationTime(Instant creationTime) {
+        this.creationTime = creationTime;
+    }
+    
+    public Instant getLastUpdated() {
+        return lastUpdated;
+    }
+    
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+    
+    public Integer getVersion() {
+        return version;
+    }
+    
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+    
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)

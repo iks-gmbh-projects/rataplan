@@ -2,30 +2,30 @@ package de.iks.rataplan.domain;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import de.iks.rataplan.exceptions.MalformedException;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "appointmentRequest")
 public class AppointmentRequest implements Serializable {
 
 	private static final long serialVersionUID = 6229127764261785894L;
-
+	
+	@CreationTimestamp
+	@Column(updatable = false)
+	private Instant creationTime;
+	@UpdateTimestamp
+	private Instant lastUpdated;
+	@Version
+	private Integer version;
+	
 	private Integer id;
 	private String title;
 	private String description;
@@ -71,7 +71,31 @@ public class AppointmentRequest implements Serializable {
 	public AppointmentRequest() {
 		// required for Hibernate
 	}
-
+	
+	public Instant getCreationTime() {
+		return creationTime;
+	}
+	
+	public void setCreationTime(Instant creationTime) {
+		this.creationTime = creationTime;
+	}
+	
+	public Instant getLastUpdated() {
+		return lastUpdated;
+	}
+	
+	public void setLastUpdated(Instant lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+	
+	public Integer getVersion() {
+		return version;
+	}
+	
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

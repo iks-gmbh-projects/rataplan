@@ -1,22 +1,25 @@
 package de.iks.rataplan.domain;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "backendUser")
 public class BackendUser {
-
+	@CreationTimestamp
+	@Column(updatable = false)
+	private Instant creationTime;
+	@UpdateTimestamp
+	private Instant lastUpdated;
+	@Version
+	private Integer version;
+	
 	private Integer id;
 	private Integer authUserId;
     private List<BackendUserAccess> userAccess = new ArrayList<>();
@@ -28,7 +31,31 @@ public class BackendUser {
     public BackendUser() {
     	// Required for Hibernate
     }
-    
+	
+	public Instant getCreationTime() {
+		return creationTime;
+	}
+	
+	public void setCreationTime(Instant creationTime) {
+		this.creationTime = creationTime;
+	}
+	
+	public Instant getLastUpdated() {
+		return lastUpdated;
+	}
+	
+	public void setLastUpdated(Instant lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+	
+	public Integer getVersion() {
+		return version;
+	}
+	
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
