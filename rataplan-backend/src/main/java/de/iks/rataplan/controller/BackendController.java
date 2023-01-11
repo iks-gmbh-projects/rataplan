@@ -33,7 +33,7 @@ public class BackendController {
     }
     
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteData(@PathVariable int userId, @RequestBody String secret) {
+    public ResponseEntity<?> deleteData(@PathVariable int userId, @RequestBody(required = false) String secret) {
         //TODO validate secret
         final BackendUser user = backendUserService.getBackendUserByAuthUserId(userId);
         if(user != null) {
@@ -52,7 +52,7 @@ public class BackendController {
     }
     
     @PostMapping("/{userId}/anonymize")
-    public ResponseEntity<?> anonymizeData(@PathVariable int userId, @RequestBody String secret) {
+    public ResponseEntity<?> anonymizeData(@PathVariable int userId, @RequestBody(required = false) String secret) {
         //TODO validate secret
         final BackendUser user = backendUserService.getBackendUserByAuthUserId(userId);
         if(user != null) {
