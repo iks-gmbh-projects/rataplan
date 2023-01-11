@@ -4,21 +4,23 @@
     <div class="username">
       <mat-form-field appearance="fill">
         <mat-label>Benutzername</mat-label>
-        <input matInput [formControl]="username">
+        <input matInput [formControl]="username"
+               [errorStateMatcher]="errorStateMatcher"
+               pattern="\S+">
         <mat-error *ngIf="username.invalid">{{getUsernameErrorMessage()}}</mat-error>
       </mat-form-field>
     </div>
     <div class="email">
       <mat-form-field appearance="fill">
         <mat-label>E-Mail</mat-label>
-        <input matInput placeholder="pat@example.com" [formControl]="mail">
+        <input matInput placeholder="pat@example.com" [formControl]="mail" [errorStateMatcher]="errorStateMatcher">
         <mat-error *ngIf="mail.invalid">{{getMailErrorMessage()}}</mat-error>
       </mat-form-field>
     </div>
     <div class="password">
       <mat-form-field appearance="fill">
         <mat-label>Passwort</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password">
+        <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password" [errorStateMatcher]="errorStateMatcher">
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
@@ -28,7 +30,7 @@
     <div class="confirmPassword">
       <mat-form-field appearance="fill">
         <mat-label>Passwort wiederholen</mat-label>
-        <input matInput [type]="hideConfirm ? 'password' : 'text'" [formControl]="confirmPassword" pattern="{{password.value}}">
+        <input matInput [type]="hideConfirm ? 'password' : 'text'" [formControl]="confirmPassword" pattern="{{password.value}}" [errorStateMatcher]="errorStateMatcher">
         <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
           <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
@@ -38,7 +40,7 @@
     <div class="displayname">
       <mat-form-field appearance="fill">
         <mat-label>Anzeigename</mat-label>
-        <input matInput [formControl]="displayname">
+        <input matInput [formControl]="displayname" [errorStateMatcher]="errorStateMatcher">
         <mat-error *ngIf="displayname.invalid">{{getDisplaynameErrorMessage()}}</mat-error>
       </mat-form-field>
     </div>

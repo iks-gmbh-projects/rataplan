@@ -14,6 +14,7 @@ import {User} from "../services/login.service/user.model";
 import {Router} from "@angular/router";
 import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
 import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
+import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 
 
 
@@ -131,7 +132,8 @@ export class LoginComponent implements OnInit {
               private loginService: LoginService,
               private router: Router,
               private localStorage: LocalstorageService,
-              private userdataStorageService: userdataStorageService
+              private userdataStorageService: userdataStorageService,
+              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher
                ) {
   }
 

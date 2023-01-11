@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import {PasswordChangeModel} from "../models/password-change.model";
 import {ChangePasswordService} from "../services/change-password/change-password.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 
 @Component({
   selector: 'app-change-password',
@@ -28,7 +29,8 @@ export class ChangePasswordComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private changePasswordService: ChangePasswordService,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar,
+              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher) { }
 
   ngOnInit(): void {
   }

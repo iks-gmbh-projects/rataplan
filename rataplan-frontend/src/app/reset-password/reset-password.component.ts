@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ResetPasswordDataModel } from '../models/reset-password-data.model';
 import { ResetPasswordService } from '../services/reset-password-service/reset-password.service';
+import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 
 @Component({
   selector: 'app-reset-password',
@@ -24,7 +25,8 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private resetPasswortService: ResetPasswordService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher) {
   }
 
   ngOnInit(): void {

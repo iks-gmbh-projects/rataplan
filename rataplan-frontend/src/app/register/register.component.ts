@@ -4,6 +4,7 @@ import { switchMap, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { RegisterService } from '../services/register-service/register.service';
+import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 
 
 @Component({
@@ -56,7 +57,8 @@ export class RegisterComponent implements OnInit {
   });
 
   constructor(private formBuilder: FormBuilder,
-              private registerService: RegisterService) {
+              private registerService: RegisterService,
+              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher) {
   }
 
   ngOnInit(): void {
