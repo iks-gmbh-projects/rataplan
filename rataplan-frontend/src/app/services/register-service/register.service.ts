@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { FrontendUser } from '../../register/register.component';
+import { FrontendUser } from '../login.service/user.model';
 import { BackendUrlService } from "../backend-url-service/backend-url.service";
 import { exhaustMap } from "rxjs";
 
@@ -18,7 +18,7 @@ export class RegisterService {
       exhaustMap(authURL => {
         const url = authURL + 'users/register';
 
-        return this.http.post<any>(url, frontendUser);
+        return this.http.post<FrontendUser>(url, frontendUser, {withCredentials: true});
       })
     );
   }

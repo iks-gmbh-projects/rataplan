@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
-import { FrontendUser } from '../../login/login.component';
+import { FrontendUser } from './user.model';
 import { AbstractControl, ValidationErrors } from "@angular/forms";
 import { LocalstorageService } from "../localstorage-service/localstorage.service";
 import { catchError, exhaustMap, map } from 'rxjs/operators';
@@ -30,7 +30,7 @@ export class LoginService {
         requestOptions.params.set('Content-Type', 'application/json');
 
 
-        return this.httpClient.post<any>(url, frontendUser, {withCredentials: true});
+        return this.httpClient.post<FrontendUser>(url, frontendUser, {withCredentials: true});
       })
     );
   }

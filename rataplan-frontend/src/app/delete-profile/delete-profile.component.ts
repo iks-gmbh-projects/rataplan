@@ -31,6 +31,7 @@ export class DeleteProfileComponent {
     this.deleteProfileService.deleteProfile(request)
       .subscribe({
         next: _ => {
+          localStorage.clear();
           this.busy = false;
           this.formGroup.enable();
           this.router.navigate(["/"]);

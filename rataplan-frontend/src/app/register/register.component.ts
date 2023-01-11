@@ -4,6 +4,10 @@ import { switchMap, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { RegisterService } from '../services/register-service/register.service';
+import { Router } from "@angular/router";
+import { LocalstorageService } from "../services/localstorage-service/localstorage.service";
+import {FrontendUser} from "../services/login.service/user.model";
+import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
 
 
 @Component({
@@ -16,12 +20,12 @@ export class RegisterComponent implements OnInit {
   username: FormControl = new FormControl('', [Validators.required, Validators.minLength(3)],
     usernameExists => {
       return timer(1000).pipe(switchMap(() => {
-        return this.registerService.checkIfUsernameExists(this.username.value)
+        return this.registerService.checkIfUsernameExists(usernameExists.value)
           .pipe(map(resp => {
             if (resp) {
               return ({ usernameExists: true });
             } else {
-              return (null);
+              return null;
             }
           }));
       }));
@@ -30,12 +34,12 @@ export class RegisterComponent implements OnInit {
   mail: FormControl = new FormControl('', [Validators.required, Validators.email],
     mailExists => {
       return timer(1000).pipe(switchMap(() => {
-        return this.registerService.checkIfMailExists(this.mail.value)
+        return this.registerService.checkIfMailExists(mailExists.value)
           .pipe(map(resp => {
             if (resp) {
               return ({ mailExists: true });
             } else {
-              return (null);
+              return null;
             }
           }));
       }));
@@ -56,7 +60,11 @@ export class RegisterComponent implements OnInit {
   });
 
   constructor(private formBuilder: FormBuilder,
-              private registerService: RegisterService) {
+              private registerService: RegisterService,
+              private router: Router,
+              private localStorage: LocalstorageService,
+              private userdataStorageService: userdataStorageService,
+              ) {
   }
 
   ngOnInit(): void {
@@ -73,6 +81,12 @@ export class RegisterComponent implements OnInit {
 
     this.registerService.registerUser(frontendUser).subscribe(responseData => {
       console.log(responseData);
+      this.userdataStorageService.id = responseData.id;
+      this.userdataStorageService.username = responseData.username;
+      this.userdataStorageService.mail = responseData.mail;
+      this.userdataStorageService.displayName = responseData.displayname;
+      this.localStorage.setLocalStorage(responseData);
+      this.router.navigateByUrl("/");
     });
 
     //should route to profile, which doesnt exist yet
@@ -126,11 +140,4 @@ export class RegisterComponent implements OnInit {
     }
     return '';
   }
-}
-
-export interface FrontendUser {
-  username: string;
-  mail: string;
-  password: string;
-  displayname: string;
 }

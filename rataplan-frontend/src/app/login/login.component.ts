@@ -10,7 +10,7 @@ import {
 import {LoginService} from "../services/login.service/login.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
-import {User} from "../services/login.service/user.model";
+import {User, FrontendUser} from "../services/login.service/user.model";
 import {Router} from "@angular/router";
 import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
 import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
@@ -66,8 +66,8 @@ export class LoginComponent implements OnInit {
         this.userdataStorageService.id = responseData.id;
         this.userdataStorageService.username = responseData.username;
         this.userdataStorageService.mail = responseData.mail;
-        this.userdataStorageService.displayName = responseData.displayName;
-        this.localStorage.setLocalStorage(responseData)
+        this.userdataStorageService.displayName = responseData.displayname;
+        this.localStorage.setLocalStorage(responseData);
         this.router.navigateByUrl("/")
         this.isLoggedIn = true;
         this.isLoading = false;
@@ -137,16 +137,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
   }
-}
-  export interface FrontendUser {
-
-
-    username?: string;
-    id?: number;
-     mail?: string;
-     password: string;
-     displayname?: string;
-
 }
 
 
