@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { switchMap, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { ForgotPasswordService } from '../services/forgot-password-service/forgot-password.service';
 import { RegisterService } from '../services/register-service/register.service';
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-forgot-password',
@@ -14,18 +13,7 @@ import { RegisterService } from '../services/register-service/register.service';
 export class ForgotPasswordComponent implements OnInit {
 
   mail: FormControl = new FormControl('', [Validators.required, Validators.email],
-    mailExists => {
-      return timer(1000).pipe(switchMap(() => {
-        return this.registerService.checkIfMailExists(this.mail.value)
-          .pipe(map(resp => {
-            if (resp) {
-              return (null);
-            } else {
-              return ({ mailDoesNotExist: true });
-            }
-          }));
-      }));
-    });
+    ctrl => this.registerService.mailNotExists(ctrl));
 
   forgotPasswordForm = this.formBuilder.group({
     mail: this.mail,
@@ -33,7 +21,8 @@ export class ForgotPasswordComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private registerService: RegisterService,
-              private forgotPasswordService: ForgotPasswordService) {
+              private forgotPasswordService: ForgotPasswordService,
+              public readonly errorMessageService: FormErrorMessageService) {
 
   }
 
@@ -42,23 +31,7 @@ export class ForgotPasswordComponent implements OnInit {
 
   submit() {
 
-    this.forgotPasswordService.forgotPassword(this.mail.value).subscribe((res: any) => {
-
-    }, (error) => {
-
-    });
-  }
-
-  getMailErrorMessage() {
-    if (this.mail.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-
-    if (this.mail.hasError('mailDoesNotExist')) {
-      return 'Email wird nicht verwendet';
-    }
-
-    return this.mail.hasError('email') ? 'Keine gültige email' : '';
+    this.forgotPasswordService.forgotPassword(this.mail.value).subscribe({});
   }
 
 }

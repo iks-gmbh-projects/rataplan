@@ -15,6 +15,8 @@ import {Router} from "@angular/router";
 import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
 import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
 import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../validator/validators";
 
 
 
@@ -32,8 +34,8 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   isLoggedIn = false;
   user = new Subject<User>()
-  inputField = new FormControl('', [Validators.required, Validators.minLength(3), this.loginService.cannotContainWhitespace,]);
-  password = new FormControl('', [Validators.required, this.loginService.cannotContainWhitespace]);
+  inputField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
+  password = new FormControl('', [Validators.required, ExtraValidators.cannotContainWhitespace]);
 
   loginForm = this.formBuilder.group({
       inputField: this.inputField,
@@ -97,44 +99,13 @@ export class LoginComponent implements OnInit {
   // }
 
 
-
-
-
-
-  inputFieldError() {
-    if (this.inputField.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben!';
-    }
-
-    if (this.inputField.hasError('usernameNotExists')) {
-      return 'Benutzername existiert nicht';
-    }
-
-    if (this.inputField.hasError('cannotContainWhitespace')) {
-      return 'Zeichen nicht erlaubt'
-    }
-
-    return this.inputField.hasError('minLength') ? '' : 'Benutzername muss mindestens 3 Zeichen lang sein!'
-  }
-
-  getPasswordErrorMessage() {
-    if (this.password.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben!';
-    }
-    if (this.password.hasError('cannotContainWhitespace')) {
-      return 'Zeichen nicht erlaubt'
-    }
-    return this.password.hasError('invalidPassword') ? 'Das eingegebene Passwort ist inkorrekt!' : '';
-
-  }
-
   constructor(private formBuilder: FormBuilder,
               private loginService: LoginService,
               private router: Router,
               private localStorage: LocalstorageService,
               private userdataStorageService: userdataStorageService,
-              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher
-               ) {
+              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher,
+              public readonly errorMessageService: FormErrorMessageService) {
   }
 
   ngOnInit(): void {

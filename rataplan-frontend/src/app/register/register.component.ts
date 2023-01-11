@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { switchMap, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { RegisterService } from '../services/register-service/register.service';
 import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../validator/validators";
 
 
 @Component({
@@ -14,36 +14,14 @@ import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only
 })
 export class RegisterComponent implements OnInit {
 
-  username: FormControl = new FormControl('', [Validators.required, Validators.minLength(3)],
-    usernameExists => {
-      return timer(1000).pipe(switchMap(() => {
-        return this.registerService.checkIfUsernameExists(this.username.value)
-          .pipe(map(resp => {
-            if (resp) {
-              return ({ usernameExists: true });
-            } else {
-              return (null);
-            }
-          }));
-      }));
-    });
+  username: FormControl = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace],
+    ctrl => this.registerService.usernameExists(ctrl));
 
   mail: FormControl = new FormControl('', [Validators.required, Validators.email],
-    mailExists => {
-      return timer(1000).pipe(switchMap(() => {
-        return this.registerService.checkIfMailExists(this.mail.value)
-          .pipe(map(resp => {
-            if (resp) {
-              return ({ mailExists: true });
-            } else {
-              return (null);
-            }
-          }));
-      }));
-    });
+    ctrl => this.registerService.mailExists(ctrl));
 
   password = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  confirmPassword = new FormControl('', Validators.required);
+  confirmPassword = new FormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
   displayname: FormControl = new FormControl('', [Validators.required]);
   hide = true;
   hideConfirm = true;
@@ -58,7 +36,8 @@ export class RegisterComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private registerService: RegisterService,
-              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher) {
+              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher,
+              public readonly errorMessages: FormErrorMessageService) {
   }
 
   ngOnInit(): void {
@@ -79,54 +58,6 @@ export class RegisterComponent implements OnInit {
 
     //should route to profile, which doesnt exist yet
     //this.router.navigateByUrl('/');
-  }
-
-  getUsernameErrorMessage() {
-    if (this.username.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-
-    if (this.username.hasError('usernameExists')) {
-      return 'Benutzername wird bereits verwendet';
-    }
-
-    return this.username.hasError('minLength') ? '' : 'Mindestens 3 Zeichen';
-  }
-
-  getMailErrorMessage() {
-    if (this.mail.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-
-    if (this.mail.hasError('mailExists')) {
-      return 'Email wird bereits verwendet';
-    }
-
-    return this.mail.hasError('email') ? 'Keine gültige email' : '';
-  }
-
-  getPasswordErrorMessage() {
-    if (this.password.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-    if (this.password.hasError('minLength')) {
-      return 'Mindestens 3 Zeichen';
-    }
-    return '';
-  }
-
-  getConfirmPasswordErrorMessage() {
-    if (this.confirmPassword.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-    return this.confirmPassword.hasError('pattern') ? 'Passwort stimmt nicht überein' : '';
-  }
-
-  getDisplaynameErrorMessage() {
-    if (this.username.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-    return '';
   }
 }
 

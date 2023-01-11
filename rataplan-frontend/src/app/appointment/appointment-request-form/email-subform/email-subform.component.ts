@@ -5,6 +5,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-email-subform',
@@ -21,7 +22,8 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     'email': new FormControl(null, Validators.email),
   });
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService) {
+  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
+              public readonly errorMessageService: FormErrorMessageService) {
   }
 
   ngOnInit(): void {

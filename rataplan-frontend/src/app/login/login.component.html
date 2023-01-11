@@ -12,7 +12,7 @@
                pattern="\S+"
                [formControl]="inputField"
                [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="inputField.invalid">{{inputFieldError()}}</mat-error>
+        <mat-error *ngIf="inputField.invalid">{{errorMessageService.genericFormError(inputField)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="password">
@@ -21,7 +21,7 @@
         <input matInput [type]="hide ? 'password' : 'text' "
                placeholder="Password" [formControl]="password"
                [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+        <mat-error *ngIf="password.invalid">{{errorMessageService.genericFormError(password)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="links">

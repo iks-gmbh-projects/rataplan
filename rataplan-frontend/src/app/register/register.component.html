@@ -5,16 +5,15 @@
       <mat-form-field appearance="fill">
         <mat-label>Benutzername</mat-label>
         <input matInput [formControl]="username"
-               [errorStateMatcher]="errorStateMatcher"
-               pattern="\S+">
-        <mat-error *ngIf="username.invalid">{{getUsernameErrorMessage()}}</mat-error>
+               [errorStateMatcher]="errorStateMatcher">
+        <mat-error *ngIf="username.invalid">{{errorMessages.genericFormError(username)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="email">
       <mat-form-field appearance="fill">
         <mat-label>E-Mail</mat-label>
         <input matInput placeholder="pat@example.com" [formControl]="mail" [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="mail.invalid">{{getMailErrorMessage()}}</mat-error>
+        <mat-error *ngIf="mail.invalid">{{errorMessages.genericFormError(mail)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="password">
@@ -24,7 +23,7 @@
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
-        <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+        <mat-error *ngIf="password.invalid">{{errorMessages.genericFormError(password)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="confirmPassword">
@@ -34,14 +33,14 @@
         <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
           <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
-        <mat-error *ngIf="confirmPassword.invalid">{{getConfirmPasswordErrorMessage()}}</mat-error>
+        <mat-error *ngIf="confirmPassword.invalid">{{errorMessages.genericFormError(confirmPassword)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="displayname">
       <mat-form-field appearance="fill">
         <mat-label>Anzeigename</mat-label>
         <input matInput [formControl]="displayname" [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="displayname.invalid">{{getDisplaynameErrorMessage()}}</mat-error>
+        <mat-error *ngIf="displayname.invalid">{{errorMessages.genericFormError(displayname)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="submit-container">
