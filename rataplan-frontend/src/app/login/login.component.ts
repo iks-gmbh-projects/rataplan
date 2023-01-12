@@ -11,7 +11,7 @@ import {LoginService} from "../services/login.service/login.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
 import {User, FrontendUser} from "../services/login.service/user.model";
-import {Router} from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
 import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
 
@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
         this.userdataStorageService.mail = responseData.mail;
         this.userdataStorageService.displayName = responseData.displayname;
         this.localStorage.setLocalStorage(responseData);
-        this.router.navigateByUrl("/")
+        this.router.navigateByUrl(this.activatedRoute.snapshot.queryParams['redirect'] || "/");
         this.isLoggedIn = true;
         this.isLoading = false;
       }, error => {
@@ -130,6 +130,7 @@ export class LoginComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private loginService: LoginService,
               private router: Router,
+              private activatedRoute: ActivatedRoute,
               private localStorage: LocalstorageService,
               private userdataStorageService: userdataStorageService
                ) {
