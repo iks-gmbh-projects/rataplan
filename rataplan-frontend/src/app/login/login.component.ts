@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
   isLoggedIn = false;
   user = new Subject<User>()
   inputField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
-  password = new FormControl('', [Validators.required, ExtraValidators.cannotContainWhitespace]);
+  password = new FormControl('', [Validators.required]);
 
   loginForm = this.formBuilder.group({
       inputField: this.inputField,
