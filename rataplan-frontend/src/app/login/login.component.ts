@@ -16,7 +16,7 @@ import {LocalstorageService} from "../services/localstorage-service/localstorage
 import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
 import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../validator/validators";
+import { ExtraValidators } from "../validators";
 
 
 

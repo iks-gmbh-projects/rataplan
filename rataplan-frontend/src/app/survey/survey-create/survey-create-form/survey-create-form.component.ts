@@ -3,6 +3,7 @@ import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, V
 import { MatStepper } from '@angular/material/stepper';
 import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../../../validators";
 
 function minControlValueValidator(min: AbstractControl): ValidatorFn {
   return (control: AbstractControl): ValidationErrors|null => {
@@ -63,15 +64,19 @@ export class SurveyCreateFormComponent {
   }
 
   public createQuestion(question?: Question): FormGroup {
+    const checkboxes= new FormArray(question?.checkboxGroup?.checkboxes?.map(this.createCheckbox, this) || []);
+    const minSelect = new FormControl(question?.checkboxGroup?.minSelect || 0, [Validators.min(0), ExtraValidators.indexValue(checkboxes, true)]);
+    const maxSelect = new FormControl(question?.checkboxGroup?.maxSelect || 2, [Validators.min(1), ExtraValidators.valueGreaterThan(minSelect), ExtraValidators.indexValue(checkboxes, true)]);
+    minSelect.addValidators(ExtraValidators.valueLessThan(maxSelect));
     return new FormGroup({
       id: new FormControl(question?.id),
       text: new FormControl(question?.text || null, Validators.required),
       required: new FormControl(question?.required || false),
       checkboxGroup: new FormGroup({
         multipleSelect: new FormControl(question?.checkboxGroup?.multipleSelect || false),
-        minSelect: new FormControl(question?.checkboxGroup?.minSelect || 0, Validators.min(0)),
-        maxSelect: new FormControl(question?.checkboxGroup?.maxSelect || 2, Validators.min(2)),
-        checkboxes: new FormArray(question?.checkboxGroup?.checkboxes?.map(this.createCheckbox, this) || [])
+        minSelect: minSelect,
+        maxSelect: maxSelect,
+        checkboxes: checkboxes,
       })
     });
   }

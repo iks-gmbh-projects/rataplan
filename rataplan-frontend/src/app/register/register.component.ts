@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { RegisterService } from '../services/register-service/register.service';
 import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../validator/validators";
+import { ExtraValidators } from "../validators";
 
 
 @Component({

@@ -5,7 +5,7 @@ import { ChangePasswordService } from "../services/change-password/change-passwo
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../validator/validators";
+import { ExtraValidators } from "../validators";
 
 @Component({
   selector: 'app-change-password',

@@ -20,6 +20,9 @@ export class FormErrorMessageService {
     if (element.hasError("passwordMatch")) return "Passwort stimmt nicht überein.";
     if (element.hasError("matDatepickerMin") || element.hasError("matDatetimePickerMin")) return "Zu früh";
     if (element.hasError("matDatepickerMax") || element.hasError("matDatetimePickerMax")) return "Zu spät";
+    if (element.hasError("min")) return "Muss größer sein";
+    if (element.hasError("max")) return "Muss kleiner sein";
+    if (element.hasError("index")) return "So viele Möglichkeiten gibt es nicht.";
     if (element.invalid) console.log(element.errors);
     return null;
   }

@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ResetPasswordDataModel } from '../models/reset-password-data.model';
 import { ResetPasswordService } from '../services/reset-password-service/reset-password.service';
 import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
-import { ExtraValidators } from "../validator/validators";
+import { ExtraValidators } from "../validators";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 
 @Component({
