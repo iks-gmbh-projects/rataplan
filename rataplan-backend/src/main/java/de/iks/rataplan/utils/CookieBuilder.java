@@ -2,7 +2,6 @@ package de.iks.rataplan.utils;
 
 import javax.servlet.http.Cookie;
 
-import org.apache.http.client.protocol.ResponseProcessCookies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

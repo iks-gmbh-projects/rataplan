@@ -28,5 +28,9 @@ public class BackendUserServiceImpl implements BackendUserService {
 	public BackendUser updateBackendUser(BackendUser backendUser) {
 		return this.backendUserRepository.saveAndFlush(backendUser);
 	}
-
+	
+	@Override
+	public void deleteBackendUser(BackendUser backendUser) {
+		this.backendUserRepository.delete(backendUser);
+	}
 }

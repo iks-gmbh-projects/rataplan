@@ -1,18 +1,12 @@
 package de.iks.rataplan.domain;
 
-import java.io.Serializable;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.AssociationOverride;
-import javax.persistence.AssociationOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import java.io.Serializable;
+import java.time.Instant;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "appointmentDecision")
@@ -24,7 +18,15 @@ import javax.persistence.Transient;
 public class AppointmentDecision implements Serializable {
 
     private static final long serialVersionUID = 6111550357472865287L;
-
+    
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Instant creationTime;
+    @UpdateTimestamp
+    private Instant lastUpdated;
+    @Version
+    private Integer version;
+    
     private Integer id;
     private AppointmentDecisionId appointmentDecisionId = new AppointmentDecisionId();
     private Decision decision = null;
@@ -51,7 +53,31 @@ public class AppointmentDecision implements Serializable {
     public AppointmentDecision() {
         //required for Hibernate
     }
-
+    
+    public Instant getCreationTime() {
+        return creationTime;
+    }
+    
+    public void setCreationTime(Instant creationTime) {
+        this.creationTime = creationTime;
+    }
+    
+    public Instant getLastUpdated() {
+        return lastUpdated;
+    }
+    
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+    
+    public Integer getVersion() {
+        return version;
+    }
+    
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+    
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -112,14 +112,6 @@ public class AppConfig {
 	}
 
 	@Bean
-	public JavaMailSender mailSender(Environment env) {
-		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost(env.getProperty("mail.smtp.host"));
-		mailSender.setPort(Integer.parseInt(env.getProperty("mail.smtp.port")));
-		return mailSender;
-	}
-
-	@Bean
 	public TemplateEngine emailTemplateEngine() {
 		final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
 		templateEngine.addTemplateResolver(htmlTemplateResolver());

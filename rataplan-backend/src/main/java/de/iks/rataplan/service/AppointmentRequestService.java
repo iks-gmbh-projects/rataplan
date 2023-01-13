@@ -13,5 +13,7 @@ public interface AppointmentRequestService {
     public AppointmentRequest createAppointmentRequest(AppointmentRequest appointmentRequest);
     public AppointmentRequest updateAppointmentRequest(AppointmentRequest dbAppointmentRequest, AppointmentRequest newAppointmentRequest);
     public List<AppointmentRequest> getAppointmentRequestsWhereUserTakesPartIn(Integer userId);
+    public void deleteAppointmentRequest(AppointmentRequest request);
+    public void anonymizeAppointmentRequests(Integer userId);
 }
 

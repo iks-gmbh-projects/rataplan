@@ -2,8 +2,12 @@ package de.iks.rataplan.domain;
 
 import de.iks.rataplan.mapping.crypto.DBEncryptedStringConverter;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +18,14 @@ import javax.persistence.*;
 public class Appointment implements Serializable {
 
     private static final long serialVersionUID = 1722350279433794595L;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Instant creationTime;
+    @UpdateTimestamp
+    private Instant lastUpdated;
+    @Version
+    private Integer version;
 
     private Integer id;
     private Timestamp startDate;
@@ -41,6 +53,30 @@ public class Appointment implements Serializable {
 
     public Appointment() {
         // required for Hibernate
+    }
+
+    public Instant getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Instant creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public Instant getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     @Id

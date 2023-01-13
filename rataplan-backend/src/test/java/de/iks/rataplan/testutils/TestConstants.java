@@ -26,12 +26,16 @@ public final class TestConstants {
 	public static final String CREATE = "/create";
 	public static final String DECISION = "/decision";
 	public static final String DELETE = "/delete";
+	public static final String ANONYMIZE = "/anonymize";
 	public static final String EXPIRED = "/expired";
 	public static final String GET = "/get";
 	public static final String PARTICIPANTS = "/participants";
 	public static final String REPOSITORY = "/repository";
 	public static final String SERVICE = "/service";
 	public static final String UPDATE = "/update";
+	
+	public static final String CONTROLLER = "/controller";
+	public static final String BACKEND = "/backend";
 
 	// URL to mock
 	public static final String AUTH_SERVICE_URL = "http://localhost:8081/v1";

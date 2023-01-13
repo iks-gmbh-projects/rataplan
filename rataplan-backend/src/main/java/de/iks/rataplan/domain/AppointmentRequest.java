@@ -2,6 +2,7 @@ package de.iks.rataplan.domain;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,12 +10,22 @@ import javax.persistence.*;
 
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.mapping.crypto.DBEncryptedStringConverter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "appointmentRequest")
 public class AppointmentRequest implements Serializable {
 
 	private static final long serialVersionUID = 6229127764261785894L;
+
+	@CreationTimestamp
+	@Column(updatable = false)
+	private Instant creationTime;
+	@UpdateTimestamp
+	private Instant lastUpdated;
+	@Version
+	private Integer version;
 
 	private Integer id;
 	private EncryptedString title;
@@ -32,6 +43,7 @@ public class AppointmentRequest implements Serializable {
 	private List<String> consigneeList = new ArrayList<>();
 	private List<Appointment> appointments = new ArrayList<>();
 	private List<AppointmentMember> appointmentMembers = new ArrayList<>();
+	private List<BackendUserAccess> accessList = new ArrayList<>();
 
 	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
 							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
@@ -59,6 +71,30 @@ public class AppointmentRequest implements Serializable {
 
 	public AppointmentRequest() {
 		// required for Hibernate
+	}
+
+	public Instant getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(Instant creationTime) {
+		this.creationTime = creationTime;
+	}
+
+	public Instant getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Instant lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 
 	@Id
@@ -212,12 +248,20 @@ public class AppointmentRequest implements Serializable {
 		this.consigneeList = consigneeList;
 	}
 
-    /**
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequestId", cascade = CascadeType.ALL)
+	public List<BackendUserAccess> getAccessList() {
+		return accessList;
+	}
+
+	public void setAccessList(List<BackendUserAccess> accessList) {
+		this.accessList = accessList;
+	}
+
+	/**
      * checks if the AppointmentDecisions have the same size and appointmentId's
      * than the corresponding Appointments in this AppointmentRequest
      *
-     * @param appointments
-     * @param decisions
+     * @param appointmentMember
      * @return
      */
 	public boolean validateDecisionsForAppointmentMember(AppointmentMember appointmentMember) {
