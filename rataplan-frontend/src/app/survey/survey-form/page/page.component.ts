@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Answer, Checkbox, Question, QuestionGroup } from '../../survey.model';
+import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-survey-form-page',
@@ -12,6 +13,9 @@ export class PageComponent {
   @Input() public preview: boolean = false;
   @Input() public isFirst: boolean = false;
   @Output() public readonly onSubmit = new EventEmitter<{ [key: string | number]: Answer }>();
+
+  constructor(public readonly errorMessageService: FormErrorMessageService) {
+  }
 
   public submit(form: NgForm) {
     if (this.preview || form.valid) {

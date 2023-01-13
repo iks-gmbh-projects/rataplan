@@ -1,11 +1,12 @@
 <form *ngIf="questionGroup" (ngSubmit)="submit(form)" #form="ngForm">
-  <div style="margin-bottom: 1ex" *ngFor="let question of questionGroup.questions" [ngModelGroup]="''+question.id!">
+  <div style="margin-bottom: 1ex" *ngFor="let question of questionGroup.questions" [ngModelGroup]="''+question.id!" #modelQuestionGroup="ngModelGroup">
     <h3>{{question.text}}</h3>
     <div>
       <input type="hidden" name="questionId" [ngModel]="question.id">
       <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
         <mat-label>Antwort</mat-label>
-        <input type="text" ngModel name="text" [required]="question.required" matInput>
+        <input type="text" ngModel name="text" [required]="question.required" matInput #answerText="ngModel">
+        <mat-error>{{errorMessageService.genericFormError(form.getControl(answerText))}}</mat-error>
       </mat-form-field>
       <ng-template [ngIf]="question.checkboxGroup">
         <div *ngIf="question.checkboxGroup.multipleSelect; else singleSelect" ngModelGroup="checkboxes">

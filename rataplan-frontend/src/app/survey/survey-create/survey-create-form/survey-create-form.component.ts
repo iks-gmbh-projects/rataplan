@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
+import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 
 function minControlValueValidator(min: AbstractControl): ValidatorFn {
   return (control: AbstractControl): ValidationErrors|null => {
@@ -34,7 +35,7 @@ export class SurveyCreateFormComponent {
   @Output() public readonly onSubmit: EventEmitter<Survey> = new EventEmitter<Survey>();
   public formGroup?: FormGroup = this.createSurvey(this.survey);
 
-  constructor() { }
+  constructor(public readonly errorMessageService: FormErrorMessageService) { }
 
   private createSurvey(survey?: Survey): FormGroup {
     const startDate = new FormControl(survey?.startDate || null, [Validators.required, Validators.min(this.yesterday.getTime())]);

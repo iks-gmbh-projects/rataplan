@@ -18,8 +18,8 @@ export class FormErrorMessageService {
     if (element.hasError("mailDoesNotExist")) return "Es gibt keinen Benutzer mit dieser E-Mail.";
     if (element.hasError("wrongPassword")) return "Passwort ist falsch.";
     if (element.hasError("passwordMatch")) return "Passwort stimmt nicht überein.";
-    if (element.hasError("matDatepickerMin")) return "Zu früh";
-    if (element.hasError("matDatepickerMax")) return "Zu spät";
+    if (element.hasError("matDatepickerMin") || element.hasError("matDatetimePickerMin")) return "Zu früh";
+    if (element.hasError("matDatepickerMax") || element.hasError("matDatetimePickerMax")) return "Zu spät";
     if (element.invalid) console.log(element.errors);
     return null;
   }
