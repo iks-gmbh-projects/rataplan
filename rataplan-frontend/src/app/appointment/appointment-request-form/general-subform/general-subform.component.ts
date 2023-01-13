@@ -5,7 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
-import { ExtraValidators } from "../../../validators";
+import { ExtraValidators } from "../../../validator/validators";
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 
 @Component({

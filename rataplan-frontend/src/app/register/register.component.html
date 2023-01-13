@@ -4,43 +4,42 @@
     <div class="username">
       <mat-form-field appearance="fill">
         <mat-label>Benutzername</mat-label>
-        <input matInput [formControl]="username"
-               [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="username.invalid">{{errorMessages.genericFormError(username)}}</mat-error>
+        <input matInput [formControl]="username">
+        <mat-error>{{errorMessages.genericFormError(username)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="email">
       <mat-form-field appearance="fill">
         <mat-label>E-Mail</mat-label>
-        <input matInput placeholder="pat@example.com" [formControl]="mail" [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="mail.invalid">{{errorMessages.genericFormError(mail)}}</mat-error>
+        <input matInput placeholder="pat@example.com" [formControl]="mail">
+        <mat-error>{{errorMessages.genericFormError(mail)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="password">
       <mat-form-field appearance="fill">
         <mat-label>Passwort</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password" [errorStateMatcher]="errorStateMatcher">
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password">
+        <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
-        <mat-error *ngIf="password.invalid">{{errorMessages.genericFormError(password)}}</mat-error>
+        <mat-error>{{errorMessages.genericFormError(password)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="confirmPassword">
       <mat-form-field appearance="fill">
         <mat-label>Passwort wiederholen</mat-label>
-        <input matInput [type]="hideConfirm ? 'password' : 'text'" [formControl]="confirmPassword" pattern="{{password.value}}" [errorStateMatcher]="errorStateMatcher">
-        <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
+        <input matInput [type]="hideConfirm ? 'password' : 'text'" [formControl]="confirmPassword" pattern="{{password.value}}">
+        <button type="button" mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
           <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
-        <mat-error *ngIf="confirmPassword.invalid">{{errorMessages.genericFormError(confirmPassword)}}</mat-error>
+        <mat-error>{{errorMessages.genericFormError(confirmPassword)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="displayname">
       <mat-form-field appearance="fill">
         <mat-label>Anzeigename</mat-label>
-        <input matInput [formControl]="displayname" [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="displayname.invalid">{{errorMessages.genericFormError(displayname)}}</mat-error>
+        <input matInput [formControl]="displayname">
+        <mat-error>{{errorMessages.genericFormError(displayname)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="submit-container">

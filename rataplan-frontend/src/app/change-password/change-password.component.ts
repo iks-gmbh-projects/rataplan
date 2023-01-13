@@ -3,9 +3,8 @@ import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { PasswordChangeModel } from "../models/password-change.model";
 import { ChangePasswordService } from "../services/change-password/change-password.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../validators";
+import { ExtraValidators } from "../validator/validators";
 
 @Component({
   selector: 'app-change-password',
@@ -32,7 +31,6 @@ export class ChangePasswordComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private changePasswordService: ChangePasswordService,
               private snackBar: MatSnackBar,
-              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher,
               public readonly errorMessageService: FormErrorMessageService) {
   }
 

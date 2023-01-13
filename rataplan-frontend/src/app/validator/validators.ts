@@ -21,8 +21,13 @@ export class ExtraValidators {
 
   static cannotContainWhitespace(control: AbstractControl): ValidationErrors | null {
     if (/\s/.test(control.value)) {
-      return {cannotContainWhitespace: true}
+      return {cannotContainWhitespace: true};
     }
     return null;
+  }
+
+  static containsSomeWhitespace(control: AbstractControl): ValidationErrors | null {
+    if(control.value == "" || /\S/.test(control.value)) return null;
+    return {mustContainSomeWhitespace: true};
   }
 }

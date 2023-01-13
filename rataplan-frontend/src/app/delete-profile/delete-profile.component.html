@@ -24,10 +24,11 @@
       <mat-form-field>
         <mat-label>Bitte geben sie ihr Passwort zur bestätigung ein.</mat-label>
         <input type="password" matInput placeholder="Passwort" formControlName="password">
+        <mat-error>{{errorMessageService.genericFormError(formGroup.get("password"))}}</mat-error>
       </mat-form-field>
     </div>
     <div class="submit-container">
-      <button type="submit" mat-raised-button color="warn" [disabled]="busy">Profil endgültig löschen</button>
+      <button type="submit" mat-raised-button color="warn" [disabled]="busy || formGroup.invalid">Profil endgültig löschen</button>
     </div>
     <mat-spinner *ngIf="busy"></mat-spinner>
   </form>

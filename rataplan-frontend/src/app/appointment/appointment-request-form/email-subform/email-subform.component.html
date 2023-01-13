@@ -6,7 +6,7 @@
            autocomplete="off"
            type="text"
            formControlName="name">
-    <mat-error *ngIf="emailSubform.get('name')?.invalid">{{errorMessageService.genericFormError(emailSubform.get('name')!)}}</mat-error>
+    <mat-error>{{errorMessageService.genericFormError(emailSubform.get('name'))}}</mat-error>
   </mat-form-field>
 </div>
 <div>
@@ -15,7 +15,7 @@
     <input matInput
            autocomplete="off"
            formControlName="email">
-    <mat-error *ngIf="emailSubform.get('email')?.invalid">{{errorMessageService.genericFormError(emailSubform.get('email')!)}}</mat-error>
+    <mat-error>{{errorMessageService.genericFormError(emailSubform.get('email'))}}</mat-error>
   </mat-form-field>
 </div>
 <div>

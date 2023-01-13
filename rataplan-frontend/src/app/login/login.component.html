@@ -1,5 +1,5 @@
 <div class="lds-ring" *ngIf="isLoading" ><div></div><div></div><div></div><div></div></div>
-<form class="form-container" *ngIf="!isLoading" (submit)="login()">
+<form class="form-container" *ngIf="!isLoading" (ngSubmit)="login()">
   <div class="content">
     <div>
       <h2 class="header">Login</h2>
@@ -10,18 +10,16 @@
         <input matInput placeholder="Benutzername/E-Mail"
                autocomplete="off"
                pattern="\S+"
-               [formControl]="inputField"
-               [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="inputField.invalid">{{errorMessageService.genericFormError(inputField)}}</mat-error>
+               [formControl]="inputField">
+        <mat-error>{{errorMessageService.genericFormError(inputField)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="password">
       <mat-form-field appearance="fill">
         <mat-label>Passwort</mat-label>
         <input matInput [type]="hide ? 'password' : 'text' "
-               placeholder="Password" [formControl]="password"
-               [errorStateMatcher]="errorStateMatcher">
-        <mat-error *ngIf="password.invalid">{{errorMessageService.genericFormError(password)}}</mat-error>
+               placeholder="Password" [formControl]="password">
+        <mat-error>{{errorMessageService.genericFormError(password)}}</mat-error>
       </mat-form-field>
     </div>
     <div class="links">
@@ -29,7 +27,7 @@
       <a class="passwordReset" routerLink="/forgot-password">Passwort vergessen</a>
     </div>
     <div class="button">
-      <button type="button"  class="submit-button" mat-raised-button color="primary" [disabled]="loginForm.invalid" (click)="login()">Login</button>
+      <button type="submit"  class="submit-button" mat-raised-button color="primary" [disabled]="loginForm.invalid">Login</button>
     </div>
   </div>
   <mat-error ></mat-error>

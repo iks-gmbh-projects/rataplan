@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { RegisterService } from '../services/register-service/register.service';
-import { OnlyDirtyErrorStateMatcher } from "../services/error-state-matcher/only-dirty.error-state-matcher";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../validators";
+import { ExtraValidators } from "../validator/validators";
 
 
 @Component({
@@ -36,7 +35,6 @@ export class RegisterComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private registerService: RegisterService,
-              public readonly errorStateMatcher: OnlyDirtyErrorStateMatcher,
               public readonly errorMessages: FormErrorMessageService) {
   }
 

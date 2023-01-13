@@ -8,7 +8,7 @@
                autocomplete="off"
                matInput
                formControlName="title">
-        <mat-error *ngIf="generalSubform.get('title')?.invalid">{{errorMessageService.genericFormError(generalSubform.get("title")!)}}</mat-error>
+        <mat-error>{{errorMessageService.genericFormError(generalSubform.get("title"))}}</mat-error>
       </mat-form-field>
     </div>
     <div *ngIf="!showDescription">
@@ -25,7 +25,7 @@
           <textarea type="text"
                     formControlName="description"
                     matInput></textarea>
-          <mat-error *ngIf="generalSubform.get('description')?.invalid">{{errorMessageService.genericFormError(generalSubform.get("description")!)}}</mat-error>
+          <mat-error>{{errorMessageService.genericFormError(generalSubform.get("description"))}}</mat-error>
         </mat-form-field>
       </div>
       <div>
@@ -48,7 +48,7 @@
         <mat-datepicker-toggle matSuffix
                                [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
-        <mat-error *ngIf="generalSubform.get('deadline')?.invalid">{{errorMessageService.genericFormError(generalSubform.get("deadline")!)}}</mat-error>
+        <mat-error>{{errorMessageService.genericFormError(generalSubform.get("deadline"))}}</mat-error>
       </mat-form-field>
     </div>
     <div>

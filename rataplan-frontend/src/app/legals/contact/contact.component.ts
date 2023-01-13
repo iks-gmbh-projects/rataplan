@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContactService } from '../../services/contact-service/contact.service';
+import { ExtraValidators } from "../../validator/validators";
+import { FormErrorMessageService } from "../../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-contact',
@@ -14,8 +16,8 @@ export class ContactComponent implements OnInit {
   snackbarMessage = 'Nachricht erfolgreich versandt!';
   snackbarNoAction: undefined;
   senderMail = new FormControl('', [Validators.required, Validators.email]);
-  subject = new FormControl('', [Validators.required]);
-  content = new FormControl('', [Validators.required]);
+  subject = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
+  content = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
 
   contact = this.formBuilder.group({
     senderMail: this.senderMail,
@@ -24,14 +26,18 @@ export class ContactComponent implements OnInit {
   });
 
 
-  constructor(private contactService: ContactService,
-              private formBuilder: FormBuilder,
-              private _snackBar: MatSnackBar) { }
+  constructor(
+    private contactService: ContactService,
+    private formBuilder: FormBuilder,
+    private _snackBar: MatSnackBar,
+    public readonly errorMessageService: FormErrorMessageService
+  ) {
+  }
 
   ngOnInit(): void {
   }
 
-  submit(){
+  submit() {
     const contactData: ContactData = {
       senderMail: this.senderMail.value,
       subject: this.subject.value,
@@ -39,7 +45,7 @@ export class ContactComponent implements OnInit {
     };
 
     this.contactService.contact(contactData).subscribe(responseData => {
-      if (responseData){
+      if (responseData) {
         this.openSnackBar(this.snackbarMessage);
       }
     });

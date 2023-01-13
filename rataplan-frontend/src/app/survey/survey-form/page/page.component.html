@@ -5,7 +5,7 @@
       <input type="hidden" name="questionId" [ngModel]="question.id">
       <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
         <mat-label>Antwort</mat-label>
-        <input type="text" ngModel name="text" [required]="question.required" matInput #answerText="ngModel">
+        <input type="text" ngModel name="text" [required]="question.required" [someNonWhitespace]="question.required" matInput #answerText="ngModel">
         <mat-error>{{errorMessageService.genericFormError(form.getControl(answerText))}}</mat-error>
       </mat-form-field>
       <ng-template [ngIf]="question.checkboxGroup">
