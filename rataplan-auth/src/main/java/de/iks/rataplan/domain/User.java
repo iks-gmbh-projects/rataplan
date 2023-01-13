@@ -23,6 +23,7 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String displayname;
+    @JsonIgnore
     private boolean encrypted;
 
     public User(Integer id, String mail, String username, String password, String displayname, boolean encrypted) {
