@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -26,6 +27,7 @@ public class MailBuilderSendInBlue {
      */
     private final SendSmtpEmailSender sender;
 
+
     @Value("${rataplan.frontend.url}")
     private String baseUrl;
 
@@ -33,10 +35,13 @@ public class MailBuilderSendInBlue {
     private String contactMailTo;
 
     private final TemplateEngine templateEngine;
-    
-    public MailBuilderSendInBlue(SendSmtpEmailSender sender, TemplateEngine templateEngine) {
+
+    private final FromEncryptedStringConverter fromEncryptedStringConverter;
+
+    public MailBuilderSendInBlue(SendSmtpEmailSender sender, TemplateEngine templateEngine, FromEncryptedStringConverter fromEncryptedStringConverter) {
         this.sender = sender;
         this.templateEngine = templateEngine;
+        this.fromEncryptedStringConverter = fromEncryptedStringConverter;
     }
     
     public List<SendSmtpEmail> buildMailListForAppointmentRequestInvitations(AppointmentRequest appointmentRequest) {
@@ -81,7 +86,7 @@ public class MailBuilderSendInBlue {
             .sender(sender)
             .to(Collections.singletonList(
                 new SendSmtpEmailTo()
-                    .email(appointmentRequest.getOrganizerMail())
+                    .email(fromEncryptedStringConverter.convert(appointmentRequest.getOrganizerMail()))
             ))
             .subject(subjectContent)
             .htmlContent(htmlContent);
@@ -108,7 +113,7 @@ public class MailBuilderSendInBlue {
             .sender(sender)
             .to(Collections.singletonList(
                 new SendSmtpEmailTo()
-                    .email(appointmentRequest.getOrganizerMail())
+                    .email(fromEncryptedStringConverter.convert(appointmentRequest.getOrganizerMail()))
             ))
             .subject(subjectContent)
             .htmlContent(htmlContent);
