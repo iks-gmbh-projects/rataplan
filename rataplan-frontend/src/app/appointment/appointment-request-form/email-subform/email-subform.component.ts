@@ -6,6 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../../../validator/validators";
 
 @Component({
   selector: 'app-email-subform',
@@ -18,7 +19,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   emails: string[] = [];
 
   emailSubform = new FormGroup({
-    'name': new FormControl(null),
+    'name': new FormControl(null, ExtraValidators.containsSomeWhitespace),
     'email': new FormControl(null, Validators.email),
   });
 

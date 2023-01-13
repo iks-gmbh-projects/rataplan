@@ -17,7 +17,7 @@
     <mat-form-field class="message-field" appearance="fill">
       <mat-label class="message-label">Nachricht...</mat-label>
       <textarea class="message-textarea" matInput required [formControl]="content"></textarea>
-      <mat-error>{{errorMessageService.genericFormError(contact)}}</mat-error>
+      <mat-error>{{errorMessageService.genericFormError(content)}}</mat-error>
     </mat-form-field>
   </div>
   <button class="submit-button" mat-raised-button color="primary" [disabled]="contact.invalid" (click)="submit()">

@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
 
   password = new FormControl('', [Validators.required, Validators.minLength(3)]);
   confirmPassword = new FormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
-  displayname: FormControl = new FormControl('', [Validators.required]);
+  displayname: FormControl = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
   hide = true;
   hideConfirm = true;
 

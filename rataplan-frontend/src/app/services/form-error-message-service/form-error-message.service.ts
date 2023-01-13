@@ -25,7 +25,7 @@ export class FormErrorMessageService {
     if (element.hasError("min")) return "Muss größer sein";
     if (element.hasError("max")) return "Muss kleiner sein";
     if (element.hasError("index")) return "So viele Möglichkeiten gibt es nicht.";
-    if (element.invalid) console.log(element.errors);
+    if (element.invalid && element.errors) console.log(element.errors);
     return null;
   }
 }

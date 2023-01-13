@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ChangeEmailService} from "../services/change-profile-service/change-email-service";
 import {ChangeDisplayNameService} from "../services/change-profile-service/change-displayName-service";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../validator/validators";
 
 @Component({
   selector: 'app-profile',
@@ -39,7 +40,7 @@ export class ProfileComponent implements OnInit {
     enabled:false
   }
 
-  displayNameField = new FormControl('', [Validators.required, Validators.minLength(3)])
+  displayNameField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.containsSomeWhitespace])
   emailField = new FormControl('', [Validators.required , Validators.minLength(3), Validators.email])
 
   redirect(){
