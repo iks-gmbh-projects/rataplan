@@ -122,7 +122,7 @@ public class AppointmentRequestServiceTest {
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAppointmentRequestById() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
-		assertEquals(appointmentRequest.getTitle(), "Coding Dojo");
+		assertEquals(appointmentRequest.getTitle().getString(), "Coding Dojo");
 		assertEquals(appointmentRequest.getAppointments().size(), 2);
 		assertEquals(appointmentRequest.getAppointmentMembers().size(), 0);
 	}

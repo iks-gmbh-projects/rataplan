@@ -104,9 +104,9 @@ public class AppointmentRequestRepositoryTest {
 		assertEquals(false, appointmentRequest.getAppointmentRequestConfig().getAppointmentConfig().isUrl());
 
 		assertEquals(1, appointmentRequest.getId().intValue());
-		assertEquals("Coding Dojo", appointmentRequest.getTitle());
-		assertEquals("Fun with code", appointmentRequest.getDescription());
-		assertEquals(IKS_MAIL, appointmentRequest.getOrganizerMail());
+		assertEquals("Coding Dojo", appointmentRequest.getTitle().getString());
+		assertEquals("Fun with code", appointmentRequest.getDescription().getString());
+		assertEquals(IKS_MAIL, appointmentRequest.getOrganizerMail().getString());
 		assertEquals(false, appointmentRequest.isExpired());
 
 		assertEquals(2, appointmentRequest.getAppointments().size());
@@ -119,9 +119,9 @@ public class AppointmentRequestRepositoryTest {
 		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAll();
 
 		assertEquals(3, appointmentRequests.size());
-		assertEquals("Coding Dojo 1", appointmentRequests.get(0).getTitle());
-		assertEquals("Coding Dojo 2", appointmentRequests.get(1).getTitle());
-		assertEquals("Coding Dojo 3", appointmentRequests.get(2).getTitle());
+		assertEquals("Coding Dojo 1", appointmentRequests.get(0).getTitle().getString());
+		assertEquals("Coding Dojo 2", appointmentRequests.get(1).getTitle().getString());
+		assertEquals("Coding Dojo 3", appointmentRequests.get(2).getTitle().getString());
 	}
 
 	@Test
@@ -131,8 +131,8 @@ public class AppointmentRequestRepositoryTest {
 		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAllByBackendUserId(1);
 
 		assertEquals(2, appointmentRequests.size());
-		assertEquals("Coding Dojo 1", appointmentRequests.get(0).getTitle());
-		assertEquals("Coding Dojo 3", appointmentRequests.get(1).getTitle());
+		assertEquals("Coding Dojo 1", appointmentRequests.get(0).getTitle().getString());
+		assertEquals("Coding Dojo 3", appointmentRequests.get(1).getTitle().getString());
 	}
 
 	@Test

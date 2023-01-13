@@ -8,7 +8,7 @@
   <appointment id="1" description="iks Hilden" appointmentRequestId="1" />
   <appointment id="2" description="homeoffice" appointmentRequestId="1" />
 
-  <appointmentMember id="1" appointmentRequestId="1" name="Fritz" />
+  <appointmentMember id="1" appointmentRequestId="1" name="RAW__##__Fritz" />
   
   <appointmentDecision id="1" appointmentId="1" appointmentMemberId="1" decision="3" />
   <appointmentDecision id="2" appointmentId="2" appointmentMemberId="1" decision="3" />

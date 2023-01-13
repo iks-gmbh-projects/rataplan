@@ -42,10 +42,10 @@ public class AppointmentRequestBuilderTest {
 			assertEquals(appointmentRequest, appointment.getAppointmentRequest());
 		}
 		
-		assertEquals("homeoffice", appointments.get(0).getDescription());
-		assertEquals("somewhere", appointments.get(1).getDescription());
-		assertEquals("here", appointments.get(2).getDescription());
-		assertEquals("iks Hilden", appointments.get(3).getDescription());
+		assertEquals("homeoffice", appointments.get(0).getDescription().getString());
+		assertEquals("somewhere", appointments.get(1).getDescription().getString());
+		assertEquals("here", appointments.get(2).getDescription().getString());
+		assertEquals("iks Hilden", appointments.get(3).getDescription().getString());
 	}
 	
 	@Test
@@ -120,9 +120,9 @@ public class AppointmentRequestBuilderTest {
 			assertEquals(appointmentRequest, appointmentMember.getAppointmentRequest());
 		}
 		
-		assertEquals("Fritz", appointmentMembers.get(0).getName());
-		assertEquals("Hans", appointmentMembers.get(1).getName());
-		assertEquals("Peter", appointmentMembers.get(2).getName());
+		assertEquals("Fritz", appointmentMembers.get(0).getName().getString());
+		assertEquals("Hans", appointmentMembers.get(1).getName().getString());
+		assertEquals("Peter", appointmentMembers.get(2).getName().getString());
 	}
 	
 	@Test

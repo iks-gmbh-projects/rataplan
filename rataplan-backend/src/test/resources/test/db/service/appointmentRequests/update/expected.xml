@@ -3,11 +3,11 @@
   
   <appointmentRequestConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
   
-  <appointmentRequest id="1" title="IKS-Thementag" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isExpired="false" appointmentRequestConfigid="1"/>
+  <appointmentRequest id="1" title="RAW__##__IKS-Thementag" description="RAW__##__Fun with code" organizerMail="RAW__##__iks@iks-gmbh.com" deadline="2050-10-10" isExpired="false" appointmentRequestConfigid="1"/>
 
-  <appointment appointmentrequestid="1" description="universe" />
-  <appointment appointmentrequestid="1" description="earth" />
-  <appointment appointmentrequestid="1" description="spaceship" />
+  <appointment appointmentrequestid="1" description="RAW__##__universe" />
+  <appointment appointmentrequestid="1" description="RAW__##__earth" />
+  <appointment appointmentrequestid="1" description="RAW__##__spaceship" />
 
   <appointmentMember id="1" name="RubberBandMan" appointmentRequestId="1" />
 
