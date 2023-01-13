@@ -98,7 +98,6 @@ public class MailBuilderSendGrid {
 
         Email toMail = new Email();
         toMail.setEmail(fromEncryptedStringConverter.convert(appointmentRequest.getOrganizerMail()));
-//        toMail.setEmail(appointmentRequest.getOrganizerMail());
         personalization.addTo(toMail);
 
         mail.addPersonalization(personalization);

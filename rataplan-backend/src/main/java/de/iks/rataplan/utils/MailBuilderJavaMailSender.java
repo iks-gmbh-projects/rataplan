@@ -42,7 +42,6 @@ public class MailBuilderJavaMailSender {
 		String url = baseUrl + "/appointmentrequest";
 		String adminUrl = baseUrl + "/appointmentrequest";
 		String to = fromEncryptedStringConverter.convert(appointmentRequest.getOrganizerMail());
-//		String to = appointmentRequest.getOrganizerMail();
 		Integer appointmentRequestId = appointmentRequest.getId();
 
 		Context ctx = new Context();
