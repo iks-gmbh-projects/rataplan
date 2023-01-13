@@ -1,5 +1,6 @@
 package de.iks.rataplan.controller;
 
+import de.iks.rataplan.exceptions.InvalidUserDataException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,5 +25,10 @@ public class RataplanAuthExceptionHandler extends ResponseEntityExceptionHandler
 		e.printStackTrace();
 		Error error = new Error(ErrorCode.UNEXPECTED_ERROR, e.toString());
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(InvalidUserDataException.class)
+	public ResponseEntity<?> invalidUserData(InvalidUserDataException e) {
+		return ResponseEntity.badRequest().build();
 	}
 }

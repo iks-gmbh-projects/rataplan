@@ -97,8 +97,19 @@ public class User implements Serializable {
         mail = trimAndNull(mail);
         displayname = trimAndNull(displayname);
     }
+    
+    public boolean invalidFull() {
+        return trimAndNull(username) == null ||
+            trimAndNull(mail) == null ||
+            trimAndNull(displayname) == null ||
+            password == null;
+    }
+    
+    public boolean invalidLogin() {
+        return (trimAndNull(username) == null && trimAndNull(mail) == null) || password == null;
+    }
 
-    public String trimAndNull(String toTrim) {
+    public static String trimAndNull(String toTrim) {
         if (toTrim != null) {
             toTrim = toTrim.trim();
             if (toTrim.isEmpty()) {

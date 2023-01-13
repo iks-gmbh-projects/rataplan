@@ -1,6 +1,7 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.AuthToken;
+import de.iks.rataplan.exceptions.InvalidUserDataException;
 import de.iks.rataplan.repository.AuthTokenRepository;
 import de.iks.rataplan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Override
     public AuthToken saveAuthTokenToUserWithMail(String mail) {
+        mail = mail.trim();
+        if(mail.isEmpty()) throw new InvalidUserDataException();
         int id = userRepository.findOneByMail(mail).getId();
         String token = generateAuthToken(6);
         while (authTokenRepository.findByToken(token) != null) {
@@ -35,7 +38,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Override
     public boolean verifyAuthToken(String token) {
-        AuthToken authToken = authTokenRepository.findByToken(token);
+        AuthToken authToken = authTokenRepository.findByToken(token.trim());
         if(authToken == null) return false;
         Date currentDate = new java.util.Date();
         currentDate.setTime(currentDate.getTime() - tokenLifetime);
@@ -57,7 +60,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Override
     public int getIdFromAuthToken(String token) {
-        return authTokenRepository.findByToken(token).getId();
+        return authTokenRepository.findByToken(token.trim()).getId();
     }
 
     @Override

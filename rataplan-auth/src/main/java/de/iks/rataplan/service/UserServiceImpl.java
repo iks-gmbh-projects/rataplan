@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerUser(User user) {
         user.trimUserCredentials();
+        if(user.invalidFull()) throw new InvalidUserDataException();
         if (userRepository.findOneByUsername(user.getUsername()) != null) {
             throw new UsernameAlreadyInUseException("The username \"" + user.getUsername() + "\" is already in use!");
         } else if (userRepository.findOneByMail(user.getMail()) != null) {
@@ -59,6 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User loginUser(User user) {
         user.trimUserCredentials();
+        if(user.invalidLogin()) throw new InvalidUserDataException();
         User dbUser;
         if (user.getUsername() != null) {
             dbUser = userRepository.findOneByUsername(user.getUsername());
@@ -88,7 +90,7 @@ public class UserServiceImpl implements UserService {
     public User getUserData(String username) {
         User dbUser;
         if (username != null) {
-            dbUser = userRepository.findOneByUsername(username);
+            dbUser = userRepository.findOneByUsername(username.trim());
             return dbUser;
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
@@ -111,6 +113,8 @@ public class UserServiceImpl implements UserService {
         User user = this.getUserData(username);
         if (user != null) {
             user.setMail(email);
+            user.trimUserCredentials();
+            if(user.invalidFull()) throw new InvalidUserDataException();
             userRepository.saveAndFlush(user);
             return true;
         }
@@ -122,6 +126,8 @@ public class UserServiceImpl implements UserService {
         User user = this.getUserData(username);
         if (user != null) {
             user.setDisplayname(displayName);
+            user.trimUserCredentials();
+            if(user.invalidFull()) throw new InvalidUserDataException();
             userRepository.saveAndFlush(user);
             return true;
         }
