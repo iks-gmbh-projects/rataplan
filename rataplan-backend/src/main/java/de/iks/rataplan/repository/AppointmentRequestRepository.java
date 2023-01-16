@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import de.iks.rataplan.domain.AppointmentRequest;
 
 public interface AppointmentRequestRepository extends JpaRepository<AppointmentRequest, Integer> {
-	List<AppointmentRequest> findAllByBackendUserId(Integer backendUserId);
+	List<AppointmentRequest> findAllByUserId(Integer userId);
 	
-	List<AppointmentRequest> findByAppointmentMembers_BackendUserIdIn(Integer backendUserId);
+	List<AppointmentRequest> findByAppointmentMembers_UserIdIn(Integer userId);
 	
 	List<AppointmentRequest> findByDeadlineBeforeAndExpiredFalse(Date deadline);// find by deadline == xx and organizermail not null
 

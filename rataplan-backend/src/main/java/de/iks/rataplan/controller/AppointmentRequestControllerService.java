@@ -3,16 +3,17 @@ package de.iks.rataplan.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.iks.rataplan.domain.AuthUser;
+import de.iks.rataplan.restservice.AuthService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.BackendUser;
 import de.iks.rataplan.dto.AppointmentRequestDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.service.AppointmentRequestService;
-import de.iks.rataplan.service.BackendUserService;
 
 @Service
 public class AppointmentRequestControllerService {
@@ -23,8 +24,11 @@ public class AppointmentRequestControllerService {
 	@Autowired
 	private AuthorizationControllerService authorizationControllerService;
 
+/*	@Autowired
+	private BackendUserService backendUserService;*/
+
 	@Autowired
-	private BackendUserService backendUserService;
+	private AuthService authService;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -37,20 +41,23 @@ public class AppointmentRequestControllerService {
 //	}
 
     public AppointmentRequestDTO createAppointmentRequest(AppointmentRequestDTO appointmentRequestDTO, String jwtToken) {
-        BackendUser backendUser = null;
+        //BackendUser backendUser = null;
+		AuthUser authUser = null;
 
         if (jwtToken != null) {
-            backendUser = authorizationControllerService.getBackendUser(jwtToken);
-            appointmentRequestDTO.setBackendUserId(backendUser.getId());
+            //backendUser = authorizationControllerService.getBackendUser(jwtToken);
+			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
+			authUser = authServiceResponse.getBody();
+            appointmentRequestDTO.setUserId(authUser.getId());
         }
 
         AppointmentRequest appointmentRequest = modelMapper.map(appointmentRequestDTO, AppointmentRequest.class);
         appointmentRequestService.createAppointmentRequest(appointmentRequest);
         AppointmentRequestDTO createdDTORequest = modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
 
-		if (jwtToken != null && createdDTORequest.getBackendUserId() != null) {
-			backendUser.addAccess(createdDTORequest.getId(), true);
-			backendUserService.updateBackendUser(backendUser);
+		if (jwtToken != null && createdDTORequest.getUserId() != null) {
+			//backendUser.addAccess(createdDTORequest.getId(), true);
+			//backendUserService.updateBackendUser(backendUser);
 		}
 
 		return createdDTORequest;
@@ -71,10 +78,14 @@ public class AppointmentRequestControllerService {
 			throw new ForbiddenException();
 		}
 
-		BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
+		AuthUser authUser = null;
+
+		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
+		authUser = authServiceResponse.getBody();
+		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
 		List<AppointmentRequest> appointmentRequests = appointmentRequestService
-				.getAppointmentRequestsForUser(backendUser.getId());
+				.getAppointmentRequestsForUser(authUser.getId());
 
 		List<AppointmentRequestDTO> appointmentRequestsDTO = new ArrayList<>();
 
@@ -90,10 +101,15 @@ public class AppointmentRequestControllerService {
 			throw new ForbiddenException();
 		}
 
-		BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
+		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
+
+		AuthUser authUser = null;
+
+		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
+		authUser = authServiceResponse.getBody();
 
 		List<AppointmentRequest> appointmentRequests = appointmentRequestService
-				.getAppointmentRequestsWhereUserTakesPartIn(backendUser.getId());
+				.getAppointmentRequestsWhereUserTakesPartIn(authUser.getId());
 
 		List<AppointmentRequestDTO> appointmentRequestsDTO = new ArrayList<>();
 

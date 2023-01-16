@@ -23,7 +23,7 @@ public class AppointmentMember implements Serializable {
     private static final long serialVersionUID = 7136999956850896370L;
 
     private Integer id;
-    private Integer backendUserId;
+    private Integer userId;
     private String name;
     private AppointmentRequest appointmentRequest;
     private List<AppointmentDecision> appointmentDecisions = new ArrayList<>();
@@ -62,13 +62,13 @@ public class AppointmentMember implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "backendUserId")
-    public Integer getBackendUserId() {
-		return backendUserId;
+    @Column(name = "userId")
+    public Integer getUserId() {
+		return userId;
 	}
 
-	public void setBackendUserId(Integer userId) {
-		this.backendUserId = userId;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
     @ManyToOne

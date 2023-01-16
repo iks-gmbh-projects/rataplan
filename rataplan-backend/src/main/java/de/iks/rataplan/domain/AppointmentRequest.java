@@ -32,7 +32,7 @@ public class AppointmentRequest implements Serializable {
 	private Date deadline;
 	private String organizerName;
 	private String organizerMail;
-	private Integer backendUserId;
+	private Integer userId;
 	private boolean isExpired = false;
 	private String participationToken;
 	private String editToken;
@@ -127,13 +127,13 @@ public class AppointmentRequest implements Serializable {
 		this.organizerMail = organizerMail;
 	}
 	
-	@Column(name = "backendUserId")
-	public Integer getBackendUserId() {
-		return backendUserId;
+	@Column(name = "userId")
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setBackendUserId(Integer backendUserId) {
-		this.backendUserId = backendUserId;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequest", cascade = CascadeType.ALL)

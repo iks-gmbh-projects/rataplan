@@ -113,12 +113,12 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 
     @Override
     public List<AppointmentRequest> getAppointmentRequestsForUser(Integer userId) {
-        return appointmentRequestRepository.findAllByBackendUserId(userId);
+        return appointmentRequestRepository.findAllByUserId(userId);
     }
 
 	@Override
 	public List<AppointmentRequest> getAppointmentRequestsWhereUserTakesPartIn(Integer userId) {
-		return appointmentRequestRepository.findByAppointmentMembers_BackendUserIdIn(userId);
+		return appointmentRequestRepository.findByAppointmentMembers_UserIdIn(userId);
 	}
 
 	@Override
