@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.*;
 
@@ -87,8 +88,8 @@ public class BackendUser {
 
 	public boolean hasAccessByRequestId(Integer requestId, boolean forEdit) {
 		for (BackendUserAccess access : this.userAccess) {
-			if (access.getAppointmentRequestId() == requestId) {
-				return forEdit ? access.isEdit() : true;
+			if (Objects.equals(access.getAppointmentRequestId(), requestId)) {
+				return !forEdit || access.isEdit();
 			}
 		}
 		return false;
@@ -98,7 +99,7 @@ public class BackendUser {
 		boolean backendUserAccessFound = false;
 		
 		for (BackendUserAccess backendUserAccess : userAccess) {
-			if (backendUserAccess.getAppointmentRequestId() == requestId) {
+			if (Objects.equals(backendUserAccess.getAppointmentRequestId(), requestId)) {
 				backendUserAccess.setEdit(isEdit);
 				backendUserAccessFound = true;
 				break;
@@ -126,5 +127,16 @@ public class BackendUser {
 		builder.append(id);
 		builder.append("]");
 		return builder.toString();
-	}	
+	}
+	
+	// Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
+	@PrePersist
+	@PreUpdate
+	public void hibernateStupidity() {
+		final Instant now = Instant.now();
+		if(this.creationTime == null) this.creationTime = now;
+		this.lastUpdated = now;
+		if(this.version == null) this.version = 1;
+		else this.version++;
+	}
 }
