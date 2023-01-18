@@ -5,8 +5,7 @@ import java.io.Serializable;
 public class AppointmentDecisionDTO implements Serializable {
 
     private static final long serialVersionUID = -1914437763717575725L;
-
-    private Integer id;
+    
     private Integer appointmentId;
     private Integer appointmentMemberId;
     private Integer decision;
@@ -53,14 +52,6 @@ public class AppointmentDecisionDTO implements Serializable {
         this.decision = decision;
     }
 
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
 	public Integer getParticipants() {
 		return participants;
 	}
@@ -72,9 +63,7 @@ public class AppointmentDecisionDTO implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentDecisionDTO [id=");
-		builder.append(id);
-		builder.append(", appointmentId=");
+		builder.append("AppointmentDecisionDTO [appointmentId=");
 		builder.append(appointmentId);
 		builder.append(", appointmentMemberId=");
 		builder.append(appointmentMemberId);

@@ -21,10 +21,10 @@
     <appointmentMember id="1" appointmentRequestId="1" name="IKS_1" backendUserId="1" />
     <appointmentMember id="2" appointmentRequestId="2" name="IKS_1" backendUserId="1" />
 
-    <appointmentDecision id="1" appointmentId="1" appointmentMemberId="1" decision="1" />
-    <appointmentDecision id="2" appointmentId="2" appointmentMemberId="1" decision="3" />
-    <appointmentDecision id="3" appointmentId="3" appointmentMemberId="2" decision="1" />
-    <appointmentDecision id="4" appointmentId="4" appointmentMemberId="2" decision="3" />
+    <appointmentDecision appointmentId="1" appointmentMemberId="1" decision="1" />
+    <appointmentDecision appointmentId="2" appointmentMemberId="1" decision="3" />
+    <appointmentDecision appointmentId="3" appointmentMemberId="2" decision="1" />
+    <appointmentDecision appointmentId="4" appointmentMemberId="2" decision="3" />
 
     <backendUserAccess id="1" appointmentRequestId="1" isEdit="true" isInvited="false" backendUserId="1" />
     <backendUserAccess id="2" appointmentRequestId="2" isEdit="false" isInvited="false" backendUserId="1" />

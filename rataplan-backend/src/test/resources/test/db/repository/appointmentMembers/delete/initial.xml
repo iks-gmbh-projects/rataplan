@@ -11,11 +11,11 @@
   <appointmentMember id="1" appointmentRequestId="1" name="Hans" />
   <appointmentMember id="2" appointmentRequestId="1" name="Fritz" />
   
-  <appointmentDecision id="1" appointmentId="1" appointmentMemberId="1" decision="1" />
-  <appointmentDecision id="2" appointmentId="2" appointmentMemberId="1" decision="1" />
+  <appointmentDecision appointmentId="1" appointmentMemberId="1" decision="1" />
+  <appointmentDecision appointmentId="2" appointmentMemberId="1" decision="1" />
   
-  <appointmentDecision id="3" appointmentId="1" appointmentMemberId="2" decision="0" />
-  <appointmentDecision id="4" appointmentId="2" appointmentMemberId="2" decision="0" />
+  <appointmentDecision appointmentId="1" appointmentMemberId="2" decision="0" />
+  <appointmentDecision appointmentId="2" appointmentMemberId="2" decision="0" />
   
   <backendUserAccess />
 </dataset>

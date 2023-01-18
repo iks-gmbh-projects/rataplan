@@ -10,8 +10,8 @@
 
   <appointmentMember id="1" appointmentRequestId="1" name="Hans" />
   
-  <appointmentDecision id="1" appointmentId="1" appointmentMemberId="1" participants="5" />
-  <appointmentDecision id="2" appointmentId="2" appointmentMemberId="1" participants="5" />
+  <appointmentDecision appointmentId="1" appointmentMemberId="1" participants="5" />
+  <appointmentDecision appointmentId="2" appointmentMemberId="1" participants="5" />
   
   <backendUserAccess />
 </dataset>

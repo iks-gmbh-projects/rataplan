@@ -27,7 +27,6 @@ public class AppointmentDecision implements Serializable {
     @Version
     private Integer version;
     
-    private Integer id;
     private AppointmentDecisionId appointmentDecisionId = new AppointmentDecisionId();
     private Decision decision = null;
     private Integer participants = null;
@@ -77,19 +76,8 @@ public class AppointmentDecision implements Serializable {
     public void setVersion(Integer version) {
         this.version = version;
     }
-    
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    @Embedded
+    @EmbeddedId
     public AppointmentDecisionId getAppointmentDecisionId() {
         return this.appointmentDecisionId;
     }
@@ -137,9 +125,7 @@ public class AppointmentDecision implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentDecision [id=");
-		builder.append(id);
-		builder.append(", appointmentDecisionId=");
+		builder.append("AppointmentDecision [appointmentDecisionId=");
 		builder.append(appointmentDecisionId);
 		builder.append(", decision=");
 		builder.append(decision);

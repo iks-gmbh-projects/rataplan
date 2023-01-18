@@ -21,7 +21,6 @@ public class DecisionConverter {
 		@Override
 		protected AppointmentDecisionDTO convert(AppointmentDecision appointmentDecision) {
 			AppointmentDecisionDTO dtoDecision = new AppointmentDecisionDTO();
-			dtoDecision.setId(appointmentDecision.getId());
 			dtoDecision.setAppointmentId(appointmentDecision.getAppointment().getId());
 			dtoDecision.setAppointmentMemberId(appointmentDecision.getAppointmentMember().getId());
 			
@@ -40,8 +39,7 @@ public class DecisionConverter {
 		protected AppointmentDecision convert(AppointmentDecisionDTO dtoDecision) {
 			AppointmentDecision decision = new AppointmentDecision();
 			Appointment appointment = appointmentRepository.findOne(dtoDecision.getAppointmentId());
-			decision.setAppointment(appointment != null ? appointment : null);
-			decision.setId(dtoDecision.getId());
+			decision.setAppointment(appointment);
 			
 			if (dtoDecision.getDecision() != null) {
 				decision.setDecision(Decision.getDecisionById(dtoDecision.getDecision()));				
