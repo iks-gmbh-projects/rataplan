@@ -91,7 +91,7 @@ public class Controller {
         
         AppointmentRequestDTO createdAppointmentRequestDTO = appointmentRequestControllerService
             .updateAppointmentRequest(editToken, appointmentRequestDTO, jwtToken);
-        return new ResponseEntity<>(createdAppointmentRequestDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdAppointmentRequestDTO, HttpStatus.OK);
     }
 
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentRequestDTO.class),

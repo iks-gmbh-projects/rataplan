@@ -12,9 +12,9 @@
   <appointmentMember id="2" appointmentRequestId="1" name="Fritz" />
   
   <appointmentDecision appointmentId="1" appointmentMemberId="1" decision="1" />
-  <appointmentDecision appointmentId="2" appointmentMemberId="1" decision="1" />
-  
   <appointmentDecision appointmentId="1" appointmentMemberId="2" decision="0" />
+
+  <appointmentDecision appointmentId="2" appointmentMemberId="1" decision="1" />
   <appointmentDecision appointmentId="2" appointmentMemberId="2" decision="0" />
   
   <backendUserAccess />

@@ -39,6 +39,7 @@ public class AppointmentRequestControllerService {
 //	}
 
     public AppointmentRequestDTO createAppointmentRequest(AppointmentRequestDTO appointmentRequestDTO, String jwtToken) {
+		appointmentRequestDTO.defaultNullValues();
         BackendUser backendUser = null;
 
         if (jwtToken != null) {
@@ -76,6 +77,7 @@ public class AppointmentRequestControllerService {
 		}
 
 		AppointmentRequest newAppointmentRequest = modelMapper.map(appointmentRequestDTO, AppointmentRequest.class);
+		if(appointmentRequestDTO.getAppointments() == null) newAppointmentRequest.setAppointments(null);
 		newAppointmentRequest = appointmentRequestService.updateAppointmentRequest(dbAppointmentRequest, newAppointmentRequest);
 
 		return modelMapper.map(newAppointmentRequest, AppointmentRequestDTO.class);

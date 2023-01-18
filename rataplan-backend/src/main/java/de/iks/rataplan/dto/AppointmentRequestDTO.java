@@ -24,9 +24,9 @@ public class AppointmentRequestDTO implements Serializable {
 
     private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
 
-    private List<String> consigneeList = new ArrayList<>();
-	private List<AppointmentDTO> appointments = new ArrayList<>();
-    private List<AppointmentMemberDTO> appointmentMembers = new ArrayList<>();
+    private List<String> consigneeList;
+	private List<AppointmentDTO> appointments;
+    private List<AppointmentMemberDTO> appointmentMembers;
 
     public AppointmentRequestDTO() {
         //Nothing to do here
@@ -187,4 +187,10 @@ public class AppointmentRequestDTO implements Serializable {
 		builder.append("]");
 		return builder.toString();
 	}
+    
+    public void defaultNullValues() {
+        if(this.consigneeList == null) this.consigneeList = new ArrayList<>();
+        if(this.appointments == null) this.appointments = new ArrayList<>();
+        if(this.appointmentMembers == null) this.appointmentMembers = new ArrayList<>();
+    }
 }

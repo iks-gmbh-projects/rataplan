@@ -308,25 +308,25 @@ public class AppointmentRequest implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentRequest [id=");
+		builder.append("AppointmentRequest [\nid=");
 		builder.append(id);
-		builder.append(", title=");
+		builder.append(",\ntitle=");
 		builder.append(title);
-		builder.append(", description=");
+		builder.append(",\ndescription=");
 		builder.append(description);
-		builder.append(", deadline=");
+		builder.append(",\ndeadline=");
 		builder.append(deadline);
-		builder.append(", organizerName=");
+		builder.append(",\norganizerName=");
 		builder.append(organizerName);
-		builder.append(", organizerMail=");
+		builder.append(",\norganizerMail=");
 		builder.append(organizerMail);
-		builder.append(", appointmentRequestConfig=");
+		builder.append(",\nappointmentRequestConfig=\n");
 		builder.append(appointmentRequestConfig);
-		builder.append(", appointments=");
+		builder.append(",\nappointments=\n");
 		builder.append(appointments);
-		builder.append(", appointmentMembers=");
+		builder.append(",\nappointmentMembers=\n");
 		builder.append(appointmentMembers);
-		builder.append("]");
+		builder.append("\n]");
 		return builder.toString();
 	}
 	
