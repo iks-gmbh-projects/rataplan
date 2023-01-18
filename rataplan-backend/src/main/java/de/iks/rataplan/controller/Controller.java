@@ -80,6 +80,19 @@ public class Controller {
                 .getAppointmentRequestByEditToken(editToken);
         return new ResponseEntity<>(appointmentRequestDTO, HttpStatus.OK);
     }
+    
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentRequestDTO.class),
+        @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
+    @RequestMapping(value = "/appointmentRequests/edit/{editToken}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<AppointmentRequestDTO> editAppointmentRequest(
+        @PathVariable String editToken,
+        @RequestBody AppointmentRequestDTO appointmentRequestDTO,
+        @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+        
+        AppointmentRequestDTO createdAppointmentRequestDTO = appointmentRequestControllerService
+            .updateAppointmentRequest(editToken, appointmentRequestDTO, jwtToken);
+        return new ResponseEntity<>(createdAppointmentRequestDTO, HttpStatus.CREATED);
+    }
 
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentRequestDTO.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})

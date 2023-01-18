@@ -15,6 +15,8 @@ import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.AppointmentRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 
+import javax.persistence.criteria.Predicate;
+
 @Service
 @Transactional
 public class AppointmentRequestServiceImpl implements AppointmentRequestService {
@@ -125,25 +127,40 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 	public AppointmentRequest updateAppointmentRequest(AppointmentRequest dbAppointmentRequest,
 			AppointmentRequest newAppointmentRequest) {
 
-		dbAppointmentRequest.setDeadline(newAppointmentRequest.getDeadline());
-
-		if (newAppointmentRequest.getDeadline().after(new Date(Calendar.getInstance().getTimeInMillis()))) {
-			dbAppointmentRequest.setExpired(false);
+		if(newAppointmentRequest.getDeadline() != null) {
+			dbAppointmentRequest.setDeadline(newAppointmentRequest.getDeadline());
+			if (newAppointmentRequest.getDeadline().after(new Date(Calendar.getInstance().getTimeInMillis()))) {
+				dbAppointmentRequest.setExpired(false);
+			}
 		}
 
-		dbAppointmentRequest.setTitle(newAppointmentRequest.getTitle());
-		dbAppointmentRequest.setDescription(newAppointmentRequest.getDescription());
-		dbAppointmentRequest.setOrganizerMail(newAppointmentRequest.getOrganizerMail());
+		if(newAppointmentRequest.getTitle() != null) dbAppointmentRequest.setTitle(newAppointmentRequest.getTitle());
+		if(newAppointmentRequest.getDescription() != null) dbAppointmentRequest.setDescription(newAppointmentRequest.getDescription());
+		if(newAppointmentRequest.getOrganizerMail() != null) dbAppointmentRequest.setOrganizerMail(newAppointmentRequest.getOrganizerMail());
 
-		// Delete appointments that are not existent in the new AppointmentRequest
-
-		this.removeAppointments(newAppointmentRequest, dbAppointmentRequest.getAppointments());
-
-		// Add Appointments that are not existent in the old AppointmentRequest
-		this.addAppointments(dbAppointmentRequest, newAppointmentRequest.getAppointments());
-
-		if (dbAppointmentRequest.getAppointments().size() == 0) {
-			throw new MalformedException("There are no Appointments in this AppointmentRequest.");
+		if(newAppointmentRequest.getAppointments() != null && !newAppointmentRequest.getAppointments().isEmpty()) {
+			final AppointmentConfig config = dbAppointmentRequest.getAppointmentRequestConfig().getAppointmentConfig();
+			if(!newAppointmentRequest.getAppointments().stream()
+				.allMatch(appointment -> appointment.validateAppointmentConfig(config))
+			) throw new MalformedException("AppointmentType does not fit the AppointmentRequest.");
+			
+			dbAppointmentRequest.setAppointments(newAppointmentRequest.getAppointments().stream()
+				.peek(appointment -> {
+					if(appointment.getId() != null && dbAppointmentRequest.getAppointmentById(appointment.getId()) == null) appointment.setId(null);
+					appointment.setAppointmentRequest(dbAppointmentRequest);
+				})
+				.collect(Collectors.toList())
+			);
+			
+			if (dbAppointmentRequest.getAppointments().size() == 0) {
+				throw new MalformedException("There are no Appointments in this AppointmentRequest.");
+			}
+			
+			for(AppointmentMember member:dbAppointmentRequest.getAppointmentMembers()) {
+				member.setAppointmentDecisions(dbAppointmentRequest.getAppointments().stream()
+					.map(appointment -> new AppointmentDecision(Decision.NO_ANSWER, appointment, member))
+					.collect(Collectors.toList()));
+			}
 		}
 
 		return appointmentRequestRepository.saveAndFlush(dbAppointmentRequest);
