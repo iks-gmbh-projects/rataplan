@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { RegisterService } from '../services/register-service/register.service';
+import { ActivatedRoute, Router } from "@angular/router";
+import { LocalstorageService } from "../services/localstorage-service/localstorage.service";
+import { FrontendUser } from "../services/login.service/user.model";
+import { userdataStorageService } from "../services/userdata-storage-service/userdata-storage.service";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
 
@@ -33,9 +37,15 @@ export class RegisterComponent implements OnInit {
     displayname: this.displayname,
   });
 
-  constructor(private formBuilder: FormBuilder,
-              private registerService: RegisterService,
-              public readonly errorMessages: FormErrorMessageService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private registerService: RegisterService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private localStorage: LocalstorageService,
+    private userdataStorageService: userdataStorageService,
+    public readonly errorMessages: FormErrorMessageService
+  ) {
   }
 
   ngOnInit(): void {
@@ -52,16 +62,15 @@ export class RegisterComponent implements OnInit {
 
     this.registerService.registerUser(frontendUser).subscribe(responseData => {
       console.log(responseData);
+      this.userdataStorageService.id = responseData.id;
+      this.userdataStorageService.username = responseData.username;
+      this.userdataStorageService.mail = responseData.mail;
+      this.userdataStorageService.displayName = responseData.displayname;
+      this.localStorage.setLocalStorage(responseData);
+      this.router.navigateByUrl(this.activatedRoute.snapshot.queryParams['redirect'] || "/");
     });
 
     //should route to profile, which doesnt exist yet
     //this.router.navigateByUrl('/');
   }
-}
-
-export interface FrontendUser {
-  username: string;
-  mail: string;
-  password: string;
-  displayname: string;
 }
