@@ -1,33 +1,67 @@
 <form *ngIf="questionGroup" (ngSubmit)="submit(form)" #form="ngForm">
-  <div style="margin-bottom: 1ex" *ngFor="let question of questionGroup.questions" [ngModelGroup]="''+question.id!" #modelQuestionGroup="ngModelGroup">
+  <div
+    style="margin-bottom: 1ex"
+    *ngFor="let question of questionGroup.questions"
+    [ngModelGroup]="''+question.id!"
+    #modelQuestionGroup="ngModelGroup"
+  >
     <h3>{{question.text}}</h3>
     <div>
       <input type="hidden" name="questionId" [ngModel]="question.id">
       <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
         <mat-label>Antwort</mat-label>
-        <input type="text" ngModel name="text" [required]="question.required" someNonWhitespace matInput #answerText="ngModel">
+        <input
+          type="text"
+          ngModel name="text"
+          [required]="question.required"
+          someNonWhitespace
+          matInput
+          #answerText="ngModel"
+        >
         <mat-error>{{errorMessageService.genericFormError(form.getControl(answerText))}}</mat-error>
       </mat-form-field>
       <ng-template [ngIf]="question.checkboxGroup">
-        <div *ngIf="question.checkboxGroup.multipleSelect; else singleSelect" ngModelGroup="checkboxes">
+        <div
+          *ngIf="question.checkboxGroup.multipleSelect; else singleSelect"
+          ngModelGroup="checkboxes"
+          [checkboxCountMin]="question.checkboxGroup.minSelect"
+          [checkboxCountMax]="question.checkboxGroup.maxSelect"
+          #selectionGroup="ngModelGroup"
+        >
           <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
-            <mat-checkbox ngModel [name]="''+checkbox.id!"
-              value="true">
+            <mat-checkbox
+              ngModel
+              [name]="''+checkbox.id!"
+              value="true"
+            >
               {{checkbox.text}}
-            </mat-checkbox><br>
+            </mat-checkbox>
+            <br>
           </ng-template>
+          <mat-error *ngIf="selectionGroup.invalid && selectionGroup.dirty">
+            Nur mindestens {{question.checkboxGroup.minSelect}} und maximal {{question.checkboxGroup.maxSelect}} auswählen.
+          </mat-error>
         </div>
         <ng-template #singleSelect>
           <mat-radio-group ngModel name="checkboxId" [required]="question.required">
             <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
-              <mat-radio-button [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button><br>
+              <mat-radio-button [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button>
+              <br>
             </ng-template>
           </mat-radio-group>
         </ng-template>
         <mat-form-field *ngIf="hasTextField(question.checkboxGroup.checkboxes)" appearance="fill">
           <mat-label>Freitextantwort</mat-label>
-          <input type="text" ngModel name="text" someNonWhitespace matInput [disabled]="disableTextField(question, form)">
-        </mat-form-field><br>
+          <input
+            type="text"
+            ngModel
+            name="text"
+            someNonWhitespace
+            matInput
+            [disabled]="disableTextField(question, form)"
+          >
+        </mat-form-field>
+        <br>
       </ng-template>
     </div>
   </div>

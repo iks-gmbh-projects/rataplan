@@ -4,6 +4,8 @@ import { DisplayNamePipe } from './pipes/display-name.pipe';
 import { HttpClientModule } from '@angular/common/http';
 import { NoWhitespaceDirective } from "./validator/no-whitespace.directive";
 import { SomeNonWhitespaceDirective } from "./validator/some-non-whitespace.directive";
+import { CheckboxCountMinDirective } from "./validator/checkbox-count-min.directive";
+import { CheckboxCountMaxDirective } from "./validator/checkbox-count-max.directive";
 
 
 
@@ -12,6 +14,8 @@ import { SomeNonWhitespaceDirective } from "./validator/some-non-whitespace.dire
     DisplayNamePipe,
     NoWhitespaceDirective,
     SomeNonWhitespaceDirective,
+    CheckboxCountMinDirective,
+    CheckboxCountMaxDirective,
   ],
   imports: [
     CommonModule,
@@ -22,6 +26,8 @@ import { SomeNonWhitespaceDirective } from "./validator/some-non-whitespace.dire
     CommonModule,
     HttpClientModule,
     SomeNonWhitespaceDirective,
+    CheckboxCountMinDirective,
+    CheckboxCountMaxDirective,
   ],
 })
 export class AppCommonModule { }
