@@ -14,4 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 public class CompleteSurveyDTO extends SurveyOverviewDTO {
     private List<QuestionGroupDTO> questionGroups;
+    
+    @Override
+    public boolean valid() {
+        return super.valid() && questionGroups.stream().allMatch(QuestionGroupDTO::valid);
+    }
 }

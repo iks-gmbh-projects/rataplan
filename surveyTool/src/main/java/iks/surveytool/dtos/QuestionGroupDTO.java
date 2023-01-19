@@ -20,4 +20,9 @@ public class QuestionGroupDTO extends AbstractDTO {
         this.title = title;
         this.questions = questions;
     }
+    
+    @Override
+    public boolean valid() {
+        return title != null && !title.isBlank() && questions.stream().allMatch(QuestionDTO::valid);
+    }
 }

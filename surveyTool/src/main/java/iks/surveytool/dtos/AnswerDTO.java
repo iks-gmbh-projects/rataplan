@@ -20,4 +20,9 @@ public class AnswerDTO extends AbstractDTO {
         super(id);
         this.text = text;
     }
+    
+    @Override
+    public boolean valid() {
+        return this.text == null || !this.text.isBlank();
+    }
 }

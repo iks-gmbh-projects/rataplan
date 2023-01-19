@@ -17,4 +17,9 @@ public class CheckboxDTO extends AbstractDTO {
         this.text = text;
         this.hasTextField = hasTextField;
     }
+    
+    @Override
+    public boolean valid() {
+        return text != null && !text.isBlank();
+    }
 }

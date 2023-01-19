@@ -23,10 +23,12 @@ public class QuestionDTO extends AbstractDTO {
     }
 
     public QuestionDTO(Long id, String text, boolean required, boolean hasCheckbox, CheckboxGroupDTO checkboxGroup) {
-        super(id);
-        this.text = text;
-        this.required = required;
-        this.hasCheckbox = hasCheckbox;
+        this(id, text, required, hasCheckbox);
         this.checkboxGroup = checkboxGroup;
+    }
+    
+    @Override
+    public boolean valid() {
+        return text != null && !text.isBlank() && (hasCheckbox ? checkboxGroup != null && checkboxGroup.valid() : checkboxGroup == null);
     }
 }

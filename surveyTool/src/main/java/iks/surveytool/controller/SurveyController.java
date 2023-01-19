@@ -33,6 +33,7 @@ public class SurveyController {
             if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             surveyDTO.setUserId(user.getId());
         }
+        if(!surveyDTO.valid()) return ResponseEntity.badRequest().build();
         return surveyService.processSurveyDTO(surveyDTO);
     }
 
@@ -42,6 +43,7 @@ public class SurveyController {
         @RequestBody CompleteSurveyDTO surveyDTO,
         @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
     ) {
+        if(!surveyDTO.valid()) return ResponseEntity.badRequest().build();
         return surveyService.processEditSurveyByAccessId(accessId, surveyDTO, jwttoken);
     }
 

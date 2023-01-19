@@ -8,4 +8,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class AbstractDTO {
     private Long id;
+    
+    public abstract boolean valid();
 }

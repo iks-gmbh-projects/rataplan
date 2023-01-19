@@ -13,4 +13,9 @@ public class SurveyResponseDTO extends AbstractDTO {
     private long surveyId;
     private Long userId;
     private Map<Long, AnswerDTO> answers;
+    
+    @Override
+    public boolean valid() {
+        return answers != null && answers.values().stream().allMatch(AnswerDTO::valid);
+    }
 }

@@ -24,4 +24,11 @@ public class CheckboxGroupDTO extends AbstractDTO {
         this.maxSelect = maxSelect;
         this.checkboxes = checkboxes;
     }
+    
+    @Override
+    public boolean valid() {
+        if(!multipleSelect) return true;
+        final int choiceCount = checkboxes.size();
+        return 0 <= minSelect && minSelect <= maxSelect && maxSelect <= choiceCount && checkboxes.stream().allMatch(CheckboxDTO::valid);
+    }
 }

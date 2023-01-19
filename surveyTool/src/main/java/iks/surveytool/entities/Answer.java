@@ -50,6 +50,15 @@ public class Answer extends AbstractEntity {
             return false;
         }
         if(this.question.isHasCheckbox() && (this.checkboxes == null)) return false;
+        if(this.question.isHasCheckbox()) {
+            CheckboxGroup grp = this.question.getCheckboxGroup();
+            int count = this.checkboxes.size();
+            if(grp.isMultipleSelect()) {
+                if(grp.getMinSelect() > count || grp.getMaxSelect() < count) return false;
+            } else {
+                if(count > 1 || (count < 1 && question.isRequired())) return false;
+            }
+        }
         if (!this.question.isHasCheckbox() || this.checkboxes.stream().anyMatch(Checkbox::isHasTextField)) {
             return this.checkIfAnswerTextValid();
         }

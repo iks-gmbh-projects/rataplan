@@ -28,5 +28,11 @@ public class SurveyOverviewDTO extends AbstractDTO {
     private String participationId;
 
     private Long userId;
-
+    
+    @Override
+    public boolean valid() {
+        return name != null && !name.isBlank() &&
+            description != null && !description.isBlank() &&
+            startDate != null && endDate != null && startDate.isBefore(endDate);
+    }
 }
