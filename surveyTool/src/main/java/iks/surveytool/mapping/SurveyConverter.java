@@ -42,6 +42,9 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
             surveyDTO.getParticipationId(),
             questionGroups
         );
+        for(QuestionGroup qg: newSurvey.getQuestionGroups()) {
+            qg.setSurvey(newSurvey);
+        }
         
         newSurvey.setId(surveyDTO.getId());
         newSurvey.setUserId(surveyDTO.getUserId());
@@ -59,6 +62,9 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
             toQuestionEntityList(questionGroupDTO.getQuestions())
         );
         questionGroup.setId(questionGroupDTO.getId());
+        for(Question q:questionGroup.getQuestions()) {
+            q.setQuestionGroup(questionGroup);
+        }
         return questionGroup;
     }
     
@@ -86,6 +92,9 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
             toCheckboxEntityList(checkboxGroupDTO.getCheckboxes())
         );
         checkboxGroup.setId(checkboxGroupDTO.getId());
+        for(Checkbox cb:checkboxGroup.getCheckboxes()) {
+            cb.setCheckboxGroup(checkboxGroup);
+        }
         return checkboxGroup;
     }
     
