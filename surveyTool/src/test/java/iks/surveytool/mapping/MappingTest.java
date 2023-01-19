@@ -24,7 +24,7 @@ public class MappingTest {
     private final MockCryptoService mockCryptoService = new MockCryptoService();
     private final FromEncryptedStringConverter fromEncryptedStringConverter = new FromEncryptedStringConverter(mockCryptoService);
     private final ToEncryptedStringConverter toEncryptedStringConverter = new ToEncryptedStringConverter(mockCryptoService);
-    private final ModelMapper modelMapper = new MappingConfig(List.of(
+    private final ModelMapper modelMapper = new MappingConfig().modelMapper(List.of(
         new SurveyConverter(toEncryptedStringConverter),
         new ToZonedTimeConverter(),
         new ToInstantConverter(),
@@ -37,7 +37,7 @@ public class MappingTest {
         new SurveyResponseDTOConverter(fromEncryptedStringConverter),
         fromEncryptedStringConverter,
         toEncryptedStringConverter
-        )).modelMapper();
+        ));
     
     @Test
     @DisplayName("Survey to CompleteSurveyDTO")
