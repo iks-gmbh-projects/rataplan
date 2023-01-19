@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ResetPasswordDataModel } from '../models/reset-password-data.model';
 import { ResetPasswordService } from '../services/reset-password-service/reset-password.service';
@@ -27,6 +27,7 @@ export class ResetPasswordComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private resetPasswortService: ResetPasswordService,
               private route: ActivatedRoute,
+              private router: Router,
               public readonly errorMessageService: FormErrorMessageService) {
   }
 
@@ -39,7 +40,9 @@ export class ResetPasswordComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       token = params['token'];
       const resetPassword = new ResetPasswordDataModel(token, this.password.value);
-      this.resetPasswortService.resetPassword(resetPassword).subscribe({});
+      this.resetPasswortService.resetPassword(resetPassword).subscribe(() => {
+        this.router.navigate(["/login"]);
+      });
     });
   }
 

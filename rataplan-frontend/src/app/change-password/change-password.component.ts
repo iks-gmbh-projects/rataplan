@@ -5,6 +5,7 @@ import { ChangePasswordService } from "../services/change-password/change-passwo
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-change-password',
@@ -28,10 +29,13 @@ export class ChangePasswordComponent implements OnInit {
   });
 
 
-  constructor(private formBuilder: FormBuilder,
-              private changePasswordService: ChangePasswordService,
-              private snackBar: MatSnackBar,
-              public readonly errorMessageService: FormErrorMessageService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private changePasswordService: ChangePasswordService,
+    private snackBar: MatSnackBar,
+    public readonly errorMessageService: FormErrorMessageService,
+    private router: Router
+  ) {
   }
 
   ngOnInit(): void {
@@ -44,6 +48,7 @@ export class ChangePasswordComponent implements OnInit {
         this.snackBar.open('Passwort erfolgreich geändert', '', {
           duration: 3000
         });
+        this.router.navigate(["/profile"]);
       },
       error: () => {
         this.oldPassword.setErrors({'wrongPassword': true});
