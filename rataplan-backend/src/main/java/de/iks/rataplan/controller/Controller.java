@@ -81,7 +81,7 @@ public class Controller {
         return new ResponseEntity<>(appointmentRequestDTO, HttpStatus.OK);
     }
     
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentRequestDTO.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AppointmentRequestDTO.class),
         @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @RequestMapping(value = "/appointmentRequests/edit/{editToken}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AppointmentRequestDTO> editAppointmentRequest(

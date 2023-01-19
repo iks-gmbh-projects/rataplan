@@ -2,6 +2,7 @@ package de.iks.rataplan.domain;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,10 +13,13 @@ import java.time.Instant;
 public class AppointmentRequestConfig {
 	@CreationTimestamp
 	@Column(updatable = false)
+	@JsonIgnore
 	private Instant creationTime;
 	@UpdateTimestamp
+	@JsonIgnore
 	private Instant lastUpdated;
 	@Version
+	@JsonIgnore
 	private Integer version;
 	
 	private Integer id;
