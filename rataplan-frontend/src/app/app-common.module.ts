@@ -6,6 +6,7 @@ import { NoWhitespaceDirective } from "./validator/no-whitespace.directive";
 import { SomeNonWhitespaceDirective } from "./validator/some-non-whitespace.directive";
 import { CheckboxCountMinDirective } from "./validator/checkbox-count-min.directive";
 import { CheckboxCountMaxDirective } from "./validator/checkbox-count-max.directive";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 
 
@@ -20,11 +21,13 @@ import { CheckboxCountMaxDirective } from "./validator/checkbox-count-max.direct
   imports: [
     CommonModule,
     HttpClientModule,
+    MatTooltipModule,
   ],
   exports: [
-    DisplayNamePipe,
     CommonModule,
     HttpClientModule,
+    MatTooltipModule,
+    DisplayNamePipe,
     SomeNonWhitespaceDirective,
     CheckboxCountMinDirective,
     CheckboxCountMaxDirective,
