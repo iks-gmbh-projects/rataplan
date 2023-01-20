@@ -495,9 +495,12 @@ class ValidationTest {
 
         Question question = new QuestionBuilder()
                 .createQuestionIn(group, 1L, "Test Question", false, true);
-
+        
         Checkbox checkbox = new CheckboxBuilder()
                 .createCheckbox(1L, "Test Checkbox", true);
+        
+        CheckboxGroup checkboxGroup = new CheckboxGroup(false, 0, 1, List.of(checkbox));
+        question.setCheckboxGroup(checkboxGroup);
 
         SurveyResponse response = new SurveyResponseBuilder()
                 .createResponse(1L, survey, null);
@@ -564,6 +567,9 @@ class ValidationTest {
 
         Checkbox checkbox = new CheckboxBuilder()
                 .createCheckbox(1L, "Test Checkbox", false);
+        
+        CheckboxGroup checkboxGroup = new CheckboxGroup(true, 1, 1, List.of(checkbox));
+        question.setCheckboxGroup(checkboxGroup);
 
         SurveyResponse response = new SurveyResponseBuilder()
                 .createResponse(1L, survey, null);
