@@ -5,6 +5,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import { ExtraValidators } from "../../../validator/validators";
+import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-general-subform',
@@ -17,7 +19,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   maxDate: Date;
 
   generalSubform = new FormGroup({
-    'title': new FormControl(null, [Validators.required, this.noWhiteSpace]),
+    'title': new FormControl(null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
     'description': new FormControl(null),
     'deadline': new FormControl(null, Validators.required),
     'decision': new FormControl('0', Validators.required),
@@ -25,7 +27,8 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
 
   showDescription = false;
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService) {
+  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
+              public readonly errorMessageService: FormErrorMessageService) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
     this.maxDate = new Date(currentYear + 2, 11, 31);
@@ -79,11 +82,5 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     if (!this.showDescription) {
       this.generalSubform.get('description')?.setValue(null);
     }
-  }
-
-  noWhiteSpace(control: FormControl) {
-    const isWhiteSpace = (control.value || '').trim().length === 0;
-    const isValid = !isWhiteSpace;
-    return isValid ? null : { 'whitespace': true };
   }
 }

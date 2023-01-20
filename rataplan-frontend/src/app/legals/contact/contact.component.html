@@ -3,21 +3,21 @@
     <mat-form-field appearance="fill">
       <mat-label>E-Mail</mat-label>
       <input matInput placeholder="pat@example.com" [formControl]="senderMail" required>
-      <mat-error *ngIf="senderMail.invalid">{{getEmailErrorMessage()}}</mat-error>
+      <mat-error>{{errorMessageService.genericFormError(senderMail)}}</mat-error>
     </mat-form-field>
   </div>
   <div class="subject">
     <mat-form-field appearance="fill">
       <mat-label>Betreff</mat-label>
       <input matInput required [formControl]="subject">
-      <mat-error *ngIf="subject.invalid">{{getSubjectErrorMessage()}}</mat-error>
+      <mat-error>{{errorMessageService.genericFormError(subject)}}</mat-error>
     </mat-form-field>
   </div>
   <div class="message">
     <mat-form-field class="message-field" appearance="fill">
       <mat-label class="message-label">Nachricht...</mat-label>
       <textarea class="message-textarea" matInput required [formControl]="content"></textarea>
-      <mat-error *ngIf="content.invalid">{{getMessageErrorMessage()}}</mat-error>
+      <mat-error>{{errorMessageService.genericFormError(content)}}</mat-error>
     </mat-form-field>
   </div>
   <button class="submit-button" mat-raised-button color="primary" [disabled]="contact.invalid" (click)="submit()">

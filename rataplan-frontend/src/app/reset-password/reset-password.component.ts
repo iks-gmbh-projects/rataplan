@@ -4,6 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ResetPasswordDataModel } from '../models/reset-password-data.model';
 import { ResetPasswordService } from '../services/reset-password-service/reset-password.service';
+import { ExtraValidators } from "../validator/validators";
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-reset-password',
@@ -13,7 +15,7 @@ import { ResetPasswordService } from '../services/reset-password-service/reset-p
 export class ResetPasswordComponent implements OnInit {
 
   password = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  confirmPassword = new FormControl('', Validators.required);
+  confirmPassword = new FormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
   hide = true;
   hideConfirm = true;
 
@@ -24,7 +26,8 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private resetPasswortService: ResetPasswordService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              public readonly errorMessageService: FormErrorMessageService) {
   }
 
   ngOnInit(): void {
@@ -36,27 +39,8 @@ export class ResetPasswordComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       token = params['token'];
       const resetPassword = new ResetPasswordDataModel(token, this.password.value);
-      this.resetPasswortService.resetPassword(resetPassword).subscribe(response => {
-
-      });
+      this.resetPasswortService.resetPassword(resetPassword).subscribe({});
     });
-  }
-
-  getPasswordErrorMessage() {
-    if (this.password.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-    if (this.password.hasError('minLength')) {
-      return 'Mindestens 3 Zeichen';
-    }
-    return '';
-  }
-
-  getConfirmPasswordErrorMessage() {
-    if (this.confirmPassword.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-    return this.confirmPassword.hasError('pattern') ? 'Passwort stimmt nicht überein' : '';
   }
 
 }

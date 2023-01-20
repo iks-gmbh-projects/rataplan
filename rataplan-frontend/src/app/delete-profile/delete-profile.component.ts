@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { DeleteProfileService, deletionChoices } from "../services/delete-profile-service/delete-profile.service";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-delete-profile',
@@ -20,7 +21,8 @@ export class DeleteProfileComponent {
   constructor(
     private deleteProfileService: DeleteProfileService,
     private router: Router,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    public readonly errorMessageService: FormErrorMessageService
   ) {
   }
 

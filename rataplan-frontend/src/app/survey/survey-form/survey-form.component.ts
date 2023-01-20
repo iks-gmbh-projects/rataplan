@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, NgForm, RequiredValidator, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Answer, Question, QuestionGroup, Survey } from '../survey.model';
+import { Answer, Survey } from '../survey.model';
 import { SurveyService } from '../survey.service';
 import { SurveyAnswerComponent } from './survey-answer/survey-answer.component';
 
@@ -45,6 +44,10 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  public isInvalid(stepper: MatStepper): boolean {
+    return stepper.steps.reduce<boolean>((invalid, step) => invalid || step.hasError, false);
+  }
+
   public submit(stepper: MatStepper): void {
     if(!this.survey) return;
     if(stepper.selectedIndex >= this.survey.questionGroups.length) {
@@ -52,10 +55,10 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
         surveyId: this.survey.id!,
         answers: this.answers,
       }).subscribe({
-        next: d => {
+        next: () => {
           this.dialogs.open(SurveyAnswerComponent);
         },
-        error: err => {
+        error: () => {
           stepper.previous();
           this.snackBars.open("Fehler beim Hochladen der Antwort.", "OK");
         },
