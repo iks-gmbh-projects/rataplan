@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatStepper } from '@angular/material/stepper';
-import { Survey } from '../../survey.model';
-import { SurveyService } from '../../survey.service';
+import { QuestionGroup, Survey } from '../../survey.model';
 
 @Component({
   selector: 'app-survey-preview',
@@ -21,5 +20,22 @@ export class SurveyPreviewComponent {
       else stepper.next();
     } else if(stepper.selectedIndex) stepper.previous();
     else this.onSubmit.emit();
+  }
+
+  public previewify(questionGroup: QuestionGroup): QuestionGroup {
+    if(!questionGroup.id) {
+      let idCounter: number = 1;
+      questionGroup.id = idCounter++;
+      for (let question of questionGroup.questions) {
+        question.id = idCounter++;
+        if (question.checkboxGroup) {
+          question.checkboxGroup.id = idCounter++;
+          for (let checkbox of question.checkboxGroup.checkboxes) {
+            checkbox.id = idCounter++;
+          }
+        }
+      }
+    }
+    return questionGroup;
   }
 }

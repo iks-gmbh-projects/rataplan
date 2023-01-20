@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { AbstractControl, NgForm } from '@angular/forms';
 import { Answer, Checkbox, Question, QuestionGroup } from '../../survey.model';
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 import { MatStep } from "@angular/material/stepper";
@@ -45,8 +45,8 @@ export class PageComponent implements AfterViewInit{
     return checkboxes.some(checkbox => checkbox.hasTextField);
   }
 
-  public disableTextField(question: Question, form: NgForm): boolean {
-    let answer: Answer&{checkboxId?: string|number} = form.value[question.id!];
+  public disableTextField(question: Question, answerControl?: AbstractControl): boolean {
+    let answer: Answer&{checkboxId?: string|number} = answerControl?.value;
     if(!answer) return false;
     if(answer.checkboxId !== undefined && answer.checkboxId !== null) {
       answer.checkboxes = {
