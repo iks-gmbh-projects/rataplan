@@ -40,8 +40,8 @@ export class ProfileComponent implements OnInit {
     enabled:false
   }
 
-  displayNameField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.containsSomeWhitespace])
-  emailField = new FormControl('', [Validators.required , Validators.minLength(3), Validators.email])
+  displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace])
+  emailField = new FormControl('', [Validators.required , Validators.email])
 
   redirect(){
     this.router.navigateByUrl('/change-password')

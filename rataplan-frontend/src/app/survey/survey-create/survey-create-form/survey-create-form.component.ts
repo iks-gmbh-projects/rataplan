@@ -7,7 +7,7 @@ import { ExtraValidators } from "../../../validator/validators";
 
 function minControlValueValidator(min: AbstractControl): ValidatorFn {
   return (control: AbstractControl): ValidationErrors|null => {
-    if(control.value <= min.value) return {reason: "Less than other form value"};
+    if(control.value <= min.value) return {matDatetimePickerMin: true};
     return null;
   };
 }
