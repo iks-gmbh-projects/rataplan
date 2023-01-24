@@ -1,10 +1,9 @@
-import {Component, Injectable, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {LoginComponent} from "../../../login/login.component";
-import {Router} from "@angular/router";
-import {GeneralSubformComponent} from "../general-subform/general-subform.component";
-import {AppointmentRequestFormService} from "../appointment-request-form.service";
-import {AppointmentConfig} from "../../../models/appointment.model";
+import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { AppointmentConfig } from '../../../models/appointment.model';
+import { AppointmentRequestFormService } from '../appointment-request-form.service';
 
 @Component({
   selector: 'app-config-subform',
@@ -14,65 +13,45 @@ import {AppointmentConfig} from "../../../models/appointment.model";
 @Injectable({
   providedIn: 'root'
 })
-export class ConfigSubformComponent implements OnInit {
-  formGroup: FormGroup;
-  startDate: boolean = true;
-  startTime: boolean = false;
-  description: boolean = false;
-  url: boolean = false;
-  endDate: boolean = false;
-  endTime: boolean = false;
+export class ConfigSubformComponent implements OnInit, OnDestroy {
+  appointmentConfig = new AppointmentConfig();
+  configForm = this.formBuilder.group({
+    isDateChecked: [false],
+    isTimeChecked: [false],
+    isDescriptionChecked: [false],
+    isUrlChecked: [false],
+  });
   isPageValid = true;
-  appointmentConfig = new AppointmentConfig()
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private appointmentRequestFormService: AppointmentRequestFormService) {
-    this.formGroup = this.formBuilder.group({
-      isStartDateChecked: [true],
-      isStartTimeChecked: [false],
-      isDescriptionChecked: [false],
-      isUrlChecked: [false],
-      isEndDateChecked: [false],
-      isEndTimeChecked: [false],
-      }
-      )
   }
-
 
   ngOnInit(): void {
     this.appointmentConfig = this.appointmentRequestFormService.getAppointmentConfig();
-    this.formGroup.setValue({
-      isStartDateChecked: this.appointmentConfig.startDate,
-      isStartTimeChecked: this.appointmentConfig.startTime,
+    this.configForm.setValue({
+      isDateChecked: this.appointmentConfig.startDate,
+      isTimeChecked: this.appointmentConfig.startTime,
       isDescriptionChecked: this.appointmentConfig.description,
       isUrlChecked: this.appointmentConfig.url,
-      isEndDateChecked: this.appointmentConfig.endDate,
-      isEndTimeChecked: this.appointmentConfig.endTime
     });
+  }
 
+  ngOnDestroy(): void {
+    this.appointmentConfig.startDate = this.configForm.get('isDateChecked')?.value;
+    this.appointmentConfig.startTime = this.configForm.get('isTimeChecked')?.value;
+    this.appointmentConfig.description = this.configForm.get('isDescriptionChecked')?.value;
+    this.appointmentConfig.url = this.configForm.get('isUrlChecked')?.value;
+    console.log(this.appointmentConfig);
+    this.appointmentRequestFormService.setAppointmentConfig(this.appointmentConfig);
   }
 
   nextPage() {
-
-    this.appointmentRequestFormService.submitValues();
-    this.appointmentConfig.startDate = this.formGroup.get('isStartDateChecked')?.value;
-    this.appointmentConfig.startTime = this.formGroup.get('isStartTimeChecked')?.value;
-    this.appointmentConfig.description = this.formGroup.get('isDescriptionChecked')?.value;
-    this.appointmentConfig.url = this.formGroup.get('isUrlChecked')?.value;
-    this.appointmentConfig.endDate = this.formGroup.get('isEndDateChecked')?.value;
-    this.appointmentConfig.endTime = this.formGroup.get('isEndTimeChecked')?.value;
-    this.appointmentRequestFormService.setAppointmentConfig(this.appointmentConfig);
-
-    if (this.formGroup.get('isStartDateChecked')?.value == true) {
-      this.router.navigateByUrl("create-vote/datepicker")
-    }else{
-      this.router.navigateByUrl("/create-vote/configuration")
-    }
-
+    this.router.navigateByUrl('/create-vote/configuration');
   }
+
   backPage(){
-    this.router.navigateByUrl("/create-vote/general")
+    this.router.navigateByUrl('/create-vote/general');
   }
-
 }
