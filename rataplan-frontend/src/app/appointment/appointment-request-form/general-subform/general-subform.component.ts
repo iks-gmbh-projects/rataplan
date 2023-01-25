@@ -76,6 +76,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
       this.generalSubform.get('title')?.value,
       this.generalSubform.get('description')?.value,
       this.generalSubform.get('deadline')?.value,
+      this.generalSubform.get('decision')?.value
     );
   }
 

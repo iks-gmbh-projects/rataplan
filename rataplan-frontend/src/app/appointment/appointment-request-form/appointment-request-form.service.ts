@@ -5,6 +5,7 @@ import { exhaustMap, Subject } from 'rxjs';
 import { AppointmentConfig, AppointmentModel } from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
 import { BackendUrlService } from '../../services/backend-url-service/backend-url.service';
+import { DecisionType } from './decision-type.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -19,12 +20,13 @@ export class AppointmentRequestFormService {
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }
 
-  setGeneralInputValue(title: string, description: string, deadline: Date) {
+  setGeneralInputValue(title: string, description: string, deadline: Date, decision: number) {
     console.log(deadline);
     console.log(description);
     if (title) this.appointmentRequest.title = title.trim();
     if (description) this.appointmentRequest.description = description.trim();
     this.appointmentRequest.deadline = deadline;
+    this.appointmentRequest.appointmentRequestConfig!.decisionType = DecisionType[decision];
   }
 
   setAppointments(appointments: AppointmentModel[]) {
