@@ -76,8 +76,9 @@
                required
                matInput
                [(ngModel)]="member.appointmentDecisions[appointmentIndex].participants"
+               mat-line
                #participantField="ngModel">
-        <mat-error>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
+        <mat-error mat-line>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
       </mat-form-field>
       <ng-template #decisionComplex>
       <mat-button-toggle-group style='scale: 90%'>
