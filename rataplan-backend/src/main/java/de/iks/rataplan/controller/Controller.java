@@ -87,7 +87,7 @@ public class Controller {
     public ResponseEntity<AppointmentRequestDTO> createAppointmentRequest(
             @RequestBody AppointmentRequestDTO appointmentRequestDTO,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
-
+        appointmentRequestDTO.assertCreationValid();
         AppointmentRequestDTO createdAppointmentRequestDTO = appointmentRequestControllerService
                 .createAppointmentRequest(appointmentRequestDTO, jwtToken);
         return new ResponseEntity<>(createdAppointmentRequestDTO, HttpStatus.CREATED);
@@ -119,7 +119,7 @@ public class Controller {
     public ResponseEntity<AppointmentMemberDTO> addAppointmentMember(@PathVariable String participationToken,
                                                                      @RequestBody AppointmentMemberDTO appointmentMemberDTO,
                                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
-
+        appointmentMemberDTO.assertAddValid();
         AppointmentMemberDTO addedAppointmentMemberDTO = appointmentMemberControllerService
                 .createAppointmentMember(appointmentMemberDTO, participationToken, jwtToken);
         return new ResponseEntity<>(addedAppointmentMemberDTO, HttpStatus.CREATED);
@@ -146,7 +146,7 @@ public class Controller {
     public ResponseEntity<AppointmentMemberDTO> updateAppointmentMember(@PathVariable String participationToken,
                                                                         @PathVariable Integer memberId, @RequestBody AppointmentMemberDTO appointmentMemberDTO,
                                                                         @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
-
+        appointmentMemberDTO.assertUpdateValid();
         AppointmentMemberDTO updatedAppointmentMemberDTO = appointmentMemberControllerService.updateAppointmentMember(participationToken, memberId, appointmentMemberDTO, jwtToken);
         return new ResponseEntity<>(updatedAppointmentMemberDTO, HttpStatus.OK);
     }

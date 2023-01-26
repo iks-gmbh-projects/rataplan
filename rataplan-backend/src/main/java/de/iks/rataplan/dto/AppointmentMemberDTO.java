@@ -1,5 +1,7 @@
 package de.iks.rataplan.dto;
 
+import de.iks.rataplan.exceptions.MalformedException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,4 +72,18 @@ public class AppointmentMemberDTO implements Serializable {
 		builder.append("]");
 		return builder.toString();
 	}
+    
+    public void assertAddValid() {
+        if(appointmentRequestId == null ||
+            name == null || name.trim().isEmpty() ||
+            appointmentDecisions == null || appointmentDecisions.isEmpty()
+        ) throw new MalformedException("Missing or invalid fields");
+        appointmentDecisions.forEach(AppointmentDecisionDTO::assertAddValid);
+    }
+    public void assertUpdateValid() {
+        if((name != null && name.trim().isEmpty()) ||
+            (appointmentDecisions != null && appointmentDecisions.isEmpty())
+        ) throw new MalformedException("Missing or invalid fields");
+        if(appointmentDecisions != null) appointmentDecisions.forEach(AppointmentDecisionDTO::assertAddValid);
+    }
 }

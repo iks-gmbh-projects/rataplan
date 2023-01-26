@@ -2,6 +2,7 @@ package de.iks.rataplan.domain;
 
 import javax.persistence.*;
 
+import de.iks.rataplan.exceptions.MalformedException;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -110,5 +111,10 @@ public class AppointmentRequestConfig {
 		this.lastUpdated = now;
 		if(this.version == null) this.version = 1;
 		else this.version++;
+	}
+	
+	public void assertCreationValid() {
+		if(decisionType == null || appointmentConfig == null) throw new MalformedException("Missing input fields");
+		appointmentConfig.assertValid();
 	}
 }
