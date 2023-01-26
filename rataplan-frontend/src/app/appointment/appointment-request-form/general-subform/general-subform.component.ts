@@ -2,10 +2,10 @@ import 'moment/locale/de';
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-general-subform',
@@ -16,7 +16,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   minDate: Date;
   maxDate: Date;
-  isEdit: boolean = false;
+  isEdit = false;
   isPageValid = true;
 
   generalSubform = new FormGroup({
@@ -94,7 +94,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   nextPage(){
     this.appointmentRequestFormService.submitValues();
     console.log(this.generalSubform.get('title'));
-    console.log(this.generalSubform.get('deadline'))
-    this.router.navigateByUrl("/create-vote/configurationOptions")
+    console.log(this.generalSubform.get('deadline'));
+    this.router.navigateByUrl('/create-vote/configurationOptions');
   }
 }

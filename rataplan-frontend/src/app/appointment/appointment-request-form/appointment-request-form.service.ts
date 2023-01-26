@@ -2,10 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { exhaustMap, Subject } from 'rxjs';
 
-import {AppointmentConfig, AppointmentModel} from '../../models/appointment.model';
+import { AppointmentConfig, AppointmentModel } from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
 import { BackendUrlService } from '../../services/backend-url-service/backend-url.service';
-import {GeneralSubformComponent} from "./general-subform/general-subform.component";
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +15,7 @@ export class AppointmentRequestFormService {
   resetFormObservable = new Subject<void>();
 
   appointmentRequest: AppointmentRequestModel = new AppointmentRequestModel();
+  appointmentConfig: AppointmentConfig = new AppointmentConfig();
   selectedDates: Date[] = [];
   selectedTimes: Date [] = [];
 
@@ -23,9 +23,8 @@ export class AppointmentRequestFormService {
   }
 
   setGeneralInputValue(title: string, description: string, deadline: Date) {
-    this.appointmentRequest.title = title.trim();
-    if (description !== null) description.trim();
-    this.appointmentRequest.description = description;
+    if (title !== null) this.appointmentRequest.title = title.trim();
+    if (description !== null) this.appointmentRequest.description = description.trim();
     this.appointmentRequest.deadline = deadline;
   }
 
@@ -39,6 +38,16 @@ export class AppointmentRequestFormService {
       appointments.push(date);
     }
     this.appointmentRequest.appointments = appointments;
+  }
+
+  setDateFormat(date: Date, time: string) {
+    let dateString = date.getFullYear() + '-' +
+        ('00' + (date.getMonth() + 1)).slice(-2) + '-' +
+        ('00' + date.getDate()).slice(-2);
+    if (time) {
+      dateString = dateString + ' ' + time + ':00';
+    }
+    return dateString;
   }
 
   // setTime(selectedTimes: string[]) {
@@ -80,11 +89,11 @@ export class AppointmentRequestFormService {
   }
 
   setAppointmentConfig(appointmentConfig: AppointmentConfig) {
-    this.appointmentRequest.appointmentRequestConfig.appointmentConfig = appointmentConfig;
+    this.appointmentConfig = appointmentConfig;
   }
 
   getAppointmentConfig(){
-    return this.appointmentRequest.appointmentRequestConfig.appointmentConfig;
+    return this.appointmentConfig;
   }
 
   createAppointmentRequest() {

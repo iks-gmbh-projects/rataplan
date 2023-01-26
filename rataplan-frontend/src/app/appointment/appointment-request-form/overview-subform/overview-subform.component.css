@@ -1,0 +1,10 @@
+.form-size {
+  min-width: 244px;
+  max-width: 500px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.next-button {
+  float: right;
+}

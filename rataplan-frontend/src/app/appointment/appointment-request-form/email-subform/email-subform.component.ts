@@ -2,11 +2,10 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
-import {Router} from "@angular/router";
-import {AppointmentRequestModel} from "../../../models/appointment-request.model";
 
 @Component({
   selector: 'app-email-subform',
@@ -69,7 +68,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   }
 
   backPage() {
-    this.router.navigateByUrl('create-vote/datepicker');
+    this.router.navigateByUrl('create-vote/configuration');
   }
 
   sendEndOfAppointment() {

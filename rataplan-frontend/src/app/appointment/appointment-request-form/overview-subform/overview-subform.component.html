@@ -1,40 +1,122 @@
+<div [formGroup]='voteOptions'>
+  <mat-card style='min-width: 400px'>
+    <mat-card-header>
+      <mat-card-title>Abstimmungoption</mat-card-title>
+    </mat-card-header>
+    <div>
+      <mat-checkbox (change)='addEndDate()'>Zeitraum über mehrere Tage?</mat-checkbox>
+    </div>
+    <div *ngIf='appointmentConfig.startDate && !appointmentConfig.endDate'>
+      <mat-form-field appearance='fill'>
+        <mat-label>Datum</mat-label>
+        <input autocomplete='off'
+               formControlName='startDateInput'
+               matInput
+               [matDatepicker]='picker'>
+        <mat-datepicker-toggle matSuffix
+                               [for]='picker'></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div *ngIf='appointmentConfig.endDate'>
+      <mat-form-field appearance='fill'>
+        <mat-label>Choose Date Range</mat-label>
+        <mat-date-range-input [rangePicker]='picker'>
+          <input matStartDate
+                 formControlName='startDateInput'
+                 placeholder='Start Date'>
+          <input matEndDate
+                 formControlName='endDateInput'
+                 placeholder='End Date'>
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix
+                               [for]='picker'></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+    <div *ngIf='appointmentConfig.startTime'>
+      <mat-checkbox (change)='addEndTime()'>Zeitraum über längerer Uhrzeit?</mat-checkbox>
+    </div>
+    <div *ngIf='appointmentConfig.startTime'>
+      <mat-form-field floatLabel='never'
+                      appearance='fill'>
+        <mat-label>{{ appointmentConfig.endTime ? "Startzeit" : "Uhrzeit"}}</mat-label>
+        <input matInput
+               formControlName='startTimeInput'
+               aria-label='24hr format'
+               [ngxTimepicker]='fullTime'
+               [format]='24'
+               readonly>
+        <ngx-material-timepicker #fullTime></ngx-material-timepicker>
+      </mat-form-field>
+    </div>
+    <div *ngIf='appointmentConfig.endTime'>
+      <mat-form-field floatLabel='never'
+                      appearance='fill'>
+        <mat-label>Endzeit</mat-label>
+        <input matInput
+               formControlName='endTimeInput'
+               aria-label='24hr format'
+               [ngxTimepicker]='fullTime'
+               [format]='24'
+               readonly>
+        <ngx-material-timepicker #fullTime></ngx-material-timepicker>
+      </mat-form-field>
+    </div>
+    <div *ngIf='appointmentConfig.description'>
+      <mat-form-field appearance='fill'
+                      class='form-size'>
+        <mat-label>Textfeld</mat-label>
+        <input type='text'
+               formControlName='descriptionInput'
+               autocomplete='off'
+               matInput>
+      </mat-form-field>
+    </div>
+    <mat-card-actions>
+      <button mat-button
+              (click)='clearContent()'>Clear
+      </button>
+      <button mat-button
+              (click)='addVoteOption()'>Add
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+<div style='margin-top: 20px; margin-bottom: 20px' *ngIf='appointments.length !== 0'>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Erstellte Abstimmungsoptionen: {{ appointments.length }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-list *ngFor='let voteOption of this.appointments'>
+      <mat-list-item>
+        <div>
+          {{  voteOption.startDate | date:'dd.MM.yyyy':'+0200':'de' }}
+            {{ voteOption.endDate | date:'- dd.MM.yyyy':'+0200':'de' }}
+          <button mat-icon-button
+                  (click)='editVoteOption(voteOption)'>
+            <mat-icon mat-list-icon>edit_square</mat-icon>
+          </button>
+          <button mat-icon-button
+                  (click)='deleteVoteOption(voteOption)'>
+            <mat-icon mat-list-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-expansion-panel>
+</div>
 <div>
-  <div *ngIf="startDate">
-  <p>Hier Startdatum</p>
+  <button mat-raised-button
+          (click)='backPage()'>Zurück
+  </button>
+  <button [disabled]='!isPageValid'
+          class='next-button'
+          type='submit'
+          color='primary'
+          mat-raised-button
+          (click)='nextPage()'>Weiter
+  </button>
 </div>
-<div *ngIf="startTime">
-  <p>Hier Startzeit</p>
-</div>
-<div *ngIf="description" >
-  <p>Hier Beschreibung</p>
-</div>
-<div *ngIf="link">
-  <p>Hier Link</p>
-</div>
-<div *ngIf="endDate">
-  <p>Hier Enddatum</p>
-</div>
-<div *ngIf="endTime">
-  <p>Hier Endzeit</p>
-</div>
-      <button
-              mat-raised-button
-              (click)="backPage()">Zurück
-      </button>
-      <button
-              [disabled]="!isPageValid"
-              class="next-button"
-              type="submit"
-              color="primary"
-              mat-raised-button
-              (click)="nextPage()">Weiter
-      </button>
-</div>
-{{startDate}}
-{{startTime}}
-{{description}}
-{{link}}
-{{endDate}}
-{{endTime}}
-<p>hello</p>
-
