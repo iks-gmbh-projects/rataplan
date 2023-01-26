@@ -25,6 +25,7 @@ public class CookieBuilder {
             long millisUntilExpiration = tokenService.getTokenExpiration(token).getTime() -new Date().getTime();
             secondsUntilExpiration = millisUntilExpiration / 1000;
         }
-        return JWT_TOKEN + "=" + token + "; Max-Age=" + secondsUntilExpiration + "; Path=/; " + ("true".equals(env.getProperty("RATAPLAN.PROD")) ? "Secure" : "") + "; HttpOnly; SameSite=strict";
+        String domain = env.getProperty("rataplan.domain", (String)null);
+        return JWT_TOKEN + "=" + token + "; Max-Age=" + secondsUntilExpiration + "; Path=/; " + ("true".equals(env.getProperty("RATAPLAN.PROD")) ? "Secure" : "") + "; HttpOnly; SameSite=strict" + (domain != null ? "; Domain="+domain : "");
     }
 }
