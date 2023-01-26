@@ -15,7 +15,7 @@
   <mat-divider class="bottomspace"></mat-divider>
   <mat-stepper #stepper="matStepper" orientation="vertical">
     <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title" #step="matStep">
-      <app-survey-form-page [questionGroup]="questionGroup" [isFirst]="page==0" (onSubmit)="pageSubmit(stepper, $event)" [step]="step"></app-survey-form-page>
+      <app-survey-form-page [questionGroup]="questionGroup" [isFirst]="page==0" (onSubmit)="pageSubmit(stepper, $event)" (formAfterViewInit)="step.stepControl=$event"></app-survey-form-page>
     </mat-step>
     <mat-step label="Fertig">
       <button style="margin:1ex;" mat-raised-button color="basic" matStepperPrevious><mat-icon>navigate_before</mat-icon></button>

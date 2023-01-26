@@ -2,7 +2,6 @@ import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from
 import { AbstractControl, NgForm } from '@angular/forms';
 import { Answer, Checkbox, Question, QuestionGroup } from '../../survey.model';
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
-import { MatStep } from "@angular/material/stepper";
 
 @Component({
   selector: 'app-survey-form-page',
@@ -15,14 +14,14 @@ export class PageComponent implements AfterViewInit{
   @Input() public preview: boolean = false;
   @Input() public isFirst: boolean = false;
   @Output() public readonly onSubmit = new EventEmitter<{ [key: string | number]: Answer }>();
-  @Input() public step?: MatStep;
+  @Output() public readonly formAfterViewInit = new EventEmitter<AbstractControl>();
   @ViewChild('form') public form?: NgForm;
 
   constructor(public readonly errorMessageService: FormErrorMessageService) {
   }
 
   ngAfterViewInit(): void {
-    if(this.step) this.step.stepControl = this.form!.form;
+    this.formAfterViewInit.emit(this.form!.form);
   }
 
   public submit(form: NgForm) {
