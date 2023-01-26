@@ -1,27 +1,26 @@
-<form [formGroup]='emailSubform'>
-  <div>
-    <mat-form-field appearance='fill'>
-      <mat-label>Name</mat-label>
-      <input matInput
-             autocomplete='off'
-             type='text'
-             formControlName='name'>
-    </mat-form-field>
-  </div>
-  <div>
-    <mat-form-field appearance='fill'>
-      <mat-label>E-Mail</mat-label>
-      <input matInput
-             autocomplete='off'
-             formControlName='email'>
-    </mat-form-field>
-    <mat-error *ngIf="!emailSubform.get('email')?.valid && emailSubform.get('email')?.touched">
-      Bitte geben Sie eine gültige Email an
-    </mat-error>
-  </div>
-  <div>
-    <mat-checkbox>Für das nächste Mal speichern</mat-checkbox>
-  </div>
+<form [formGroup]="emailSubform">
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input matInput
+           autocomplete="off"
+           type="text"
+           formControlName="name">
+    <mat-error>{{errorMessageService.genericFormError(emailSubform.get('name'))}}</mat-error>
+  </mat-form-field>
+</div>
+<div>
+  <mat-form-field appearance="fill">
+    <mat-label>E-Mail</mat-label>
+    <input matInput
+           autocomplete="off"
+           formControlName="email">
+    <mat-error>{{errorMessageService.genericFormError(emailSubform.get('email'))}}</mat-error>
+  </mat-form-field>
+</div>
+<div>
+  <mat-checkbox>Für das nächste Mal speichern</mat-checkbox>
+</div>
   <div>
     <mat-form-field appearance='fill'>
       <mat-label>Personen per E-Mail einladen</mat-label>

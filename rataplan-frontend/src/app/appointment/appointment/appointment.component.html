@@ -45,7 +45,9 @@
       <mat-label>Name</mat-label>
       <input [(ngModel)]='memberName'
              matInput
-             autocomplete='off'>
+             autocomplete='off'
+             #nameField="ngModel">
+      <mat-error>{{errorMessageService.genericFormError(nameField.control)}}</mat-error>
     </mat-form-field>
   </div>
   <div>

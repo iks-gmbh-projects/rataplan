@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../../../validator/validators";
 
 @Component({
   selector: 'app-email-subform',
@@ -19,13 +21,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   consigneeList: string[] = [];
 
   emailSubform = new FormGroup({
-    'name': new FormControl(null),
+    'name': new FormControl(null, ExtraValidators.containsSomeWhitespace),
     'email': new FormControl(null, Validators.email),
     'consigneeList': new FormControl(null, Validators.email)
   });
 
   constructor(private appointmentRequestFormService: AppointmentRequestFormService,
-    private router: Router) {
+              public readonly errorMessageService: FormErrorMessageService, private router: Router) {
   }
 
   ngOnInit(): void {

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { exhaustMap, Subject } from 'rxjs';
 
+import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentConfig, AppointmentModel } from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
 import { BackendUrlService } from '../../services/backend-url-service/backend-url.service';
@@ -97,7 +98,6 @@ export class AppointmentRequestFormService {
   }
 
   createAppointmentRequest() {
-    this.setSelectedDates(this.selectedDates);
     return this.urlService.appointmentURL$.pipe(
       exhaustMap(baseURL => {
         return this.http.post<AppointmentRequestModel>(

@@ -14,3 +14,11 @@ export class User {
   }
 
 }
+
+export type FrontendUser = {
+  username?: string,
+  id?: number,
+  mail?: string,
+  password: string,
+  displayname?: string,
+};

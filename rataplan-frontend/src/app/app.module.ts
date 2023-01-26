@@ -42,7 +42,6 @@ import { EmailSubformComponent } from './appointment/appointment-request-form/em
 import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
 import { LinkSubformComponent } from './appointment/appointment-request-form/link-subform/link-subform.component';
 import { OverviewSubformComponent } from './appointment/appointment-request-form/overview-subform/overview-subform.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { HomepageComponent } from './homepage/homepage.component';
@@ -55,6 +54,7 @@ import { MainNavComponent } from './main-nav/main-nav.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 registerLocaleData(localeDE);
 

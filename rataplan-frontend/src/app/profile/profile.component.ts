@@ -4,6 +4,8 @@ import {FormControl, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ChangeEmailService} from "../services/change-profile-service/change-email-service";
 import {ChangeDisplayNameService} from "../services/change-profile-service/change-displayName-service";
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../validator/validators";
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +19,8 @@ export class ProfileComponent implements OnInit {
               private route: ActivatedRoute,
               private changeEmailService: ChangeEmailService,
               private updateUser: LoginService,
-              private changeDisplayNameService: ChangeDisplayNameService) { }
+              private changeDisplayNameService: ChangeDisplayNameService,
+              public readonly errorMessageService: FormErrorMessageService) { }
 
   ngOnInit(): void {
   }
@@ -37,26 +40,9 @@ export class ProfileComponent implements OnInit {
     enabled:false
   }
 
-  displayNameField = new FormControl('', [Validators.required, Validators.minLength(3)])
-  emailField = new FormControl('', [Validators.required , Validators.minLength(3), this.loginService.cannotContainWhitespace, Validators.email])
+  displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace])
+  emailField = new FormControl('', [Validators.required , Validators.email])
 
-
-
-
-  displayNameFieldError(){
-    if (this.displayNameField.hasError('cannotContainWhitespace')){
-      return 'Zeichen nicht erlaubt'
-    }
-    return this.displayNameField.hasError("minLength") ? '' : 'Der Anzeigename muss mindstens 3 Zeichen lang sein!'
-  }
-  emailFieldError(){
-    if (this.emailField.hasError('cannotContainWhitespace')){
-      return 'Zeichen nicht erlaubt'
-    }else if (this.emailField.hasError('email')){
-      return 'Keine valide Email'
-    }
-    return this.emailField.hasError('minLength') ? 'Diese Email ist zu kurz!' : ''
-  }
   redirect(){
     this.router.navigateByUrl('/change-password')
   }
@@ -64,7 +50,7 @@ export class ProfileComponent implements OnInit {
   changeDisplayName(){
       const displayName = this.displayNameField.value
     if (this.displayNameField.valid) {
-      this.changeDisplayNameService.changeDisplayName(displayName).subscribe(res => {
+      this.changeDisplayNameService.changeDisplayName(displayName).subscribe(() => {
         this.displayNameField.markAsUntouched()
         this.displayNameField.setValue('');
         this.updateUser.getUserData().subscribe(res => {
@@ -79,7 +65,7 @@ export class ProfileComponent implements OnInit {
   changeEmail() {
     const email = this.emailField.value
     if (this.emailField.valid){
-      this.changeEmailService.changeEmail(email).subscribe({next: res => {
+      this.changeEmailService.changeEmail(email).subscribe({next: () => {
           this.emailField.setValue('');
           this.emailField.markAsUntouched()
           this.updateUser.getUserData().subscribe(res => {
