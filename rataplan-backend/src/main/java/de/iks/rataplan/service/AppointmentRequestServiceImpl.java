@@ -88,7 +88,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
             return appointmentRequest;
         }
 
-        Integer requestId;
+        int requestId;
         try {
             requestId = Integer.parseInt(participationToken);
         } catch (NumberFormatException e) {
@@ -192,7 +192,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 	public void anonymizeAppointmentRequests(Integer userId) {
 		getAppointmentRequestsForUser(userId)
 			.stream()
-			.peek(r -> r.setBackendUserId(null))
+			.peek(r -> r.setUserId(null))
 			.peek(r -> r.setOrganizerName(null))
 			.peek(r -> r.setOrganizerMail(null))
 			.forEach(appointmentRequestRepository::save);
