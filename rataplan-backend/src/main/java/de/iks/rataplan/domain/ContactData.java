@@ -1,5 +1,7 @@
 package de.iks.rataplan.domain;
 
+import de.iks.rataplan.exceptions.MalformedException;
+
 public class ContactData {
 	
 	private String subject;
@@ -53,4 +55,10 @@ public class ContactData {
 		return builder.toString();
 	}
 
+	public void assertValid() {
+		if(senderMail == null || senderMail.trim().isEmpty() ||
+			subject == null || subject.trim().isEmpty() ||
+			content == null || content.trim().isEmpty()
+		) throw new MalformedException("Invalid or missing fields");
+	}
 }

@@ -177,7 +177,7 @@ public class Controller {
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @RequestMapping(value = "/contacts", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Boolean> contact(@RequestBody ContactData contactData) {
-
+        contactData.assertValid();
         generalControllerService.sendMailToContact(contactData);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
