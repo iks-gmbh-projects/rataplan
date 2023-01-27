@@ -1,6 +1,6 @@
 <div class="form-container">
   <h1 class="headline">Registrieren</h1>
-  <form [formGroup]="registerForm">
+  <form [formGroup]="registerForm" (ngSubmit)="submit()">
     <div class="username">
       <mat-form-field appearance="fill">
         <mat-label>Benutzername</mat-label>
@@ -43,7 +43,7 @@
       </mat-form-field>
     </div>
     <div class="submit-container">
-      <button class="submit-button" mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="submit()">
+      <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="registerForm.invalid">
         Registrieren
       </button>
     </div>

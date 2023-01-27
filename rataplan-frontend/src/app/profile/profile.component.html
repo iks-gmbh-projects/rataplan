@@ -23,7 +23,7 @@
     <button type="button" class="submit-button" mat-raised-button color="primary"  [disabled]="emailField.invalid" (click)="changeEmail()">Ändern</button>
   </form>
   <div>
-    <button type="button" mat-raised-button color="primary" (click)="redirect()">Password ändern</button>
+    <button type="button" mat-raised-button color="primary" routerLink="/change-password">Password ändern</button>
     <button type="button" mat-raised-button color="warn" routerLink="/delete-profile">Profil löschen</button>
   </div>
 </div>

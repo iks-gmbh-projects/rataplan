@@ -1,4 +1,4 @@
-<form class="form-container" [formGroup]="contact">
+<form class="form-container" [formGroup]="contact" (ngSubmit)="submit()">
   <div class="email">
     <mat-form-field appearance="fill">
       <mat-label>E-Mail</mat-label>
@@ -20,7 +20,7 @@
       <mat-error>{{errorMessageService.genericFormError(content)}}</mat-error>
     </mat-form-field>
   </div>
-  <button class="submit-button" mat-raised-button color="primary" [disabled]="contact.invalid" (click)="submit()">
+  <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="contact.invalid">
     Abschicken
   </button>
 </form>
