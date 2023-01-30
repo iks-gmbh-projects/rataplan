@@ -5,9 +5,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
+import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../../../validator/validators';
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
-import { ExtraValidators } from "../../../validator/validators";
-import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-general-subform',
@@ -19,7 +19,6 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   minDate: Date;
   maxDate: Date;
   isEdit = false;
-  isPageValid = true;
 
   generalSubform = new FormGroup({
     'title': new FormControl(null, [Validators.required, ExtraValidators.containsSomeWhitespace]),

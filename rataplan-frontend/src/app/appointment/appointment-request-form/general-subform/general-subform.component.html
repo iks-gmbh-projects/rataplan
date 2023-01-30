@@ -62,7 +62,7 @@
       </div>
     </div>
   </div>
-  <button [disabled]="!isPageValid"
+  <button [disabled]="this.generalSubform.invalid"
           class="next-button"
           type="button"
           color="primary"

@@ -3,6 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AppointmentConfig } from '../../../models/appointment.model';
+import { ExtraValidators } from '../../../validator/validators';
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
 
 @Component({
@@ -21,11 +22,11 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
     isDescriptionChecked: [false],
     isUrlChecked: [false],
   });
-  isPageValid = true;
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private appointmentRequestFormService: AppointmentRequestFormService) {
+    this.configForm.setValidators(ExtraValidators.filterCountMin(1));
   }
 
   ngOnInit(): void {
@@ -36,6 +37,14 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
       isDescriptionChecked: this.appointmentConfig.description,
       isUrlChecked: this.appointmentConfig.url,
     });
+
+
+    this.configForm.valueChanges.pipe().subscribe(value => {
+      if (value) {
+        console.log(value);
+      }
+    });
+
   }
 
   ngOnDestroy(): void {

@@ -3,8 +3,8 @@
     <mat-card-header>
       <mat-card-title>Abstimmungoption</mat-card-title>
     </mat-card-header>
-    <div>
-      <mat-checkbox (change)='addEndDate()'>Zeitraum über mehrere Tage?</mat-checkbox>
+    <div *ngIf='appointmentConfig.startDate'>
+      <mat-checkbox (change)='addEndDate()' [checked]='appointmentConfig.endDate'>Zeitraum über mehrere Tage?</mat-checkbox>
     </div>
     <div *ngIf='appointmentConfig.startDate && !appointmentConfig.endDate'>
       <mat-form-field appearance='fill'>
@@ -35,7 +35,7 @@
       </mat-form-field>
     </div>
     <div *ngIf='appointmentConfig.startTime'>
-      <mat-checkbox (change)='addEndTime()'>Zeitraum über längerer Uhrzeit?</mat-checkbox>
+      <mat-checkbox (change)='addEndTime()' [checked]='appointmentConfig.endTime'>Zeitraum über längerer Uhrzeit?</mat-checkbox>
     </div>
     <div *ngIf='appointmentConfig.startTime'>
       <mat-form-field floatLabel='never'
@@ -73,6 +73,16 @@
                matInput>
       </mat-form-field>
     </div>
+    <div *ngIf='appointmentConfig.url'>
+      <mat-form-field appearance='fill'
+                      class='form-size'>
+        <mat-label>URL</mat-label>
+        <input type='text'
+               formControlName='linkInput'
+               autocomplete='off'
+               matInput>
+      </mat-form-field>
+    </div>
     <mat-card-actions>
       <button mat-button
               (click)='clearContent()'>Clear
@@ -91,20 +101,29 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-list *ngFor='let voteOption of this.appointments'>
-      <mat-list-item>
-        <div>
-          {{  voteOption.startDate | date:'dd.MM.yyyy':'+0200':'de' }}
-            {{ voteOption.endDate | date:'- dd.MM.yyyy':'+0200':'de' }}
-          <button mat-icon-button
-                  (click)='editVoteOption(voteOption)'>
-            <mat-icon mat-list-icon>edit_square</mat-icon>
-          </button>
-          <button mat-icon-button
-                  (click)='deleteVoteOption(voteOption)'>
-            <mat-icon mat-list-icon>delete</mat-icon>
-          </button>
+        <div *ngIf='appointmentConfig.startDate'>
+          {{ voteOption.startDate | date:'dd.MM.yyyy':'+0200':'de' }}
+          {{ voteOption.endDate | date:'- dd.MM.yyyy':'+0200':'de' }}
         </div>
-      </mat-list-item>
+        <div *ngIf='this.appointmentConfig.startTime'>
+          <span *ngIf='this.voteOption.startDate && this.voteOption.startDate.length === 11'>{{ voteOption.startDate | date:'HH:mm' }} Uhr</span>
+          <span *ngIf='this.voteOption.startDate && this.voteOption.startDate.length === 11 && this.appointmentConfig.endTime'>{{ voteOption.endDate | date:'- HH:mm' }} Uhr</span>
+        </div>
+      <div *ngIf='this.appointmentConfig.description'>
+        {{ voteOption.description }}
+      </div>
+      <div *ngIf='this.appointmentConfig.url'>
+        <a [href]='voteOption.url'>Link</a>
+      </div>
+<!--          <button mat-icon-button-->
+<!--                  (click)='editVoteOption(voteOption)'>-->
+<!--            <mat-icon mat-list-icon>edit_square</mat-icon>-->
+<!--          </button>-->
+<!--          <button mat-icon-button-->
+<!--                  (click)='deleteVoteOption(voteOption)'>-->
+<!--            <mat-icon mat-list-icon>delete</mat-icon>-->
+<!--          </button>-->
+
     </mat-list>
   </mat-expansion-panel>
 </div>
@@ -112,8 +131,8 @@
   <button mat-raised-button
           (click)='backPage()'>Zurück
   </button>
-  <button [disabled]='!isPageValid'
-          class='next-button'
+  <button [disabled]='this.appointments.length == 0'
+          class='right'
           type='submit'
           color='primary'
           mat-raised-button

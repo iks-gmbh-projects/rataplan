@@ -25,7 +25,6 @@ import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
-import { DeleteProfileComponent } from "./delete-profile/delete-profile.component";
 
 // function matcherFunction(url: UrlSegment[]) {
 //

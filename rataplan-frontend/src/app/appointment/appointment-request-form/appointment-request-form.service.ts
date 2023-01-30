@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { exhaustMap, Subject } from 'rxjs';
 
-import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentConfig, AppointmentModel } from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
 import { BackendUrlService } from '../../services/backend-url-service/backend-url.service';
@@ -24,8 +23,10 @@ export class AppointmentRequestFormService {
   }
 
   setGeneralInputValue(title: string, description: string, deadline: Date) {
-    if (title !== null) this.appointmentRequest.title = title.trim();
-    if (description !== null) this.appointmentRequest.description = description.trim();
+    console.log(deadline);
+    console.log(description);
+    if (title) this.appointmentRequest.title = title.trim();
+    if (description) this.appointmentRequest.description = description.trim();
     this.appointmentRequest.deadline = deadline;
   }
 
@@ -41,10 +42,15 @@ export class AppointmentRequestFormService {
     this.appointmentRequest.appointments = appointments;
   }
 
-  setDateFormat(date: Date, time: string) {
-    let dateString = date.getFullYear() + '-' +
-        ('00' + (date.getMonth() + 1)).slice(-2) + '-' +
-        ('00' + date.getDate()).slice(-2);
+  setDateFormat(date: string, time: string) {
+    console.log(date);
+    let dateString = '';
+    if (date) {
+      const dateValue = new Date(date);
+      dateString = dateValue.getFullYear() + '-' +
+      ('00' + (dateValue.getMonth() + 1)).slice(-2) + '-' +
+      ('00' + dateValue.getDate()).slice(-2);
+    }
     if (time) {
       dateString = dateString + ' ' + time + ':00';
     }
@@ -110,5 +116,14 @@ export class AppointmentRequestFormService {
           });
       })
     );
+  }
+
+  getSelectedConfig() {
+    let count = 0;
+    Object.values(this.appointmentConfig).forEach(value => {
+      if (value)
+        count++;
+    });
+    return count;
   }
 }

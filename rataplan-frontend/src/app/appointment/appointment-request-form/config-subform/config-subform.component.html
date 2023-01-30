@@ -28,7 +28,7 @@
       mat-raised-button
       (click)='backPage()'>Zurück
     </button>
-    <button [disabled]='!isPageValid'
+    <button [disabled]='this.configForm.invalid'
             class='right'
             type='button'
             color='primary'
