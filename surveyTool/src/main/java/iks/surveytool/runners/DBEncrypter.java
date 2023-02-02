@@ -1,7 +1,7 @@
 package iks.surveytool.runners;
 
 import iks.surveytool.entities.*;
-import iks.surveytool.repositories.SurveyRepository;
+import iks.surveytool.repositories.*;
 import iks.surveytool.services.CryptoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -17,63 +17,48 @@ import java.util.function.Supplier;
 @Transactional
 public class DBEncrypter implements ApplicationRunner {
     private final SurveyRepository surveyRepository;
+    private final QuestionGroupRepository questionGroupRepository;
+    private final QuestionRepository questionRepository;
+    private final CheckboxRepository checkboxRepository;
+    private final AnswerRepository answerRepository;
     private final CryptoService cryptoService;
+    
     @Override
     public void run(ApplicationArguments args) {
-        for(Survey survey:surveyRepository.findAll()) {
-            boolean altered = ensureEncrypted(
-                survey::getName,
-                survey::setName
-            );
-            altered |= ensureEncrypted(
-                survey::getDescription,
-                survey::setDescription
-            );
-            for(QuestionGroup questionGroup: survey.getQuestionGroups()) {
-                altered |= ensureEncrypted(
-                    questionGroup::getTitle,
-                    questionGroup::setTitle
-                );
-                for(Question question: questionGroup.getQuestions()) {
-                    altered |= ensureEncrypted(
-                        question::getText,
-                        question::setText
-                    );
-                    CheckboxGroup checkboxGroup = question.getCheckboxGroup();
-                    if(checkboxGroup == null) continue;
-                    for(Checkbox checkbox: checkboxGroup.getCheckboxes()) {
-                        altered |= ensureEncrypted(
-                            checkbox::getText,
-                            checkbox::setText
-                        );
-                    }
-                }
-            }
-            for(SurveyResponse surveyResponse: survey.getSurveyResponses()) {
-                for(Answer answer: surveyResponse.getAnswers()) {
-                    altered |= ensureEncrypted(
-                        answer::getText,
-                        answer::setText
-                    );
-                }
-            }
-            if(altered) {
-                surveyRepository.save(survey);
-            }
-        }
+        surveyRepository.findAllUnencrypted()
+            .peek(survey -> {
+                ensureEncrypted(survey::getName, survey::setName);
+                ensureEncrypted(survey::getDescription, survey::setDescription);
+            })
+            .forEach(surveyRepository::save);
         surveyRepository.flush();
+        questionGroupRepository.findAllUnencrypted()
+            .peek(questionGroup -> ensureEncrypted(questionGroup::getTitle, questionGroup::setTitle))
+            .forEach(questionGroupRepository::save);
+        questionGroupRepository.flush();
+        questionRepository.findAllUnencrypted()
+            .peek(question -> ensureEncrypted(question::getText, question::setText))
+            .forEach(questionRepository::save);
+        questionRepository.flush();
+        checkboxRepository.findAllUnencrypted()
+            .peek(checkbox -> ensureEncrypted(checkbox::getText, checkbox::setText))
+            .forEach(checkboxRepository::save);
+        checkboxRepository.flush();
+        answerRepository.findAllUnencrypted()
+            .peek(answer -> ensureEncrypted(answer::getText, answer::setText))
+            .forEach(answerRepository::save);
+        answerRepository.flush();
     }
     
-    private boolean ensureEncrypted(
+    private void ensureEncrypted(
         Supplier<? extends EncryptedString> sup,
         Consumer<? super EncryptedString> con
     ) {
         final EncryptedString str = sup.get();
-        if(str == null || str.isEncrypted()) return false;
+        if (str == null || str.isEncrypted()) return;
         con.accept(new EncryptedString(
             cryptoService.encryptDB(str.getString()),
             true
         ));
-        return true;
     }
 }
