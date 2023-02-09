@@ -45,7 +45,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/appointmentRequests/{participationToken}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/appointmentRequests/{participationToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AppointmentRequestDTO> getAppointmentRequestById(@PathVariable String participationToken,
                                                                            @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
@@ -72,7 +72,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/appointmentRequests/edit/{editToken}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/appointmentRequests/edit/{editToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AppointmentRequestDTO> getAppointmentRequestByIdForEdit(@PathVariable String editToken,
                                                                                   @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
@@ -83,7 +83,7 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentRequestDTO.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/appointmentRequests", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/appointmentRequests", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AppointmentRequestDTO> createAppointmentRequest(
             @RequestBody AppointmentRequestDTO appointmentRequestDTO,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
@@ -115,7 +115,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AppointmentMemberDTO> addAppointmentMember(@PathVariable String participationToken,
                                                                      @RequestBody AppointmentMemberDTO appointmentMemberDTO,
                                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
@@ -129,7 +129,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers/{memberId}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> deleteAppointmentMember(@PathVariable String participationToken, @PathVariable Integer memberId,
                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
@@ -142,7 +142,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers/{memberId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AppointmentMemberDTO> updateAppointmentMember(@PathVariable String participationToken,
                                                                         @PathVariable Integer memberId, @RequestBody AppointmentMemberDTO appointmentMemberDTO,
                                                                         @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
@@ -154,9 +154,9 @@ public class Controller {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/appointmentRequests/creations", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/users/appointmentRequests/creations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<AppointmentRequestDTO>> getAppointmentRequestsCreatedByUser(
-            @CookieValue(value = JWT_COOKIE_NAME, required = true) String jwtToken) {
+            @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
 
         List<AppointmentRequestDTO> appointmentRequestsDTO = appointmentRequestControllerService.getAppointmentRequestsCreatedByUser(jwtToken);
         return new ResponseEntity<>(appointmentRequestsDTO, HttpStatus.OK);
@@ -165,9 +165,9 @@ public class Controller {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/users/appointmentRequests/participations", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/users/appointmentRequests/participations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<AppointmentRequestDTO>> getAppointmentRequestsWhereUserParticipates(
-            @CookieValue(value = JWT_COOKIE_NAME, required = true) String jwtToken) {
+            @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
 
         List<AppointmentRequestDTO> appointmentRequestsDTO = appointmentRequestControllerService.getAppointmentRequestsWhereUserParticipates(jwtToken);
         return new ResponseEntity<>(appointmentRequestsDTO, HttpStatus.OK);
@@ -175,7 +175,7 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/contacts", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/contacts", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Boolean> contact(@RequestBody ContactData contactData) {
         contactData.assertValid();
         generalControllerService.sendMailToContact(contactData);
