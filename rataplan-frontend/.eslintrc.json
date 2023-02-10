@@ -34,11 +34,25 @@
       "error",
       "always"
     ],
-    "object-curly-spacing": ["error", "always", {
-      "objectsInObjects": false
-    }],
+    "object-curly-spacing": [
+      "error",
+      "always",
+      {
+        "objectsInObjects": false
+      }
+    ],
     "unused-imports/no-unused-imports": "error",
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "extends": [
+        "plugin:ngrx/recommended"
+      ]
+    }
+  ]
 }

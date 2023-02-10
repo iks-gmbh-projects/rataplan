@@ -51,6 +51,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { AppCommonModule } from './app-common.module';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 registerLocaleData(localeDE);
 
@@ -110,6 +112,8 @@ registerLocaleData(localeDE);
     MatBadgeModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
