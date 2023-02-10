@@ -1,54 +1,44 @@
-import { Component, OnInit } from '@angular/core';
-import {
-
-  FormBuilder,
-  FormControl,
-
-  Validators
-} from "@angular/forms";
-
-import {LoginService} from "../services/login.service/login.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {Subject} from "rxjs";
-import {User, FrontendUser} from "../services/login.service/user.model";
-import { ActivatedRoute, Router } from "@angular/router";
-import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
-import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { Subject, Subscription } from "rxjs";
+import { LoginData, User } from "../services/login.service/user.model";
+import { ActivatedRoute } from "@angular/router";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
+import { Store } from "@ngrx/store";
+import { appState } from "../app.reducers";
+import { AuthActions, LoginAction } from "../authentication/auth.actions";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Actions, ofType } from "@ngrx/effects";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
 
-  submitted: boolean = false;
   hide = true;
   isLoading = false;
-  isLoggedIn = false;
   user = new Subject<User>()
   inputField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
   password = new FormControl('', [Validators.required]);
 
   loginForm = this.formBuilder.group({
-      inputField: this.inputField,
-      password: this.password
-    }
-  );
+    inputField: this.inputField,
+    password: this.password
+  });
 
-  loggedIn() {
-    return this.isLoggedIn;
-  }
-
+  private busySub?: Subscription;
+  private errorSub?: Subscription;
 
   login() {
     if (this.inputField.valid && this.password.valid) {
 
 
-      let frontendUser: FrontendUser = {
+      let frontendUser: LoginData = {
         username: this.inputField.value,
         password: this.password.value
 
@@ -60,21 +50,7 @@ export class LoginComponent implements OnInit {
         }
       }
       this.isLoading = true;
-      this.loginService.loginUser(frontendUser).subscribe(responseData => {
-        console.log(responseData);
-        this.userdataStorageService.id = responseData.id;
-        this.userdataStorageService.username = responseData.username;
-        this.userdataStorageService.mail = responseData.mail;
-        this.userdataStorageService.displayName = responseData.displayname;
-        this.localStorage.setLocalStorage(responseData);
-        this.router.navigateByUrl(this.activatedRoute.snapshot.queryParams['redirect'] || "/");
-        this.isLoggedIn = true;
-        this.isLoading = false;
-      }, error => {
-        this.handleError(error);
-        console.log(error);
-        this.isLoading = false;
-      })
+      this.store.dispatch(new LoginAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
     }
   }
 
@@ -95,16 +71,31 @@ export class LoginComponent implements OnInit {
   // }
 
 
-  constructor(private formBuilder: FormBuilder,
-              private loginService: LoginService,
-              private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private localStorage: LocalstorageService,
-              private userdataStorageService: userdataStorageService,
-              public readonly errorMessageService: FormErrorMessageService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private store: Store<appState>,
+    private actions$: Actions,
+    // private router: Router,
+    private activatedRoute: ActivatedRoute,
+    public readonly errorMessageService: FormErrorMessageService
+  ) {
   }
 
   ngOnInit(): void {
+    this.busySub = this.store.select("auth").pipe(
+      map(auth => auth.busy)
+    ).subscribe(busy => {
+      this.isLoading = busy;
+    });
+
+    this.errorSub = this.actions$.pipe(
+      ofType(AuthActions.LOGIN_ERROR_ACTION)
+    ).subscribe(err => this.handleError(err))
+  }
+
+  ngOnDestroy() {
+    this.busySub?.unsubscribe();
+    this.errorSub?.unsubscribe();
   }
 }
 

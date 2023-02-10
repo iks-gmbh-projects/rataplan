@@ -54,6 +54,8 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { environment } from "../environments/environment";
+import { appReducers } from "./app.reducers";
+import { appEffects } from "./app.effects";
 
 registerLocaleData(localeDE);
 
@@ -113,8 +115,8 @@ registerLocaleData(localeDE);
     MatBadgeModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
-    StoreModule.forRoot({}),
-    EffectsModule.forRoot([]),
+    StoreModule.forRoot(appReducers),
+    EffectsModule.forRoot(appEffects),
     ...environment.devModules,
   ],
   providers: [

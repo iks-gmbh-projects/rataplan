@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { RegisterService } from '../services/register-service/register.service';
 import { ActivatedRoute, Router } from "@angular/router";
-import { LocalstorageService } from "../services/localstorage-service/localstorage.service";
-import { FrontendUser } from "../services/login.service/user.model";
-import { userdataStorageService } from "../services/userdata-storage-service/userdata-storage.service";
+import { RegisterData } from "../services/login.service/user.model";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
+import { appState } from "../app.reducers";
+import { Store } from "@ngrx/store";
+import { RegisterAction } from "../authentication/auth.actions";
+import { Subscription } from "rxjs";
+import { map } from "rxjs/operators";
 
 
 @Component({
@@ -15,7 +18,7 @@ import { ExtraValidators } from "../validator/validators";
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
 
   username: FormControl = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace],
     ctrl => this.registerService.usernameExists(ctrl));
@@ -37,38 +40,41 @@ export class RegisterComponent implements OnInit {
     displayname: this.displayname,
   });
 
+  private busySub?: Subscription;
+
   constructor(
     private formBuilder: FormBuilder,
     private registerService: RegisterService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private localStorage: LocalstorageService,
-    private userdataStorageService: userdataStorageService,
+    private store: Store<appState>,
     public readonly errorMessages: FormErrorMessageService
   ) {
   }
 
   ngOnInit(): void {
+    this.busySub = this.store.select("auth").pipe(
+      map(auth => auth.busy)
+    ).subscribe(busy => {
+      if (busy) this.registerForm.disable();
+      else this.registerForm.enable();
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.busySub?.unsubscribe();
   }
 
   submit() {
     this.username.updateValueAndValidity();
-    const frontendUser: FrontendUser = {
+    const frontendUser: RegisterData = {
       username: this.username.value,
       mail: this.mail.value,
       password: this.password.value,
       displayname: this.displayname.value,
     };
 
-    this.registerService.registerUser(frontendUser).subscribe(responseData => {
-      console.log(responseData);
-      this.userdataStorageService.id = responseData.id;
-      this.userdataStorageService.username = responseData.username;
-      this.userdataStorageService.mail = responseData.mail;
-      this.userdataStorageService.displayName = responseData.displayname;
-      this.localStorage.setLocalStorage(responseData);
-      this.router.navigateByUrl(this.activatedRoute.snapshot.queryParams['redirect'] || "/");
-    });
+    this.store.dispatch(new RegisterAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
 
     //should route to profile, which doesnt exist yet
     //this.router.navigateByUrl('/');

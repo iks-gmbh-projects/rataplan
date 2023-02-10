@@ -7,8 +7,8 @@
     <mat-nav-list>
       <a mat-list-item routerLink="/" (click)="drawer.close()">Home</a>
       <a mat-list-item routerLink="/create-vote" (click)="drawer.close()">Neue Abstimmung</a>
-      <a *ngIf="!localstorageService.isLoggedIn()" mat-list-item routerLink="/register" (click)="drawer.close()">Registrieren</a>
-      <a *ngIf="!localstorageService.isLoggedIn()" mat-list-item routerLink="/login" (click)="drawer.close()">Login</a>
+      <a *ngIf="!currentUser" mat-list-item routerLink="/register" (click)="drawer.close()">Registrieren</a>
+      <a *ngIf="!currentUser" mat-list-item routerLink="/login" (click)="drawer.close()">Login</a>
       <a mat-list-item routerLink="/survey" (click)="drawer.close()">Umfragen</a>
       <a mat-list-item routerLink="/terms-and-conditions" (click)="drawer.close()">AGB</a>
       <a mat-list-item routerLink="/imprint" (click)="drawer.close()">Impressum</a>
@@ -28,7 +28,7 @@
       <span class="fillRemainingSpace" ></span>
       <button  (click)="onClick()" [matMenuTriggerFor]="menu" #trigger = "matMenuTrigger" class="loginIcon" mat-icon-button color="FFFFFF" aria-label="Example icon button with a home icon">
         <mat-icon>perm_identity</mat-icon>
-        {{localstorageService.isLoggedIn() | displayName | async}}
+        {{currentUser?.displayname || ""}}
         <!--dirty hack as there is no decent way to get accurate data about the logged in user through a service-->
       </button>
       <mat-menu #menu="matMenu" >

@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { FrontendUser } from '../login.service/user.model';
 import { BackendUrlService } from "../backend-url-service/backend-url.service";
 import { exhaustMap, Observable, switchMap, timer } from "rxjs";
 import { AbstractControl, ValidationErrors } from "@angular/forms";
@@ -15,22 +14,12 @@ export class RegisterService {
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }
 
-  public registerUser(frontendUser: FrontendUser) {
-    return this.urlService.authURL$.pipe(
-      exhaustMap(authURL => {
-        const url = authURL + 'users/register';
-
-        return this.http.post<FrontendUser>(url, frontendUser, {withCredentials: true});
-      })
-    );
-  }
-
-  public checkIfMailExists(mail: string) {
+  public checkIfMailExists(mail: string): Observable<boolean> {
     return this.urlService.authURL$.pipe(
       exhaustMap(authURL => {
         const url = authURL + 'users/mailExists';
 
-        return this.http.post<string>(url, mail, {headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})});
+        return this.http.post<boolean>(url, mail, {headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})});
       })
     );
   }
@@ -49,12 +38,12 @@ export class RegisterService {
     );
   }
 
-  public checkIfUsernameExists(username: string) {
+  public checkIfUsernameExists(username: string): Observable<boolean> {
     return this.urlService.authURL$.pipe(
       exhaustMap(authURL => {
         const url = authURL + 'users/usernameExists';
 
-        return this.http.post<string>(url, username, {headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})});
+        return this.http.post<boolean>(url, username, {headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})});
       })
     );
   }

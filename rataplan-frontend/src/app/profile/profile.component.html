@@ -4,8 +4,8 @@
 </div>
 <form class="displayName"  (submit)="changeDisplayName()">
   <mat-form-field appearance="fill" >
-    <mat-label>{{setDisplayName()}}</mat-label>
-    <input matInput placeholder= {{setDisplayName()}}
+    <mat-label>{{userData?.displayname || ""}}</mat-label>
+    <input matInput [placeholder]="userData?.displayname || ''"
                     autocomplete=off
                     [formControl]="displayNameField">
     <mat-error>{{errorMessageService.genericFormError(displayNameField)}}</mat-error>
@@ -14,8 +14,8 @@
 </form>
   <form class="mail" (submit)=(changeEmail())>
     <mat-form-field appearance="fill">
-      <mat-label>{{setEmail()}}</mat-label>
-      <input matInput placeholder={{setEmail()}}
+      <mat-label>{{userData?.mail || ""}}</mat-label>
+      <input matInput [placeholder]="userData?.mail || ''"
                       autocomplete=off
                       [formControl]="emailField">
       <mat-error>{{errorMessageService.genericFormError(emailField)}}</mat-error>

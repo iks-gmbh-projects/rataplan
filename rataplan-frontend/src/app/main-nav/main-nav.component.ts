@@ -1,12 +1,14 @@
-import {Component, ViewChild} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import {LoginComponent} from "../login/login.component";
-import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
-import {Router} from "@angular/router";
-import {MatMenuTrigger} from "@angular/material/menu";
-import {LoginService} from "../services/login.service/login.service";
+import { LoginComponent } from "../login/login.component";
+import { Router } from "@angular/router";
+import { MatMenuTrigger } from "@angular/material/menu";
+import { Store } from "@ngrx/store";
+import { appState } from "../app.reducers";
+import { LogoutAction } from "../authentication/auth.actions";
+import { FrontendUser } from "../services/login.service/user.model";
 
 @Component({
   selector: 'app-main-nav',
@@ -14,7 +16,7 @@ import {LoginService} from "../services/login.service/login.service";
   providers: [LoginComponent],
   styleUrls: ['./main-nav.component.css']
 })
-export class MainNavComponent {
+export class MainNavComponent implements OnInit, OnDestroy {
   @ViewChild('trigger') trigger: MatMenuTrigger | undefined;
 
 
@@ -24,29 +26,37 @@ export class MainNavComponent {
       shareReplay()
     );
 
+  currentUser?: FrontendUser;
+  private loggedInSub?: Subscription;
 
 
-  constructor(private breakpointObserver: BreakpointObserver,
-               public localstorageService: LocalstorageService,
-              public loginService: LoginService,
-              private router: Router) {
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private router: Router,
+    private store: Store<appState>
+  ) {}
 
+  ngOnInit() {
+    this.loggedInSub = this.store.select("auth")
+      .subscribe(auth => this.currentUser = auth.user);
   }
+
+  ngOnDestroy() {
+    this.loggedInSub?.unsubscribe();
+  }
+
   onLogout() {
-    this.loginService.logoutUser()
+    this.store.dispatch(new LogoutAction());
+  }
 
-    localStorage.clear()
-
- }
-  onClick(){
-    if (!this.localstorageService.isLoggedIn()){
+  onClick() {
+    if (!this.currentUser) {
       this.trigger?.closeMenu();
       this.router.navigateByUrl("/login")
     } else {
       this.trigger?.openMenu();
     }
   }
-
 
 
 }
