@@ -53,6 +53,7 @@ import { DeleteProfileComponent } from './delete-profile/delete-profile.componen
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { environment } from "../environments/environment";
 
 registerLocaleData(localeDE);
 
@@ -114,6 +115,7 @@ registerLocaleData(localeDE);
     MatProgressSpinnerModule,
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
+    ...environment.devModules,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
