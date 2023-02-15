@@ -11,6 +11,8 @@ export const AuthActions: {
   readonly LOGIN_ACTION: "[Auth] Login",
   readonly LOGIN_SUCCESS_ACTION: "[Auth] Login Success",
   readonly LOGIN_ERROR_ACTION: "[Auth] Login Error",
+  readonly CHANGE_EMAIL_ACTION: "[Auth] Change Email",
+  readonly CHANGE_DISPLAYNAME_ACTION: "[Auth] Change Displayname",
   readonly UPDATE_USERDATA_ACTION: "[Auth] Update Userdata",
   readonly UPDATE_USERDATA_SUCCESS_ACTION: "[Auth] Update Userdata Success",
   readonly LOGOUT_ACTION: "[Auth] Logout",
@@ -25,6 +27,8 @@ export const AuthActions: {
   LOGIN_ACTION: "[Auth] Login",
   LOGIN_SUCCESS_ACTION: "[Auth] Login Success",
   LOGIN_ERROR_ACTION: "[Auth] Login Error",
+  CHANGE_EMAIL_ACTION: "[Auth] Change Email",
+  CHANGE_DISPLAYNAME_ACTION: "[Auth] Change Displayname",
   UPDATE_USERDATA_ACTION: "[Auth] Update Userdata",
   UPDATE_USERDATA_SUCCESS_ACTION: "[Auth] Update Userdata Success",
   LOGOUT_ACTION: "[Auth] Logout",
@@ -87,6 +91,22 @@ export class LoginErrorAction implements Action {
   readonly type = AuthActions.LOGIN_ERROR_ACTION;
   constructor(
     readonly error: any
+  ) {
+  }
+}
+
+export class ChangeEmailAction implements Action {
+  readonly type = AuthActions.CHANGE_EMAIL_ACTION;
+  constructor(
+    readonly email: string
+  ) {
+  }
+}
+
+export class ChangeDisplaynameAction implements Action {
+  readonly type = AuthActions.CHANGE_DISPLAYNAME_ACTION;
+  constructor(
+    readonly displayname: string
   ) {
   }
 }

@@ -1,13 +1,22 @@
 import { Injectable } from "@angular/core";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import {
-  AuthActions, AutoLoginAction, DeleteUserAction, DeleteUserErrorAction, DeleteUserSuccessAction,
-  LoginAction, LoginErrorAction,
+  AuthActions,
+  AutoLoginAction,
+  ChangeDisplaynameAction,
+  ChangeEmailAction,
+  DeleteUserAction,
+  DeleteUserErrorAction,
+  DeleteUserSuccessAction,
+  LoginAction,
+  LoginErrorAction,
   LoginSuccessAction,
-  RegisterAction, RegisterSuccessAction,
+  RegisterAction,
+  RegisterSuccessAction,
+  UpdateUserdataAction,
   UpdateUserdataSuccessAction
 } from "./auth.actions";
-import { catchError, exhaustMap, map, switchMap, tap } from "rxjs/operators";
+import { catchError, exhaustMap, filter, map, switchMap, tap } from "rxjs/operators";
 import { EMPTY, of } from "rxjs";
 import { BackendUrlService } from "../services/backend-url-service/backend-url.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -77,9 +86,47 @@ export class AuthEffects {
   )
 
   @Effect()
+  changeEmail = this.actions$.pipe(
+    ofType(AuthActions.CHANGE_EMAIL_ACTION),
+    switchMap((emailAction: ChangeEmailAction) => {
+      return this.urlService.authURL$.pipe(
+        exhaustMap(authURL => {
+          const url = authURL + 'users/profile/changeEmail'
+
+          const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+
+          return this.httpClient.post<boolean>(url, emailAction.email, httpOptions)
+        }),
+        filter(success => success),
+        map(() => new UpdateUserdataAction()),
+        catchError(() => EMPTY)
+      );
+    })
+  );
+
+  @Effect()
+  changeDisplayname = this.actions$.pipe(
+    ofType(AuthActions.CHANGE_DISPLAYNAME_ACTION),
+    switchMap((displaynameAction: ChangeDisplaynameAction) => {
+      return this.urlService.authURL$.pipe(
+        exhaustMap(authURL => {
+          const url = authURL + 'users/profile/changeDisplayName'
+
+          const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+
+          return this.httpClient.post<boolean>(url, displaynameAction.displayname, httpOptions)
+        }),
+        filter(success => success),
+        map(() => new UpdateUserdataAction()),
+        catchError(() => EMPTY)
+      );
+    })
+  );
+
+  @Effect()
   updateUserData = this.actions$.pipe(
     ofType(AuthActions.UPDATE_USERDATA_ACTION),
-    exhaustMap(() => this.urlService.authURL$),
+    switchMap(() => this.urlService.authURL$),
     switchMap(authURL => {
       let url = authURL + 'users/profile'
       const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
