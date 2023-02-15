@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {FormControl, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
+import { FormControl, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
 import { Store } from "@ngrx/store";
 import { appState } from "../app.reducers";
-import { ChangeDisplaynameAction, ChangeEmailAction } from "../authentication/auth.actions";
+import { AuthActions, ChangeDisplaynameAction, ChangeEmailAction } from "../authentication/auth.actions";
 import { FrontendUser } from "../services/login.service/user.model";
 import { Subscription } from "rxjs";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Actions, ofType } from "@ngrx/effects";
 
 @Component({
   selector: 'app-profile',
@@ -17,11 +19,14 @@ import { Subscription } from "rxjs";
 export class ProfileComponent implements OnInit, OnDestroy {
   userData?: FrontendUser;
   private userDataSub?: Subscription;
+  private errorSub?: Subscription;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<appState>,
+    private actions$: Actions,
+    private snackbar: MatSnackBar,
     public readonly errorMessageService: FormErrorMessageService
   ) { }
 
@@ -42,10 +47,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.emailField.enable();
         }
       });
+    this.errorSub = this.actions$.pipe(
+      ofType(AuthActions.CHANGE_EMAIL_ERROR_ACTION, AuthActions.CHANGE_DISPLAYNAME_ERROR_ACTION),
+    ).subscribe(() => this.snackbar.open("Fehler beim Ändern der Daten", "Ok"));
   }
 
   ngOnDestroy() {
     this.userDataSub?.unsubscribe();
+    this.errorSub?.unsubscribe();
   }
   displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace])
   emailField = new FormControl('', [Validators.required , Validators.email])

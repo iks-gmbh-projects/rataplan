@@ -8,9 +8,11 @@ import { FormErrorMessageService } from "../services/form-error-message-service/
 import { ExtraValidators } from "../validator/validators";
 import { appState } from "../app.reducers";
 import { Store } from "@ngrx/store";
-import { RegisterAction } from "../authentication/auth.actions";
+import { AuthActions, RegisterAction } from "../authentication/auth.actions";
 import { Subscription } from "rxjs";
 import { map } from "rxjs/operators";
+import { Actions, ofType } from "@ngrx/effects";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 
 @Component({
@@ -41,6 +43,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   });
 
   private busySub?: Subscription;
+  private errorSub?: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,6 +51,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private store: Store<appState>,
+    private actions$: Actions,
+    private snackbar: MatSnackBar,
     public readonly errorMessages: FormErrorMessageService
   ) {
   }
@@ -58,11 +63,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
     ).subscribe(busy => {
       if (busy) this.registerForm.disable();
       else this.registerForm.enable();
-    })
+    });
+    this.errorSub = this.actions$.pipe(
+      ofType(AuthActions.REGISTER_ERROR_ACTION)
+    ).subscribe(() => this.snackbar.open("Es ist ein Fehler aufgetreten.", "Ok"));
   }
 
   ngOnDestroy(): void {
     this.busySub?.unsubscribe();
+    this.errorSub?.unsubscribe();
   }
 
   submit() {
