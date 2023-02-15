@@ -3,8 +3,8 @@ import { Actions, Effect, ofType } from "@ngrx/effects";
 import {
   AuthActions,
   AutoLoginAction,
-  ChangeDisplaynameAction,
-  ChangeEmailAction,
+  ChangeDisplaynameAction, ChangeDisplaynameErrorAction,
+  ChangeEmailAction, ChangeEmailErrorAction,
   DeleteUserAction,
   DeleteUserErrorAction,
   DeleteUserSuccessAction,
@@ -12,12 +12,12 @@ import {
   LoginErrorAction,
   LoginSuccessAction,
   RegisterAction,
-  RegisterSuccessAction,
+  RegisterSuccessAction, ResetPasswordAction, ResetPasswordErrorAction, ResetPasswordSuccessAction,
   UpdateUserdataAction,
   UpdateUserdataSuccessAction
 } from "./auth.actions";
-import { catchError, exhaustMap, filter, map, switchMap, tap } from "rxjs/operators";
-import { EMPTY, of } from "rxjs";
+import { catchError, exhaustMap, map, switchMap, tap } from "rxjs/operators";
+import { EMPTY, from, of } from "rxjs";
 import { BackendUrlService } from "../services/backend-url-service/backend-url.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FrontendUser } from "../services/login.service/user.model";
@@ -86,6 +86,30 @@ export class AuthEffects {
   )
 
   @Effect()
+  resetPassword = this.actions$.pipe(
+    ofType(AuthActions.RESET_PASSWORD_ACTION),
+    switchMap((resetPasswordAction: ResetPasswordAction) => {
+      return this.urlService.authURL$.pipe(
+        exhaustMap(authURL => {
+          const url = authURL + 'users/resetPassword';
+
+          return this.httpClient.post<boolean>(url, resetPasswordAction.payload, {headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})});
+        }),
+        map(success => success ? new ResetPasswordSuccessAction() : new ResetPasswordErrorAction(success)),
+        catchError(err => of(new ResetPasswordErrorAction(err)))
+      );
+    })
+  );
+
+  @Effect({
+    dispatch: false,
+  })
+  resetPasswordSuccess = this.actions$.pipe(
+    ofType(AuthActions.RESET_PASSWORD_SUCCESS_ACTION),
+    switchMap(() => from(this.router.navigateByUrl("/login")))
+  )
+
+  @Effect()
   changeEmail = this.actions$.pipe(
     ofType(AuthActions.CHANGE_EMAIL_ACTION),
     switchMap((emailAction: ChangeEmailAction) => {
@@ -97,9 +121,8 @@ export class AuthEffects {
 
           return this.httpClient.post<boolean>(url, emailAction.email, httpOptions)
         }),
-        filter(success => success),
-        map(() => new UpdateUserdataAction()),
-        catchError(() => EMPTY)
+        map(success => success ? new UpdateUserdataAction() : new ChangeEmailErrorAction(success)),
+        catchError(err => of(new ChangeEmailErrorAction(err)))
       );
     })
   );
@@ -116,9 +139,8 @@ export class AuthEffects {
 
           return this.httpClient.post<boolean>(url, displaynameAction.displayname, httpOptions)
         }),
-        filter(success => success),
-        map(() => new UpdateUserdataAction()),
-        catchError(() => EMPTY)
+        map(success => success ? new UpdateUserdataAction() : new ChangeDisplaynameErrorAction(false)),
+        catchError(err => of(new ChangeDisplaynameErrorAction(err)))
       );
     })
   );

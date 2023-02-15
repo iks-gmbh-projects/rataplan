@@ -9,7 +9,7 @@ import { map } from "rxjs/operators";
 @Injectable({
   providedIn: 'root'
 })
-export class RegisterService {
+export class UsernameEmailValidatorsService {
 
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }

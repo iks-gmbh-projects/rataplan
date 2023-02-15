@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { RegisterService } from '../services/register-service/register.service';
+import { UsernameEmailValidatorsService } from '../services/username-email-validators-service/username-email-validators.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { RegisterData } from "../services/login.service/user.model";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
@@ -44,7 +44,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private registerService: RegisterService,
+    private registerService: UsernameEmailValidatorsService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private store: Store<appState>,

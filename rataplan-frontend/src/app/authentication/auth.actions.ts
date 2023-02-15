@@ -2,6 +2,7 @@ import { Action } from "@ngrx/store";
 import { FrontendUser, LoginData, RegisterData } from "../services/login.service/user.model";
 import { UrlTree } from "@angular/router";
 import { deletionChoices } from "../services/delete-profile-service/delete-profile.model";
+import { ResetPasswordDataModel } from "../models/reset-password-data.model";
 
 export const AuthActions: {
   readonly REGISTER_ACTION: "[Auth] Register",
@@ -11,8 +12,13 @@ export const AuthActions: {
   readonly LOGIN_ACTION: "[Auth] Login",
   readonly LOGIN_SUCCESS_ACTION: "[Auth] Login Success",
   readonly LOGIN_ERROR_ACTION: "[Auth] Login Error",
+  readonly RESET_PASSWORD_ACTION: "[Auth] Reset Password",
+  readonly RESET_PASSWORD_SUCCESS_ACTION: "[Auth] Reset Password Success",
+  readonly RESET_PASSWORD_ERROR_ACTION: "[Auth] Reset Password Error",
   readonly CHANGE_EMAIL_ACTION: "[Auth] Change Email",
+  readonly CHANGE_EMAIL_ERROR_ACTION: "[Auth] Change Email Error",
   readonly CHANGE_DISPLAYNAME_ACTION: "[Auth] Change Displayname",
+  readonly CHANGE_DISPLAYNAME_ERROR_ACTION: "[Auth] Change Displayname Error",
   readonly UPDATE_USERDATA_ACTION: "[Auth] Update Userdata",
   readonly UPDATE_USERDATA_SUCCESS_ACTION: "[Auth] Update Userdata Success",
   readonly LOGOUT_ACTION: "[Auth] Logout",
@@ -27,8 +33,13 @@ export const AuthActions: {
   LOGIN_ACTION: "[Auth] Login",
   LOGIN_SUCCESS_ACTION: "[Auth] Login Success",
   LOGIN_ERROR_ACTION: "[Auth] Login Error",
+  RESET_PASSWORD_ACTION: "[Auth] Reset Password",
+  RESET_PASSWORD_SUCCESS_ACTION: "[Auth] Reset Password Success",
+  RESET_PASSWORD_ERROR_ACTION: "[Auth] Reset Password Error",
   CHANGE_EMAIL_ACTION: "[Auth] Change Email",
+  CHANGE_EMAIL_ERROR_ACTION: "[Auth] Change Email Error",
   CHANGE_DISPLAYNAME_ACTION: "[Auth] Change Displayname",
+  CHANGE_DISPLAYNAME_ERROR_ACTION: "[Auth] Change Displayname Error",
   UPDATE_USERDATA_ACTION: "[Auth] Update Userdata",
   UPDATE_USERDATA_SUCCESS_ACTION: "[Auth] Update Userdata Success",
   LOGOUT_ACTION: "[Auth] Logout",
@@ -95,6 +106,30 @@ export class LoginErrorAction implements Action {
   }
 }
 
+export class ResetPasswordAction implements Action {
+  readonly type = AuthActions.RESET_PASSWORD_ACTION;
+
+  constructor(
+    readonly payload: ResetPasswordDataModel
+  ) {
+  }
+}
+
+export class ResetPasswordSuccessAction implements Action {
+  readonly type = AuthActions.RESET_PASSWORD_SUCCESS_ACTION;
+
+  constructor() {
+  }
+}
+
+export class ResetPasswordErrorAction implements Action {
+  readonly type = AuthActions.RESET_PASSWORD_ERROR_ACTION;
+  constructor(
+    readonly error: any
+  ) {
+  }
+}
+
 export class ChangeEmailAction implements Action {
   readonly type = AuthActions.CHANGE_EMAIL_ACTION;
   constructor(
@@ -103,10 +138,26 @@ export class ChangeEmailAction implements Action {
   }
 }
 
+export class ChangeEmailErrorAction implements Action {
+  readonly type = AuthActions.CHANGE_EMAIL_ERROR_ACTION;
+  constructor(
+    readonly error: any
+  ) {
+  }
+}
+
 export class ChangeDisplaynameAction implements Action {
   readonly type = AuthActions.CHANGE_DISPLAYNAME_ACTION;
   constructor(
     readonly displayname: string
+  ) {
+  }
+}
+
+export class ChangeDisplaynameErrorAction implements Action {
+  readonly type = AuthActions.CHANGE_DISPLAYNAME_ERROR_ACTION;
+  constructor(
+    readonly error: any
   ) {
   }
 }
@@ -156,6 +207,13 @@ export type AuthActions =
   | LoginAction
   | LoginSuccessAction
   | LoginErrorAction
+  | ResetPasswordAction
+  | ResetPasswordSuccessAction
+  | ResetPasswordErrorAction
+  | ChangeEmailAction
+  | ChangeEmailErrorAction
+  | ChangeDisplaynameAction
+  | ChangeDisplaynameErrorAction
   | UpdateUserdataAction
   | UpdateUserdataSuccessAction
   | LogoutAction

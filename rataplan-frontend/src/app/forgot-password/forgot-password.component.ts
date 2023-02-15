@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ForgotPasswordService } from '../services/forgot-password-service/forgot-password.service';
-import { RegisterService } from '../services/register-service/register.service';
+import { UsernameEmailValidatorsService } from '../services/username-email-validators-service/username-email-validators.service';
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 
 @Component({
@@ -20,7 +20,7 @@ export class ForgotPasswordComponent implements OnInit {
   });
 
   constructor(private formBuilder: FormBuilder,
-              private registerService: RegisterService,
+              private registerService: UsernameEmailValidatorsService,
               private forgotPasswordService: ForgotPasswordService,
               public readonly errorMessageService: FormErrorMessageService) {
 

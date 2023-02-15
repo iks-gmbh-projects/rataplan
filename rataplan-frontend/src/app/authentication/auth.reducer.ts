@@ -4,6 +4,7 @@ import { FrontendUser } from "../services/login.service/user.model";
 export type AuthData = {
   user?: FrontendUser,
   busy: boolean,
+  error?: any,
 };
 
 export function authReducer(state: AuthData = {busy: false}, action: AuthActions): AuthData {
@@ -13,9 +14,12 @@ export function authReducer(state: AuthData = {busy: false}, action: AuthActions
     case AuthActions.REGISTER_SUCCESS_ACTION:
       return {user: action.payload, busy: false};
     case AuthActions.LOGIN_ERROR_ACTION:
+    case AuthActions.RESET_PASSWORD_ERROR_ACTION:
+    case AuthActions.CHANGE_EMAIL_ERROR_ACTION:
+    case AuthActions.CHANGE_DISPLAYNAME_ERROR_ACTION:
     case AuthActions.REGISTER_ERROR_ACTION:
     case AuthActions.DELETE_USER_ERROR_ACTION:
-      return {...state, busy: false};
+      return {user: state.user, busy: false, error: action.error};
     case AuthActions.DELETE_USER_SUCCESS_ACTION:
     case AuthActions.LOGOUT_ACTION:
       return {busy: false};
@@ -23,7 +27,7 @@ export function authReducer(state: AuthData = {busy: false}, action: AuthActions
     case AuthActions.LOGIN_ACTION:
     case AuthActions.AUTO_LOGIN_ACTION:
     case AuthActions.DELETE_USER_ACTION:
-      return {...state, busy: true};
+      return {user: state.user, busy: true};
   }
   return state;
 }
