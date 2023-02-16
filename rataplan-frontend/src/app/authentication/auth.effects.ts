@@ -20,7 +20,7 @@ import { catchError, exhaustMap, map, switchMap, tap } from "rxjs/operators";
 import { EMPTY, from, of } from "rxjs";
 import { BackendUrlService } from "../services/backend-url-service/backend-url.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { FrontendUser } from "../services/login.service/user.model";
+import { FrontendUser } from "../models/user.model";
 import { Router } from "@angular/router";
 
 @Injectable({

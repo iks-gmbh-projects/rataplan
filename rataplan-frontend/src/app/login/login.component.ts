@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { Subject, Subscription } from "rxjs";
-import { LoginData, User } from "../services/login.service/user.model";
+import { LoginData, User } from "../models/user.model";
 import { ActivatedRoute } from "@angular/router";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";

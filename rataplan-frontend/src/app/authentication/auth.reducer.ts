@@ -1,5 +1,5 @@
 import { AuthActions } from "./auth.actions";
-import { FrontendUser } from "../services/login.service/user.model";
+import { FrontendUser } from "../models/user.model";
 
 export type AuthData = {
   user?: FrontendUser,

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { deletionChoices } from "../services/delete-profile-service/delete-profile.model";
+import { deletionChoices } from "../models/delete-profile.model";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";

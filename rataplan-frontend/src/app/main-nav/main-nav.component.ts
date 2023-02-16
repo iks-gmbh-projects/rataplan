@@ -8,7 +8,7 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { Store } from "@ngrx/store";
 import { appState } from "../app.reducers";
 import { LogoutAction } from "../authentication/auth.actions";
-import { FrontendUser } from "../services/login.service/user.model";
+import { FrontendUser } from "../models/user.model";
 
 @Component({
   selector: 'app-main-nav',

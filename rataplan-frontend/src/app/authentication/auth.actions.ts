@@ -1,7 +1,7 @@
 import { Action } from "@ngrx/store";
-import { FrontendUser, LoginData, RegisterData } from "../services/login.service/user.model";
+import { FrontendUser, LoginData, RegisterData } from "../models/user.model";
 import { UrlTree } from "@angular/router";
-import { deletionChoices } from "../services/delete-profile-service/delete-profile.model";
+import { deletionChoices } from "../models/delete-profile.model";
 import { ResetPasswordDataModel } from "../models/reset-password-data.model";
 
 export const AuthActions: {

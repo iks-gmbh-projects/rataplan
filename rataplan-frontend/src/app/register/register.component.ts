@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { UsernameEmailValidatorsService } from '../services/username-email-validators-service/username-email-validators.service';
 import { ActivatedRoute, Router } from "@angular/router";
-import { RegisterData } from "../services/login.service/user.model";
+import { RegisterData } from "../models/user.model";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
 import { appState } from "../app.reducers";

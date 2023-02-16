@@ -6,7 +6,7 @@ import { ExtraValidators } from "../validator/validators";
 import { Store } from "@ngrx/store";
 import { appState } from "../app.reducers";
 import { AuthActions, ChangeDisplaynameAction, ChangeEmailAction } from "../authentication/auth.actions";
-import { FrontendUser } from "../services/login.service/user.model";
+import { FrontendUser } from "../models/user.model";
 import { Subscription } from "rxjs";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Actions, ofType } from "@ngrx/effects";
