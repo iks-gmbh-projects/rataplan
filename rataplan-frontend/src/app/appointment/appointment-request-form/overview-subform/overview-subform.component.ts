@@ -63,7 +63,7 @@ export class OverviewSubformComponent implements OnInit {
     voteOption.startDate = this.appointmentRequestFormService.setDateFormat(
       this.voteOptions.get('startDateInput')?.value, this.voteOptions.get('startTimeInput')?.value,
     );
-    if (this.appointmentRequestFormService.appointmentConfig.endDate) {
+    if (this.appointmentRequestFormService.appointmentRequest.appointmentRequestConfig.appointmentConfig.endDate) {
       voteOption.endDate = this.appointmentRequestFormService.setDateFormat(
         this.voteOptions.get('endDateInput')?.value, this.voteOptions.get('endTimeInput')?.value,
       );

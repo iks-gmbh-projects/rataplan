@@ -39,7 +39,7 @@ export class DatepickerSubformComponent implements OnInit {
     const index = this.daysSelected
       .findIndex(x => x.startDate == date.toDateString());
 
-    if (index === -1) this.daysSelected.push({startDate: date.toDateString()});
+    if (index === -1) this.daysSelected.push({startDate: date.toISOString()});
     else this.daysSelected.splice(index, 1);
 
     console.log(this.daysSelected);

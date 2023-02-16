@@ -15,7 +15,6 @@ export class AppointmentRequestFormService {
   resetFormObservable = new Subject<void>();
 
   appointmentRequest: AppointmentRequestModel = new AppointmentRequestModel();
-  appointmentConfig: AppointmentConfig = new AppointmentConfig();
 
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }
@@ -39,13 +38,13 @@ export class AppointmentRequestFormService {
     if (date) {
       const dateValue = new Date(date);
       dateString = dateValue.getFullYear() + '-' +
-      ('00' + (dateValue.getMonth() + 1)).slice(-2) + '-' +
-      ('00' + dateValue.getDate()).slice(-2);
+        ('00' + (dateValue.getMonth() + 1)).slice(-2) + '-' +
+        ('00' + dateValue.getDate()).slice(-2);
     }
     if (time) {
       dateString = dateString + ' ' + time + ':00';
     }
-    return dateString;
+    return new Date(dateString).toISOString();
   }
 
   // setTime(selectedTimes: string[]) {
@@ -57,11 +56,13 @@ export class AppointmentRequestFormService {
 
   setTime(selectedTimes: Date[], selectedDates: Date[]) {
     const appointments: AppointmentModel[] = [];
-    for (let i = 0; i <selectedDates.length; i++) {
+    for (let i = 0; i < selectedDates.length; i++) {
       const date: AppointmentModel = {};
-      date.startDate = selectedDates[i] +
+      date.startDate = new Date(
+        selectedDates[i] +
         ('00' + selectedTimes[i].getHours()) + '-' +
-        ('00' + selectedTimes[i].getMinutes());
+        ('00' + selectedTimes[i].getMinutes())
+      ).toISOString();
       console.log(date);
       appointments.push(date);
     }
@@ -87,11 +88,11 @@ export class AppointmentRequestFormService {
   }
 
   setAppointmentConfig(appointmentConfig: AppointmentConfig) {
-    this.appointmentConfig = appointmentConfig;
+    this.appointmentRequest.appointmentRequestConfig.appointmentConfig = appointmentConfig;
   }
 
-  getAppointmentConfig(){
-    return this.appointmentConfig;
+  getAppointmentConfig() {
+    return this.appointmentRequest.appointmentRequestConfig.appointmentConfig;
   }
 
   createAppointmentRequest() {
@@ -111,7 +112,7 @@ export class AppointmentRequestFormService {
 
   getSelectedConfig() {
     let count = 0;
-    Object.values(this.appointmentConfig).forEach(value => {
+    Object.values(this.appointmentRequest.appointmentRequestConfig.appointmentConfig).forEach(value => {
       if (value)
         count++;
     });
