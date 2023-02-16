@@ -33,9 +33,14 @@ export class AppointmentRequestEffects {
     switchMap(() => this.store.select("appointmentRequest").pipe(take(1))),
     filter(state => state.complete),
     map(state => state.appointmentRequest!),
+    exhaustMap(request => this.store.select("auth").pipe(
+      filter(authState => !authState.busy),
+      take(1),
+      map(() => request)
+    )),
     switchMap(request => this.urlService.appointmentURL$.pipe(
       exhaustMap(url => {
-        return this.http.post<AppointmentRequestModel>(url+"/appointmentRequests", request, {withCredentials: true});
+        return this.http.post<AppointmentRequestModel>(url + "/appointmentRequests", request, {withCredentials: true});
       }),
       map(created => new PostAppointmentRequestSuccessAction(created)),
       catchError(err => of(new PostAppointmentRequestErrorAction(err)))
@@ -47,7 +52,7 @@ export class AppointmentRequestEffects {
   })
   successFullPost = this.actions$.pipe(
     ofType(AppointmentActions.POST_SUCCESS),
-    map((action: PostAppointmentRequestSuccessAction) => this.router.navigate(["/create-vote","links"], {
+    map((action: PostAppointmentRequestSuccessAction) => this.router.navigate(["/create-vote", "links"], {
       queryParams: {
         participationToken: action.created.participationToken,
         editToken: action.created.editToken,
