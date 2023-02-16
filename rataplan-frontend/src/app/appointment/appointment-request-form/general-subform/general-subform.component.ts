@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
+import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../../../validator/validators';
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
-import { ExtraValidators } from "../../../validator/validators";
-import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-general-subform',
@@ -15,6 +16,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   minDate: Date;
   maxDate: Date;
+  isEdit = false;
 
   generalSubform = new FormGroup({
     'title': new FormControl(null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
@@ -26,7 +28,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   showDescription = false;
 
   constructor(private appointmentRequestFormService: AppointmentRequestFormService,
-              public readonly errorMessageService: FormErrorMessageService) {
+              public readonly errorMessageService: FormErrorMessageService, private router: Router) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
     this.maxDate = new Date(currentYear + 2, 11, 31);
@@ -80,5 +82,12 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     if (!this.showDescription) {
       this.generalSubform.get('description')?.setValue(null);
     }
+  }
+
+  nextPage(){
+    this.appointmentRequestFormService.submitValues();
+    console.log(this.generalSubform.get('title'));
+    console.log(this.generalSubform.get('deadline'));
+    this.router.navigateByUrl('/create-vote/configurationOptions');
   }
 }

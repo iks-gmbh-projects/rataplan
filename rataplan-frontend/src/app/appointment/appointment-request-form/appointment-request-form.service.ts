@@ -2,9 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { exhaustMap, Subject } from 'rxjs';
 
-import { AppointmentModel } from '../../models/appointment.model';
+import { AppointmentConfig, AppointmentModel } from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
-import { BackendUrlService } from "../../services/backend-url-service/backend-url.service";
+import { BackendUrlService } from '../../services/backend-url-service/backend-url.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,33 +15,64 @@ export class AppointmentRequestFormService {
   resetFormObservable = new Subject<void>();
 
   appointmentRequest: AppointmentRequestModel = new AppointmentRequestModel();
-  selectedDates: Date[] = [];
 
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }
 
   setGeneralInputValue(title: string, description: string, deadline: Date) {
-    this.appointmentRequest.title = title.trim();
-    if (description !== null) description.trim();
-    this.appointmentRequest.description = description;
+    console.log(deadline);
+    console.log(description);
+    if (title) this.appointmentRequest.title = title.trim();
+    if (description) this.appointmentRequest.description = description.trim();
     this.appointmentRequest.deadline = deadline;
   }
 
-  setSelectedDates(selectedDates: Date[]) {
+  setAppointments(appointments: AppointmentModel[]) {
+    console.log(appointments);
+    this.appointmentRequest.appointments = appointments;
+  }
+
+  setDateFormat(date: string, time: string) {
+    console.log(date);
+    let dateString = '';
+    if (date) {
+      const dateValue = new Date(date);
+      dateString = dateValue.getFullYear() + '-' +
+        ('00' + (dateValue.getMonth() + 1)).slice(-2) + '-' +
+        ('00' + dateValue.getDate()).slice(-2);
+    }
+    if (time) {
+      dateString = dateString + ' ' + time + ':00';
+    }
+    return new Date(dateString).toISOString();
+  }
+
+  // setTime(selectedTimes: string[]) {
+  //   this.appointmentRequest.appointments.forEach( x => {
+  //     x.startDate = selectedTimes[i];
+  //
+  //   })
+  // }
+
+  setTime(selectedTimes: Date[], selectedDates: Date[]) {
     const appointments: AppointmentModel[] = [];
     for (let i = 0; i < selectedDates.length; i++) {
-      const date = new AppointmentModel();
-      date.startDate = selectedDates[i].getFullYear() + '-' +
-        ('00' + (selectedDates[i].getMonth() + 1)).slice(-2) + '-' +
-        ('00' + selectedDates[i].getDate()).slice(-2);
+      const date: AppointmentModel = {};
+      date.startDate = new Date(
+        selectedDates[i] +
+        ('00' + selectedTimes[i].getHours()) + '-' +
+        ('00' + selectedTimes[i].getMinutes())
+      ).toISOString();
+      console.log(date);
       appointments.push(date);
     }
     this.appointmentRequest.appointments = appointments;
   }
 
-  setEmailInputValue(name: string, email: string) {
-    this.appointmentRequest.organizerName = name.trim();
-    this.appointmentRequest.organizerMail = email.trim();
+  setEmailInputValue(name: string, email: string, consigneeList: string[]) {
+    this.appointmentRequest.organizerName = name;
+    this.appointmentRequest.organizerMail = email;
+    this.appointmentRequest.consigneeList = consigneeList;
   }
 
   emitValidation(val: string) {
@@ -49,11 +80,19 @@ export class AppointmentRequestFormService {
   }
 
   updateLength() {
-    this.validationObservable.next(this.selectedDates.length != 0);
+    this.validationObservable.next(this.appointmentRequest.appointments.length != 0);
   }
 
   submitValues() {
     this.submitButtonObservable.next();
+  }
+
+  setAppointmentConfig(appointmentConfig: AppointmentConfig) {
+    this.appointmentRequest.appointmentRequestConfig.appointmentConfig = appointmentConfig;
+  }
+
+  getAppointmentConfig() {
+    return this.appointmentRequest.appointmentRequestConfig.appointmentConfig;
   }
 
   createAppointmentRequest() {
@@ -69,5 +108,14 @@ export class AppointmentRequestFormService {
           });
       })
     );
+  }
+
+  getSelectedConfig() {
+    let count = 0;
+    Object.values(this.appointmentRequest.appointmentRequestConfig.appointmentConfig).forEach(value => {
+      if (value)
+        count++;
+    });
+    return count;
   }
 }

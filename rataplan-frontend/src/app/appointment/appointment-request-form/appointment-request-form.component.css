@@ -1,5 +1,9 @@
 .wrapper {
   padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 button {
@@ -11,6 +15,6 @@ h2 {
   margin-bottom: 40px;
 }
 
-.next-button {
+.right {
   float: right;
 }

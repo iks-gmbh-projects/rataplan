@@ -62,4 +62,11 @@
       </div>
     </div>
   </div>
+  <button [disabled]="this.generalSubform.invalid"
+          class="next-button"
+          type="button"
+          color="primary"
+          mat-raised-button
+          (click)="nextPage()">Weiter
+  </button>
 </form>

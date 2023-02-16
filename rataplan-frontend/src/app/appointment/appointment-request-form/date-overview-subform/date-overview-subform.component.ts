@@ -2,6 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import {FormControl, Validators} from "@angular/forms";
+import {NgxMaterialTimepickerTheme} from "ngx-material-timepicker";
+import {Router} from "@angular/router";
+import { AppointmentModel } from "../../../models/appointment.model";
 
 @Component({
   selector: 'app-date-overview-subform',
@@ -12,17 +16,21 @@ export class DateOverviewSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   title;
   description;
-  selectedDates;
+  appointments: AppointmentModel[];
+  showDescription = false;
+  isValid = true;
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService) {
+  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
+              private router: Router) {
     this.title = appointmentRequestFormService.appointmentRequest.title;
     this.description = appointmentRequestFormService.appointmentRequest.description;
-    this.selectedDates = appointmentRequestFormService.selectedDates;
+    this.appointments = appointmentRequestFormService.appointmentRequest.appointments;
   }
+  'time' = new FormControl(null, Validators.required);
 
   ngOnInit(): void {
-    this.selectedDates
-      .sort((b, a) => new Date(b).getTime() - new Date(a).getTime());
+    this.appointments
+      .sort((b, a) => new Date(b.startDate!).getTime() - new Date(a.startDate!).getTime());
     Promise
       .resolve()
       .then(() => this.appointmentRequestFormService.updateLength());
@@ -30,19 +38,44 @@ export class DateOverviewSubformComponent implements OnInit, OnDestroy {
     this.appointmentRequestFormService.submitButtonObservable
       .pipe(takeUntil(this.destroySubject))
       .subscribe(() => {
-        this.appointmentRequestFormService.setSelectedDates(this.selectedDates);
+        this.appointmentRequestFormService.setAppointments(this.appointments);
+
       });
   }
+  blueTheme: NgxMaterialTimepickerTheme = {
+    container: {
+      bodyBackgroundColor: '#fff',
+      buttonColor: '#3f51b5'
+    },
+    dial: {
+      dialBackgroundColor: '#3f51b5',
+    },
+    clockFace: {
+      clockFaceBackgroundColor: '#eeeeee',
+      clockHandColor: '#3f51b5',
+      clockFaceTimeInactiveColor: '#1D1818',
+      clockFaceInnerTimeInactiveColor: '#1D1818'
+    }
+  };
 
   ngOnDestroy(): void {
     this.destroySubject.next(true);
     this.destroySubject.complete();
   }
 
-  removeDate(date: Date) {
-    this.selectedDates.find((element, index) => {
-      if (element == date) this.selectedDates.splice(index, 1);
+  removeDate(appointment: AppointmentModel) {
+    this.appointments.find((element, index) => {
+      if (element == appointment) this.appointments.splice(index, 1);
     });
     this.appointmentRequestFormService.updateLength();
   }
+  backPage(){
+    this.router.navigateByUrl("configurationOptions")
+  }
+
+  nextPage() {
+    this.router.navigateByUrl("")
+  }
+
+
 }

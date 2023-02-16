@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject, takeUntil} from 'rxjs';
 
-import { AppointmentRequestModel } from '../../models/appointment-request.model';
-import { AppointmentRequestNavigationEnum } from '../appointment-request-navigation.enum';
-import { AppointmentRequestFormService } from './appointment-request-form.service';
+import {AppointmentRequestModel} from '../../models/appointment-request.model';
+import {AppointmentRequestNavigationEnum} from '../appointment-request-navigation.enum';
+import {AppointmentRequestFormService} from './appointment-request-form.service';
 
 @Component({
   selector: 'app-appointment-request-form',
@@ -15,8 +15,8 @@ export class AppointmentRequestFormComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
   appointmentSections: string[] = [
     AppointmentRequestNavigationEnum.General,
-    AppointmentRequestNavigationEnum.Datepicker,
-    AppointmentRequestNavigationEnum.Overview,
+    AppointmentRequestNavigationEnum.Config,
+    AppointmentRequestNavigationEnum.OverviewSub,
     AppointmentRequestNavigationEnum.Email,
   ];
 

@@ -14,7 +14,7 @@ export class LinkSubformComponent implements OnInit, OnDestroy {
   participationLink = '/vote/';
   editLink = '/vote/edit/';
 
-  constructor(private appointmentFormService: AppointmentRequestFormService) {
+  constructor(private appointmentFormService: AppointmentRequestFormService){
   }
 
   ngOnInit(): void {
@@ -26,7 +26,9 @@ export class LinkSubformComponent implements OnInit, OnDestroy {
           this.editLink += data.editToken;
           console.log(data);
           this.appointmentFormService.appointmentRequest = new AppointmentRequestModel();
-          this.appointmentFormService.selectedDates = [];
+        }, error => {
+          console.log(error)
+          console.log(this.appointmentFormService.appointmentRequest)
         });
   }
 

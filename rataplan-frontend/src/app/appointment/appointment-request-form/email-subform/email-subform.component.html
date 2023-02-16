@@ -21,23 +21,40 @@
 <div>
   <mat-checkbox>Für das nächste Mal speichern</mat-checkbox>
 </div>
-<div>
-  <mat-form-field appearance="fill">
-    <mat-label>Personen per E-Mail einladen</mat-label>
-    <mat-chip-list #chipList>
-      <mat-chip *ngFor="let email of emails"
-                (removed)="remove(email)"
-                (blur)="true">
-        {{ email }}
-        <button matChipRemove>
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip>
-      <input placeholder="weitere E-Mails..."
-             [matChipInputFor]="chipList"
-             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-             (matChipInputTokenEnd)="add($event)">
-    </mat-chip-list>
-  </mat-form-field>
-</div>
+  <div>
+    <mat-form-field appearance='fill'>
+      <mat-label>Personen per E-Mail einladen</mat-label>
+      <mat-chip-list #chipList>
+        <mat-chip *ngFor='let email of consigneeList'
+                  (removed)='remove(email)'
+                  (blur)='true'>
+          {{ email }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <input placeholder='weitere E-Mails...'
+               type='email'
+               formControlName='consigneeList'
+               [matChipInputFor]='chipList'
+               [matChipInputSeparatorKeyCodes]='separatorKeysCodes'
+               (matChipInputTokenEnd)='add($event)'>
+      </mat-chip-list>
+    </mat-form-field>
+    <mat-error *ngIf='!emailSubform.get("consigneeList")?.valid'>
+      Bitte geben Sie gültige Emails an
+    </mat-error>
+  </div>
+  <div>
+    <button mat-raised-button
+            (click)="backPage()">Zurück
+    </button>
+    <button class='next-button'
+            type='button'
+            color='primary'
+            mat-raised-button
+            [disabled]='!emailSubform.valid'
+            (click)=sendEndOfAppointment()>Fertig
+    </button>
+  </div>
 </form>

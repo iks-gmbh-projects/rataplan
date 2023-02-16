@@ -3,13 +3,16 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppointmentComponent } from './appointment/appointment/appointment.component';
 import { AppointmentRequestFormComponent } from './appointment/appointment-request-form/appointment-request-form.component';
+import { ConfigSubformComponent } from './appointment/appointment-request-form/config-subform/config-subform.component';
 import { DateOverviewSubformComponent } from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
 import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
 import { EmailSubformComponent } from './appointment/appointment-request-form/email-subform/email-subform.component';
 import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
 import { LinkSubformComponent } from './appointment/appointment-request-form/link-subform/link-subform.component';
+import { OverviewSubformComponent } from './appointment/appointment-request-form/overview-subform/overview-subform.component';
 import { AppointmentRequestAuthGuard } from './appointment/auth-guard/appointment-request-auth-guard.service';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
@@ -22,7 +25,6 @@ import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
-import { DeleteProfileComponent } from "./delete-profile/delete-profile.component";
 
 // function matcherFunction(url: UrlSegment[]) {
 //
@@ -47,6 +49,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'general', pathMatch: 'full' },
       { path: 'general', component: GeneralSubformComponent },
       { path: 'datepicker', component: DatepickerSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
+      { path: 'configurationOptions', component: ConfigSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
+      { path: 'configuration', component: OverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'overview', component: DateOverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'email', component: EmailSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'links', component: LinkSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
