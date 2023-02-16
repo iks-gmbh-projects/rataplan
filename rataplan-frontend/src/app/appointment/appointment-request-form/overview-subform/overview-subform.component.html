@@ -4,7 +4,8 @@
       <mat-card-title>Abstimmungoption</mat-card-title>
     </mat-card-header>
     <div *ngIf='appointmentConfig.startDate'>
-      <mat-checkbox (change)='addEndDate()' [checked]='appointmentConfig.endDate'>Zeitraum über mehrere Tage?</mat-checkbox>
+      <mat-checkbox (change)='addEndDate()' [checked]='appointmentConfig.endDate'>Zeitraum über mehrere Tage?
+      </mat-checkbox>
     </div>
     <div *ngIf='appointmentConfig.startDate && !appointmentConfig.endDate'>
       <mat-form-field appearance='fill'>
@@ -35,7 +36,8 @@
       </mat-form-field>
     </div>
     <div *ngIf='appointmentConfig.startTime'>
-      <mat-checkbox (change)='addEndTime()' [checked]='appointmentConfig.endTime'>Zeitraum über längerer Uhrzeit?</mat-checkbox>
+      <mat-checkbox (change)='addEndTime()' [checked]='appointmentConfig.endTime'>Zeitraum über längerer Uhrzeit?
+      </mat-checkbox>
     </div>
     <div *ngIf='appointmentConfig.startTime'>
       <mat-form-field floatLabel='never'
@@ -93,37 +95,38 @@
     </mat-card-actions>
   </mat-card>
 </div>
-<div style='margin-top: 20px; margin-bottom: 20px' *ngIf='appointments.length !== 0'>
+<div style='margin-top: 20px; margin-bottom: 20px'>
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
         Erstellte Abstimmungsoptionen: {{ appointments.length }}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <mat-list *ngFor='let voteOption of this.appointments'>
+    <mat-list>
+      <mat-list-item *ngFor='let voteOption of this.appointments; let index = index'>
         <div *ngIf='appointmentConfig.startDate'>
-          {{ voteOption.startDate | date:'dd.MM.yyyy':'+0200':'de' }}
-          {{ voteOption.endDate | date:'- dd.MM.yyyy':'+0200':'de' }}
+          {{ voteOption.startDate | date:(this.appointmentConfig.startTime ? 'dd.MM.yyyy hh:mm' : 'dd.MM.yyyy'):undefined:'de' }}
+          <ng-template [ngIf]="appointmentConfig.endDate">
+            {{ voteOption.endDate | date:(this.appointmentConfig.endTime ? '- dd.MM.yyyy hh:mm' : '- dd.MM.yyyy'):undefined:'de' }}
+          </ng-template>
         </div>
-        <div *ngIf='this.appointmentConfig.startTime'>
-          <span *ngIf='this.voteOption.startDate && this.voteOption.startDate.length === 11'>{{ voteOption.startDate | date:'HH:mm' }} Uhr</span>
-          <span *ngIf='this.voteOption.startDate && this.voteOption.startDate.length === 11 && this.appointmentConfig.endTime'>{{ voteOption.endDate | date:'- HH:mm' }} Uhr</span>
+        <div *ngIf='this.appointmentConfig.description'>
+          {{ voteOption.description }}
         </div>
-      <div *ngIf='this.appointmentConfig.description'>
-        {{ voteOption.description }}
-      </div>
-      <div *ngIf='this.appointmentConfig.url'>
-        <a [href]='voteOption.url'>Link</a>
-      </div>
-<!--          <button mat-icon-button-->
-<!--                  (click)='editVoteOption(voteOption)'>-->
-<!--            <mat-icon mat-list-icon>edit_square</mat-icon>-->
-<!--          </button>-->
-<!--          <button mat-icon-button-->
-<!--                  (click)='deleteVoteOption(voteOption)'>-->
-<!--            <mat-icon mat-list-icon>delete</mat-icon>-->
-<!--          </button>-->
-
+        <div *ngIf='this.appointmentConfig.url'>
+          <a [href]='voteOption.url'>Link</a>
+        </div>
+        <div style="margin-left: auto">
+          <button mat-icon-button
+                  (click)='editVoteOption(index)'>
+            <mat-icon mat-list-icon>edit_square</mat-icon>
+          </button>
+          <button mat-icon-button color="warn"
+                  (click)='deleteVoteOption(index)'>
+            <mat-icon mat-list-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-list-item>
     </mat-list>
   </mat-expansion-panel>
 </div>

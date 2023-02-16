@@ -73,6 +73,7 @@ export class OverviewSubformComponent implements OnInit {
     voteOption.url = this.voteOptions.get('linkInput')?.value;
 
     this.appointments.push(voteOption);
+    this.appointmentRequestFormService.setAppointments(this.appointments);
 
     console.log(this.voteOptions.get('timeInput')?.value);
     console.log(this.appointments);
@@ -99,18 +100,20 @@ export class OverviewSubformComponent implements OnInit {
     this.appointmentConfig.endTime = !this.appointmentConfig.endTime;
   }
 
-  deleteVoteOption(voteOption: AppointmentModel) {
-    const index = this.appointments.indexOf(voteOption);
+  deleteVoteOption(index: number) {
     this.appointments.splice(index, 1);
+    this.appointmentRequestFormService.setAppointments(this.appointments);
   }
 
-  editVoteOption(voteOption: AppointmentModel) {
+  editVoteOption(index: number) {
+    const voteOption = this.appointments[index];
     this.voteOptions.controls['startDateInput'].setValue(voteOption.startDate);
     this.voteOptions.controls['endDateInput'].setValue(voteOption.endDate);
     this.voteOptions.controls['startTimeInput'].setValue(voteOption.startDate?.slice(11, 16));
     this.voteOptions.controls['endTimeInput'].setValue(voteOption.endDate?.slice(11, 16));
     this.voteOptions.controls['descriptionInput'].setValue(voteOption.description);
     this.voteOptions.controls['linkInput'].setValue(voteOption.url);
+    this.deleteVoteOption(index);
   }
 
   backPage() {
