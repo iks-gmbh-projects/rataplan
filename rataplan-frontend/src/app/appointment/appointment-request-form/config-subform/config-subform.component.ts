@@ -1,10 +1,12 @@
 import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-
-import { AppointmentConfig } from '../../../models/appointment.model';
 import { ExtraValidators } from '../../../validator/validators';
-import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import { appState } from "../../../app.reducers";
+import { Store } from "@ngrx/store";
+import { Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
+import { SetAppointmentConfigAction } from "../../appointment.actions";
 
 @Component({
   selector: 'app-config-subform',
@@ -15,7 +17,6 @@ import { AppointmentRequestFormService } from '../appointment-request-form.servi
   providedIn: 'root'
 })
 export class ConfigSubformComponent implements OnInit, OnDestroy {
-  appointmentConfig = new AppointmentConfig();
   configForm = this.formBuilder.group({
     isDateChecked: [false],
     isTimeChecked: [false],
@@ -24,45 +25,46 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
     isDescriptionChecked: [false],
     isUrlChecked: [false],
   });
+  private storeSub?: Subscription;
 
-  constructor(private formBuilder: FormBuilder,
-              private router: Router,
-              private appointmentRequestFormService: AppointmentRequestFormService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private store: Store<appState>
+  ) {
     this.configForm.setValidators(ExtraValidators.filterCountMin(1));
   }
 
   ngOnInit(): void {
-    this.appointmentConfig = this.appointmentRequestFormService.getAppointmentConfig();
-    this.configForm.setValue({
-      isDateChecked: this.appointmentConfig.startDate,
-      isTimeChecked: this.appointmentConfig.startTime,
-      isEndDateChecked: this.appointmentConfig.endDate,
-      isEndTimeChecked: this.appointmentConfig.endTime,
-      isDescriptionChecked: this.appointmentConfig.description,
-      isUrlChecked: this.appointmentConfig.url,
-    });
-
-
-    this.configForm.valueChanges.pipe().subscribe(value => {
-      if (value) {
-        console.log(value);
-      }
-    });
-
+    this.storeSub = this.store.select("appointmentRequest")
+      .pipe(
+        filter(state => !!state.appointmentRequest),
+        map(state => state.appointmentRequest!.appointmentRequestConfig.appointmentConfig)
+      ).subscribe(appointmentConfig => {
+        this.configForm.setValue({
+          isDateChecked: appointmentConfig.startDate,
+          isTimeChecked: appointmentConfig.startTime,
+          isEndDateChecked: appointmentConfig.endDate,
+          isEndTimeChecked: appointmentConfig.endTime,
+          isDescriptionChecked: appointmentConfig.description,
+          isUrlChecked: appointmentConfig.url,
+        });
+      });
   }
 
   ngOnDestroy(): void {
-    this.appointmentConfig.startDate = this.configForm.get('isDateChecked')?.value;
-    this.appointmentConfig.startTime = this.configForm.get('isTimeChecked')?.value;
-    this.appointmentConfig.endDate = this.configForm.get('isEndDateChecked')?.value;
-    this.appointmentConfig.endTime = this.configForm.get('isEndTimeChecked')?.value;
-    this.appointmentConfig.description = this.configForm.get('isDescriptionChecked')?.value;
-    this.appointmentConfig.url = this.configForm.get('isUrlChecked')?.value;
-    console.log(this.appointmentConfig);
-    this.appointmentRequestFormService.setAppointmentConfig(this.appointmentConfig);
+    this.storeSub?.unsubscribe();
   }
 
   nextPage() {
+    this.store.dispatch(new SetAppointmentConfigAction({
+      startDate: this.configForm.get('isDateChecked')?.value || false,
+      startTime: this.configForm.get('isTimeChecked')?.value || false,
+      endDate: this.configForm.get('isEndDateChecked')?.value || false,
+      endTime: this.configForm.get('isEndTimeChecked')?.value || false,
+      description: this.configForm.get('isDescriptionChecked')?.value || false,
+      url: this.configForm.get('isUrlChecked')?.value || false,
+    }));
     if(
       this.configForm.get('isDateChecked')?.value &&
       !this.configForm.get('isTimeChecked')?.value &&

@@ -1,28 +1,28 @@
 <div class='wrapper'>
   <mat-card>
-    <mat-card-title>{{ appointmentRequest.title }}</mat-card-title>
+    <mat-card-title>{{ appointmentRequest?.title }}</mat-card-title>
     <mat-card-content>
       <p></p>
-      <p>{{ appointmentRequest.description }}</p>
+      <p>{{ appointmentRequest?.description }}</p>
     </mat-card-content>
-    <mat-card-subtitle *ngIf='!appointmentRequest.expired'>
-      Abstimmung aktiv bis: {{ appointmentRequest.deadline | date:'dd MMMM yyyy':'+0200':'de' }}
+    <mat-card-subtitle *ngIf='!appointmentRequest?.expired'>
+      Abstimmung aktiv bis: {{ appointmentRequest?.deadline | date:'dd MMMM yyyy':'+0200':'de' }}
     </mat-card-subtitle>
-    <mat-card-subtitle *ngIf='appointmentRequest.expired'>
+    <mat-card-subtitle *ngIf='appointmentRequest?.expired'>
       <span class='mat-error'>Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
     </mat-card-subtitle>
-    <div *ngIf='appointmentRequest.organizerName !== null'>
-      <span>Erstellt von {{ appointmentRequest.organizerName }}</span>
+    <div *ngIf='appointmentRequest?.organizerName'>
+      <span>Erstellt von {{ appointmentRequest!.organizerName }}</span>
     </div>
   </mat-card>
   <div style='margin-top: 20px; margin-bottom: 20px'>
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>
-          Teilnehmer : {{ appointmentRequest.appointmentMembers.length }}
+          Teilnehmer : {{ appointmentRequest?.appointmentMembers?.length }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <mat-list *ngFor='let member of this.appointmentRequest.appointmentMembers'
+      <mat-list *ngFor='let member of (this.appointmentRequest?.appointmentMembers || [])'
                 multiple='false'>
         <mat-list-item class='member'>
           {{ member.name }}
@@ -54,7 +54,7 @@
     <span>Keine Eingaben werden als nicht Entschieden gespeichert</span>
   </div>
   <mat-list>
-    <mat-list-item *ngFor='let appointment of appointmentRequest.appointments'>
+    <mat-list-item *ngFor='let appointment of (appointmentRequest?.appointments || [])'>
       <div mat-line
            style='font-size: 90%'>
         {{ appointment.startDate | date:'dd.MM.yyyy':'+0200':'de' }}
@@ -66,7 +66,7 @@
       <mat-button-toggle-group style='scale: 90%'>
         <mat-button-toggle (click)='setDecision(appointment, 1)'
                            [checked]='checkVoteOfMember(appointment, 1)'
-                           [disabled]='appointmentRequest.expired'>
+                           [disabled]='appointmentRequest?.expired'>
           <mat-icon>done</mat-icon>
         </mat-button-toggle>
         <!--        <mat-button-toggle (click)='setDecision(appointment, 2)'>-->
@@ -74,7 +74,7 @@
         <!--        </mat-button-toggle>-->
         <mat-button-toggle (click)='setDecision(appointment, 3)'
                            [checked]='checkVoteOfMember(appointment, 3)'
-                           [disabled]='appointmentRequest.expired'>
+                           [disabled]='appointmentRequest?.expired'>
           <mat-icon>close</mat-icon>
         </mat-button-toggle>
       </mat-button-toggle-group>
@@ -85,7 +85,7 @@
             type='submit'
             color='primary'
             mat-raised-button
-            [disabled]='appointmentRequest.expired'
+            [disabled]='appointmentRequest?.expired'
             (click)='saveVote()'>{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
     </button>
   </div>

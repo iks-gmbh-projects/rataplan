@@ -20,7 +20,7 @@ import { FormErrorMessageService } from "../../services/form-error-message-servi
 })
 export class AppointmentComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
-  appointmentRequest = new AppointmentRequestModel();
+  appointmentRequest?: AppointmentRequestModel;
   member = new AppointmentMemberModel();
   memberName = this.member.name;
 
@@ -60,20 +60,20 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     this.member.name = this.memberName;
 
     if (this.isEditMember) {
-      this.appointmentService.updateAppointmentMember(this.appointmentRequest, this.member)
+      this.appointmentService.updateAppointmentMember(this.appointmentRequest!, this.member)
         .pipe(takeUntil(this.destroySubject))
         .subscribe(() => {
           this.resetVote();
           this.isEditMember = false;
-          sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest.appointmentMembers));
+          sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest!.appointmentMembers));
         });
     } else {
-      this.appointmentService.addAppointmentMember(this.appointmentRequest, this.member)
+      this.appointmentService.addAppointmentMember(this.appointmentRequest!, this.member)
         .pipe(takeUntil(this.destroySubject))
         .subscribe(member => {
-          this.appointmentRequest.appointmentMembers.push(member);
+          this.appointmentRequest!.appointmentMembers.push(member);
           this.resetVote();
-          sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest.appointmentMembers));
+          sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest!.appointmentMembers));
         });
     }
   }
@@ -85,9 +85,9 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   setAppointments() {
-    for (let i = 0; i < this.appointmentRequest.appointments.length; i++) {
+    for (let i = 0; i < this.appointmentRequest!.appointments.length; i++) {
       this.member.appointmentDecisions.push(new AppointmentDecisionModel());
-      this.member.appointmentDecisions[i].appointmentId = this.appointmentRequest.appointments[i].id;
+      this.member.appointmentDecisions[i].appointmentId = this.appointmentRequest!.appointments[i].id;
       this.member.appointmentDecisions[i].decision = AppointmentDecisionType.NO_ANSWER;
     }
   }
@@ -102,7 +102,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   setDecision(appointment: AppointmentModel, decision: number) {
-    const index = this.appointmentRequest.appointments.indexOf(appointment);
+    const index = this.appointmentRequest!.appointments.indexOf(appointment);
     const appointmentDecision = this.member.appointmentDecisions[index];
 
     switch (decision) {
@@ -119,14 +119,14 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   deleteMember(member: AppointmentMemberModel) {
-    this.appointmentService.deleteAppointmentMember(this.appointmentRequest, member)
+    this.appointmentService.deleteAppointmentMember(this.appointmentRequest!, member)
       .pipe(takeUntil(this.destroySubject))
       .subscribe(() => {
         this.isEditMember = false;
         this.resetVote();
-        const index = this.appointmentRequest.appointmentMembers.indexOf(member);
-        this.appointmentRequest.appointmentMembers.splice(index, 1);
-        sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest.appointmentMembers));
+        const index = this.appointmentRequest!.appointmentMembers.indexOf(member);
+        this.appointmentRequest!.appointmentMembers.splice(index, 1);
+        sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest!.appointmentMembers));
       });
   }
 
@@ -139,7 +139,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   checkVoteOfMember(appointment: AppointmentModel, number: number) {
-    const index = this.appointmentRequest.appointments.indexOf(appointment);
+    const index = this.appointmentRequest!.appointments.indexOf(appointment);
     return this.member.appointmentDecisions[index].decision === number;
   }
 }

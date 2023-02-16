@@ -53,7 +53,7 @@ const routes: Routes = [
       { path: 'configuration', component: OverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'overview', component: DateOverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'email', component: EmailSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
-      { path: 'links', component: LinkSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
+      { path: 'links', component: LinkSubformComponent },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
   },

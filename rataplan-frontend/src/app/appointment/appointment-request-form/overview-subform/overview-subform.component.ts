@@ -1,17 +1,13 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import { AppointmentConfig, AppointmentModel } from '../../../models/appointment.model';
-import { ExtraValidators } from '../../../validator/validators';
-import { AppointmentRequestFormService } from '../appointment-request-form.service';
-
-function minControlValueValidator(min: AbstractControl): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (control.value <= min.value) return { matDatetimePickerMin: true };
-    return null;
-  };
-}
+import { appState } from "../../../app.reducers";
+import { Store } from "@ngrx/store";
+import { Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
+import { combineDateTime } from "../appointment-request-form.service";
+import { SetAppointmentsAction } from "../../appointment.actions";
 
 @Component({
   selector: 'app-overview-subform',
@@ -27,7 +23,14 @@ function minControlValueValidator(min: AbstractControl): ValidatorFn {
 
 export class OverviewSubformComponent implements OnInit {
   appointments: AppointmentModel[] = [];
-  appointmentConfig: AppointmentConfig;
+  appointmentConfig: AppointmentConfig = {
+    startDate: true,
+    startTime: false,
+    endDate: false,
+    endTime: false,
+    description: false,
+    url: false,
+  };
   isPageValid = true;
   voteOptions = this.formBuilder.group({
     startDateInput: null,
@@ -38,16 +41,22 @@ export class OverviewSubformComponent implements OnInit {
     linkInput: null
   });
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
+  private storeSub?: Subscription;
+
+  constructor(
+    private store: Store<appState>,
     private router: Router,
     private formBuilder: FormBuilder) {
-    this.appointmentConfig = appointmentRequestFormService.getAppointmentConfig();
-    this.voteOptions.setValidators(ExtraValidators.filterCountMin(this.appointmentRequestFormService.getSelectedConfig()));
-    this.voteOptions.controls['endTimeInput'].setValidators(minControlValueValidator(this.voteOptions.controls['startTimeInput']));
   }
 
   ngOnInit(): void {
-    // this.voteOptions.group();
+    this.storeSub = this.store.select("appointmentRequest").pipe(
+      filter(request => !!request.appointmentRequest),
+      map(state => state.appointmentRequest!)
+    ).subscribe(request => {
+      this.appointmentConfig = request.appointmentRequestConfig.appointmentConfig;
+      this.appointments = request.appointments;
+    });
   }
 
   clearContent() {
@@ -60,11 +69,11 @@ export class OverviewSubformComponent implements OnInit {
     }
 
     const voteOption: AppointmentModel = {};
-    voteOption.startDate = this.appointmentRequestFormService.setDateFormat(
+    voteOption.startDate = combineDateTime(
       this.voteOptions.get('startDateInput')?.value, this.voteOptions.get('startTimeInput')?.value,
     );
-    if (this.appointmentRequestFormService.appointmentRequest.appointmentRequestConfig.appointmentConfig.endDate) {
-      voteOption.endDate = this.appointmentRequestFormService.setDateFormat(
+    if (this.appointmentConfig.endDate) {
+      voteOption.endDate = combineDateTime(
         this.voteOptions.get('endDateInput')?.value, this.voteOptions.get('endTimeInput')?.value,
       );
     }
@@ -72,8 +81,10 @@ export class OverviewSubformComponent implements OnInit {
     voteOption.description = this.voteOptions.get('descriptionInput')?.value;
     voteOption.url = this.voteOptions.get('linkInput')?.value;
 
-    this.appointments.push(voteOption);
-    this.appointmentRequestFormService.setAppointments(this.appointments);
+    this.store.dispatch(new SetAppointmentsAction([
+        ...this.appointments,
+      voteOption,
+    ]));
 
     console.log(this.voteOptions.get('timeInput')?.value);
     console.log(this.appointments);
@@ -101,8 +112,10 @@ export class OverviewSubformComponent implements OnInit {
   }
 
   deleteVoteOption(index: number) {
-    this.appointments.splice(index, 1);
-    this.appointmentRequestFormService.setAppointments(this.appointments);
+    this.store.dispatch(new SetAppointmentsAction([
+      ...this.appointments.slice(0, index),
+      ...this.appointments.slice(index+1)
+      ]));
   }
 
   editVoteOption(index: number) {

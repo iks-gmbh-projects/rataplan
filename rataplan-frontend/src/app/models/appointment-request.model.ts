@@ -1,40 +1,27 @@
-import { DecisionType } from '../appointment/appointment-request-form/decision-type.enum';
 import { AppointmentConfig, AppointmentModel } from './appointment.model';
 import { AppointmentMemberModel } from './appointment-member.model';
 
-export class AppointmentRequestModel {
-  id: number | undefined;
-  title: string | undefined;
-  description: string | undefined;
-  deadline: Date | undefined;
-  organizerMail: string | undefined;
-  organizerName: string | undefined;
+export type AppointmentRequestModel = {
+  id?: number;
+  title: string;
+  description?: string;
+  deadline: string;
+  organizerMail?: string;
+  organizerName?: string;
   consigneeList: string[];
 
-  backendUserid: number | undefined;
-  expired: boolean | undefined;
-  participationToken: string | undefined;
-  editToken: string | undefined;
+  backendUserid?: number;
+  expired?: boolean;
+  participationToken?: string;
+  editToken?: string;
 
   appointmentRequestConfig: AppointmentRequestConfig;
   appointments: AppointmentModel[];
   appointmentMembers: AppointmentMemberModel[];
+};
 
-  constructor() {
-    this.appointmentRequestConfig = new AppointmentRequestConfig();
-    this.consigneeList = [];
-    this.appointments = [];
-    this.appointmentMembers = [];
-  }
-}
-
-export class AppointmentRequestConfig {
-  id: number | undefined;
-  appointmentConfig: AppointmentConfig;
-  decisionType: string;
-
-  constructor(){
-    this.appointmentConfig = new AppointmentConfig();
-    this.decisionType = DecisionType[DecisionType.DEFAULT];
-  }
-}
+export type AppointmentRequestConfig = {
+  id?: number,
+  appointmentConfig: AppointmentConfig,
+  decisionType: string,
+};

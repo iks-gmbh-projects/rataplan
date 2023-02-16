@@ -1,51 +1,61 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { AppointmentRequestFormService } from '../appointment-request-form.service';
 import {Router} from "@angular/router";
 import { AppointmentModel } from "../../../models/appointment.model";
+import { appState } from "../../../app.reducers";
+import { Store } from "@ngrx/store";
+import { Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
+import { SetAppointmentsAction } from "../../appointment.actions";
 
 @Component({
   selector: 'app-datepicker-subform',
   templateUrl: './datepicker-subform.component.html',
   styleUrls: ['./datepicker-subform.component.scss'],
 })
-export class DatepickerSubformComponent implements OnInit {
+export class DatepickerSubformComponent implements OnInit, OnDestroy {
   minDate: Date;
   maxDate: Date;
-  daysSelected: AppointmentModel[];
-  isPageValid = true;
+  daysSelected: AppointmentModel[] = [];
+  private storeSub?: Subscription;
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
-              private router: Router) {
+  constructor(
+    private store: Store<appState>,
+    private router: Router
+  ) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
     this.maxDate = new Date(currentYear + 2, 11, 31);
-    this.daysSelected = this.appointmentRequestFormService.appointmentRequest.appointments;
   }
 
   ngOnInit(): void {
-    Promise
-      .resolve()
-      .then(() => this.appointmentRequestFormService.updateLength());
+    this.storeSub = this.store.select("appointmentRequest")
+      .pipe(
+        filter(state => !!state.appointmentRequest),
+        map(state => state.appointmentRequest!.appointments)
+      ).subscribe(appointments => this.daysSelected = appointments);
+  }
+
+  ngOnDestroy(): void {
+    this.storeSub?.unsubscribe();
   }
 
   isSelected = (event: any) => {
     const date = new Date(event);
-    return this.daysSelected.every(x => x.startDate != date.toDateString()) ? '' : 'special-date';
+    return this.daysSelected.every(x => x.startDate != date.toISOString()) ? '' : 'special-date';
   };
 
   select(event: any, calendar: any) {
     const date = new Date(event);
     const index = this.daysSelected
-      .findIndex(x => x.startDate == date.toDateString());
+      .findIndex(x => x.startDate == date.toISOString());
 
-    if (index === -1) this.daysSelected.push({startDate: date.toISOString()});
-    else this.daysSelected.splice(index, 1);
+    if (index === -1) this.daysSelected = [...this.daysSelected, {startDate: date.toISOString()}];
+    else this.daysSelected = [...this.daysSelected.slice(0, index), ...this.daysSelected.slice(index+1)];
 
+    this.store.dispatch(new SetAppointmentsAction(this.daysSelected));
     console.log(this.daysSelected);
 
-
-    this.appointmentRequestFormService.updateLength();
     calendar.updateTodaysDate();
   }
   backPage(){

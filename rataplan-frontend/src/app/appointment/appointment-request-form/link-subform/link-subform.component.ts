@@ -1,8 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-
-import { AppointmentRequestModel } from '../../../models/appointment-request.model';
-import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'app-link-subform',
@@ -10,32 +8,24 @@ import { AppointmentRequestFormService } from '../appointment-request-form.servi
   styleUrls: ['./link-subform.component.css'],
 })
 export class LinkSubformComponent implements OnInit, OnDestroy {
-  destroySubject: Subject<boolean> = new Subject<boolean>();
   participationLink = '/vote/';
   editLink = '/vote/edit/';
+  private sub?: Subscription;
 
-  constructor(private appointmentFormService: AppointmentRequestFormService){
+  constructor(
+    private activateRoute: ActivatedRoute
+  ){
   }
 
   ngOnInit(): void {
-    this.appointmentFormService.createAppointmentRequest()
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(
-        data => {
-          this.participationLink += data.participationToken;
-          this.editLink += data.editToken;
-          console.log(data);
-          this.appointmentFormService.appointmentRequest = new AppointmentRequestModel();
-        }, error => {
-          console.log(error)
-          console.log(this.appointmentFormService.appointmentRequest)
-        });
+    this.sub = this.activateRoute.queryParams.subscribe(params => {
+      this.participationLink = '/vote/'+ params['participationToken'];
+      this.editLink = '/vote/edit/'+ params['editToken'];
+    })
   }
 
   ngOnDestroy(): void {
-    this.appointmentFormService.resetFormObservable.next();
-    this.destroySubject.next(true);
-    this.destroySubject.complete();
+    this.sub?.unsubscribe();
   }
 
 }

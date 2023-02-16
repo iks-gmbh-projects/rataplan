@@ -1,11 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
-import { AppointmentRequestFormService } from '../appointment-request-form.service';
 import {FormControl, Validators} from "@angular/forms";
 import {NgxMaterialTimepickerTheme} from "ngx-material-timepicker";
 import {Router} from "@angular/router";
 import { AppointmentModel } from "../../../models/appointment.model";
+import { appState } from "../../../app.reducers";
+import { Store } from "@ngrx/store";
+import { filter, map } from "rxjs/operators";
+import { SetAppointmentsAction } from "../../appointment.actions";
 
 @Component({
   selector: 'app-date-overview-subform',
@@ -14,32 +17,31 @@ import { AppointmentModel } from "../../../models/appointment.model";
 })
 export class DateOverviewSubformComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
-  title;
-  description;
-  appointments: AppointmentModel[];
+  title: string = '';
+  description?: string;
+  appointments: AppointmentModel[] = [];
   showDescription = false;
   isValid = true;
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
-              private router: Router) {
-    this.title = appointmentRequestFormService.appointmentRequest.title;
-    this.description = appointmentRequestFormService.appointmentRequest.description;
-    this.appointments = appointmentRequestFormService.appointmentRequest.appointments;
-  }
+  private storeSub?: Subscription;
+
+  constructor(
+    private store: Store<appState>,
+    private router: Router
+  ) {}
   'time' = new FormControl(null, Validators.required);
 
   ngOnInit(): void {
-    this.appointments
-      .sort((b, a) => new Date(b.startDate!).getTime() - new Date(a.startDate!).getTime());
-    Promise
-      .resolve()
-      .then(() => this.appointmentRequestFormService.updateLength());
-
-    this.appointmentRequestFormService.submitButtonObservable
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(() => {
-        this.appointmentRequestFormService.setAppointments(this.appointments);
-
+    this.storeSub = this.store.select("appointmentRequest")
+      .pipe(
+        filter(state => !!state.appointmentRequest),
+        map(state => state.appointmentRequest!)
+      ).subscribe(appointmentRequest => {
+        this.title = appointmentRequest.title;
+        this.description = appointmentRequest.description;
+        this.appointments = appointmentRequest.appointments;
+        this.appointments
+          .sort((b, a) => new Date(b.startDate!).getTime() - new Date(a.startDate!).getTime());
       });
   }
   blueTheme: NgxMaterialTimepickerTheme = {
@@ -67,14 +69,15 @@ export class DateOverviewSubformComponent implements OnInit, OnDestroy {
     this.appointments.find((element, index) => {
       if (element == appointment) this.appointments.splice(index, 1);
     });
-    this.appointmentRequestFormService.updateLength();
+    this.store.dispatch(new SetAppointmentsAction(this.appointments));
   }
   backPage(){
     this.router.navigateByUrl("configurationOptions")
   }
 
   nextPage() {
-    this.router.navigateByUrl("")
+    this.store.dispatch(new SetAppointmentsAction(this.appointments));
+    this.router.navigateByUrl("email");
   }
 
 

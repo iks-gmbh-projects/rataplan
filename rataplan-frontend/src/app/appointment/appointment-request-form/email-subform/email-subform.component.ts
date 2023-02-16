@@ -3,11 +3,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-
-import { AppointmentRequestFormService } from '../appointment-request-form.service';
+import { Store } from "@ngrx/store";
+import { Subscription } from 'rxjs';
+import { filter, map } from "rxjs/operators";
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../../../validator/validators";
+import { appState } from "../../../app.reducers";
+import { PostAppointmentRequestAction, SetOrganizerInfoAppointmentAction } from "../../appointment.actions";
 
 @Component({
   selector: 'app-email-subform',
@@ -15,7 +17,6 @@ import { ExtraValidators } from "../../../validator/validators";
   styleUrls: ['./email-subform.component.css'],
 })
 export class EmailSubformComponent implements OnInit, OnDestroy {
-  destroySubject: Subject<boolean> = new Subject<boolean>();
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
   isPageValid = true;
   consigneeList: string[] = [];
@@ -26,32 +27,37 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     'consigneeList': new FormControl(null, Validators.email)
   });
 
-  constructor(private appointmentRequestFormService: AppointmentRequestFormService,
-              public readonly errorMessageService: FormErrorMessageService, private router: Router) {
+  private storeSub?: Subscription;
+
+  constructor(
+    private store: Store<appState>,
+    public readonly errorMessageService: FormErrorMessageService,
+    private router: Router
+  ) {
   }
 
   ngOnInit(): void {
-    const appointmentRequest = this.appointmentRequestFormService.appointmentRequest;
-
-    this.emailSubform.get('name')?.setValue(appointmentRequest.organizerName);
-    this.emailSubform.get('email')?.setValue(appointmentRequest.organizerMail);
-    this.consigneeList = appointmentRequest.consigneeList;
-    this.emailSubform.statusChanges
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(val => this.appointmentRequestFormService.emitValidation(val));
+    this.storeSub = this.store.select("appointmentRequest")
+      .pipe(
+        filter(state => !!state.appointmentRequest),
+        map(state => state.appointmentRequest!)
+      ).subscribe(appointmentRequest => {
+        this.emailSubform.get('name')?.setValue(appointmentRequest.organizerName);
+        this.emailSubform.get('email')?.setValue(appointmentRequest.organizerMail);
+        this.consigneeList = appointmentRequest.consigneeList;
+      });
   }
 
   ngOnDestroy(): void {
-    this.destroySubject.next(true);
-    this.destroySubject.complete();
+    this.storeSub?.unsubscribe();
   }
 
   setEmailForm() {
-    this.appointmentRequestFormService.setEmailInputValue(
-      this.emailSubform.get('name')?.value,
-      this.emailSubform.get('email')?.value,
-      this.consigneeList
-    );
+    this.store.dispatch(new SetOrganizerInfoAppointmentAction({
+      name: this.emailSubform.get('name')?.value,
+      email: this.emailSubform.get('email')?.value,
+      consigneeList: this.consigneeList,
+    }));
   }
 
   remove(email: string) {
@@ -75,6 +81,6 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
 
   sendEndOfAppointment() {
     this.setEmailForm();
-    this.router.navigateByUrl('create-vote/links');
+    this.store.dispatch(new PostAppointmentRequestAction());
   }
 }

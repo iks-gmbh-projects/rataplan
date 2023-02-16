@@ -15,7 +15,7 @@
       mat-raised-button
       (click)="backPage()">Zurück
     </button>
-    <button  [disabled]="!isPageValid"
+    <button  [disabled]="!daysSelected.length"
              class="right"
              type="button"
              color="primary"
