@@ -19,6 +19,8 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
   configForm = this.formBuilder.group({
     isDateChecked: [false],
     isTimeChecked: [false],
+    isEndDateChecked: [false],
+    isEndTimeChecked: [false],
     isDescriptionChecked: [false],
     isUrlChecked: [false],
   });
@@ -34,6 +36,8 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
     this.configForm.setValue({
       isDateChecked: this.appointmentConfig.startDate,
       isTimeChecked: this.appointmentConfig.startTime,
+      isEndDateChecked: this.appointmentConfig.endDate,
+      isEndTimeChecked: this.appointmentConfig.endTime,
       isDescriptionChecked: this.appointmentConfig.description,
       isUrlChecked: this.appointmentConfig.url,
     });
@@ -50,6 +54,8 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.appointmentConfig.startDate = this.configForm.get('isDateChecked')?.value;
     this.appointmentConfig.startTime = this.configForm.get('isTimeChecked')?.value;
+    this.appointmentConfig.endDate = this.configForm.get('isEndDateChecked')?.value;
+    this.appointmentConfig.endTime = this.configForm.get('isEndTimeChecked')?.value;
     this.appointmentConfig.description = this.configForm.get('isDescriptionChecked')?.value;
     this.appointmentConfig.url = this.configForm.get('isUrlChecked')?.value;
     console.log(this.appointmentConfig);
@@ -60,6 +66,8 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
     if(
       this.configForm.get('isDateChecked')?.value &&
       !this.configForm.get('isTimeChecked')?.value &&
+      !this.configForm.get('isEndDateChecked')?.value &&
+      !this.configForm.get('isEndTimeChecked')?.value &&
       !this.configForm.get('isDescriptionChecked')?.value &&
       !this.configForm.get('isUrlChecked')?.value
     ) {

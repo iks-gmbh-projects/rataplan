@@ -21,7 +21,7 @@
     </div>
     <div *ngIf='appointmentConfig.endDate'>
       <mat-form-field appearance='fill'>
-        <mat-label>Choose Date Range</mat-label>
+        <mat-label>Zeitraum</mat-label>
         <mat-date-range-input [rangePicker]='picker'>
           <input matStartDate
                  formControlName='startDateInput'
@@ -87,10 +87,10 @@
     </div>
     <mat-card-actions>
       <button mat-button
-              (click)='clearContent()'>Clear
+              (click)='clearContent()'>Zurücksetzen
       </button>
       <button mat-button
-              (click)='addVoteOption()'>Add
+              (click)='addVoteOption()'>Hinzufügen
       </button>
     </mat-card-actions>
   </mat-card>
