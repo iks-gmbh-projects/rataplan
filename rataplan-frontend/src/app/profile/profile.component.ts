@@ -43,10 +43,6 @@ export class ProfileComponent implements OnInit {
   displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace])
   emailField = new FormControl('', [Validators.required , Validators.email])
 
-  redirect(){
-    this.router.navigateByUrl('/change-password')
-  }
-
   changeDisplayName(){
       const displayName = this.displayNameField.value
     if (this.displayNameField.valid) {

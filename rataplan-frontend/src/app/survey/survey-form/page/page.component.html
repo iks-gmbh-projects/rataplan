@@ -18,7 +18,7 @@
           matInput
           #answerText="ngModel"
         >
-        <mat-error>{{errorMessageService.genericFormError(form.getControl(answerText))}}</mat-error>
+        <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
       </mat-form-field>
       <ng-template [ngIf]="question.checkboxGroup">
         <div
@@ -58,8 +58,10 @@
             name="text"
             someNonWhitespace
             matInput
-            [disabled]="disableTextField(question, form)"
+            [disabled]="disableTextField(question, modelQuestionGroup.control)"
+            #answerText="ngModel"
           >
+          <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
         </mat-form-field>
         <br>
       </ng-template>
