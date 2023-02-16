@@ -3,7 +3,6 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentRequestModel } from '../../../models/appointment-request.model';
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
-import {GeneralSubformComponent} from "../general-subform/general-subform.component";
 
 @Component({
   selector: 'app-link-subform',
@@ -27,11 +26,9 @@ export class LinkSubformComponent implements OnInit, OnDestroy {
           this.editLink += data.editToken;
           console.log(data);
           this.appointmentFormService.appointmentRequest = new AppointmentRequestModel();
-          this.appointmentFormService.selectedDates = [];
         }, error => {
           console.log(error)
           console.log(this.appointmentFormService.appointmentRequest)
-          console.log(this.appointmentFormService.selectedDates)
         });
   }
 

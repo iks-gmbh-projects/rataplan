@@ -59,7 +59,7 @@ export class OverviewSubformComponent implements OnInit {
       return;
     }
 
-    const voteOption: AppointmentModel = new AppointmentModel();
+    const voteOption: AppointmentModel = {};
     voteOption.startDate = this.appointmentRequestFormService.setDateFormat(
       this.voteOptions.get('startDateInput')?.value, this.voteOptions.get('startTimeInput')?.value,
     );

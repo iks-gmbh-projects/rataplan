@@ -1,16 +1,11 @@
-export class AppointmentModel {
-  id: number | undefined;
-  requestId: number | undefined;
-  description: string | undefined;
-  startDate: string | undefined;
-  endDate: string | undefined;
-  url: string | undefined;
-  // displayedDescription: string | null;
-
-  constructor() {
-    // this.displayedDescription = 'null';
-  }
-}
+export type AppointmentModel = {
+  id?: number,
+  requestId?: number,
+  description?: string,
+  startDate?: string,
+  endDate?: string,
+  url?: string,
+};
 
 export class AppointmentConfig {
   public startDate = true;

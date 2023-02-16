@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { AppointmentRequestFormService } from '../appointment-request-form.service';
 import {Router} from "@angular/router";
+import { AppointmentModel } from "../../../models/appointment.model";
 
 @Component({
   selector: 'app-datepicker-subform',
@@ -11,7 +12,7 @@ import {Router} from "@angular/router";
 export class DatepickerSubformComponent implements OnInit {
   minDate: Date;
   maxDate: Date;
-  daysSelected;
+  daysSelected: AppointmentModel[];
   isPageValid = true;
 
   constructor(private appointmentRequestFormService: AppointmentRequestFormService,
@@ -19,7 +20,7 @@ export class DatepickerSubformComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
     this.maxDate = new Date(currentYear + 2, 11, 31);
-    this.daysSelected = this.appointmentRequestFormService.selectedDates;
+    this.daysSelected = this.appointmentRequestFormService.appointmentRequest.appointments;
   }
 
   ngOnInit(): void {
@@ -30,16 +31,15 @@ export class DatepickerSubformComponent implements OnInit {
 
   isSelected = (event: any) => {
     const date = new Date(event);
-    return this.daysSelected
-      .find(x => x.toDateString() == date.toDateString()) ? 'special-date' : '';
+    return this.daysSelected.every(x => x.startDate != date.toDateString()) ? '' : 'special-date';
   };
 
   select(event: any, calendar: any) {
     const date = new Date(event);
     const index = this.daysSelected
-      .findIndex(x => x.toDateString() == date.toDateString());
+      .findIndex(x => x.startDate == date.toDateString());
 
-    if (index === -1) this.daysSelected.push(date);
+    if (index === -1) this.daysSelected.push({startDate: date.toDateString()});
     else this.daysSelected.splice(index, 1);
 
     console.log(this.daysSelected);

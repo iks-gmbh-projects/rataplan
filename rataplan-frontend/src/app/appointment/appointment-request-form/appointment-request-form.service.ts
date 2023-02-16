@@ -16,8 +16,6 @@ export class AppointmentRequestFormService {
 
   appointmentRequest: AppointmentRequestModel = new AppointmentRequestModel();
   appointmentConfig: AppointmentConfig = new AppointmentConfig();
-  selectedDates: Date[] = [];
-  selectedTimes: Date [] = [];
 
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }
@@ -30,15 +28,8 @@ export class AppointmentRequestFormService {
     this.appointmentRequest.deadline = deadline;
   }
 
-  setSelectedDates(selectedDates: Date[]) {
-    const appointments: AppointmentModel[] = [];
-    for (let i = 0; i < selectedDates.length; i++) {
-      const date = new AppointmentModel();
-      date.startDate = selectedDates[i].getFullYear() + '-' +
-        ('00' + (selectedDates[i].getMonth() + 1)).slice(-2) + '-' +
-        ('00' + selectedDates[i].getDate()).slice(-2);
-      appointments.push(date);
-    }
+  setAppointments(appointments: AppointmentModel[]) {
+    console.log(appointments);
     this.appointmentRequest.appointments = appointments;
   }
 
@@ -67,7 +58,7 @@ export class AppointmentRequestFormService {
   setTime(selectedTimes: Date[], selectedDates: Date[]) {
     const appointments: AppointmentModel[] = [];
     for (let i = 0; i <selectedDates.length; i++) {
-      const date = new AppointmentModel();
+      const date: AppointmentModel = {};
       date.startDate = selectedDates[i] +
         ('00' + selectedTimes[i].getHours()) + '-' +
         ('00' + selectedTimes[i].getMinutes());
@@ -88,7 +79,7 @@ export class AppointmentRequestFormService {
   }
 
   updateLength() {
-    this.validationObservable.next(this.selectedDates.length != 0);
+    this.validationObservable.next(this.appointmentRequest.appointments.length != 0);
   }
 
   submitValues() {

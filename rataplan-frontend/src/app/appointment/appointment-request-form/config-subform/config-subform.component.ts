@@ -57,7 +57,16 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
   }
 
   nextPage() {
-    this.router.navigateByUrl('/create-vote/configuration');
+    if(
+      this.configForm.get('isDateChecked')?.value &&
+      !this.configForm.get('isTimeChecked')?.value &&
+      !this.configForm.get('isDescriptionChecked')?.value &&
+      !this.configForm.get('isUrlChecked')?.value
+    ) {
+      this.router.navigateByUrl('/create-vote/datepicker');
+    } else {
+      this.router.navigateByUrl('/create-vote/configuration');
+    }
   }
 
   backPage(){
