@@ -63,13 +63,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   remove(email: string) {
     const index = this.consigneeList.indexOf(email);
     if (index >= 0) {
-      this.consigneeList.splice(index, 1);
+      this.consigneeList = [...this.consigneeList.slice(0, index), ...this.consigneeList.slice(index+1)];
     }
   }
 
   add(email: MatChipInputEvent) {
     if (email.value && this.consigneeList.indexOf(email.value) < 0 && this.emailSubform.get('consigneeList')?.valid) {
-      this.consigneeList.push(email.value.toLowerCase());
+      this.consigneeList = [...this.consigneeList, email.value.toLowerCase()];
     }
     this.emailSubform.get('consigneeList')?.setErrors(null);
     email.chipInput?.clear();
