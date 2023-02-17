@@ -1,12 +1,13 @@
 import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ExtraValidators } from '../../../validator/validators';
 import { appState } from "../../../app.reducers";
 import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { SetAppointmentConfigAction } from "../../appointment.actions";
+import { AppointmentConfig } from "../../../models/appointment.model";
 
 @Component({
   selector: 'app-config-subform',
@@ -30,6 +31,7 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private activeRoute: ActivatedRoute,
     private store: Store<appState>
   ) {
     this.configForm.setValidators(ExtraValidators.filterCountMin(1));
@@ -57,29 +59,26 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
   }
 
   nextPage() {
-    this.store.dispatch(new SetAppointmentConfigAction({
+    const config: AppointmentConfig = {
       startDate: this.configForm.get('isDateChecked')?.value || false,
       startTime: this.configForm.get('isTimeChecked')?.value || false,
       endDate: this.configForm.get('isEndDateChecked')?.value || false,
       endTime: this.configForm.get('isEndTimeChecked')?.value || false,
       description: this.configForm.get('isDescriptionChecked')?.value || false,
       url: this.configForm.get('isUrlChecked')?.value || false,
-    }));
+    };
+    this.store.dispatch(new SetAppointmentConfigAction(config));
     if(
-      this.configForm.get('isDateChecked')?.value &&
-      !this.configForm.get('isTimeChecked')?.value &&
-      !this.configForm.get('isEndDateChecked')?.value &&
-      !this.configForm.get('isEndTimeChecked')?.value &&
-      !this.configForm.get('isDescriptionChecked')?.value &&
-      !this.configForm.get('isUrlChecked')?.value
+      config.startDate &&
+      !config.startTime &&
+      !config.endDate &&
+      !config.endTime &&
+      !config.description &&
+      !config.url
     ) {
-      this.router.navigateByUrl('/create-vote/datepicker');
+      this.router.navigate(['..', 'datepicker'], { relativeTo: this.activeRoute });
     } else {
-      this.router.navigateByUrl('/create-vote/configuration');
+      this.router.navigate(['..', 'configuration'], { relativeTo: this.activeRoute });
     }
-  }
-
-  backPage(){
-    this.router.navigateByUrl('/create-vote/general');
   }
 }

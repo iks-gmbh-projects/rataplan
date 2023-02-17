@@ -35,7 +35,6 @@ import { AppointmentComponent } from './appointment/appointment/appointment.comp
 import { MemberDecisionSubformComponent } from './appointment/appointment/member-decision-subform/member-decision-subform.component';
 import { AppointmentRequestFormComponent, } from './appointment/appointment-request-form/appointment-request-form.component';
 import { ConfigSubformComponent } from './appointment/appointment-request-form/config-subform/config-subform.component';
-import { DateOverviewSubformComponent } from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
 import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
 import { EmailSubformComponent } from './appointment/appointment-request-form/email-subform/email-subform.component';
 import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
@@ -80,7 +79,6 @@ registerLocaleData(localeDE);
     AppointmentRequestFormComponent,
     GeneralSubformComponent,
     DatepickerSubformComponent,
-    DateOverviewSubformComponent,
     EmailSubformComponent,
     LinkSubformComponent,
     ProfileComponent,
@@ -121,7 +119,6 @@ registerLocaleData(localeDE);
     MatProgressSpinnerModule,
     MatTooltipModule,
     NgxMaterialTimepickerModule,
-    MatProgressSpinnerModule,
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,

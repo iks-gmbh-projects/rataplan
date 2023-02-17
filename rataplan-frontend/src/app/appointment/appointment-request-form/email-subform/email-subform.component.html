@@ -47,13 +47,13 @@
   </div>
   <div>
     <button mat-raised-button
-            (click)="backPage()">Zurück
+            routerLink="configuration">Zurück
     </button>
     <button class='next-button'
             type='button'
             color='primary'
             mat-raised-button
-            [disabled]='!emailSubform.valid'
+            [disabled]='!emailSubform.valid || busy'
             (click)=sendEndOfAppointment()>Fertig
     </button>
   </div>

@@ -132,13 +132,13 @@
 </div>
 <div>
   <button mat-raised-button
-          (click)='backPage()'>Zurück
+          routerLink='configurationOptions'>Zurück
   </button>
   <button [disabled]='this.appointments.length == 0'
           class='right'
           type='submit'
           color='primary'
           mat-raised-button
-          (click)='nextPage()'>Weiter
+          routerLink='email'>Weiter
   </button>
 </div>

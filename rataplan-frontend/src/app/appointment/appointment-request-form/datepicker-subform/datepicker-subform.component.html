@@ -6,21 +6,24 @@
     <mat-calendar #calendar
                   [minDate]="minDate"
                   [maxDate]="maxDate"
-                  (selectedChange)="select($event, calendar)"
+                  (selectedChange)="select($event)"
                   [dateClass]="isSelected">
     </mat-calendar>
   </mat-card>
   <div>
     <button
       mat-raised-button
-      (click)="backPage()">Zurück
+      routerLink="configurationOptions"
+    >Zurück
     </button>
-    <button  [disabled]="!daysSelected.length"
-             class="right"
-             type="button"
-             color="primary"
-             mat-raised-button
-             (click)="nextPage()">Weiter
+    <button
+      [disabled]="!daysSelected.length"
+      class="right"
+      type="button"
+      color="primary"
+      mat-raised-button
+      routerLink="email"
+    >Weiter
     </button>
   </div>
 </div>

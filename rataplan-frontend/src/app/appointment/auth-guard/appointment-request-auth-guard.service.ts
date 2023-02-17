@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
 import { appState } from "../../app.reducers";
 import { Store } from "@ngrx/store";
-import { map } from "rxjs/operators";
+import { filter, map } from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +19,8 @@ export class AppointmentRequestAuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.store.select("appointmentRequest").pipe(
+      filter(state => !state.busy),
+      take(1),
       map(state => {
         const title = state.appointmentRequest?.title;
         const deadline = state.appointmentRequest?.deadline;
@@ -26,7 +28,7 @@ export class AppointmentRequestAuthGuard implements CanActivate {
         if (title && deadline) {
           return true;
         }
-        return this.router.createUrlTree(['create-vote/general']);
+        return this.router.createUrlTree(['../general']);
       })
     );
   }

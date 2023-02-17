@@ -7,7 +7,7 @@ import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { combineDateTime } from "../appointment-request-form.service";
-import { SetAppointmentsAction } from "../../appointment.actions";
+import { AddAppointmentsAction, RemoveAppointmentAction } from "../../appointment.actions";
 
 function extractTime(date?: string): string | undefined {
   if(!date) return date;
@@ -33,7 +33,6 @@ export class OverviewSubformComponent implements OnInit {
     description: false,
     url: false,
   };
-  isPageValid = true;
   voteOptions = this.formBuilder.group({
     startDateInput: null,
     endDateInput: null,
@@ -83,10 +82,7 @@ export class OverviewSubformComponent implements OnInit {
     voteOption.description = this.voteOptions.get('descriptionInput')?.value;
     voteOption.url = this.voteOptions.get('linkInput')?.value;
 
-    this.store.dispatch(new SetAppointmentsAction([
-        ...this.appointments,
-      voteOption,
-    ]));
+    this.store.dispatch(new AddAppointmentsAction(voteOption));
 
     console.log(this.voteOptions.get('timeInput')?.value);
     console.log(this.appointments);
@@ -114,10 +110,7 @@ export class OverviewSubformComponent implements OnInit {
   }
 
   deleteVoteOption(index: number) {
-    this.store.dispatch(new SetAppointmentsAction([
-      ...this.appointments.slice(0, index),
-      ...this.appointments.slice(index+1)
-      ]));
+    this.store.dispatch(new RemoveAppointmentAction(index));
   }
 
   editVoteOption(index: number) {
@@ -129,19 +122,5 @@ export class OverviewSubformComponent implements OnInit {
     this.voteOptions.controls['descriptionInput'].setValue(voteOption.description);
     this.voteOptions.controls['linkInput'].setValue(voteOption.url);
     this.deleteVoteOption(index);
-  }
-
-  backPage() {
-    this.router.navigateByUrl('create-vote/configurationOptions');
-  }
-
-  nextPage() {
-    this.router.navigateByUrl('create-vote/email');
-  }
-
-  isTimeNull(voteOption: AppointmentModel) {
-    console.log(voteOption);
-    return !voteOption.startDate?.slice(11, 16).includes('00:00');
-
   }
 }

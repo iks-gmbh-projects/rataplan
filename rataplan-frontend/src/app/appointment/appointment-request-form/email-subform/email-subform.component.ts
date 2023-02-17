@@ -2,10 +2,9 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Router } from '@angular/router';
 import { Store } from "@ngrx/store";
 import { Subscription } from 'rxjs';
-import { filter, map } from "rxjs/operators";
+import { filter } from "rxjs/operators";
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../../../validator/validators";
 import { appState } from "../../../app.reducers";
@@ -18,7 +17,7 @@ import { PostAppointmentRequestAction, SetOrganizerInfoAppointmentAction } from 
 })
 export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
-  isPageValid = true;
+  busy: boolean = false;
   consigneeList: string[] = [];
 
   emailSubform = new FormGroup({
@@ -31,8 +30,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<appState>,
-    public readonly errorMessageService: FormErrorMessageService,
-    private router: Router
+    public readonly errorMessageService: FormErrorMessageService
   ) {
   }
 
@@ -40,8 +38,9 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     this.storeSub = this.store.select("appointmentRequest")
       .pipe(
         filter(state => !!state.appointmentRequest),
-        map(state => state.appointmentRequest!)
-      ).subscribe(appointmentRequest => {
+      ).subscribe(state => {
+        this.busy = state.busy;
+        const appointmentRequest = state.appointmentRequest!;
         this.emailSubform.get('name')?.setValue(appointmentRequest.organizerName);
         this.emailSubform.get('email')?.setValue(appointmentRequest.organizerMail);
         this.consigneeList = appointmentRequest.consigneeList;
@@ -73,10 +72,6 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     }
     this.emailSubform.get('consigneeList')?.setErrors(null);
     email.chipInput?.clear();
-  }
-
-  backPage() {
-    this.router.navigateByUrl('create-vote/configuration');
   }
 
   sendEndOfAppointment() {

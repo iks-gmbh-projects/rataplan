@@ -1,26 +1,7 @@
 <div class="wrapper">
- <h2>Abstimmung erstellen</h2>
-<router-outlet></router-outlet>
-<!--  <div *ngIf="!isSend">-->
-<!--    <button *ngIf="indexOfSection > 0"-->
-<!--            mat-raised-button-->
-<!--            (click)="backPage()">Zurück-->
-<!--    </button>-->
-<!--    <button *ngIf="appointmentSections[indexOfSection] !== appointmentSections[appointmentSections.length - 1]"-->
-<!--            [disabled]="!isPageValid"-->
-<!--            class="next-button"-->
-<!--            type="submit"-->
-<!--            color="primary"-->
-<!--            mat-raised-button-->
-<!--            (click)="nextPage()">Weiter-->
-<!--    </button>-->
-<!--    <button *ngIf="appointmentSections[indexOfSection] === appointmentSections[appointmentSections.length - 1]"-->
-<!--            [disabled]="!isPageValid"-->
-<!--            class="next-button"-->
-<!--            type="submit"-->
-<!--            color="primary"-->
-<!--            mat-raised-button-->
-<!--            (click)=sendEndOfAppointment()>Fertig-->
-<!--    </button>-->
-<!--  </div>-->
+  <h2>Abstimmung {{editing ? 'ändern' : 'erstellen' }}</h2>
+  <mat-spinner *ngIf="busy"></mat-spinner>
+  <div [ngStyle]="{display: busy ? 'none' : 'block'}">
+    <router-outlet></router-outlet>
+  </div>
 </div>

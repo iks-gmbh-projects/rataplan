@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AppointmentComponent } from './appointment/appointment/appointment.component';
 import { AppointmentRequestFormComponent } from './appointment/appointment-request-form/appointment-request-form.component';
 import { ConfigSubformComponent } from './appointment/appointment-request-form/config-subform/config-subform.component';
-import { DateOverviewSubformComponent } from './appointment/appointment-request-form/date-overview-subform/date-overview-subform.component';
 import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
 import { EmailSubformComponent } from './appointment/appointment-request-form/email-subform/email-subform.component';
 import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
@@ -51,7 +50,6 @@ const routes: Routes = [
       { path: 'datepicker', component: DatepickerSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'configurationOptions', component: ConfigSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'configuration', component: OverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
-      { path: 'overview', component: DateOverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'email', component: EmailSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'links', component: LinkSubformComponent },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
@@ -63,7 +61,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'general', pathMatch: 'full' },
       { path: 'general', component: GeneralSubformComponent },
       { path: 'datepicker', component: DatepickerSubformComponent },
-      { path: 'overview', component: DateOverviewSubformComponent },
+      { path: 'configurationOptions', component: ConfigSubformComponent },
+      { path: 'configuration', component: OverviewSubformComponent },
       { path: 'email', component: EmailSubformComponent },
       { path: 'links', component: LinkSubformComponent },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },

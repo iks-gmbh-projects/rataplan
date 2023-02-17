@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
@@ -16,7 +16,6 @@ import { SetGeneralValuesAppointmentAction } from "../../appointment.actions";
 export class GeneralSubformComponent implements OnInit, OnDestroy {
   minDate: Date;
   maxDate: Date;
-  isEdit = false;
 
   generalSubform = new FormGroup({
     'title': new FormControl(null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
@@ -32,10 +31,12 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<appState>,
     public readonly errorMessageService: FormErrorMessageService,
-    private router: Router
+    private router: Router,
+    private activeRoute: ActivatedRoute
   ) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
+    this.minDate.setHours(0, 0, 0, 0);
     this.maxDate = new Date(currentYear + 2, 11, 31);
   }
 
@@ -77,6 +78,6 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     }));
     console.log(this.generalSubform.get('title'));
     console.log(this.generalSubform.get('deadline'));
-    this.router.navigateByUrl('/create-vote/configurationOptions');
+    this.router.navigate(['..', 'configurationOptions'], { relativeTo: this.activeRoute });
   }
 }

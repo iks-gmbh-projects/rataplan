@@ -4,6 +4,9 @@ import { appState } from "../app.reducers";
 import { Store } from "@ngrx/store";
 import {
   AppointmentActions,
+  InitAppointmentRequestAction,
+  InitAppointmentRequestErrorAction,
+  InitAppointmentRequestSuccessAction,
   PostAppointmentRequestErrorAction,
   PostAppointmentRequestSuccessAction
 } from "./appointment.actions";
@@ -12,7 +15,7 @@ import { BackendUrlService } from "../services/backend-url-service/backend-url.s
 import { HttpClient } from "@angular/common/http";
 import { filter, map } from "rxjs/operators";
 import { AppointmentRequestModel } from "../models/appointment-request.model";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
@@ -23,9 +26,40 @@ export class AppointmentRequestEffects {
     private readonly store: Store<appState>,
     private readonly http: HttpClient,
     private readonly router: Router,
+    private readonly activeRoute: ActivatedRoute,
     private readonly urlService: BackendUrlService
   ) {
   }
+
+  @Effect()
+  initAppointmentRequest = this.actions$.pipe(
+    ofType(AppointmentActions.INIT),
+    switchMap((action: InitAppointmentRequestAction) => {
+      if(!action.id) return of(new InitAppointmentRequestSuccessAction({
+        title: "",
+        deadline: "",
+        appointmentRequestConfig: {
+          appointmentConfig: {
+            startDate: true,
+            startTime: false,
+            endDate: false,
+            endTime: false,
+            description: false,
+            url: false,
+          },
+          decisionType: "DEFAULT",
+        },
+        appointments: [],
+        appointmentMembers: [],
+        consigneeList: [],
+      }));
+      else return this.urlService.appointmentURL$.pipe(
+        exhaustMap(url => this.http.get<AppointmentRequestModel>(url+"/appointmentRequests/edit/"+action.id)),
+        map(request => new InitAppointmentRequestSuccessAction(request)),
+        catchError(err => of(new InitAppointmentRequestErrorAction(err)))
+      );
+    })
+  );
 
   @Effect()
   postAppointmentRequest = this.actions$.pipe(
@@ -40,6 +74,7 @@ export class AppointmentRequestEffects {
     )),
     switchMap(request => this.urlService.appointmentURL$.pipe(
       exhaustMap(url => {
+        if(request.editToken) return this.http.put<AppointmentRequestModel>(url + "/appointmentRequests/edit/"+request.editToken, request, {withCredentials: true});
         return this.http.post<AppointmentRequestModel>(url + "/appointmentRequests", request, {withCredentials: true});
       }),
       map(created => new PostAppointmentRequestSuccessAction(created)),
@@ -52,7 +87,8 @@ export class AppointmentRequestEffects {
   })
   successFullPost = this.actions$.pipe(
     ofType(AppointmentActions.POST_SUCCESS),
-    map((action: PostAppointmentRequestSuccessAction) => this.router.navigate(["/create-vote", "links"], {
+    map((action: PostAppointmentRequestSuccessAction) => this.router.navigate(["..", "links"], {
+      relativeTo: this.activeRoute,
       queryParams: {
         participationToken: action.created.participationToken,
         editToken: action.created.editToken,

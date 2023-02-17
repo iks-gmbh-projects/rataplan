@@ -18,6 +18,8 @@ export class LinkSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.participationLink = '/vote/'+ this.activateRoute.snapshot.queryParams['participationToken'];
+    this.editLink = '/vote/edit/'+ this.activateRoute.snapshot.queryParams['editToken'];
     this.sub = this.activateRoute.queryParams.subscribe(params => {
       this.participationLink = '/vote/'+ params['participationToken'];
       this.editLink = '/vote/edit/'+ params['editToken'];
