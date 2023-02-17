@@ -13,6 +13,12 @@ function minControlValueValidator(min: AbstractControl): ValidatorFn {
   };
 }
 
+function extractTime(date?: string): string | undefined {
+  if(!date) return date;
+  const dateObject = new Date(date);
+  return (dateObject.getHours()+':'+dateObject.getMinutes()).replace(/^\d:/, "0$0").replace(/:(\d)$/, ":0$1");
+}
+
 @Component({
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',
@@ -21,10 +27,6 @@ function minControlValueValidator(min: AbstractControl): ValidatorFn {
 @Injectable({
   providedIn: 'root',
 })
-
-// FIXME:
-//  * Uhrzeit Validierung
-
 export class OverviewSubformComponent implements OnInit {
   appointments: AppointmentModel[] = [];
   appointmentConfig: AppointmentConfig;
@@ -109,8 +111,8 @@ export class OverviewSubformComponent implements OnInit {
     const voteOption = this.appointments[index];
     this.voteOptions.controls['startDateInput'].setValue(voteOption.startDate);
     this.voteOptions.controls['endDateInput'].setValue(voteOption.endDate);
-    this.voteOptions.controls['startTimeInput'].setValue(voteOption.startDate?.slice(11, 16));
-    this.voteOptions.controls['endTimeInput'].setValue(voteOption.endDate?.slice(11, 16));
+    this.voteOptions.controls['startTimeInput'].setValue(extractTime(voteOption.startDate));
+    this.voteOptions.controls['endTimeInput'].setValue(extractTime(voteOption.endDate));
     this.voteOptions.controls['descriptionInput'].setValue(voteOption.description);
     this.voteOptions.controls['linkInput'].setValue(voteOption.url);
     this.deleteVoteOption(index);

@@ -31,13 +31,13 @@ export class DatepickerSubformComponent implements OnInit {
 
   isSelected = (event: any) => {
     const date = new Date(event);
-    return this.daysSelected.every(x => x.startDate != date.toDateString()) ? '' : 'special-date';
+    return this.daysSelected.every(x => x.startDate != date.toISOString()) ? '' : 'special-date';
   };
 
   select(event: any, calendar: any) {
     const date = new Date(event);
     const index = this.daysSelected
-      .findIndex(x => x.startDate == date.toDateString());
+      .findIndex(x => x.startDate == date.toISOString());
 
     if (index === -1) this.daysSelected.push({startDate: date.toISOString()});
     else this.daysSelected.splice(index, 1);
