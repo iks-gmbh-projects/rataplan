@@ -105,9 +105,9 @@
     <mat-list>
       <mat-list-item *ngFor='let voteOption of this.appointments; let index = index'>
         <div *ngIf='appointmentConfig.startDate'>
-          {{ voteOption.startDate | date:(this.appointmentConfig.startTime ? 'dd.MM.yyyy hh:mm' : 'dd.MM.yyyy'):undefined:'de' }}
+          {{ voteOption.startDate | date:(this.appointmentConfig.startTime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'):undefined:'de' }}
           <ng-template [ngIf]="appointmentConfig.endDate">
-            {{ voteOption.endDate | date:(this.appointmentConfig.endTime ? '- dd.MM.yyyy hh:mm' : '- dd.MM.yyyy'):undefined:'de' }}
+            {{ voteOption.endDate | date:(this.appointmentConfig.endTime ? '- dd.MM.yyyy HH:mm' : '- dd.MM.yyyy'):undefined:'de' }}
           </ng-template>
         </div>
         <div *ngIf='this.appointmentConfig.description'>

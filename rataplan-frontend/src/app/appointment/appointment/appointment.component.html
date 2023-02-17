@@ -57,7 +57,12 @@
     <mat-list-item *ngFor='let appointment of (appointmentRequest?.appointments || [])'>
       <div mat-line
            style='font-size: 90%'>
-        {{ appointment.startDate | date:'dd.MM.yyyy':'+0200':'de' }}
+        {{ appointment.startDate | date:'dd.MM.yyyy'+(appointmentRequest.appointmentRequestConfig.appointmentConfig.startTime?' HH:mm':''):undefined:'de' }}
+        <ng-template [ngIf]="appointment.endDate">
+          {{ appointment.endDate | date:'- dd.MM.yyyy'+(appointmentRequest.appointmentRequestConfig.appointmentConfig.endTime?' HH:mm':''):undefined:'de' }}
+        </ng-template>
+        {{appointment.description || ''}}
+        <a *ngIf="appointment.url" [href]="appointment.url">Link</a>
       </div>
       <button mat-icon-button
               (click)='openDialog(appointment)'>
