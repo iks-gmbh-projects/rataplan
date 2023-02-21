@@ -1,0 +1,13 @@
+ALTER TABLE auth_token
+    ADD COLUMN creationTime TIMESTAMP WITH TIMEZONE;
+ALTER TABLE auth_token
+    ADD COLUMN lastUpdated TIMESTAMP WITH TIMEZONE;
+ALTER TABLE auth_token
+    ADD COLUMN version INTEGER;
+
+ALTER TABLE rataplanuser
+    ADD COLUMN creationTime TIMESTAMP WITH TIMEZONE;
+ALTER TABLE rataplanuser
+    ADD COLUMN lastUpdated TIMESTAMP WITH TIMEZONE;
+ALTER TABLE rataplanuser
+    ADD COLUMN version INTEGER;

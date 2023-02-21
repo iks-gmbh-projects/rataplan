@@ -1,12 +1,15 @@
 package de.iks.rataplan.domain;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "rataplanuser")
@@ -17,6 +20,14 @@ public class User implements Serializable {
      *
      */
     private static final long serialVersionUID = -1171464424149123656L;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Instant creationTime;
+    @UpdateTimestamp
+    private Instant lastUpdated;
+    @Version
+    private Integer version;
 
     private Integer id;
     private String mail;
@@ -45,6 +56,30 @@ public class User implements Serializable {
 
     public User() {
         // Required for Hibernate
+    }
+
+    public Instant getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Instant creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public Instant getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     @Id
@@ -126,7 +161,7 @@ public class User implements Serializable {
     public void setEncrypted(boolean encrypted) {
         this.encrypted = encrypted;
     }
-	
+
 	/*@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -139,5 +174,4 @@ public class User implements Serializable {
 		builder.append("]");
 		return builder.toString();
 	}*/
-
 }
