@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.*;
 
@@ -276,7 +277,7 @@ public class AppointmentRequest implements Serializable {
 				
 				if (decision.getAppointment() == null) {
 					return false;
-				} else if (appointment.getId() == decision.getAppointment().getId()
+				} else if (Objects.equals(appointment.getId(), decision.getAppointment().getId())
 						&& !appointmentIdList.contains(appointment.getId())) {
 					appointmentIdList.add(appointment.getId());
 				}
@@ -332,5 +333,16 @@ public class AppointmentRequest implements Serializable {
 		builder.append(appointmentMembers);
 		builder.append("]");
 		return builder.toString();
+	}
+	
+	// Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
+	@PrePersist
+	@PreUpdate
+	public void hibernateStupidity() {
+		final Instant now = Instant.now();
+		if(this.creationTime == null) this.creationTime = now;
+		this.lastUpdated = now;
+		if(this.version == null) this.version = 1;
+		else this.version++;
 	}
 }

@@ -54,31 +54,31 @@ public class Appointment implements Serializable {
     public Appointment() {
         // required for Hibernate
     }
-
+    
     public Instant getCreationTime() {
         return creationTime;
     }
-
+    
     public void setCreationTime(Instant creationTime) {
         this.creationTime = creationTime;
     }
-
+    
     public Instant getLastUpdated() {
         return lastUpdated;
     }
-
+    
     public void setLastUpdated(Instant lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-
+    
     public Integer getVersion() {
         return version;
     }
-
+    
     public void setVersion(Integer version) {
         this.version = version;
     }
-
+    
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -90,7 +90,7 @@ public class Appointment implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "startDate", nullable = true)
+    @Column(name = "startDate")
     public Timestamp getStartDate() {
         return startDate;
     }
@@ -99,7 +99,7 @@ public class Appointment implements Serializable {
         this.startDate = startDate;
     }
     
-    @Column(name = "endDate", nullable = true)
+    @Column(name = "endDate")
     public Timestamp getEndDate() {
     	return endDate;
     }
@@ -108,7 +108,7 @@ public class Appointment implements Serializable {
     	this.endDate = endDate;
     }
 
-    @Column(name = "description", nullable = true)
+    @Column(name = "description")
     @Convert(converter = DBEncryptedStringConverter.class)
     public EncryptedString getDescription() {
         return description;
@@ -118,7 +118,7 @@ public class Appointment implements Serializable {
         this.description = description;
     }
 	
-	@Column(name = "url", nullable = true)
+	@Column(name = "url")
     @Convert(converter = DBEncryptedStringConverter.class)
 	public EncryptedString getUrl() {
 		return url;
@@ -178,4 +178,15 @@ public class Appointment implements Serializable {
 		builder.append("]");
 		return builder.toString();
 	}
+
+    // Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
+    @PrePersist
+    @PreUpdate
+    public void hibernateStupidity() {
+        final Instant now = Instant.now();
+        if(this.creationTime == null) this.creationTime = now;
+        this.lastUpdated = now;
+        if(this.version == null) this.version = 1;
+        else this.version++;
+    }
 }

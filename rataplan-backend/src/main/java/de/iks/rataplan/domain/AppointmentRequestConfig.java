@@ -2,6 +2,7 @@ package de.iks.rataplan.domain;
 
 import javax.persistence.*;
 
+import de.iks.rataplan.exceptions.MalformedException;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -99,5 +100,21 @@ public class AppointmentRequestConfig {
 		builder.append(decisionType);
 		builder.append("]");
 		return builder.toString();
+	}
+	
+	// Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
+	@PrePersist
+	@PreUpdate
+	public void hibernateStupidity() {
+		final Instant now = Instant.now();
+		if(this.creationTime == null) this.creationTime = now;
+		this.lastUpdated = now;
+		if(this.version == null) this.version = 1;
+		else this.version++;
+	}
+	
+	public void assertCreationValid() {
+		if(decisionType == null || appointmentConfig == null) throw new MalformedException("Missing input fields");
+		appointmentConfig.assertValid();
 	}
 }
