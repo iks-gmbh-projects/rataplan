@@ -10,7 +10,7 @@ import de.iks.rataplan.domain.AppointmentRequest;
 public interface AppointmentRequestRepository extends JpaRepository<AppointmentRequest, Integer> {
 	List<AppointmentRequest> findAllByUserId(Integer userId);
 	
-	List<AppointmentRequest> findByAppointmentMembers_UserIdIn(Integer userId);
+	List<AppointmentRequest> findDistinctByAppointmentMembers_UserIdIn(Integer userId);
 	
 	List<AppointmentRequest> findByDeadlineBeforeAndExpiredFalse(Date deadline);// find by deadline == xx and organizermail not null
 
