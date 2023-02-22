@@ -3,7 +3,8 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ForgotPasswordService } from '../services/forgot-password-service/forgot-password.service';
 import { RegisterService } from '../services/register-service/register.service';
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-forgot-password',
@@ -18,32 +19,25 @@ export class ForgotPasswordComponent implements OnInit {
     mail: this.mail,
   });
 
-  constructor(private formBuilder: FormBuilder,
-              private registerService: RegisterService,
-              private forgotPasswordService: ForgotPasswordService,
-              private snackBar: MatSnackBar) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private registerService: RegisterService,
+    private forgotPasswordService: ForgotPasswordService,
+    public readonly errorMessageService: FormErrorMessageService,
+    private snackBar: MatSnackBar
+  ) {
+
+  }
 
   ngOnInit(): void {
   }
 
   submit() {
-    this.forgotPasswordService.forgotPassword(this.mail.value).subscribe((res: any) => {
-      this.snackBar.open('Eine Email zum Zurücksetzen des Passworts wurde versandt.', '',{
+    this.forgotPasswordService.forgotPassword(this.mail.value).subscribe({
+      next: () => this.snackBar.open('Eine Email zum Zurücksetzen des Passworts wurde versandt.', 'Ok', {
         duration: 3000
-      });
-    }, (error) => {});
-  }
-
-  getMailErrorMessage() {
-    if (this.mail.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-
-    if (this.mail.hasError('mailDoesNotExist')) {
-      return 'Email wird nicht verwendet';
-    }
-
-    return this.mail.hasError('email') ? 'Keine gültige email' : '';
+      })
+    });
   }
 
 }

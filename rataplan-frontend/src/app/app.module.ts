@@ -49,6 +49,8 @@ import { MainNavComponent } from './main-nav/main-nav.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { VoteListComponent } from './vote-list/vote-list.component';
 
 registerLocaleData(localeDE);
@@ -78,7 +80,8 @@ registerLocaleData(localeDE);
     AppointmentComponent,
     MemberDecisionSubformComponent,
     ChangePasswordComponent,
-    VoteListComponent
+    DeleteProfileComponent,
+    VoteListComponent,
   ],
   imports: [
     BrowserModule,
@@ -108,6 +111,7 @@ registerLocaleData(localeDE);
     MatMenuModule,
     MatBadgeModule,
     MatExpansionModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },

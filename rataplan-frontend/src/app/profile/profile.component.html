@@ -8,7 +8,7 @@
     <input matInput placeholder= {{setDisplayName()}}
                     autocomplete=off
                     [formControl]="displayNameField">
-    <mat-error *ngIf="displayNameField.invalid">{{displayNameFieldError()}}</mat-error>
+    <mat-error>{{errorMessageService.genericFormError(displayNameField)}}</mat-error>
   </mat-form-field>
   <button type="button" class="submit-button" mat-raised-button color="primary"  [disabled]="displayNameField.invalid" (click)="changeDisplayName()">Ändern</button>
 </form>
@@ -18,11 +18,12 @@
       <input matInput placeholder={{setEmail()}}
                       autocomplete=off
                       [formControl]="emailField">
-      <mat-error *ngIf="emailField.invalid">{{emailFieldError()}}</mat-error>
+      <mat-error>{{errorMessageService.genericFormError(emailField)}}</mat-error>
     </mat-form-field>
     <button type="button" class="submit-button" mat-raised-button color="primary"  [disabled]="emailField.invalid" (click)="changeEmail()">Ändern</button>
   </form>
   <div>
-    <button type="button" mat-raised-button color="primary" (click)="redirect()">Password ändern</button>
+    <button type="button" mat-raised-button color="primary" routerLink="/change-password">Password ändern</button>
+    <button type="button" mat-raised-button color="warn" routerLink="/delete-profile">Profil löschen</button>
   </div>
 </div>

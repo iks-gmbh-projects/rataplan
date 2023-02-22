@@ -1,17 +1,28 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AbstractControl, NgForm } from '@angular/forms';
 import { Answer, Checkbox, Question, QuestionGroup } from '../../survey.model';
+import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 
 @Component({
   selector: 'app-survey-form-page',
   templateUrl: './page.component.html',
-  styleUrls: ['./page.component.css']
+  styleUrls: ['./page.component.css'],
+  exportAs: 'appSurveyFormPage'
 })
-export class PageComponent {
+export class PageComponent implements AfterViewInit{
   @Input() public questionGroup?: QuestionGroup;
   @Input() public preview: boolean = false;
   @Input() public isFirst: boolean = false;
   @Output() public readonly onSubmit = new EventEmitter<{ [key: string | number]: Answer }>();
+  @Output() public readonly formAfterViewInit = new EventEmitter<AbstractControl>();
+  @ViewChild('form') public form?: NgForm;
+
+  constructor(public readonly errorMessageService: FormErrorMessageService) {
+  }
+
+  ngAfterViewInit(): void {
+    this.formAfterViewInit.emit(this.form!.form);
+  }
 
   public submit(form: NgForm) {
     if (this.preview || form.valid) {
@@ -33,8 +44,8 @@ export class PageComponent {
     return checkboxes.some(checkbox => checkbox.hasTextField);
   }
 
-  public disableTextField(question: Question, form: NgForm): boolean {
-    let answer: Answer&{checkboxId?: string|number} = form.value[question.id!];
+  public disableTextField(question: Question, answerControl?: AbstractControl): boolean {
+    let answer: Answer&{checkboxId?: string|number} = answerControl?.value;
     if(!answer) return false;
     if(answer.checkboxId !== undefined && answer.checkboxId !== null) {
       answer.checkboxes = {

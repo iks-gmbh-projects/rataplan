@@ -6,6 +6,7 @@
            autocomplete="off"
            type="text"
            formControlName="name">
+    <mat-error>{{errorMessageService.genericFormError(emailSubform.get('name'))}}</mat-error>
   </mat-form-field>
 </div>
 <div>
@@ -14,6 +15,7 @@
     <input matInput
            autocomplete="off"
            formControlName="email">
+    <mat-error>{{errorMessageService.genericFormError(emailSubform.get('email'))}}</mat-error>
   </mat-form-field>
 </div>
 <div>

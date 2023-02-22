@@ -1,10 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { exhaustMap, Subject } from 'rxjs';
 
-import { environment } from '../../../environments/environment';
 import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
+import { BackendUrlService } from "../../services/backend-url-service/backend-url.service";
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class AppointmentRequestFormService {
   appointmentRequest: AppointmentRequestModel = new AppointmentRequestModel();
   selectedDates: Date[] = [];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }
 
   setGeneralInputValue(title: string, description: string, deadline: Date) {
@@ -57,9 +57,17 @@ export class AppointmentRequestFormService {
   }
 
   createAppointmentRequest() {
-    const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
-
-    return this.http.post<AppointmentRequestModel>(
-      environment.rataplanBackendURL + 'appointmentRequests', this.appointmentRequest, httpOptions);
+    return this.urlService.appointmentURL$.pipe(
+      exhaustMap(baseURL => {
+        return this.http.post<AppointmentRequestModel>(
+          baseURL + 'appointmentRequests',
+          this.appointmentRequest,
+          {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/json;charset=utf-8',
+            }),
+          });
+      })
+    );
   }
 }

@@ -10,13 +10,12 @@ import {
 import {LoginService} from "../services/login.service/login.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject} from "rxjs";
-import {User} from "../services/login.service/user.model";
-import {Router} from "@angular/router";
+import {User, FrontendUser} from "../services/login.service/user.model";
+import { ActivatedRoute, Router } from "@angular/router";
 import {LocalstorageService} from "../services/localstorage-service/localstorage.service";
 import {userdataStorageService} from "../services/userdata-storage-service/userdata-storage.service";
-
-
-
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../validator/validators";
 
 @Component({
   selector: 'app-login',
@@ -31,8 +30,8 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   isLoggedIn = false;
   user = new Subject<User>()
-  inputField = new FormControl('', [Validators.required, Validators.minLength(3), this.loginService.cannotContainWhitespace,]);
-  password = new FormControl('', [Validators.required, this.loginService.cannotContainWhitespace]);
+  inputField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
+  password = new FormControl('', [Validators.required]);
 
   loginForm = this.formBuilder.group({
       inputField: this.inputField,
@@ -66,9 +65,9 @@ export class LoginComponent implements OnInit {
         this.userdataStorageService.id = responseData.id;
         this.userdataStorageService.username = responseData.username;
         this.userdataStorageService.mail = responseData.mail;
-        this.userdataStorageService.displayName = responseData.displayName;
-        this.localStorage.setLocalStorage(responseData)
-        this.router.navigateByUrl("/")
+        this.userdataStorageService.displayName = responseData.displayname;
+        this.localStorage.setLocalStorage(responseData);
+        this.router.navigateByUrl(this.activatedRoute.snapshot.queryParams['redirect'] || "/");
         this.isLoggedIn = true;
         this.isLoading = false;
       }, error => {
@@ -96,57 +95,17 @@ export class LoginComponent implements OnInit {
   // }
 
 
-
-
-
-
-  inputFieldError() {
-    if (this.inputField.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben!';
-    }
-
-    if (this.inputField.hasError('usernameNotExists')) {
-      return 'Benutzername existiert nicht';
-    }
-
-    if (this.inputField.hasError('cannotContainWhitespace')) {
-      return 'Zeichen nicht erlaubt'
-    }
-
-    return this.inputField.hasError('minLength') ? '' : 'Benutzername muss mindestens 3 Zeichen lang sein!'
-  }
-
-  getPasswordErrorMessage() {
-    if (this.password.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben!';
-    }
-    if (this.password.hasError('cannotContainWhitespace')) {
-      return 'Zeichen nicht erlaubt'
-    }
-    return this.password.hasError('invalidPassword') ? 'Das eingegebene Passwort ist inkorrekt!' : '';
-
-  }
-
   constructor(private formBuilder: FormBuilder,
               private loginService: LoginService,
               private router: Router,
+              private activatedRoute: ActivatedRoute,
               private localStorage: LocalstorageService,
-              private userdataStorageService: userdataStorageService
-               ) {
+              private userdataStorageService: userdataStorageService,
+              public readonly errorMessageService: FormErrorMessageService) {
   }
 
   ngOnInit(): void {
   }
-}
-  export interface FrontendUser {
-
-
-    username?: string;
-    id?: number;
-     mail?: string;
-     password: string;
-     displayname?: string;
-
 }
 
 

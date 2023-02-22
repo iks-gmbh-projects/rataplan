@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from "@angular/router";
-import { catchError, EMPTY, Observable, throwError, from } from "rxjs";
+import { catchError, EMPTY, Observable, throwError } from "rxjs";
 import { Survey } from "../survey.model";
 import { SurveyService } from "../survey.service";
 
@@ -13,7 +13,11 @@ export class AccessIDSurveyResolver implements Resolve<Survey> {
       .pipe(catchError(err => {
         switch (err.status) {
           case 401:
-            this.router.navigate(["/login"]);
+            this.router.navigate(["/login"], {
+              queryParams: {
+                redirect: state.url,
+              }
+            });
             return EMPTY;
           case 403:
             this.router.navigate(["/survey","forbidden"]);
@@ -35,6 +39,13 @@ export class ParticipationIDSurveyResolver implements Resolve<Survey> {
     return this.surveys.getSurveyForParticipation(route.params["participationID"])
       .pipe(catchError(err => {
         switch (err.status) {
+          case 401:
+            this.router.navigate(["/login"], {
+              queryParams: {
+                redirect: state.url,
+              }
+            });
+            return EMPTY;
           case 403:
             this.router.navigate(["/survey", "closed"]);
             return EMPTY;

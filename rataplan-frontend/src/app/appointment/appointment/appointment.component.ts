@@ -10,6 +10,7 @@ import { AppointmentRequestModel } from '../../models/appointment-request.model'
 import { AppointmentDecisionType } from '../appointment-request-form/decision-type.enum';
 import { AppointmentService } from './appointment-service/appointment.service';
 import { MemberDecisionSubformComponent } from './member-decision-subform/member-decision-subform.component';
+import { FormErrorMessageService } from "../../services/form-error-message-service/form-error-message.service";
 
 
 @Component({
@@ -26,9 +27,13 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   participationToken = '';
   isEditMember = false;
 
-  constructor(public dialog: MatDialog,
+  constructor(
+    public dialog: MatDialog,
     private route: ActivatedRoute,
-    private appointmentService: AppointmentService) { }
+    private appointmentService: AppointmentService,
+    public readonly errorMessageService: FormErrorMessageService
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
@@ -101,15 +106,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     const appointmentDecision = this.member.appointmentDecisions[index];
 
     switch (decision) {
-    case 1:
-      appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
-      break;
-    case 2:
-      appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
-      break;
-    default:
-      appointmentDecision.decision = AppointmentDecisionType.DECLINE;
-      break;
+      case 1:
+        appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
+        break;
+      case 2:
+        appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
+        break;
+      default:
+        appointmentDecision.decision = AppointmentDecisionType.DECLINE;
+        break;
     }
   }
 

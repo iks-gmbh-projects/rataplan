@@ -1,10 +1,9 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams, HttpRequest} from '@angular/common/http'
-import {FrontendUser} from '../../login/login.component';
-import {AbstractControl, ValidationErrors} from "@angular/forms";
-import {LocalstorageService} from "../localstorage-service/localstorage.service";
-import {catchError, map} from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
+import { FrontendUser } from './user.model';
+import { LocalstorageService } from "../localstorage-service/localstorage.service";
+import { catchError, exhaustMap, map } from 'rxjs/operators';
+import { BackendUrlService } from "../backend-url-service/backend-url.service";
 
 
 @Injectable({providedIn: 'root'})
@@ -12,66 +11,59 @@ import { environment } from 'src/environments/environment';
 export class LoginService {
 
 
-
-
-
-
   constructor(private httpClient: HttpClient,
-              public localStorageService: LocalstorageService) {}
+              public localStorageService: LocalstorageService,
+              private urlService: BackendUrlService) {
+  }
 
 
+  public loginUser(frontendUser: FrontendUser) {
+    return this.urlService.authURL$.pipe(
+      exhaustMap(authURL => {
+        let url = authURL + 'users/login'
+
+        const requestOptions = {
+          params: new HttpParams()
+        };
+
+        requestOptions.params.set('Content-Type', 'application/json');
 
 
-  public loginUser (frontendUser: FrontendUser){
+        return this.httpClient.post<FrontendUser>(url, frontendUser, {withCredentials: true});
+      })
+    );
+  }
 
-    let url = environment.authBackendURL+'users/login'
+  public logoutUser() {
+    return this.urlService.authURL$.pipe(
+      exhaustMap(authURL => {
+        let url = authURL + 'users/logout'
 
-    const requestOptions = {
-      params: new HttpParams()
-    };
+        return this.httpClient.get<any>(url, {withCredentials: true});
+      })
+    ).subscribe(console.log);
 
-    requestOptions.params.set('Content-Type','application/json');
-
-
-    return this.httpClient.post<any> (url,frontendUser,{withCredentials: true});
-    }
-
-    public logoutUser () {
-    let url = environment.authBackendURL+'users/logout'
-
-      return this.httpClient.get<any>(url,{withCredentials: true}).subscribe(console.log);
-
-    }
+  }
 
 
-    public getUserData() {
-    let url = environment.authBackendURL+'users/profile'
+  public getUserData() {
+    return this.urlService.authURL$.pipe(
+      exhaustMap(authURL => {
+        let url = authURL + 'users/profile'
 
 
-      const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+        const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
 
-    return this.httpClient.get<FrontendUser>(url, httpOptions).pipe(
+        return this.httpClient.get<FrontendUser>(url, httpOptions)
+      }),
       map(res => {
-          this.localStorageService.setLocalStorage(res)
-    }),
+        this.localStorageService.setLocalStorage(res)
+      }),
       catchError(err => {
         console.log(err)
-    return err;
-    }))
+        return err;
+      }));
 
-    }
-
-
-
-
-
-
-
-    cannotContainWhitespace(control: AbstractControl) : ValidationErrors | null {
-    if ((control.value as string).indexOf(' ') >= 0) {
-      return {cannotContainWhitespace: true}
-    }
-    return null;
   }
 
 }

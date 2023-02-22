@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { switchMap, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { RegisterService } from '../services/register-service/register.service';
+import { ActivatedRoute, Router } from "@angular/router";
+import { LocalstorageService } from "../services/localstorage-service/localstorage.service";
+import { FrontendUser } from "../services/login.service/user.model";
+import { userdataStorageService } from "../services/userdata-storage-service/userdata-storage.service";
+import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
+import { ExtraValidators } from "../validator/validators";
 
 
 @Component({
@@ -13,37 +17,15 @@ import { RegisterService } from '../services/register-service/register.service';
 })
 export class RegisterComponent implements OnInit {
 
-  username: FormControl = new FormControl('', [Validators.required, Validators.minLength(3)],
-    usernameExists => {
-      return timer(1000).pipe(switchMap(() => {
-        return this.registerService.checkIfUsernameExists(this.username.value)
-          .pipe(map(resp => {
-            if (resp) {
-              return ({ usernameExists: true });
-            } else {
-              return (null);
-            }
-          }));
-      }));
-    });
+  username: FormControl = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace],
+    ctrl => this.registerService.usernameExists(ctrl));
 
   mail: FormControl = new FormControl('', [Validators.required, Validators.email],
-    mailExists => {
-      return timer(1000).pipe(switchMap(() => {
-        return this.registerService.checkIfMailExists(this.mail.value)
-          .pipe(map(resp => {
-            if (resp) {
-              return ({ mailExists: true });
-            } else {
-              return (null);
-            }
-          }));
-      }));
-    });
+    ctrl => this.registerService.mailExists(ctrl));
 
   password = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  confirmPassword = new FormControl('', Validators.required);
-  displayname: FormControl = new FormControl('', [Validators.required]);
+  confirmPassword = new FormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
+  displayname: FormControl = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
   hide = true;
   hideConfirm = true;
 
@@ -55,8 +37,15 @@ export class RegisterComponent implements OnInit {
     displayname: this.displayname,
   });
 
-  constructor(private formBuilder: FormBuilder,
-              private registerService: RegisterService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private registerService: RegisterService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private localStorage: LocalstorageService,
+    private userdataStorageService: userdataStorageService,
+    public readonly errorMessages: FormErrorMessageService
+  ) {
   }
 
   ngOnInit(): void {
@@ -73,64 +62,15 @@ export class RegisterComponent implements OnInit {
 
     this.registerService.registerUser(frontendUser).subscribe(responseData => {
       console.log(responseData);
+      this.userdataStorageService.id = responseData.id;
+      this.userdataStorageService.username = responseData.username;
+      this.userdataStorageService.mail = responseData.mail;
+      this.userdataStorageService.displayName = responseData.displayname;
+      this.localStorage.setLocalStorage(responseData);
+      this.router.navigateByUrl(this.activatedRoute.snapshot.queryParams['redirect'] || "/");
     });
 
     //should route to profile, which doesnt exist yet
     //this.router.navigateByUrl('/');
   }
-
-  getUsernameErrorMessage() {
-    if (this.username.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-
-    if (this.username.hasError('usernameExists')) {
-      return 'Benutzername wird bereits verwendet';
-    }
-
-    return this.username.hasError('minLength') ? '' : 'Mindestens 3 Zeichen';
-  }
-
-  getMailErrorMessage() {
-    if (this.mail.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-
-    if (this.mail.hasError('mailExists')) {
-      return 'Email wird bereits verwendet';
-    }
-
-    return this.mail.hasError('email') ? 'Keine gültige email' : '';
-  }
-
-  getPasswordErrorMessage() {
-    if (this.password.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-    if (this.password.hasError('minLength')) {
-      return 'Mindestens 3 Zeichen';
-    }
-    return '';
-  }
-
-  getConfirmPasswordErrorMessage() {
-    if (this.confirmPassword.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-    return this.confirmPassword.hasError('pattern') ? 'Passwort stimmt nicht überein' : '';
-  }
-
-  getDisplaynameErrorMessage() {
-    if (this.username.hasError('required')) {
-      return 'Dieses Feld darf nicht leer bleiben';
-    }
-    return '';
-  }
-}
-
-export interface FrontendUser {
-  username: string;
-  mail: string;
-  password: string;
-  displayname: string;
 }
