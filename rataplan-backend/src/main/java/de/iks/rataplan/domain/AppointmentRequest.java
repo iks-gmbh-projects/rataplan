@@ -2,30 +2,31 @@ package de.iks.rataplan.domain;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import de.iks.rataplan.exceptions.MalformedException;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "appointmentRequest")
 public class AppointmentRequest implements Serializable {
 
 	private static final long serialVersionUID = 6229127764261785894L;
-
+	
+	@CreationTimestamp
+	@Column(updatable = false)
+	private Instant creationTime;
+	@UpdateTimestamp
+	private Instant lastUpdated;
+	@Version
+	private Integer version;
+	
 	private Integer id;
 	private String title;
 	private String description;
@@ -42,6 +43,7 @@ public class AppointmentRequest implements Serializable {
 	private List<String> consigneeList = new ArrayList<>();
 	private List<Appointment> appointments = new ArrayList<>();
 	private List<AppointmentMember> appointmentMembers = new ArrayList<>();
+	private List<BackendUserAccess> accessList = new ArrayList<>();
 
 	public AppointmentRequest(String title, String description, Date deadline, String organizerName,
 			String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
@@ -70,7 +72,31 @@ public class AppointmentRequest implements Serializable {
 	public AppointmentRequest() {
 		// required for Hibernate
 	}
-
+	
+	public Instant getCreationTime() {
+		return creationTime;
+	}
+	
+	public void setCreationTime(Instant creationTime) {
+		this.creationTime = creationTime;
+	}
+	
+	public Instant getLastUpdated() {
+		return lastUpdated;
+	}
+	
+	public void setLastUpdated(Instant lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+	
+	public Integer getVersion() {
+		return version;
+	}
+	
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -217,13 +243,21 @@ public class AppointmentRequest implements Serializable {
 	public void setConsigneeList(List<String> consigneeList) {
 		this.consigneeList = consigneeList;
 	}
-
-    /**
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequestId", cascade = CascadeType.ALL)
+	public List<BackendUserAccess> getAccessList() {
+		return accessList;
+	}
+	
+	public void setAccessList(List<BackendUserAccess> accessList) {
+		this.accessList = accessList;
+	}
+	
+	/**
      * checks if the AppointmentDecisions have the same size and appointmentId's
      * than the corresponding Appointments in this AppointmentRequest
      *
-     * @param appointments
-     * @param decisions
+     * @param appointmentMember
      * @return
      */
 	public boolean validateDecisionsForAppointmentMember(AppointmentMember appointmentMember) {
@@ -238,7 +272,7 @@ public class AppointmentRequest implements Serializable {
 				
 				if (decision.getAppointment() == null) {
 					return false;
-				} else if (appointment.getId() == decision.getAppointment().getId()
+				} else if (Objects.equals(appointment.getId(), decision.getAppointment().getId())
 						&& !appointmentIdList.contains(appointment.getId())) {
 					appointmentIdList.add(appointment.getId());
 				}
@@ -294,5 +328,16 @@ public class AppointmentRequest implements Serializable {
 		builder.append(appointmentMembers);
 		builder.append("]");
 		return builder.toString();
+	}
+	
+	// Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
+	@PrePersist
+	@PreUpdate
+	public void hibernateStupidity() {
+		final Instant now = Instant.now();
+		if(this.creationTime == null) this.creationTime = now;
+		this.lastUpdated = now;
+		if(this.version == null) this.version = 1;
+		else this.version++;
 	}
 }

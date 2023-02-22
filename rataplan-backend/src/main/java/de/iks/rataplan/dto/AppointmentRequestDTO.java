@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.iks.rataplan.domain.AppointmentRequestConfig;
+import de.iks.rataplan.exceptions.MalformedException;
 
 public class AppointmentRequestDTO implements Serializable {
 
@@ -187,4 +188,28 @@ public class AppointmentRequestDTO implements Serializable {
 		builder.append("]");
 		return builder.toString();
 	}
+    
+    private static boolean nonNullAndBlank(String s) {
+        return s != null && s.trim().isEmpty();
+    }
+    
+    private static boolean nullOrBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+    
+    public void assertCreationValid() {
+        if(id != null ||
+            nullOrBlank(title) ||
+            nonNullAndBlank(description) ||
+            nonNullAndBlank(organizerName) ||
+            nonNullAndBlank(organizerMail) ||
+            deadline == null ||
+            appointmentRequestConfig == null ||
+            appointments == null ||
+            appointments.isEmpty() ||
+            (appointmentMembers != null && !appointmentMembers.isEmpty())
+        ) throw new MalformedException("Missing or invalid input fields");
+        appointmentRequestConfig.assertCreationValid();
+        appointments.forEach(a -> a.assertValid(appointmentRequestConfig.getAppointmentConfig()));
+    }
 }

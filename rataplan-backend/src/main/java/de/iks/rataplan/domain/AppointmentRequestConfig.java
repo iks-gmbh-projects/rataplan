@@ -1,19 +1,23 @@
 package de.iks.rataplan.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import de.iks.rataplan.exceptions.MalformedException;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "appointmentRequestConfig")
 public class AppointmentRequestConfig {
+	@CreationTimestamp
+	@Column(updatable = false)
+	private Instant creationTime;
+	@UpdateTimestamp
+	private Instant lastUpdated;
+	@Version
+	private Integer version;
 	
 	private Integer id;
 	private AppointmentConfig appointmentConfig;
@@ -32,6 +36,30 @@ public class AppointmentRequestConfig {
 	public AppointmentRequestConfig(AppointmentConfig appointmentConfig, DecisionType decisionType) {
 		this.appointmentConfig = appointmentConfig;
 		this.decisionType = decisionType;
+	}
+	
+	public Instant getCreationTime() {
+		return creationTime;
+	}
+	
+	public void setCreationTime(Instant creationTime) {
+		this.creationTime = creationTime;
+	}
+	
+	public Instant getLastUpdated() {
+		return lastUpdated;
+	}
+	
+	public void setLastUpdated(Instant lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+	
+	public Integer getVersion() {
+		return version;
+	}
+	
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 	
 	@Id
@@ -72,5 +100,21 @@ public class AppointmentRequestConfig {
 		builder.append(decisionType);
 		builder.append("]");
 		return builder.toString();
+	}
+	
+	// Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
+	@PrePersist
+	@PreUpdate
+	public void hibernateStupidity() {
+		final Instant now = Instant.now();
+		if(this.creationTime == null) this.creationTime = now;
+		this.lastUpdated = now;
+		if(this.version == null) this.version = 1;
+		else this.version++;
+	}
+	
+	public void assertCreationValid() {
+		if(decisionType == null || appointmentConfig == null) throw new MalformedException("Missing input fields");
+		appointmentConfig.assertValid();
 	}
 }

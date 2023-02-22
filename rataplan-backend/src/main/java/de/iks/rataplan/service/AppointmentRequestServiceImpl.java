@@ -182,5 +182,19 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			}
 		}
 	}
-
+	
+	@Override
+	public void deleteAppointmentRequest(AppointmentRequest request) {
+		appointmentRequestRepository.delete(request);
+	}
+	
+	@Override
+	public void anonymizeAppointmentRequests(Integer userId) {
+		getAppointmentRequestsForUser(userId)
+			.stream()
+			.peek(r -> r.setBackendUserId(null))
+			.peek(r -> r.setOrganizerName(null))
+			.peek(r -> r.setOrganizerMail(null))
+			.forEach(appointmentRequestRepository::save);
+	}
 }

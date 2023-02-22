@@ -1,5 +1,8 @@
 package de.iks.rataplan.dto;
 
+import de.iks.rataplan.domain.AppointmentConfig;
+import de.iks.rataplan.exceptions.MalformedException;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -84,4 +87,12 @@ public class AppointmentDTO implements Serializable {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+    
+    public void assertValid(AppointmentConfig appointmentConfig) {
+        if((startDate == null) == appointmentConfig.isStartDate() ||
+            (endDate == null) == appointmentConfig.isEndDate() ||
+            (description == null || description.trim().isEmpty()) == appointmentConfig.isDescription() ||
+            (url == null || url.trim().isEmpty()) == appointmentConfig.isUrl()
+        ) throw new MalformedException("Missing or invalid input fields");
+    }
 }
