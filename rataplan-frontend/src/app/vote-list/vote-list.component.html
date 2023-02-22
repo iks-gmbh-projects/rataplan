@@ -12,8 +12,8 @@
       </a>
       <a *ngIf="!vote.expired"
          mat-raised-button
-         color="primary">
-         <!-- sobalt es editieren gibt [routerLink]="['appointmentRequests/edit', vote.editToken]"-->
+         color="primary"
+         [routerLink]="['/vote', 'edit', vote.editToken]">
          Editieren
       </a>
     </mat-card-actions>
