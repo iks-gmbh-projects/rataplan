@@ -119,7 +119,6 @@ public class Controller {
     public ResponseEntity<AppointmentMemberDTO> addAppointmentMember(@PathVariable String participationToken,
                                                                      @RequestBody AppointmentMemberDTO appointmentMemberDTO,
                                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
-        appointmentMemberDTO.assertAddValid();
         AppointmentMemberDTO addedAppointmentMemberDTO = appointmentMemberControllerService
                 .createAppointmentMember(appointmentMemberDTO, participationToken, jwtToken);
         return new ResponseEntity<>(addedAppointmentMemberDTO, HttpStatus.CREATED);

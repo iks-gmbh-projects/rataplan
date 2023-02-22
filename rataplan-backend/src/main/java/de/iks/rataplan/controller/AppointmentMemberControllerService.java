@@ -50,9 +50,8 @@ public class AppointmentMemberControllerService {
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
 //				authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		
-		if (jwtToken != null) {
-			this.createValidDTOMember(appointmentRequest, appointmentMemberDTO, /*backendUser.getId()*/authUser.getId(), authUser.getUsername());
-		}
+		this.createValidDTOMember(appointmentRequest, appointmentMemberDTO, authUser);
+		appointmentMemberDTO.assertAddValid();
 		
 		AppointmentMember appointmentMember = modelMapper.map(appointmentMemberDTO, AppointmentMember.class);
 		appointmentMember = appointmentMemberService.createAppointmentMember(appointmentRequest, appointmentMember);
@@ -128,14 +127,17 @@ public class AppointmentMemberControllerService {
 	}
 
 	private AppointmentMemberDTO createValidDTOMember(AppointmentRequest appointmentRequest,
-			AppointmentMemberDTO appointmentMemberDTO, Integer userId, String username) {
-
-		if (!username.equalsIgnoreCase(appointmentMemberDTO.getName())
-				|| this.isBackendUserMemberInAppointmentRequest(appointmentRequest, userId)) {
+			AppointmentMemberDTO appointmentMemberDTO, AuthUser user) {
+		appointmentMemberDTO.setAppointmentRequestId(appointmentRequest.getId());
+		if (user == null) {
 			appointmentMemberDTO.setUserId(null);
 		} else {
-			appointmentMemberDTO.setUserId(userId);
-			appointmentMemberDTO.setName(username);
+			appointmentMemberDTO.setUserId(user.getId());
+			if(appointmentMemberDTO.getName() == null ||
+				appointmentMemberDTO.getName().trim().isEmpty()
+			) {
+				appointmentMemberDTO.setName(user.getDisplayname());
+			}
 		}
 		return appointmentMemberDTO;
 	}
