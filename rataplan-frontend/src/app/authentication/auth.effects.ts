@@ -1,22 +1,28 @@
 import { Injectable } from "@angular/core";
-import { Actions, Effect, ofType } from "@ngrx/effects";
+import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import {
   AuthActions,
   AutoLoginAction,
-  ChangeDisplaynameAction, ChangeDisplaynameErrorAction,
-  ChangeEmailAction, ChangeEmailErrorAction,
+  ChangeDisplaynameAction,
+  ChangeDisplaynameErrorAction,
+  ChangeEmailAction,
+  ChangeEmailErrorAction,
   DeleteUserAction,
   DeleteUserErrorAction,
   DeleteUserSuccessAction,
   LoginAction,
   LoginErrorAction,
   LoginSuccessAction,
-  RegisterAction, RegisterErrorAction,
-  RegisterSuccessAction, ResetPasswordAction, ResetPasswordErrorAction, ResetPasswordSuccessAction,
+  RegisterAction,
+  RegisterErrorAction,
+  RegisterSuccessAction,
+  ResetPasswordAction,
+  ResetPasswordErrorAction,
+  ResetPasswordSuccessAction,
   UpdateUserdataAction,
   UpdateUserdataSuccessAction
 } from "./auth.actions";
-import { catchError, combineLatestWith, exhaustMap, map, switchMap, tap } from "rxjs/operators";
+import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
 import { EMPTY, from, of } from "rxjs";
 import { BackendUrlService } from "../services/backend-url-service/backend-url.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -35,10 +41,9 @@ export class AuthEffects {
   ) {
   }
 
-  @Effect()
-  registerUser = this.actions$.pipe(
+  registerUser = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.REGISTER_ACTION),
-    combineLatestWith(this.urlService.authURL$),
+    concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([action, authURL]: [RegisterAction, string]) => {
       const url = authURL + 'users/register';
 
@@ -49,32 +54,29 @@ export class AuthEffects {
           tap(() => this.router.navigateByUrl(action.redirect || "/"))
         );
     })
-  )
+  ));
 
-  @Effect()
-  autoLoginStart = this.actions$.pipe(
+  autoLoginStart = createEffect(() => this.actions$.pipe(
     ofType("@ngrx/effects/init"),
     map(() => new AutoLoginAction())
-  )
+  ));
 
-  @Effect()
-  autoLogin = this.actions$.pipe(
+  autoLogin = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.AUTO_LOGIN_ACTION),
-    exhaustMap(() => this.urlService.authURL$),
+    concatMap(() => this.urlService.authURL$),
     map(authURL => {
       let url = authURL + 'users/profile'
       return this.httpClient.get<FrontendUser>(url, {withCredentials: true})
     }),
     switchMap(observable => observable.pipe(
       map(userData => new LoginSuccessAction(userData)),
-      catchError(err => of(new LoginErrorAction(err)))
+      catchError(err => of(new LoginErrorAction(err.status == 401 ? undefined : err)))
     ))
-  );
+  ));
 
-  @Effect()
-  manualLogin = this.actions$.pipe(
+  manualLogin = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.LOGIN_ACTION),
-    combineLatestWith(this.urlService.authURL$),
+    concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([action, authURL]: [LoginAction, string]) => {
       let url = authURL + 'users/login'
       return this.httpClient.post<FrontendUser>(url, action.payload, {withCredentials: true})
@@ -84,12 +86,11 @@ export class AuthEffects {
           catchError(err => of(new LoginErrorAction(err)))
         );
     })
-  );
+  ));
 
-  @Effect()
-  resetPassword = this.actions$.pipe(
+  resetPassword = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.RESET_PASSWORD_ACTION),
-    combineLatestWith(this.urlService.authURL$),
+    concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([resetPasswordAction, authURL]: [ResetPasswordAction, string]) => {
       const url = authURL + 'users/resetPassword';
 
@@ -100,19 +101,16 @@ export class AuthEffects {
         catchError(err => of(new ResetPasswordErrorAction(err)))
       );
     }),
-  );
-  @Effect({
-    dispatch: false,
-  })
-  resetPasswordSuccess = this.actions$.pipe(
+  ));
+
+  resetPasswordSuccess = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.RESET_PASSWORD_SUCCESS_ACTION),
     switchMap(() => from(this.router.navigateByUrl("/login")))
-  )
+  ), {dispatch: false});
 
-  @Effect()
-  changeEmail = this.actions$.pipe(
+  changeEmail = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.CHANGE_EMAIL_ACTION),
-    combineLatestWith(this.urlService.authURL$),
+    concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([emailAction, authURL]: [ChangeEmailAction, string]) => {
       const url = authURL + 'users/profile/changeEmail'
 
@@ -124,12 +122,11 @@ export class AuthEffects {
           catchError(err => of(new ChangeEmailErrorAction(err)))
         );
     })
-  );
+  ));
 
-  @Effect()
-  changeDisplayname = this.actions$.pipe(
+  changeDisplayname = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.CHANGE_DISPLAYNAME_ACTION),
-    combineLatestWith(this.urlService.authURL$),
+    concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([displaynameAction, authURL]: [ChangeDisplaynameAction, string]) => {
       const url = authURL + 'users/profile/changeDisplayName'
 
@@ -141,13 +138,12 @@ export class AuthEffects {
           catchError(err => of(new ChangeDisplaynameErrorAction(err)))
         );
     })
-  );
+  ));
 
-  @Effect()
-  updateUserData = this.actions$.pipe(
+  updateUserData = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.UPDATE_USERDATA_ACTION),
     switchMap(() => this.urlService.authURL$),
-    switchMap(authURL => {
+    concatMap(authURL => {
       let url = authURL + 'users/profile'
       const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
 
@@ -156,26 +152,22 @@ export class AuthEffects {
       )
     }),
     map(userData => new UpdateUserdataSuccessAction(userData))
-  )
+  ));
 
-  @Effect({
-    dispatch: false,
-  })
-  logoutUser = this.actions$.pipe(
+  logoutUser = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.LOGOUT_ACTION),
-    exhaustMap(() => this.urlService.authURL$),
+    switchMap(() => this.urlService.authURL$),
     switchMap(authURL => {
       let url = authURL + 'users/logout'
       return this.httpClient.get<any>(url, {withCredentials: true}).pipe(
         catchError(() => EMPTY)
       );
     })
-  );
+  ), {dispatch: false});
 
-  @Effect()
-  deleteUser = this.actions$.pipe(
+  deleteUser = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.DELETE_USER_ACTION),
-    combineLatestWith(this.urlService.authURL$),
+    concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([action, url]: [DeleteUserAction, string]) => {
       return this.httpClient.delete(url + "users/profile", {
         body: action.payload,
@@ -186,5 +178,5 @@ export class AuthEffects {
         catchError(err => of(new DeleteUserErrorAction(err))),
       );
     })
-  )
+  ));
 }
