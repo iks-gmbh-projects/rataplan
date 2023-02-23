@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
+import { Actions, concatLatestFrom, createEffect, ofType, rootEffectsInit } from "@ngrx/effects";
 import {
   AuthActions,
   AutoLoginAction,
@@ -57,7 +57,7 @@ export class AuthEffects {
   ));
 
   autoLoginStart = createEffect(() => this.actions$.pipe(
-    ofType("@ngrx/effects/init"),
+    ofType(rootEffectsInit),
     map(() => new AutoLoginAction())
   ));
 
