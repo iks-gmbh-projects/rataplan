@@ -101,6 +101,12 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     });
   }
 
+  setParticipantNumber(appointment: AppointmentModel, participants: number) {
+    const index = this.appointmentRequest.appointments.indexOf(appointment);
+    const appointmentDecision = this.member.appointmentDecisions[index];
+    appointmentDecision.participants = participants;
+  }
+
   setDecision(appointment: AppointmentModel, decision: number) {
     const index = this.appointmentRequest!.appointments.indexOf(appointment);
     const appointmentDecision = this.member.appointmentDecisions[index];
