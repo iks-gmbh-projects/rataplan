@@ -22,8 +22,7 @@
           Teilnehmer : {{ appointmentRequest?.appointmentMembers?.length }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <mat-list *ngFor='let member of (this.appointmentRequest?.appointmentMembers || [])'
-                multiple='false'>
+      <mat-list *ngFor='let member of (this.appointmentRequest?.appointmentMembers || [])'>
         <mat-list-item class='member'>
           {{ member.name }}
           <div>
@@ -68,7 +67,7 @@
               (click)='openDialog(appointment)'>
         <mat-icon>info</mat-icon>
       </button>
-      <mat-form-field *ngIf='appointmentRequest.appointmentRequestConfig?.decisionType == "NUMBER"; else decisionComplex'
+      <mat-form-field *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType == "NUMBER"; else decisionComplex'
                       appearance="fill">
         <mat-label>Teilnehmerzahl</mat-label>
         <input type="number"
@@ -89,10 +88,10 @@
                            matTooltipPosition='above'>
           <mat-icon>done</mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle *ngIf='appointmentRequest.appointmentRequestConfig?.decisionType == "EXTENDED"'
+        <mat-button-toggle *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType == "EXTENDED"'
                            (click)='setDecision(appointment, 2)'
                            [checked]='checkVoteOfMember(appointment, 2)'
-                           [disabled]='appointmentRequest.expired'
+                           [disabled]='appointmentRequest?.expired'
                            matTooltip='Vielleicht'
                            matTooltipPosition='above'>
           <mat-icon>question_mark</mat-icon>
@@ -106,7 +105,7 @@
         </mat-button-toggle>
         <mat-button-toggle (click)='setDecision(appointment, 0)'
                            [checked]='checkVoteOfMember(appointment, 0)'
-                           [disabled]='appointmentRequest.expired'
+                           [disabled]='appointmentRequest?.expired'
                            matTooltip='Keine Antwort'
                            matTooltipPosition='above'>
           <mat-icon></mat-icon>

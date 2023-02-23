@@ -21,7 +21,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     'title': new FormControl(null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
     'description': new FormControl(null),
     'deadline': new FormControl(null, Validators.required),
-    'decision': new FormControl('0', Validators.required),
+    'decision': new FormControl('DEFAULT', Validators.required),
   });
 
   showDescription = false;
@@ -46,12 +46,13 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
         const appointmentRequest = state.appointmentRequest;
         const title = appointmentRequest?.title;
         const deadline = appointmentRequest?.deadline;
+        const decision = appointmentRequest?.appointmentRequestConfig?.decisionType;
 
         if (title || deadline) {
           this.generalSubform.get('title')?.setValue(title);
           this.generalSubform.get('description')?.setValue(appointmentRequest.description);
           this.generalSubform.get('deadline')?.setValue(deadline);
-          this.generalSubform.get('decision')?.setValue('0');
+          this.generalSubform.get('decision')?.setValue(decision);
         }
         if (this.generalSubform.get('description')?.value) {
           this.showDescription = true;
