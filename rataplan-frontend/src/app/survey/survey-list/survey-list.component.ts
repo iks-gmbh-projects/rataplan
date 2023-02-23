@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { throwToolbarMixedModesError } from '@angular/material/toolbar';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+
 import { SurveyHead } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
@@ -12,9 +12,9 @@ import { SurveyService } from '../survey.service';
 })
 export class SurveyListComponent implements OnInit, OnDestroy {
   public surveys: SurveyHead[] = [];
-  public busy: boolean = false;
+  public busy = false;
   public error: any = null;
-  public isOwn: boolean = false;
+  public isOwn = false;
   private sub?: Subscription;
 
   constructor(private surveyService: SurveyService, private activeRoute: ActivatedRoute) { }
@@ -36,7 +36,7 @@ export class SurveyListComponent implements OnInit, OnDestroy {
     if (this.busy) return;
     this.busy = true;
     this.error = null;
-    let request = this.isOwn ? this.surveyService.getOwnSurveys() : this.surveyService.getOpenSurveys()
+    const request = this.isOwn ? this.surveyService.getOwnSurveys() : this.surveyService.getOpenSurveys();
     request.subscribe({
       next: s => this.surveys = s,
       error: err => {

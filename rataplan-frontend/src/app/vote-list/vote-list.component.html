@@ -1,0 +1,34 @@
+<div class="wrapper">
+  <h3>Erstellte Abstimmungen</h3>
+  <mat-card class="bottomSpace" *ngFor="let vote of createdVotes">
+    <mat-card-title>{{vote.title}}</mat-card-title>
+    <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+    <mat-card-content>{{vote.description}}</mat-card-content>
+    <mat-card-actions>
+      <a mat-raised-button
+         color="primary"
+         [routerLink]="['/vote', vote.participationToken]">
+         Anzeigen
+      </a>
+      <a *ngIf="!vote.expired"
+         mat-raised-button
+         color="primary"
+         [routerLink]="['/vote', 'edit', vote.editToken]">
+         Editieren
+      </a>
+    </mat-card-actions>
+  </mat-card>
+  <h3>Teilgenommene Abstimmungen</h3>
+  <mat-card class="bottomSpace" *ngFor="let vote of participatedVotes">
+    <mat-card-title>{{vote.title}}</mat-card-title>
+    <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+    <mat-card-content>{{vote.description}}</mat-card-content>
+    <mat-card-actions>
+      <a mat-raised-button
+         color="primary"
+        [routerLink]="['/vote', vote.participationToken]">
+        Anzeigen
+      </a>
+    </mat-card-actions>
+  </mat-card>
+</div>

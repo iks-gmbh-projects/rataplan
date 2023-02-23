@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ForgotPasswordService } from '../services/forgot-password-service/forgot-password.service';
 import { UsernameEmailValidatorsService } from '../services/username-email-validators-service/username-email-validators.service';
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-forgot-password',
@@ -12,17 +13,19 @@ import { FormErrorMessageService } from "../services/form-error-message-service/
 })
 export class ForgotPasswordComponent implements OnInit {
 
-  mail: FormControl = new FormControl('', [Validators.required, Validators.email],
-    ctrl => this.registerService.mailNotExists(ctrl));
+  mail: FormControl = new FormControl('', [Validators.required, Validators.email]);
 
   forgotPasswordForm = this.formBuilder.group({
     mail: this.mail,
   });
 
-  constructor(private formBuilder: FormBuilder,
-              private registerService: UsernameEmailValidatorsService,
-              private forgotPasswordService: ForgotPasswordService,
-              public readonly errorMessageService: FormErrorMessageService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private registerService: UsernameEmailValidatorsService,
+    private forgotPasswordService: ForgotPasswordService,
+    public readonly errorMessageService: FormErrorMessageService,
+    private snackBar: MatSnackBar
+  ) {
 
   }
 
@@ -30,8 +33,11 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   submit() {
-
-    this.forgotPasswordService.forgotPassword(this.mail.value).subscribe({});
+    this.forgotPasswordService.forgotPassword(this.mail.value).subscribe({
+      next: () => this.snackBar.open('Eine Email zum Zurücksetzen des Passworts wurde versandt.', 'Ok', {
+        duration: 3000
+      })
+    });
   }
 
 }

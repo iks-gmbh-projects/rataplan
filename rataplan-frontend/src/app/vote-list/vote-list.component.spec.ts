@@ -6,16 +6,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { SurveyService } from '../survey.service';
-import { SurveyListComponent } from './survey-list.component';
+import { SurveyService } from '../survey/survey.service';
+import { VoteListComponent } from './vote-list.component';
 
 describe('SurveyListComponent', () => {
-  let component: SurveyListComponent;
-  let fixture: ComponentFixture<SurveyListComponent>;
+  let component: VoteListComponent;
+  let fixture: ComponentFixture<VoteListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SurveyListComponent ],
+      declarations: [ VoteListComponent ],
       imports: [ RouterTestingModule, HttpClientTestingModule, MatCardModule, MatButtonModule, MatProgressSpinnerModule, MatIconModule ],
       providers: [ SurveyService ]
     })
@@ -23,7 +23,7 @@ describe('SurveyListComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SurveyListComponent);
+    fixture = TestBed.createComponent(VoteListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -34,17 +34,12 @@ export class AppointmentService {
 
   addAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
     const token = this.getParticipationToken(appointmentRequest);
+    const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
 
     return this.url$.pipe(
       exhaustMap(url => {
         return this.http.post<AppointmentMemberModel>(
-          url + token + '/appointmentMembers',
-          appointmentMember,
-          {
-            headers: new HttpHeaders({
-              'Content-Type': 'application/json;charset=utf-8',
-            }),
-          });
+          url + token + '/appointmentMembers', appointmentMember, httpOptions);
       })
     );
   }

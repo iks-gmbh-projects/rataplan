@@ -5,6 +5,7 @@
   </button>
   <a class="rightSpace" mat-raised-button color="primary" routerLink="../create">Erstellen</a>
   <hr>
+  <h3>Umfragen</h3>
   <div>
     <mat-spinner *ngIf="busy; else done"></mat-spinner>
     <ng-template #done>
@@ -12,6 +13,7 @@
       <ng-template #success>
         <mat-card class="bottomSpace" *ngFor="let survey of surveys">
           <mat-card-title>{{survey.name}}</mat-card-title>
+          <mat-card-subtitle>Teilnahme: {{survey.startDate | date:'dd.LL.yyyy'}} - {{survey.endDate | date:'dd.LL.yyyy'}}</mat-card-subtitle>
           <mat-card-content>{{survey.description}}</mat-card-content>
           <mat-card-actions>
             <a *ngIf="!isOwn" mat-raised-button color="primary"
