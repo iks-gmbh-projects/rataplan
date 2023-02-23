@@ -1,5 +1,6 @@
 import { AppointmentRequestModel } from "../models/appointment-request.model";
 import { AppointmentAction, AppointmentActions } from "./appointment.actions";
+import { isConfiguredEqual } from "../models/appointment.model";
 
 export type appointmentRequestState = {
   appointmentRequest?: AppointmentRequestModel,
@@ -65,6 +66,7 @@ export function appointmentRequestReducer(
           missing_request: "Initialize request first",
         },
       };
+      if(isConfiguredEqual(state.appointmentRequest.appointmentRequestConfig.appointmentConfig, action.config)) return state;
       return {
         appointmentRequest: {
           ...state.appointmentRequest,
