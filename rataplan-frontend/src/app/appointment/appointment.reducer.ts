@@ -2,12 +2,15 @@ import { AppointmentRequestModel } from "../models/appointment-request.model";
 import { AppointmentAction, AppointmentActions } from "./appointment.actions";
 import { isConfiguredEqual } from "../models/appointment.model";
 
-export type appointmentRequestState = {
-  appointmentRequest?: AppointmentRequestModel,
+export type appointmentRequestState = {busy: boolean, error?: any} & ({
+  appointmentRequest?: undefined,
+  complete?: false,
+  appointmentsChanged?: undefined,
+} | {
+  appointmentRequest: AppointmentRequestModel,
   complete: boolean,
-  busy: boolean,
-  error?: any,
-};
+  appointmentsChanged: boolean,
+});
 
 function isComplete(appointmentRequest?: AppointmentRequestModel): boolean {
   return !!appointmentRequest &&
@@ -30,6 +33,7 @@ export function appointmentRequestReducer(
       return {
         appointmentRequest: action.request,
         complete: isComplete(action.request),
+        appointmentsChanged: false,
         busy: false,
       };
     case AppointmentActions.INIT_ERROR:
@@ -47,14 +51,16 @@ export function appointmentRequestReducer(
           missing_request: "Initialize request first",
         },
       };
+      const request = {
+        ...state.appointmentRequest,
+        title: action.payload.title,
+        description: action.payload.description,
+        deadline: action.payload.deadline.toISOString(),
+      };
       return {
-        appointmentRequest: {
-          ...state.appointmentRequest,
-          title: action.payload.title,
-          description: action.payload.description,
-          deadline: action.payload.deadline.toISOString(),
-        },
-        complete: false,
+        appointmentRequest: request,
+        complete: isComplete(request),
+        appointmentsChanged: state.appointmentsChanged,
         busy: false,
       };
     case AppointmentActions.SET_APPOINTMENT_CONFIG:
@@ -77,6 +83,7 @@ export function appointmentRequestReducer(
           appointments: [],
         },
         complete: false,
+        appointmentsChanged: true,
         busy: false,
       };
     case AppointmentActions.SET_APPOINTMENTS: {
@@ -109,6 +116,7 @@ export function appointmentRequestReducer(
       return {
         appointmentRequest: request,
         complete: isComplete(request),
+        appointmentsChanged: true,
         busy: false,
       };
     }
@@ -142,6 +150,7 @@ export function appointmentRequestReducer(
       return {
         appointmentRequest: request,
         complete: isComplete(request),
+        appointmentsChanged: true,
         busy: false,
       };
     }
@@ -161,6 +170,7 @@ export function appointmentRequestReducer(
       return {
         appointmentRequest: request,
         complete: isComplete(request),
+        appointmentsChanged: true,
         busy: false,
       };
     }
@@ -181,6 +191,7 @@ export function appointmentRequestReducer(
           consigneeList: action.payload.consigneeList,
         },
         complete: state.complete,
+        appointmentsChanged: state.appointmentsChanged,
         busy: false,
       };
     case AppointmentActions.POST:

@@ -64,16 +64,23 @@ export class AppointmentRequestEffects {
     ofType(AppointmentActions.POST),
     concatLatestFrom(() => this.store.select("appointmentRequest")),
     map(([, state]) => state),
-    filter(state => state.complete),
-    map(state => state.appointmentRequest!),
+    filter(state => !!state.complete),
+    map(state => ({request: state.appointmentRequest!, appointmentsEdited: state.appointmentsChanged})),
     delayWhen(() => this.store.select("auth").pipe(
       filter(authState => !authState.busy),
       take(1)
     )),
     concatLatestFrom(() => this.urlService.appointmentURL$),
     map(([request, url]) => {
-      if (request.editToken) return this.http.put<AppointmentRequestModel>(url + "/appointmentRequests/edit/" + request.editToken, request, {withCredentials: true});
-      return this.http.post<AppointmentRequestModel>(url + "/appointmentRequests", request, {withCredentials: true});
+      if (request.request.editToken) {
+        const sanatizedRequest: Partial<AppointmentRequestModel> = {...request.request};
+        if(!request.appointmentsEdited) {
+          delete sanatizedRequest.appointments;
+          delete sanatizedRequest.appointmentMembers;
+        }
+        return this.http.put<AppointmentRequestModel>(url + "/appointmentRequests/edit/" + request.request.editToken, sanatizedRequest, {withCredentials: true});
+      }
+      return this.http.post<AppointmentRequestModel>(url + "/appointmentRequests", request.request, {withCredentials: true});
     }),
     switchMap(request => request.pipe(
       map(created => new PostAppointmentRequestSuccessAction(created)),
