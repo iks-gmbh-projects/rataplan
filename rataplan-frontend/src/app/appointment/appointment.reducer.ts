@@ -51,11 +51,15 @@ export function appointmentRequestReducer(
           missing_request: "Initialize request first",
         },
       };
-      const request = {
+      const request: AppointmentRequestModel = {
         ...state.appointmentRequest,
         title: action.payload.title,
         description: action.payload.description,
         deadline: action.payload.deadline.toISOString(),
+        appointmentRequestConfig: {
+          ...state.appointmentRequest.appointmentRequestConfig,
+          decisionType: action.payload.decisionType,
+        },
       };
       return {
         appointmentRequest: request,

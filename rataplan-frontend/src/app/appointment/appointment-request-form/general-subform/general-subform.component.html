@@ -55,13 +55,13 @@
       <label id="example-radio-group-label">Antwortmöglichkeiten</label>
       <div>
         <mat-radio-group formControlName="decision">
-          <mat-radio-button value="DEFAULT">
+          <mat-radio-button [value]="DecisionType.DEFAULT">
             Ja/Nein
           </mat-radio-button><br>
-          <mat-radio-button value="EXTENDED">
+          <mat-radio-button [value]="DecisionType.EXTENDED">
             Ja/Vielleicht/Nein
           </mat-radio-button><br>
-          <mat-radio-button value="NUMBER">
+          <mat-radio-button [value]="DecisionType.NUMBER">
             Teilnehmerzahl
           </mat-radio-button>
         </mat-radio-group>

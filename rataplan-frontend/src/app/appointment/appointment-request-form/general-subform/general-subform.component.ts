@@ -7,6 +7,7 @@ import { ExtraValidators } from '../../../validator/validators';
 import { appState } from "../../../app.reducers";
 import { Store } from "@ngrx/store";
 import { SetGeneralValuesAppointmentAction } from "../../appointment.actions";
+import { DecisionType } from "../decision-type.enum";
 
 @Component({
   selector: 'app-general-subform',
@@ -14,6 +15,7 @@ import { SetGeneralValuesAppointmentAction } from "../../appointment.actions";
   styleUrls: ['./general-subform.component.css'],
 })
 export class GeneralSubformComponent implements OnInit, OnDestroy {
+  readonly DecisionType = DecisionType;
   minDate: Date;
   maxDate: Date;
 
@@ -76,6 +78,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
       title: this.generalSubform.value.title,
       description: this.generalSubform.value.description,
       deadline: new Date(this.generalSubform.value.deadline),
+      decisionType: this.generalSubform.value.decision,
     }));
     console.log(this.generalSubform.get('title'));
     console.log(this.generalSubform.get('deadline'));

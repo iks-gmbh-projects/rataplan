@@ -7,8 +7,8 @@ export enum DecisionType {
 export type SerializedDecisionType = DecisionType | keyof typeof DecisionType;
 
 export function deserializeDecisionType(decisionType: SerializedDecisionType): DecisionType {
-  if(typeof decisionType === "number") {
-    return decisionType;
+  if(typeof decisionType === "number" || /^\d+$/.test(decisionType)) {
+    return +decisionType;
   } else {
     return DecisionType[decisionType];
   }
@@ -24,8 +24,8 @@ export enum AppointmentDecisionType {
 export type SerializedAppointmentDecisionType = AppointmentDecisionType | keyof typeof AppointmentDecisionType;
 
 export function deserializeAppointmentDecisionType(decisionType: SerializedAppointmentDecisionType): AppointmentDecisionType {
-  if(typeof decisionType === "number") {
-    return decisionType;
+  if(typeof decisionType === "number" || /^\d+$/.test(decisionType)) {
+    return +decisionType;
   } else {
     return AppointmentDecisionType[decisionType];
   }

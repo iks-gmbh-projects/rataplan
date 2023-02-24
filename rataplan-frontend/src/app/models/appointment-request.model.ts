@@ -1,6 +1,11 @@
 import { AppointmentConfig, AppointmentModel } from './appointment.model';
 import { AppointmentMemberModel } from './appointment-member.model';
-import { DecisionType, SerializedDecisionType } from "../appointment/appointment-request-form/decision-type.enum";
+import {
+  DecisionType,
+  deserializeDecisionType,
+  SerializedDecisionType
+} from "../appointment/appointment-request-form/decision-type.enum";
+import { deserializeAppointmentDecisionModel } from "./appointment-decision.model";
 
 export type AppointmentRequestModel<serialized extends boolean = false> = {
   id?: number;
@@ -20,6 +25,20 @@ export type AppointmentRequestModel<serialized extends boolean = false> = {
   appointments: AppointmentModel[];
   appointmentMembers: AppointmentMemberModel<serialized>[];
 };
+
+export function deserializeAppointmentRequestModel(request: AppointmentRequestModel<boolean>): AppointmentRequestModel {
+  return {
+    ...request,
+    appointmentRequestConfig: {
+      ...request.appointmentRequestConfig,
+      decisionType: deserializeDecisionType(request.appointmentRequestConfig.decisionType)
+    },
+    appointmentMembers: request.appointmentMembers.map(member => ({
+      ...member,
+      appointmentDecisions: member.appointmentDecisions.map(deserializeAppointmentDecisionModel),
+    })),
+  };
+}
 
 export type AppointmentRequestConfig<serialized extends boolean = false> = {
   id?: number,

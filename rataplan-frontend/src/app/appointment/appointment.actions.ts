@@ -1,6 +1,7 @@
 import { Action } from "@ngrx/store";
 import { AppointmentConfig, AppointmentModel } from "../models/appointment.model";
 import { AppointmentRequestModel } from "../models/appointment-request.model";
+import { DecisionType } from "./appointment-request-form/decision-type.enum";
 
 export const AppointmentActions: {
   readonly INIT: "[appointmentRequest] init",
@@ -62,6 +63,7 @@ export class SetGeneralValuesAppointmentAction implements Action {
       title: string,
       description?: string,
       deadline: Date,
+      decisionType: DecisionType,
     }
   ) {
   }
@@ -124,7 +126,8 @@ export class PostAppointmentRequestSuccessAction implements Action {
   readonly type = AppointmentActions.POST_SUCCESS;
 
   constructor(
-    readonly created: AppointmentRequestModel
+    readonly created: AppointmentRequestModel,
+    readonly editToken?: string,
   ) {
   }
 }
