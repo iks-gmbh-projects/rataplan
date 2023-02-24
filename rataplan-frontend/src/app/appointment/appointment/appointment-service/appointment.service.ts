@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
 import { AppointmentMemberModel } from '../../../models/appointment-member.model';
 import { AppointmentRequestModel } from '../../../models/appointment-request.model';
 import { BackendUrlService } from "../../../services/backend-url-service/backend-url.service";
 import { exhaustMap, map, Observable } from "rxjs";
+import { deserializeDecisionType } from "../../appointment-request-form/decision-type.enum";
+import { deserializeAppointmentDecisionModel } from "../../../models/appointment-decision.model";
 
 @Injectable({
   providedIn: 'root',
@@ -18,17 +19,28 @@ export class AppointmentService {
     );
   }
 
-  getAppointmentByParticipationToken(participationToken: string) {
+  getAppointmentByParticipationToken(participationToken: string): Observable<AppointmentRequestModel> {
     return this.url$.pipe(
       exhaustMap(url => {
-        return this.http.get<AppointmentRequestModel>(
+        return this.http.get<AppointmentRequestModel<true>>(
           url + participationToken,
           {
             headers: new HttpHeaders({
               'Content-Type': 'application/json;charset=utf-8',
             }),
           });
-      })
+      }),
+      map(request => ({
+        ...request,
+        appointmentRequestConfig: {
+          ...request.appointmentRequestConfig,
+          decisionType: deserializeDecisionType(request.appointmentRequestConfig.decisionType),
+        },
+        appointmentMembers: request.appointmentMembers.map(member => ({
+          ...member,
+          appointmentDecisions: member.appointmentDecisions.map(deserializeAppointmentDecisionModel),
+        })),
+      }))
     );
   }
 

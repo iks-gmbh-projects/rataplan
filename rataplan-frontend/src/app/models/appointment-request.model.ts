@@ -1,7 +1,8 @@
 import { AppointmentConfig, AppointmentModel } from './appointment.model';
 import { AppointmentMemberModel } from './appointment-member.model';
+import { DecisionType, SerializedDecisionType } from "../appointment/appointment-request-form/decision-type.enum";
 
-export type AppointmentRequestModel = {
+export type AppointmentRequestModel<serialized extends boolean = false> = {
   id?: number;
   title: string;
   description?: string;
@@ -15,13 +16,13 @@ export type AppointmentRequestModel = {
   participationToken?: string;
   editToken?: string;
 
-  appointmentRequestConfig: AppointmentRequestConfig;
+  appointmentRequestConfig: AppointmentRequestConfig<serialized>;
   appointments: AppointmentModel[];
-  appointmentMembers: AppointmentMemberModel[];
+  appointmentMembers: AppointmentMemberModel<serialized>[];
 };
 
-export type AppointmentRequestConfig = {
+export type AppointmentRequestConfig<serialized extends boolean = false> = {
   id?: number,
   appointmentConfig: AppointmentConfig,
-  decisionType: string,
+  decisionType: serialized extends false ? DecisionType : SerializedDecisionType,
 };

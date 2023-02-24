@@ -1,11 +1,24 @@
-import { AppointmentDecisionType } from '../appointment/appointment-request-form/decision-type.enum';
+import {
+  AppointmentDecisionType, deserializeAppointmentDecisionType,
+  SerializedAppointmentDecisionType
+} from '../appointment/appointment-request-form/decision-type.enum';
 
-export class AppointmentDecisionModel {
-  constructor(
-    public id?: number,
-    public appointmentId?: number,
-    public appointmentMemberId?: number,
-    public decision?: AppointmentDecisionType,
-    public participants?: number,
-  ) {}
+export type AppointmentDecisionModel<serialized extends boolean = false> = {
+  id?: number|string,
+  appointmentId: number|string,
+  appointmentMemberId?: number|string,
+} & ({
+  decision: serialized extends false ? AppointmentDecisionType : SerializedAppointmentDecisionType,
+  participants?: undefined,
+} | {
+  decision?: undefined,
+  participants: number,
+});
+
+export function deserializeAppointmentDecisionModel(decisionModel: AppointmentDecisionModel<boolean>): AppointmentDecisionModel {
+  if(decisionModel.participants === undefined) return {
+    ...decisionModel,
+    decision: deserializeAppointmentDecisionType(decisionModel.decision),
+  };
+  return decisionModel;
 }

@@ -42,7 +42,7 @@
   <div>
     <mat-form-field appearance='fill'>
       <mat-label>Name</mat-label>
-      <input [(ngModel)]='memberName'
+      <input [(ngModel)]='member!.name'
              matInput
              autocomplete='off'
              #nameField="ngModel">
@@ -67,14 +67,14 @@
               (click)='openDialog(appointment)'>
         <mat-icon>info</mat-icon>
       </button>
-      <mat-form-field *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType == "NUMBER"; else decisionComplex'
+      <mat-form-field *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType === DecisionType.NUMBER; else decisionComplex'
                       appearance="fill">
         <mat-label>Teilnehmerzahl</mat-label>
         <input type="number"
                min="0"
                required
                matInput
-               [(ngModel)]="member.appointmentDecisions[appointmentIndex].participants"
+               [(ngModel)]="member!.appointmentDecisions[appointmentIndex].participants"
                mat-line
                #participantField="ngModel">
         <mat-error mat-line>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
@@ -88,7 +88,7 @@
                            matTooltipPosition='above'>
           <mat-icon>done</mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType == "EXTENDED"'
+        <mat-button-toggle *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType === DecisionType.EXTENDED'
                            (click)='setDecision(appointment, 2)'
                            [checked]='checkVoteOfMember(appointment, 2)'
                            [disabled]='appointmentRequest?.expired'

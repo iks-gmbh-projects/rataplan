@@ -1,13 +1,9 @@
 import { AppointmentDecisionModel } from './appointment-decision.model';
 
-export class AppointmentMemberModel {
-  id: number | undefined;
-  appointmentRequestId: number | undefined;
-  backendUserId: number | undefined;
-  name: string | undefined | null;
-  appointmentDecisions: AppointmentDecisionModel[];
-
-  constructor() {
-    this.appointmentDecisions = [];
-  }
+export type AppointmentMemberModel<serialized extends boolean = false> = {
+  id?: number;
+  appointmentRequestId: number;
+  backendUserId?: number;
+  name?: string;
+  appointmentDecisions: AppointmentDecisionModel<serialized>[];
 }

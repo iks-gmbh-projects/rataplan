@@ -4,10 +4,9 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AppointmentModel } from '../../models/appointment.model';
-import { AppointmentDecisionModel } from '../../models/appointment-decision.model';
 import { AppointmentMemberModel } from '../../models/appointment-member.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
-import { AppointmentDecisionType } from '../appointment-request-form/decision-type.enum';
+import { AppointmentDecisionType, DecisionType } from '../appointment-request-form/decision-type.enum';
 import { AppointmentService } from './appointment-service/appointment.service';
 import { MemberDecisionSubformComponent } from './member-decision-subform/member-decision-subform.component';
 import { FormErrorMessageService } from "../../services/form-error-message-service/form-error-message.service";
@@ -19,10 +18,13 @@ import { FormErrorMessageService } from "../../services/form-error-message-servi
   styleUrls: ['./appointment.component.scss']
 })
 export class AppointmentComponent implements OnInit, OnDestroy {
+  readonly DecisionType = DecisionType;
   destroySubject: Subject<boolean> = new Subject<boolean>();
   appointmentRequest?: AppointmentRequestModel;
-  member = new AppointmentMemberModel();
-  memberName = this.member.name;
+  member: AppointmentMemberModel = {
+    appointmentRequestId: 0,
+    appointmentDecisions: [],
+  };
 
   participationToken = '';
   isEditMember = false;
@@ -44,7 +46,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject))
       .subscribe(appointmentRequest => {
         this.appointmentRequest = appointmentRequest;
-        sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest.appointmentMembers));
         if (!this.appointmentRequest.expired) {
           this.setAppointments();
         }
@@ -57,15 +58,12 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   saveVote() {
-    this.member.name = this.memberName;
-
     if (this.isEditMember) {
       this.appointmentService.updateAppointmentMember(this.appointmentRequest!, this.member)
         .pipe(takeUntil(this.destroySubject))
         .subscribe(() => {
           this.resetVote();
           this.isEditMember = false;
-          sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest!.appointmentMembers));
         });
     } else {
       this.appointmentService.addAppointmentMember(this.appointmentRequest!, this.member)
@@ -73,29 +71,38 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         .subscribe(member => {
           this.appointmentRequest!.appointmentMembers.push(member);
           this.resetVote();
-          sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest!.appointmentMembers));
         });
     }
   }
 
   resetVote() {
-    this.member = new AppointmentMemberModel();
+    this.member = {
+      appointmentRequestId: this.appointmentRequest!.id!,
+      appointmentDecisions: [],
+    };
     this.setAppointments();
-    this.memberName = null;
   }
 
   setAppointments() {
-    for (let i = 0; i < this.appointmentRequest!.appointments.length; i++) {
-      this.member.appointmentDecisions.push(new AppointmentDecisionModel());
-      this.member.appointmentDecisions[i].appointmentId = this.appointmentRequest!.appointments[i].id;
-      this.member.appointmentDecisions[i].decision = AppointmentDecisionType.NO_ANSWER;
+    if(this.appointmentRequest?.appointmentRequestConfig.decisionType === DecisionType.NUMBER) {
+      this.member.appointmentDecisions = this.appointmentRequest!.appointments.map(appointment => ({
+        appointmentId: appointment.id!,
+        participants: 0,
+      }));
+    } else {
+      this.member.appointmentDecisions = this.appointmentRequest!.appointments.map(appointment => ({
+        appointmentId: appointment.id!,
+        decision: AppointmentDecisionType.NO_ANSWER,
+      }));
     }
   }
 
   openDialog(appointment: AppointmentModel) {
     this.dialog.open(MemberDecisionSubformComponent, {
       data: {
-        appointment: appointment
+        appointment: appointment,
+        appointmentMembers: this.appointmentRequest!.appointmentMembers,
+        decisionType: this.appointmentRequest!.appointmentRequestConfig.decisionType,
       },
       autoFocus: false
     });
@@ -132,14 +139,12 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         this.resetVote();
         const index = this.appointmentRequest!.appointmentMembers.indexOf(member);
         this.appointmentRequest!.appointmentMembers.splice(index, 1);
-        sessionStorage.setItem('appointmentMembers', JSON.stringify(this.appointmentRequest!.appointmentMembers));
       });
   }
 
   editMember(member: AppointmentMemberModel) {
     this.isEditMember = true;
     if (member.name != undefined) {
-      this.memberName = member.name;
       this.member = member;
     }
   }

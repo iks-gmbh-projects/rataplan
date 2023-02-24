@@ -1,35 +1,67 @@
 <div>
   <h3 mat-dialog-title>{{ data.appointment.startDate | date:'dd. MMMM yyyy':'+0200':'de' }}</h3>
   <mat-selection-list [multiple]='false'>
-    <mat-list-option (click)='clickedAccepted = !clickedAccepted'>
-      <mat-icon mat-list-icon
-                [matBadge]='countDecision(1)'
-                matBadgeColor='primary'>done
-      </mat-icon>
-      <div mat-line>Accepted</div>
-    </mat-list-option>
-    <div>
-      <ng-template [ngIf]='clickedAccepted'>
-        <p style='text-align: center'
-           *ngFor='let member of checkMembers(appointmentMembers, 1)'>
-          {{ member }}
-        </p>
+    <ng-template [ngIf]='data.decisionType === DecisionType.NUMBER' [ngIfElse]='complexDecision'>
+      <mat-list-option mat-line (click)='clicked = AppointmentDecisionType.ACCEPT'>
+        <span>Teilnehmer</span><span>{{countDecision()}}</span>
+      </mat-list-option>
+      <div>
+        <ng-template [ngIf]='clicked === AppointmentDecisionType.ACCEPT'>
+          <p style='text-align: center'
+             *ngFor='let member of checkMembers(data.appointmentMembers)'>
+            {{ member }}
+          </p>
+        </ng-template>
+      </div>
+    </ng-template>
+    <ng-template #complexDecision>
+      <mat-list-option (click)='clicked = AppointmentDecisionType.ACCEPT'>
+        <mat-icon mat-list-icon
+                  [matBadge]='countDecision(AppointmentDecisionType.ACCEPT)'
+                  matBadgeColor='primary'>done
+        </mat-icon>
+        <div mat-line>Ja</div>
+      </mat-list-option>
+      <div>
+        <ng-template [ngIf]='clicked === AppointmentDecisionType.ACCEPT'>
+          <p style='text-align: center'
+             *ngFor='let member of checkMembers(data.appointmentMembers, AppointmentDecisionType.ACCEPT)'>
+            {{ member }}
+          </p>
+        </ng-template>
+      </div>
+      <ng-template [ngIf]="data.decisionType === DecisionType.EXTENDED">
+        <mat-list-option (click)='clicked = AppointmentDecisionType.ACCEPT_IF_NECESSARY'>
+          <mat-icon mat-list-icon
+                    [matBadge]='countDecision(AppointmentDecisionType.ACCEPT_IF_NECESSARY)'
+                    matBadgeColor='primary'>question_mark
+          </mat-icon>
+          <div mat-line>Vielleicht</div>
+        </mat-list-option>
+        <div>
+          <ng-template [ngIf]='clicked === AppointmentDecisionType.ACCEPT_IF_NECESSARY'>
+            <p style='text-align: center'
+               *ngFor='let member of checkMembers(data.appointmentMembers, AppointmentDecisionType.ACCEPT_IF_NECESSARY)'>
+              {{ member }}
+            </p>
+          </ng-template>
+        </div>
       </ng-template>
-    </div>
-    <mat-list-option (click)='clickedDeclined = !clickedDeclined'>
-      <mat-icon mat-list-icon
-                [matBadge]='countDecision(3)'
-                matBadgeColor='primary'>close
-      </mat-icon>
-      <div mat-line>Declined</div>
-    </mat-list-option>
-    <div>
-      <ng-template [ngIf]='clickedDeclined'>
-        <p style='text-align: center'
-           *ngFor='let member of checkMembers(appointmentMembers, 3)'>
-          {{ member }}
-        </p>
-      </ng-template>
-    </div>
+      <mat-list-option (click)='clicked = AppointmentDecisionType.DECLINE'>
+        <mat-icon mat-list-icon
+                  [matBadge]='countDecision(AppointmentDecisionType.DECLINE)'
+                  matBadgeColor='primary'>close
+        </mat-icon>
+        <div mat-line>Nein</div>
+      </mat-list-option>
+      <div>
+        <ng-template [ngIf]='clicked === AppointmentDecisionType.DECLINE'>
+          <p style='text-align: center'
+             *ngFor='let member of checkMembers(data.appointmentMembers, AppointmentDecisionType.DECLINE)'>
+            {{ member }}
+          </p>
+        </ng-template>
+      </div>
+    </ng-template>
   </mat-selection-list>
 </div>

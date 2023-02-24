@@ -3,12 +3,14 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { AppointmentModel } from '../../../models/appointment.model';
 import { AppointmentMemberModel } from '../../../models/appointment-member.model';
-import { AppointmentDecisionType } from '../../appointment-request-form/decision-type.enum';
+import { AppointmentDecisionType, DecisionType } from '../../appointment-request-form/decision-type.enum';
 
 
-export interface DialogData {
+export type DialogData = {
   appointment: AppointmentModel,
-}
+  appointmentMembers: AppointmentMemberModel[],
+  decisionType: DecisionType,
+};
 
 @Component({
   selector: 'app-member-decision-subform',
@@ -16,52 +18,58 @@ export interface DialogData {
   styleUrls: ['./member-decision-subform.component.css']
 })
 export class MemberDecisionSubformComponent implements OnInit {
-  appointmentMembers: AppointmentMemberModel[] = [];
-  allDecision: AppointmentDecisionType[] = [];
-  clickedAccepted = false;
-  clickedDeclined = false;
+  readonly DecisionType = DecisionType;
+  readonly AppointmentDecisionType = AppointmentDecisionType;
+  allDecision: AppointmentDecisionType[] | number[] = [];
+  clicked: AppointmentDecisionType = AppointmentDecisionType.NO_ANSWER;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit(): void {
-    const appointmentMembers = sessionStorage.getItem('appointmentMembers');
-    if (appointmentMembers !== null) {
-      this.appointmentMembers = JSON.parse(appointmentMembers);
-    }
-
-    this.appointmentMembers.forEach(
+    this.data.appointmentMembers.forEach(
       member => {
         member.appointmentDecisions.forEach(
           appointmentDecision => {
-            if (appointmentDecision.appointmentId === this.data.appointment.id && appointmentDecision.decision) {
-              this.allDecision.push(appointmentDecision.decision);
+            if(appointmentDecision.appointmentId === this.data.appointment.id) {
+              if (appointmentDecision.decision) {
+                this.allDecision.push(appointmentDecision.decision);
+              } else if(appointmentDecision.participants) {
+                this.allDecision.push(appointmentDecision.participants);
+              }
             }
           });
       });
   }
 
-  countDecision(number: number) {
-    let countAccept = 0;
-    this.allDecision.forEach( x => {
-      if (x == number) {
-        countAccept++;
-      }
-    });
-    return countAccept;
+  countDecision(number?: AppointmentDecisionType) {
+    if(this.data.decisionType === DecisionType.NUMBER) return (this.allDecision as number[]).reduce((a, b) => a+b, 0);
+    return (this.allDecision as AppointmentDecisionType[]).reduce((a, x) => x === number ? a+1 : a, 0);
   }
 
-  checkMembers(appointmentMembers: AppointmentMemberModel[], number: number) : string[] {
+  checkMembers(appointmentMembers: AppointmentMemberModel[], number?: AppointmentDecisionType) : string[] {
     const name: string[] = [];
 
-    appointmentMembers.forEach(member => {
-      member.appointmentDecisions.forEach(appointment => {
-        if (appointment.appointmentId == this.data.appointment.id &&
-          appointment.decision == number) {
-          if (member.name == null) name.push('anonym');
-          else name.push(member.name);
-        }
+    if(this.data.decisionType === DecisionType.NUMBER) {
+      appointmentMembers.forEach(member => {
+        member.appointmentDecisions.forEach(appointment => {
+          if (appointment.appointmentId == this.data.appointment.id && appointment.participants) {
+            if (member.name == null) name.push('anonym: '+appointment.participants);
+            else name.push(member.name+': '+appointment.participants);
+          }
+        });
       });
-    });
+    } else {
+      appointmentMembers.forEach(member => {
+        member.appointmentDecisions.forEach(appointment => {
+          if (appointment.appointmentId == this.data.appointment.id &&
+            appointment.decision == number) {
+            if (member.name == null) name.push('anonym');
+            else name.push(member.name);
+          }
+        });
+      });
+    }
+
     return name;
   }
 }
