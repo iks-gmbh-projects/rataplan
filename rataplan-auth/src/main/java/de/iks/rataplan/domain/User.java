@@ -162,6 +162,16 @@ public class User implements Serializable {
         this.encrypted = encrypted;
     }
 
+    @PrePersist
+    @PreUpdate
+    public void hibernateCreateDate() {
+        final Instant now = Instant.now();
+        if(this.creationTime == null) this.creationTime = now;
+        this.lastUpdated = now;
+        if(this.version == null) this.version = 1;
+        else this.version++;
+    }
+
 	/*@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
