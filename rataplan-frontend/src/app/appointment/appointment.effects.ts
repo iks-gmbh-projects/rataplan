@@ -16,6 +16,8 @@ import { HttpClient } from "@angular/common/http";
 import { filter, map } from "rxjs/operators";
 import { AppointmentRequestModel } from "../models/appointment-request.model";
 import { ActivatedRoute, Router } from "@angular/router";
+import { DecisionType, deserializeDecisionType } from "./appointment-request-form/decision-type.enum";
+import { deserializeAppointmentDecisionModel } from "../models/appointment-decision.model";
 
 @Injectable({
   providedIn: "root",
@@ -46,7 +48,7 @@ export class AppointmentRequestEffects {
             description: false,
             url: false,
           },
-          decisionType: "DEFAULT",
+          decisionType: DecisionType.DEFAULT,
         },
         appointments: [],
         appointmentMembers: [],
@@ -78,11 +80,22 @@ export class AppointmentRequestEffects {
           delete sanatizedRequest.appointments;
           delete sanatizedRequest.appointmentMembers;
         }
-        return this.http.put<AppointmentRequestModel>(url + "/appointmentRequests/edit/" + request.request.editToken, sanatizedRequest, {withCredentials: true});
+        return this.http.put<AppointmentRequestModel<true>>(url + "/appointmentRequests/edit/" + request.request.editToken, sanatizedRequest, {withCredentials: true});
       }
-      return this.http.post<AppointmentRequestModel>(url + "/appointmentRequests", request.request, {withCredentials: true});
+      return this.http.post<AppointmentRequestModel<true>>(url + "/appointmentRequests", request.request, {withCredentials: true});
     }),
     switchMap(request => request.pipe(
+      map(created => ({
+        ...created,
+        appointmentRequestConfig: {
+          ...created.appointmentRequestConfig,
+          decisionType: deserializeDecisionType(created.appointmentRequestConfig.decisionType),
+        },
+        appointmentMembers: created.appointmentMembers.map(member => ({
+          ...member,
+          appointmentDecisions: member.appointmentDecisions.map(deserializeAppointmentDecisionModel)
+        })),
+      })),
       map(created => new PostAppointmentRequestSuccessAction(created)),
       catchError(err => of(new PostAppointmentRequestErrorAction(err)))
     ))
