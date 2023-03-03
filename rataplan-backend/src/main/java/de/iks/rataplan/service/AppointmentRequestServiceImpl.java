@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,6 +138,41 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 
 		if(newAppointmentRequest.getTitle() != null) dbAppointmentRequest.setTitle(newAppointmentRequest.getTitle());
 		if(newAppointmentRequest.getDescription() != null) dbAppointmentRequest.setDescription(newAppointmentRequest.getDescription());
+		if(newAppointmentRequest.getAppointmentRequestConfig() != null) {
+			AppointmentRequestConfig newConfig = newAppointmentRequest.getAppointmentRequestConfig();
+			AppointmentRequestConfig dbConfig = dbAppointmentRequest.getAppointmentRequestConfig();
+			if(newConfig.getDecisionType() != null) {
+				if(dbConfig.getDecisionType() != newConfig.getDecisionType()) {
+					dbConfig.setDecisionType(newConfig.getDecisionType());
+					dbAppointmentRequest.getAppointmentMembers().stream()
+						.map(AppointmentMember::getAppointmentDecisions)
+						.flatMap(List::stream)
+						.forEach(d -> {
+							switch(newConfig.getDecisionType()) {
+							case DEFAULT:
+								if(d.getParticipants() != null) {
+									d.setParticipants(null);
+									d.setDecision(Decision.NO_ANSWER);
+								} else if(d.getDecision() == Decision.ACCEPT_IF_NECESSARY) d.setDecision(Decision.NO_ANSWER);
+								break;
+							case EXTENDED:
+								if(d.getParticipants() != null) {
+									d.setParticipants(null);
+									d.setDecision(Decision.NO_ANSWER);
+								}
+								break;
+							case NUMBER:
+								d.setDecision(null);
+								d.setParticipants(0);
+								break;
+							}
+						});
+				}
+			} else if(newConfig.getAppointmentConfig() != null) {
+				dbConfig.setAppointmentConfig(newConfig.getAppointmentConfig());
+				dbAppointmentRequest.setAppointments(Collections.emptyList());
+			}
+		}
 		if(newAppointmentRequest.getOrganizerMail() != null) dbAppointmentRequest.setOrganizerMail(newAppointmentRequest.getOrganizerMail());
 		
 		AppointmentRequest ret;
