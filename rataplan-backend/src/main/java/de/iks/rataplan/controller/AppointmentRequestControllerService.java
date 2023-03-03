@@ -69,16 +69,16 @@ public class AppointmentRequestControllerService {
 	public AppointmentRequestDTO updateAppointmentRequest(String editToken, AppointmentRequestDTO appointmentRequestDTO, String jwtToken) {
 		final Integer backendUserId;
 		if(jwtToken == null) backendUserId = null;
-		else backendUserId = authorizationControllerService.getBackendUser(jwtToken).getAuthUserId();
+		else backendUserId = authService.getUserData(jwtToken).getBody().getId();
 
 		AppointmentRequest dbAppointmentRequest = appointmentRequestService.getAppointmentRequestByEditToken(editToken);
-		if(dbAppointmentRequest.getBackendUserId() != null) {
+		if(dbAppointmentRequest.getUserId() != null) {
 			if (backendUserId == null) throw new RequiresAuthorizationException();
-			if (!dbAppointmentRequest.getBackendUserId().equals(backendUserId) &&
+			if (!dbAppointmentRequest.getUserId().equals(backendUserId) &&
 				dbAppointmentRequest.getAccessList()
 					.stream()
 					.filter(BackendUserAccess::isEdit)
-					.map(BackendUserAccess::getBackendUserId)
+					.map(BackendUserAccess::getUserId)
 					.noneMatch(backendUserId::equals)
 			) throw new ForbiddenException();
 		}
