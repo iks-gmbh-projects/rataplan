@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -168,9 +167,10 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 							}
 						});
 				}
-			} else if(newConfig.getAppointmentConfig() != null) {
+			}
+			if(newConfig.getAppointmentConfig() != null) {
 				dbConfig.setAppointmentConfig(newConfig.getAppointmentConfig());
-				dbAppointmentRequest.setAppointments(Collections.emptyList());
+				dbAppointmentRequest.getAppointments().clear();
 			}
 		}
 		if(newAppointmentRequest.getOrganizerMail() != null) dbAppointmentRequest.setOrganizerMail(newAppointmentRequest.getOrganizerMail());
