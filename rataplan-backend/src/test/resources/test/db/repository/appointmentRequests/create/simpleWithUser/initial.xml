@@ -1,6 +1,4 @@
 <dataset>
-  <backendUser id="1" authUserid="1" />
-  
   <appointmentRequestConfig />
   
   <appointmentRequest />

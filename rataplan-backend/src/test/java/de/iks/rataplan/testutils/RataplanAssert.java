@@ -1,6 +1,7 @@
 package de.iks.rataplan.testutils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import de.iks.rataplan.domain.Appointment;
 import de.iks.rataplan.domain.AppointmentDecision;
@@ -77,9 +78,11 @@ public class RataplanAssert {
 				request.getAppointmentRequestConfig().getAppointmentConfig());
 		assertEquals("AppointmentRequestDTO.config.decisionType", dtoRequest.getAppointmentRequestConfig().getDecisionType(),
 				request.getAppointmentRequestConfig().getDecisionType());
-		assertEquals("AppointmentRequestDTO.appointments.size", dtoRequest.getAppointments().size(),
+		if(dtoRequest.getAppointments() == null) assertNull("AppointmentRequestDTO.appointments", request.getAppointments());
+		else assertEquals("AppointmentRequestDTO.appointments.size", dtoRequest.getAppointments().size(),
 				request.getAppointments().size());
-		assertEquals("AppointmentRequestDTO.appointmentMembers.size", dtoRequest.getAppointmentMembers().size(),
+		if(dtoRequest.getAppointmentMembers() == null) assertNull("AppointmentRequestDTO.appointmentMembers", request.getAppointmentMembers());
+		else assertEquals("AppointmentRequestDTO.appointmentMembers.size", dtoRequest.getAppointmentMembers().size(),
 				request.getAppointmentMembers().size());
 	}
 

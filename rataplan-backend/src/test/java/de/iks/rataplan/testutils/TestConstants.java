@@ -25,7 +25,6 @@ public final class TestConstants {
 	public static final String APPOINTMENTMEMBERS = "/appointmentMembers";
 	public static final String APPOINTMENTREQUESTS = "/appointmentRequests";
 	public static final String AUTHORIZATION = "/authorization";
-	public static final String BACKENDUSERS = "/backendUsers";
 	public static final String CONTROLLERSERVICE = "/controllerService";
 	public static final String GENERATORTOKEN = "/generatorToken";
 	public static final String CREATE = "/create";
@@ -70,7 +69,7 @@ public final class TestConstants {
 
 	//public static final BackendUser BACKENDUSER_1_NEW = new BackendUser(1);
 
-	public static final AppointmentRequest createSimpleAppointmentRequest() {
+	public static AppointmentRequest createSimpleAppointmentRequest() {
 		AppointmentRequest appointmentRequest = new AppointmentRequest("Coding Dojo", "Fun with code",
 				new Date(DATE_2050_10_10),IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(
 						new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));

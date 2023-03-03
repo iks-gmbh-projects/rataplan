@@ -6,6 +6,7 @@ import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.AppointmentDecisionRepository;
 import de.iks.rataplan.repository.AppointmentRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.BackendUserAccessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,9 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 
 	@Autowired
 	private AppointmentRepository appointmentRepository;
+	
+	@Autowired
+	private BackendUserAccessRepository backendUserAccessRepository;
 
 	@Autowired
 	private MailService mailService;
@@ -235,5 +239,6 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			.peek(r -> r.setOrganizerName(null))
 			.peek(r -> r.setOrganizerMail(null))
 			.forEach(appointmentRequestRepository::save);
+		backendUserAccessRepository.deleteByUserId(userId);
 	}
 }

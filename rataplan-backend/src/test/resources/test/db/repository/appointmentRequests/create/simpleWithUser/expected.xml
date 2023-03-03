@@ -1,9 +1,7 @@
 <dataset>
-  <backendUser id="1" authUserId="1" />
-  
   <appointmentRequestConfig decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
   
-  <appointmentRequest title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isExpired="false" backendUserId="1" />
+  <appointmentRequest title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isExpired="false" userId="1" />
 
   <appointment description="iks Hilden" />
   <appointment description="homeoffice" />

@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `appointmentRequest` (
   `organizerMail` varchar(100),
   `deadline` DATE NOT NULL,
   `appointmentRequestConfigId` int NOT NULL,
+    CONSTRAINT appointmentRequest_appointmentRequestConfigId_fkey
     FOREIGN KEY (appointmentRequestConfigId)
     REFERENCES appointmentRequestConfig(id),
     PRIMARY KEY (id)
@@ -46,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `appointmentDecision` (
   `decision` int,
   `participants` int,
   PRIMARY KEY (id),
+  CONSTRAINT unique_appointmentId_appointmentMemberId
   UNIQUE (appointmentId, appointmentMemberId),
     FOREIGN KEY (appointmentId)
     REFERENCES appointment(id),
