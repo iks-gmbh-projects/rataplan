@@ -1,6 +1,7 @@
 package de.iks.rataplan.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.iks.rataplan.domain.AuthUser;
@@ -55,13 +56,16 @@ public class AppointmentRequestControllerService {
         }
 
         AppointmentRequest appointmentRequest = modelMapper.map(appointmentRequestDTO, AppointmentRequest.class);
+		if(authUser != null) appointmentRequest.setAccessList(Collections.singletonList(
+			new BackendUserAccess(null, authUser.getId(), true, false)
+		));
         appointmentRequestService.createAppointmentRequest(appointmentRequest);
         AppointmentRequestDTO createdDTORequest = modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
 
-		if (jwtToken != null && createdDTORequest.getUserId() != null) {
-			//backendUser.addAccess(createdDTORequest.getId(), true);
-			//backendUserService.updateBackendUser(backendUser);
-		}
+//		if (jwtToken != null && createdDTORequest.getUserId() != null) {
+//			backendUser.addAccess(createdDTORequest.getId(), true);
+//			backendUserService.updateBackendUser(backendUser);
+//		}
 
 		return createdDTORequest;
 	}
