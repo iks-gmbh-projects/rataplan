@@ -9,7 +9,6 @@ import de.iks.rataplan.domain.AppointmentConfig;
 import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.domain.AppointmentRequestConfig;
 import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.domain.BackendUser;
 import de.iks.rataplan.domain.DecisionType;
 
 public final class TestConstants {
@@ -69,7 +68,7 @@ public final class TestConstants {
 	public static final AuthUser AUTHUSER_2 = new AuthUser(2, IKS_MAIL, "IKS_2", "pass", "Ha");
 	public static final AuthUser AUTHUSER_3 = new AuthUser(3, IKS_MAIL, "IKS_3", "p", "h");
 
-	public static final BackendUser BACKENDUSER_1_NEW = new BackendUser(1);
+	//public static final BackendUser BACKENDUSER_1_NEW = new BackendUser(1);
 
 	public static final AppointmentRequest createSimpleAppointmentRequest() {
 		AppointmentRequest appointmentRequest = new AppointmentRequest("Coding Dojo", "Fun with code",

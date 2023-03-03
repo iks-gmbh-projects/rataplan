@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.iks.rataplan.domain.AppointmentRequestConfig;
+import de.iks.rataplan.exceptions.MalformedException;
 
 public class AppointmentRequestDTO implements Serializable {
 
@@ -17,7 +18,7 @@ public class AppointmentRequestDTO implements Serializable {
     private String organizerName;
     private String organizerMail;
     private Date deadline;
-    private Integer backendUserId;
+    private Integer userId;
     private boolean expired;
     private String participationToken;
     private String editToken;
@@ -107,12 +108,12 @@ public class AppointmentRequestDTO implements Serializable {
     	this.consigneeList = consigneeList;
     }
 
-    public Integer getBackendUserId() {
-		return backendUserId;
+    public Integer getUserId() {
+		return userId;
 	}
 
-	public void setBackendUserId(Integer backendUserId) {
-		this.backendUserId = backendUserId;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public List<AppointmentDTO> getAppointments() {
@@ -187,6 +188,30 @@ public class AppointmentRequestDTO implements Serializable {
 		builder.append("]");
 		return builder.toString();
 	}
+    
+    private static boolean nonNullAndBlank(String s) {
+        return s != null && s.trim().isEmpty();
+    }
+    
+    private static boolean nullOrBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+    
+    public void assertCreationValid() {
+        if(id != null ||
+            nullOrBlank(title) ||
+            nonNullAndBlank(description) ||
+            nonNullAndBlank(organizerName) ||
+            nonNullAndBlank(organizerMail) ||
+            deadline == null ||
+            appointmentRequestConfig == null ||
+            appointments == null ||
+            appointments.isEmpty() ||
+            (appointmentMembers != null && !appointmentMembers.isEmpty())
+        ) throw new MalformedException("Missing or invalid input fields");
+        appointmentRequestConfig.assertCreationValid();
+        appointments.forEach(a -> a.assertValid(appointmentRequestConfig.getAppointmentConfig()));
+    }
     
     public void defaultNullValues() {
         if(this.consigneeList == null) this.consigneeList = new ArrayList<>();

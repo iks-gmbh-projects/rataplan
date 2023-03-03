@@ -116,12 +116,12 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 
     @Override
     public List<AppointmentRequest> getAppointmentRequestsForUser(Integer userId) {
-        return appointmentRequestRepository.findAllByBackendUserId(userId);
+        return appointmentRequestRepository.findAllByUserId(userId);
     }
 
 	@Override
 	public List<AppointmentRequest> getAppointmentRequestsWhereUserTakesPartIn(Integer userId) {
-		return appointmentRequestRepository.findByAppointmentMembers_BackendUserIdIn(userId);
+		return appointmentRequestRepository.findDistinctByAppointmentMembers_UserIdIn(userId);
 	}
 
 	@Override
@@ -195,7 +195,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 	public void anonymizeAppointmentRequests(Integer userId) {
 		getAppointmentRequestsForUser(userId)
 			.stream()
-			.peek(r -> r.setBackendUserId(null))
+			.peek(r -> r.setUserId(null))
 			.peek(r -> r.setOrganizerName(null))
 			.peek(r -> r.setOrganizerMail(null))
 			.forEach(appointmentRequestRepository::save);

@@ -1,5 +1,7 @@
 package de.iks.rataplan.dto;
 
+import de.iks.rataplan.exceptions.MalformedException;
+
 import java.io.Serializable;
 
 public class AppointmentDecisionDTO implements Serializable {
@@ -74,4 +76,8 @@ public class AppointmentDecisionDTO implements Serializable {
 		builder.append("]");
 		return builder.toString();
 	}
+    
+    public void assertAddValid() {
+        if(appointmentId == null || (decision == null && participants == null)) throw new MalformedException("Missing fields");
+    }
 }

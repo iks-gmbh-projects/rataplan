@@ -3,15 +3,9 @@ package de.iks.rataplan.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.domain.BackendUser;
-import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.restservice.AuthService;
-import de.iks.rataplan.service.BackendUserService;
 import de.iks.rataplan.utils.CookieBuilder;
 
 @Service
@@ -23,8 +17,8 @@ public class AuthorizationControllerService {
 	@Autowired
 	private AuthService authService;
 
-	@Autowired
-	private BackendUserService backendUserService;
+/*	@Autowired
+	private BackendUserService backendUserService;*/
 
 	@Autowired
 	private HttpServletResponse servletResponse;
@@ -72,10 +66,10 @@ public class AuthorizationControllerService {
 	 * @param jwtToken
 	 * @return
 	 */
-	public BackendUser getBackendUser(String jwtToken) {
+	/*public BackendUser getBackendUser(String jwtToken) {
 		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
 
 		AuthUser authUser = authServiceResponse.getBody();
 		return backendUserService.getBackendUserByAuthUserId(authUser.getId());
-	}
+	}*/
 }

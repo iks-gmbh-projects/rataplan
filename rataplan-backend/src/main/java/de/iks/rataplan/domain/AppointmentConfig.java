@@ -1,5 +1,7 @@
 package de.iks.rataplan.domain;
 
+import de.iks.rataplan.exceptions.MalformedException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -77,5 +79,10 @@ public class AppointmentConfig {
 	
 	public void setDescription(boolean description) {
 		this.description = description;
+	}
+
+	public void assertValid() {
+		if(startDate || startTime || endDate || endTime || description || url) return;
+		throw new MalformedException("Invalid input fields");
 	}
 }
