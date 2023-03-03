@@ -15,6 +15,8 @@ import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.restservice.AuthService;
 import de.iks.rataplan.service.AppointmentMemberService;
 
+import java.util.Objects;
+
 @Service
 public class AppointmentMemberControllerService {
 
@@ -61,43 +63,42 @@ public class AppointmentMemberControllerService {
 	
 	public void deleteAppointmentMember(String participationToken, Integer memberId, String jwtToken) {
 
-		/*BackendUser backendUser = null;*/
+		AuthUser authUser = null;
 		
 		if (jwtToken != null) {
-			//backendUser = authorizationControllerService.getBackendUser(jwtToken);
+			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
+			authUser = authServiceResponse.getBody();
 		}
 		
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
-//				.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		AppointmentMember appointmentMember = appointmentRequest.getAppointmentMemberById(memberId);
 		
-		validateAccessToAppointmentMember(appointmentMember /*backendUser*/);
+		validateAccessToAppointmentMember(appointmentMember, authUser);
 		
 		appointmentMemberService.deleteAppointmentMember(appointmentRequest, appointmentMember);
 	}
 	
 	public AppointmentMemberDTO updateAppointmentMember(String participationToken, Integer memberId, AppointmentMemberDTO appointmentMemberDTO, String jwtToken) {
-
-		/*BackendUser backendUser = null;*/
+		
+		AuthUser authUser = null;
 		
 		if (jwtToken != null) {
-			//backendUser = authorizationControllerService.getBackendUser(jwtToken);
+			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
+			authUser = authServiceResponse.getBody();
 		}
 		
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
-//				authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		AppointmentMember oldAppointmentMember = appointmentRequest.getAppointmentMemberById(memberId);
 		
-		validateAccessToAppointmentMember(oldAppointmentMember/*, backendUser*/);
+		validateAccessToAppointmentMember(oldAppointmentMember, authUser);
 		
 		appointmentMemberDTO.setId(oldAppointmentMember.getId());
 		
-		if (jwtToken != null/* && oldAppointmentMember.getUserId() == backendUser.getId()*/) {
+		if(appointmentMemberDTO.getName() == null || appointmentMemberDTO.getName().trim().isEmpty()) {
 			appointmentMemberDTO.setName(oldAppointmentMember.getName());
-			appointmentMemberDTO.setUserId(oldAppointmentMember.getUserId());
-		} else {
-			appointmentMemberDTO.setUserId(null);
 		}
+		
+		if(authUser != null) appointmentMemberDTO.setUserId(authUser.getId());
 		
 		AppointmentMember appointmentMember = modelMapper.map(appointmentMemberDTO, AppointmentMember.class);
 		appointmentMember = appointmentMemberService.updateAppointmentMember(appointmentRequest, oldAppointmentMember, appointmentMember);
@@ -105,13 +106,16 @@ public class AppointmentMemberControllerService {
 		return modelMapper.map(appointmentMember, AppointmentMemberDTO.class);
 	}
 	
-	private void validateAccessToAppointmentMember(AppointmentMember appointmentMember/*BackendUser backendUser*/) {
+	private void validateAccessToAppointmentMember(AppointmentMember appointmentMember, AuthUser authUser) {
 
 		if (appointmentMember == null) {
 			throw new ResourceNotFoundException("Appointmentmember does not exist!");
 		}
 		
-		if (appointmentMember.getUserId() == null/* || backendUser != null && backendUser.getId() == appointmentMember.getUserId()*/) {
+		if (appointmentMember.getUserId() == null || (authUser != null && Objects.equals(
+			authUser.getId(),
+			appointmentMember.getUserId()
+		))) {
 			return;
 		}
 		throw new ForbiddenException();
