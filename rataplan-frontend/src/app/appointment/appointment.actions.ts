@@ -3,20 +3,7 @@ import { AppointmentConfig, AppointmentModel } from "../models/appointment.model
 import { AppointmentRequestModel } from "../models/appointment-request.model";
 import { DecisionType } from "./appointment-request-form/decision-type.enum";
 
-export const AppointmentActions: {
-  readonly INIT: "[appointmentRequest] init",
-  readonly INIT_SUCCESS: "[appointmentRequest] init success",
-  readonly INIT_ERROR: "[appointmentRequest] init error",
-  readonly SET_GENERAL_VALUES: "[appointmentRequest] set general values",
-  readonly SET_APPOINTMENT_CONFIG: "[appointmentRequest] set appointment config",
-  readonly SET_APPOINTMENTS: "[appointmentRequest] set appointments",
-  readonly ADD_APPOINTMENTS: "[appointmentRequest] add appointments",
-  readonly REMOVE_APPOINTMENT: "[appointmentRequest] remove appointment",
-  readonly SET_ORGANIZER_INFO: "[appointmentRequest] set organizer info",
-  readonly POST: "[appointmentRequest] post",
-  readonly POST_SUCCESS: "[appointmentRequest] post success",
-  readonly POST_ERROR: "[appointmentRequest] post error",
-} = {
+export const AppointmentActions = {
   INIT: "[appointmentRequest] init",
   INIT_SUCCESS: "[appointmentRequest] init success",
   INIT_ERROR: "[appointmentRequest] init error",
@@ -29,7 +16,7 @@ export const AppointmentActions: {
   POST: "[appointmentRequest] post",
   POST_SUCCESS: "[appointmentRequest] post success",
   POST_ERROR: "[appointmentRequest] post error",
-};
+} as const;
 
 export class InitAppointmentRequestAction implements Action {
   readonly type = AppointmentActions.INIT;

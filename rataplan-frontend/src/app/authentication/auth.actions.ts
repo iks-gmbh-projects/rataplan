@@ -4,28 +4,7 @@ import { UrlTree } from "@angular/router";
 import { deletionChoices } from "../models/delete-profile.model";
 import { ResetPasswordDataModel } from "../models/reset-password-data.model";
 
-export const AuthActions: {
-  readonly REGISTER_ACTION: "[Auth] Register",
-  readonly REGISTER_SUCCESS_ACTION: "[Auth] Register Success",
-  readonly REGISTER_ERROR_ACTION: "[Auth] Register Error",
-  readonly AUTO_LOGIN_ACTION: "[Auth] Auto Login",
-  readonly LOGIN_ACTION: "[Auth] Login",
-  readonly LOGIN_SUCCESS_ACTION: "[Auth] Login Success",
-  readonly LOGIN_ERROR_ACTION: "[Auth] Login Error",
-  readonly RESET_PASSWORD_ACTION: "[Auth] Reset Password",
-  readonly RESET_PASSWORD_SUCCESS_ACTION: "[Auth] Reset Password Success",
-  readonly RESET_PASSWORD_ERROR_ACTION: "[Auth] Reset Password Error",
-  readonly CHANGE_EMAIL_ACTION: "[Auth] Change Email",
-  readonly CHANGE_EMAIL_ERROR_ACTION: "[Auth] Change Email Error",
-  readonly CHANGE_DISPLAYNAME_ACTION: "[Auth] Change Displayname",
-  readonly CHANGE_DISPLAYNAME_ERROR_ACTION: "[Auth] Change Displayname Error",
-  readonly UPDATE_USERDATA_ACTION: "[Auth] Update Userdata",
-  readonly UPDATE_USERDATA_SUCCESS_ACTION: "[Auth] Update Userdata Success",
-  readonly LOGOUT_ACTION: "[Auth] Logout",
-  readonly DELETE_USER_ACTION: "[Auth] Delete User",
-  readonly DELETE_USER_SUCCESS_ACTION: "[Auth] Delete User Success",
-  readonly DELETE_USER_ERROR_ACTION: "[Auth] Delete User Error",
-} = {
+export const AuthActions = {
   REGISTER_ACTION: "[Auth] Register",
   REGISTER_SUCCESS_ACTION: "[Auth] Register Success",
   REGISTER_ERROR_ACTION: "[Auth] Register Error",
@@ -46,7 +25,7 @@ export const AuthActions: {
   DELETE_USER_ACTION: "[Auth] Delete User",
   DELETE_USER_SUCCESS_ACTION: "[Auth] Delete User Success",
   DELETE_USER_ERROR_ACTION: "[Auth] Delete User Error",
-};
+} as const;
 
 export class RegisterAction implements Action {
   readonly type = AuthActions.REGISTER_ACTION;
