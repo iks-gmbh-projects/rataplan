@@ -1,4 +1,4 @@
-import { AppointmentConfig, AppointmentModel } from './appointment.model';
+import { AppointmentConfig, AppointmentModel, deserializeAppointmentModel } from './appointment.model';
 import { AppointmentMemberModel } from './appointment-member.model';
 import {
   DecisionType,
@@ -22,7 +22,7 @@ export type AppointmentRequestModel<serialized extends boolean = false> = {
   editToken?: string;
 
   appointmentRequestConfig: AppointmentRequestConfig<serialized>;
-  appointments: AppointmentModel[];
+  appointments: AppointmentModel<serialized>[];
   appointmentMembers: AppointmentMemberModel<serialized>[];
 };
 
@@ -33,6 +33,7 @@ export function deserializeAppointmentRequestModel(request: AppointmentRequestMo
       ...request.appointmentRequestConfig,
       decisionType: deserializeDecisionType(request.appointmentRequestConfig.decisionType)
     },
+    appointments: request.appointments.map(deserializeAppointmentModel),
     appointmentMembers: request.appointmentMembers.map(member => ({
       ...member,
       appointmentDecisions: member.appointmentDecisions.map(deserializeAppointmentDecisionModel),

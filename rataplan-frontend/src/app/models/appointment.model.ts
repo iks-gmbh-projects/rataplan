@@ -1,11 +1,17 @@
-export type AppointmentModel = {
+export type AppointmentModel<serialized extends boolean = false> = {
   id?: number,
   requestId?: number,
   description?: string,
-  startDate?: string,
-  endDate?: string,
+  startDate?: serialized extends false ? string : (string|number),
+  endDate?: serialized extends false ? string : (string|number),
   url?: string,
 };
+
+export function deserializeAppointmentModel(appointment: AppointmentModel<boolean>): AppointmentModel {
+  if(appointment.startDate) appointment.startDate = new Date(appointment.startDate).toISOString();
+  if(appointment.endDate) appointment.endDate = new Date(appointment.endDate).toISOString();
+  return appointment as AppointmentModel;
+}
 
 export type AppointmentConfig = {
   startDate?: boolean,

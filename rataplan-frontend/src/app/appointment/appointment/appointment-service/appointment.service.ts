@@ -4,6 +4,7 @@ import { AppointmentMemberModel } from '../../../models/appointment-member.model
 import { AppointmentRequestModel, deserializeAppointmentRequestModel } from '../../../models/appointment-request.model';
 import { BackendUrlService } from "../../../services/backend-url-service/backend-url.service";
 import { exhaustMap, map, Observable } from "rxjs";
+import { deserializeAppointmentDecisionModel } from "../../../models/appointment-decision.model";
 
 @Injectable({
   providedIn: 'root',
@@ -32,24 +33,28 @@ export class AppointmentService {
     );
   }
 
-  addAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
+  addAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel): Observable<AppointmentMemberModel> {
     const token = this.getParticipationToken(appointmentRequest);
     const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
 
     return this.url$.pipe(
       exhaustMap(url => {
-        return this.http.post<AppointmentMemberModel>(
+        return this.http.post<AppointmentMemberModel<true>>(
           url + token + '/appointmentMembers', appointmentMember, httpOptions);
-      })
+      }),
+      map(member => ({
+        ...member,
+        appointmentDecisions: member.appointmentDecisions.map(deserializeAppointmentDecisionModel),
+      }))
     );
   }
 
-  updateAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
+  updateAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel): Observable<AppointmentMemberModel> {
     const token = this.getParticipationToken(appointmentRequest);
 
     return this.url$.pipe(
       exhaustMap(url => {
-        return this.http.put<AppointmentMemberModel>(
+        return this.http.put<AppointmentMemberModel<true>>(
           url + token + '/appointmentMembers/' + appointmentMember.id,
           appointmentMember,
           {
@@ -57,23 +62,31 @@ export class AppointmentService {
               'Content-Type': 'application/json;charset=utf-8',
             }),
           });
-      })
+      }),
+      map(member => ({
+        ...member,
+        appointmentDecisions: member.appointmentDecisions.map(deserializeAppointmentDecisionModel),
+      }))
     );
   }
 
-  deleteAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel) {
+  deleteAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel): Observable<AppointmentMemberModel> {
     const token = this.getParticipationToken(appointmentRequest);
 
     return this.url$.pipe(
       exhaustMap(url => {
-        return this.http.delete<AppointmentMemberModel>(
+        return this.http.delete<AppointmentMemberModel<true>>(
           url + token + '/appointmentMembers/' + appointmentMember.id,
           {
             headers: new HttpHeaders({
               'Content-Type': 'application/json;charset=utf-8',
             }),
           });
-      })
+      }),
+      map(member => ({
+        ...member,
+        appointmentDecisions: member.appointmentDecisions.map(deserializeAppointmentDecisionModel),
+      }))
     );
   }
 
