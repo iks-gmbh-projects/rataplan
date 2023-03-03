@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { exhaustMap, Subject, take, takeUntil } from 'rxjs';
 
 import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentMemberModel } from '../../models/appointment-member.model';
@@ -133,12 +133,14 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   deleteMember(member: AppointmentMemberModel) {
     this.appointmentService.deleteAppointmentMember(this.appointmentRequest!, member)
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(() => {
+      .pipe(
+        exhaustMap(() => this.appointmentService.getAppointmentByParticipationToken(this.appointmentRequest!.participationToken!)),
+        take(1)
+      )
+      .subscribe(updatedRequest => {
         this.isEditMember = false;
         this.resetVote();
-        const index = this.appointmentRequest!.appointmentMembers.indexOf(member);
-        this.appointmentRequest!.appointmentMembers.splice(index, 1);
+        this.appointmentRequest = updatedRequest;
       });
   }
 

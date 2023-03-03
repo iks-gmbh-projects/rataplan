@@ -58,6 +58,7 @@ export class AppointmentService {
           url + token + '/appointmentMembers/' + appointmentMember.id,
           appointmentMember,
           {
+            withCredentials: true,
             headers: new HttpHeaders({
               'Content-Type': 'application/json;charset=utf-8',
             }),
@@ -70,23 +71,21 @@ export class AppointmentService {
     );
   }
 
-  deleteAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel): Observable<AppointmentMemberModel> {
+  deleteAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel): Observable<string> {
     const token = this.getParticipationToken(appointmentRequest);
 
     return this.url$.pipe(
       exhaustMap(url => {
-        return this.http.delete<AppointmentMemberModel<true>>(
+        return this.http.delete(
           url + token + '/appointmentMembers/' + appointmentMember.id,
           {
+            withCredentials: true,
+            responseType: 'text',
             headers: new HttpHeaders({
               'Content-Type': 'application/json;charset=utf-8',
             }),
           });
-      }),
-      map(member => ({
-        ...member,
-        appointmentDecisions: member.appointmentDecisions.map(deserializeAppointmentDecisionModel),
-      }))
+      })
     );
   }
 
