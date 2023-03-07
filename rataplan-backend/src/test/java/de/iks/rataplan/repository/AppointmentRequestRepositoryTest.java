@@ -83,7 +83,7 @@ public class AppointmentRequestRepositoryTest {
 
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 
-		appointmentRequest.setBackendUserId(1);
+		appointmentRequest.setUserId(1);
 
 		appointmentRequestRepository.saveAndFlush(appointmentRequest);
 	}
@@ -128,7 +128,7 @@ public class AppointmentRequestRepositoryTest {
 	@DatabaseSetup(FILE_PATH + GET + "/simpleThreeRequests" + FILE_INITIAL)
 	public void getAllAppointmentRequestsByUserId() throws Exception {
 
-		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAllByBackendUserId(1);
+		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAllByUserId(1);
 
 		assertEquals(2, appointmentRequests.size());
 		assertEquals("Coding Dojo 1", appointmentRequests.get(0).getTitle().getString());
@@ -139,7 +139,7 @@ public class AppointmentRequestRepositoryTest {
 	@DatabaseSetup(FILE_PATH + GET + "/backendUserWithoutRequests" + FILE_INITIAL)
 	public void getAllAppointmentRequestsByUserIdNoAppointmentRequests() throws Exception {
 
-		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAllByBackendUserId(1);
+		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAllByUserId(1);
 
 		assertEquals(0, appointmentRequests.size());
 	}

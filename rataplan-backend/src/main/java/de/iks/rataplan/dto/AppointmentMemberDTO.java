@@ -11,7 +11,7 @@ public class AppointmentMemberDTO implements Serializable {
     private static final long serialVersionUID = 359333166152845707L;
 
     private Integer id;
-    private Integer backendUserId;
+    private Integer userId;
     private Integer appointmentRequestId;
     private String name;
     private List<AppointmentDecisionDTO> appointmentDecisions = new ArrayList<>();
@@ -32,12 +32,12 @@ public class AppointmentMemberDTO implements Serializable {
         this.id = id;
     }
 
-    public Integer getBackendUserId() {
-        return backendUserId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setBackendUserId(Integer backendUserId) {
-        this.backendUserId = backendUserId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getAppointmentRequestId() {

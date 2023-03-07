@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class AppointmentMember implements Serializable {
 
     private static final long serialVersionUID = 7136999956850896370L;
-
+    
     @CreationTimestamp
     @Column(updatable = false)
     private Instant creationTime;
@@ -25,9 +25,9 @@ public class AppointmentMember implements Serializable {
     private Instant lastUpdated;
     @Version
     private Integer version;
-
+    
     private Integer id;
-    private Integer backendUserId;
+    private Integer userId;
     private EncryptedString name;
     private AppointmentRequest appointmentRequest;
     private List<AppointmentDecision> appointmentDecisions = new ArrayList<>();
@@ -52,19 +52,19 @@ public class AppointmentMember implements Serializable {
     public Instant getLastUpdated() {
         return lastUpdated;
     }
-
+    
     public void setLastUpdated(Instant lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-
+    
     public Integer getVersion() {
         return version;
     }
-
+    
     public void setVersion(Integer version) {
         this.version = version;
     }
-
+    
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -86,13 +86,13 @@ public class AppointmentMember implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "backendUserId")
-    public Integer getBackendUserId() {
-		return backendUserId;
+    @Column(name = "userId")
+    public Integer getUserId() {
+		return userId;
 	}
 
-	public void setBackendUserId(Integer userId) {
-		this.backendUserId = userId;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
     @ManyToOne

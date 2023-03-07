@@ -1,6 +1,7 @@
 package de.iks.rataplan.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -78,7 +79,7 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
     public void anonymizeAppointmentMember(int id) {
         AppointmentMember member = appointmentMemberRepository.findOne(id);
         member.setName(null);
-        member.setBackendUserId(null);
+        member.setUserId(null);
         appointmentMemberRepository.saveAndFlush(member);
     }
     
@@ -93,7 +94,7 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
             List<AppointmentDecision> newDecisions) {
         for (AppointmentDecision appointmentDecision : oldDecisions) {
             for (AppointmentDecision newdecision : newDecisions) {
-                if (appointmentDecision.getAppointment().getId() == newdecision.getAppointment().getId()) {
+                if (Objects.equals(appointmentDecision.getAppointment().getId(), newdecision.getAppointment().getId())) {
                     appointmentDecision.setDecision(newdecision.getDecision());
                     appointmentDecision.setParticipants(newdecision.getParticipants());
                 }

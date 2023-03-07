@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Collections;
 
 import de.iks.rataplan.domain.*;
 import org.junit.Test;
@@ -78,7 +80,7 @@ public class AppointmentRequestDTOTest {
 		dtoRequest.setId(1);
 		AppointmentDTO dtoAppointment = new AppointmentDTO(new Timestamp(123123123L), "iks Hilden");
 		dtoAppointment.setRequestId(dtoRequest.getId());
-		dtoRequest.getAppointments().add(dtoAppointment);
+		dtoRequest.setAppointments(Collections.singletonList(dtoAppointment));
 
 		AppointmentRequest appointmentRequest = mapper.map(dtoRequest, AppointmentRequest.class);
 
@@ -170,11 +172,9 @@ public class AppointmentRequestDTOTest {
 		member2.getAppointmentDecisions().add(decision12);
 		member2.getAppointmentDecisions().add(decision22);
 
-		dtoRequest.getAppointments().add(appointment1);
-		dtoRequest.getAppointments().add(appointment2);
+		dtoRequest.setAppointments(Arrays.asList(appointment1, appointment2));
 
-		dtoRequest.getAppointmentMembers().add(member1);
-		dtoRequest.getAppointmentMembers().add(member2);
+		dtoRequest.setAppointmentMembers(Arrays.asList(member1, member2));
 
 		AppointmentRequest appointmentRequest = mapper.map(dtoRequest, AppointmentRequest.class);
 

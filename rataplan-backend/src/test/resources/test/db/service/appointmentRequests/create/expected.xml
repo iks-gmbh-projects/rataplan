@@ -1,6 +1,4 @@
 <dataset>
-  <backendUser />
-  
   <appointmentRequestConfig decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" />
   
   <appointmentRequest title="RAW__##__Coding Dojo" description="RAW__##__Fun with code" organizerMail="RAW__##__iks@iks-gmbh.com" isExpired="false" deadline="2050-10-10" />

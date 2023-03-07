@@ -20,7 +20,6 @@ public final class TestConstants {
 	public static final String APPOINTMENTMEMBERS = "/appointmentMembers";
 	public static final String APPOINTMENTREQUESTS = "/appointmentRequests";
 	public static final String AUTHORIZATION = "/authorization";
-	public static final String BACKENDUSERS = "/backendUsers";
 	public static final String CONTROLLERSERVICE = "/controllerService";
 	public static final String GENERATORTOKEN = "/generatorToken";
 	public static final String CREATE = "/create";
@@ -63,9 +62,9 @@ public final class TestConstants {
 	public static final AuthUser AUTHUSER_2 = new AuthUser(2, IKS_MAIL, "IKS_2", "pass", "Ha");
 	public static final AuthUser AUTHUSER_3 = new AuthUser(3, IKS_MAIL, "IKS_3", "p", "h");
 
-	public static final BackendUser BACKENDUSER_1_NEW = new BackendUser(1);
+	//public static final BackendUser BACKENDUSER_1_NEW = new BackendUser(1);
 
-	public static final AppointmentRequest createSimpleAppointmentRequest() {
+	public static AppointmentRequest createSimpleAppointmentRequest() {
 		AppointmentRequest appointmentRequest = new AppointmentRequest(
 				new EncryptedString("Coding Dojo", false), new EncryptedString("Fun with code", false),
 				new Date(DATE_2050_10_10), new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),

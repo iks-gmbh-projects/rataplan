@@ -34,7 +34,7 @@ public class AppointmentRequest implements Serializable {
 	private Date deadline;
 	private EncryptedString organizerName;
 	private EncryptedString organizerMail;
-	private Integer backendUserId;
+	private Integer userId;
 	private boolean isExpired = false;
 	private String participationToken;
 	private String editToken;
@@ -73,19 +73,19 @@ public class AppointmentRequest implements Serializable {
 	public AppointmentRequest() {
 		// required for Hibernate
 	}
-
+	
 	public Instant getCreationTime() {
 		return creationTime;
 	}
-
+	
 	public void setCreationTime(Instant creationTime) {
 		this.creationTime = creationTime;
 	}
-
+	
 	public Instant getLastUpdated() {
 		return lastUpdated;
 	}
-
+	
 	public void setLastUpdated(Instant lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
@@ -158,13 +158,13 @@ public class AppointmentRequest implements Serializable {
 		this.organizerMail = organizerMail;
 	}
 	
-	@Column(name = "backendUserId")
-	public Integer getBackendUserId() {
-		return backendUserId;
+	@Column(name = "userId")
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setBackendUserId(Integer backendUserId) {
-		this.backendUserId = backendUserId;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequest", cascade = CascadeType.ALL)
@@ -313,25 +313,25 @@ public class AppointmentRequest implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentRequest [id=");
+		builder.append("AppointmentRequest [\nid=");
 		builder.append(id);
-		builder.append(", title=");
+		builder.append(",\ntitle=");
 		builder.append(title);
-		builder.append(", description=");
+		builder.append(",\ndescription=");
 		builder.append(description);
-		builder.append(", deadline=");
+		builder.append(",\ndeadline=");
 		builder.append(deadline);
-		builder.append(", organizerName=");
+		builder.append(",\norganizerName=");
 		builder.append(organizerName);
-		builder.append(", organizerMail=");
+		builder.append(",\norganizerMail=");
 		builder.append(organizerMail);
-		builder.append(", appointmentRequestConfig=");
+		builder.append(",\nappointmentRequestConfig=\n");
 		builder.append(appointmentRequestConfig);
-		builder.append(", appointments=");
+		builder.append(",\nappointments=\n");
 		builder.append(appointments);
-		builder.append(", appointmentMembers=");
+		builder.append(",\nappointmentMembers=\n");
 		builder.append(appointmentMembers);
-		builder.append("]");
+		builder.append("\n]");
 		return builder.toString();
 	}
 	

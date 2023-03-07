@@ -42,11 +42,20 @@ public class AppointmentDecisionId implements Serializable {
             return false;
         }
         AppointmentDecisionId other = (AppointmentDecisionId) obj;
-        return (this.getAppointment().getId() == other.getAppointment().getId() && this.getAppointmentMember().getId() == other.getAppointmentMember().getId()) ? true : false;
+        return Objects.equals(this.getAppointment().getId(), other.getAppointment().getId()) && Objects.equals(this.getAppointmentMember()
+            .getId(), other.getAppointmentMember().getId());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(appointment, appointmentMember);
+    }
+    
+    @Override
+    public String toString() {
+        return "AppointmentDecisionId{\n" +
+            "appointment=" + appointment.getId() +
+            ",\nappointmentMember=" + appointmentMember.getId() +
+            "\n}";
     }
 }

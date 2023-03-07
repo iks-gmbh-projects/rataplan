@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS `backendUserAccess` (
 	`appointmentRequestId` int, 
 	`backendUserId` int,
 	FOREIGN KEY (appointmentRequestId) REFERENCES appointmentRequest(id),
-	FOREIGN KEY (backendUserId) REFERENCES backendUser(id),
+	CONSTRAINT backenduseraccess_backenduserid_fkey FOREIGN KEY (backendUserId) REFERENCES backendUser(id),
 	PRIMARY KEY (id)
 );

@@ -1,29 +1,36 @@
 package de.iks.rataplan.service;
 
-import java.sql.Date;
-import java.util.Calendar;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import de.iks.rataplan.domain.*;
+import de.iks.rataplan.exceptions.MalformedException;
+import de.iks.rataplan.exceptions.ResourceNotFoundException;
+import de.iks.rataplan.repository.AppointmentDecisionRepository;
+import de.iks.rataplan.repository.AppointmentRepository;
+import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.BackendUserAccessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.iks.rataplan.exceptions.MalformedException;
-import de.iks.rataplan.exceptions.ResourceNotFoundException;
-import de.iks.rataplan.repository.AppointmentRepository;
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class AppointmentRequestServiceImpl implements AppointmentRequestService {
 
 	@Autowired
+	private AppointmentDecisionRepository appointmentDecisionRepository;
+	
+	@Autowired
 	private AppointmentRequestRepository appointmentRequestRepository;
 
 	@Autowired
 	private AppointmentRepository appointmentRepository;
+	
+	@Autowired
+	private BackendUserAccessRepository backendUserAccessRepository;
 
 	@Autowired
 	private MailService mailService;
@@ -88,7 +95,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
             return appointmentRequest;
         }
 
-        Integer requestId;
+        int requestId;
         try {
             requestId = Integer.parseInt(participationToken);
         } catch (NumberFormatException e) {
@@ -113,40 +120,80 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 
     @Override
     public List<AppointmentRequest> getAppointmentRequestsForUser(Integer userId) {
-        return appointmentRequestRepository.findAllByBackendUserId(userId);
+        return appointmentRequestRepository.findAllByUserId(userId);
     }
 
 	@Override
 	public List<AppointmentRequest> getAppointmentRequestsWhereUserTakesPartIn(Integer userId) {
-		return appointmentRequestRepository.findByAppointmentMembers_BackendUserIdIn(userId);
+		return appointmentRequestRepository.findDistinctByAppointmentMembers_UserIdIn(userId);
 	}
 
 	@Override
 	public AppointmentRequest updateAppointmentRequest(AppointmentRequest dbAppointmentRequest,
 			AppointmentRequest newAppointmentRequest) {
 
-		dbAppointmentRequest.setDeadline(newAppointmentRequest.getDeadline());
-
-		if (newAppointmentRequest.getDeadline().after(new Date(Calendar.getInstance().getTimeInMillis()))) {
-			dbAppointmentRequest.setExpired(false);
+		if(newAppointmentRequest.getDeadline() != null) {
+			dbAppointmentRequest.setDeadline(newAppointmentRequest.getDeadline());
+			if (newAppointmentRequest.getDeadline().after(new Date(Calendar.getInstance().getTimeInMillis()))) {
+				dbAppointmentRequest.setExpired(false);
+			}
 		}
 
-		dbAppointmentRequest.setTitle(newAppointmentRequest.getTitle());
-		dbAppointmentRequest.setDescription(newAppointmentRequest.getDescription());
-		dbAppointmentRequest.setOrganizerMail(newAppointmentRequest.getOrganizerMail());
-
-		// Delete appointments that are not existent in the new AppointmentRequest
-
-		this.removeAppointments(newAppointmentRequest, dbAppointmentRequest.getAppointments());
-
-		// Add Appointments that are not existent in the old AppointmentRequest
-		this.addAppointments(dbAppointmentRequest, newAppointmentRequest.getAppointments());
-
-		if (dbAppointmentRequest.getAppointments().size() == 0) {
-			throw new MalformedException("There are no Appointments in this AppointmentRequest.");
+		if(newAppointmentRequest.getTitle() != null) dbAppointmentRequest.setTitle(newAppointmentRequest.getTitle());
+		if(newAppointmentRequest.getDescription() != null) dbAppointmentRequest.setDescription(newAppointmentRequest.getDescription());
+		if(newAppointmentRequest.getAppointmentRequestConfig() != null) {
+			AppointmentRequestConfig newConfig = newAppointmentRequest.getAppointmentRequestConfig();
+			AppointmentRequestConfig dbConfig = dbAppointmentRequest.getAppointmentRequestConfig();
+			if(newConfig.getDecisionType() != null) {
+				if(dbConfig.getDecisionType() != newConfig.getDecisionType()) {
+					dbConfig.setDecisionType(newConfig.getDecisionType());
+					dbAppointmentRequest.getAppointmentMembers().stream()
+						.map(AppointmentMember::getAppointmentDecisions)
+						.flatMap(List::stream)
+						.forEach(d -> {
+							switch(newConfig.getDecisionType()) {
+							case DEFAULT:
+								if(d.getParticipants() != null) {
+									d.setParticipants(null);
+									d.setDecision(Decision.NO_ANSWER);
+								} else if(d.getDecision() == Decision.ACCEPT_IF_NECESSARY) d.setDecision(Decision.NO_ANSWER);
+								break;
+							case EXTENDED:
+								if(d.getParticipants() != null) {
+									d.setParticipants(null);
+									d.setDecision(Decision.NO_ANSWER);
+								}
+								break;
+							case NUMBER:
+								d.setDecision(null);
+								d.setParticipants(0);
+								break;
+							}
+						});
+				}
+			}
+			if(newConfig.getAppointmentConfig() != null) {
+				dbConfig.setAppointmentConfig(newConfig.getAppointmentConfig());
+				dbAppointmentRequest.getAppointments().clear();
+			}
 		}
-
-		return appointmentRequestRepository.saveAndFlush(dbAppointmentRequest);
+		if(newAppointmentRequest.getOrganizerMail() != null) dbAppointmentRequest.setOrganizerMail(newAppointmentRequest.getOrganizerMail());
+		
+		AppointmentRequest ret;
+		
+		if(newAppointmentRequest.getAppointments() != null && newAppointmentRequest.getAppointments() != dbAppointmentRequest.getAppointments()) {
+			if(newAppointmentRequest.getAppointments().isEmpty()) throw new MalformedException("Must have at least 1 Appointment");
+			
+			appointmentRequestRepository.saveAndFlush(dbAppointmentRequest);
+			
+			removeAppointments(newAppointmentRequest, dbAppointmentRequest.getAppointments());
+			
+			addAppointments(dbAppointmentRequest, newAppointmentRequest.getAppointments());
+			ret = appointmentRequestRepository.findOne(dbAppointmentRequest.getId());
+		} else {
+			ret = appointmentRequestRepository.saveAndFlush(dbAppointmentRequest);
+		}
+		return ret;
 	}
 
 	private void removeAppointments(AppointmentRequest newRequest, List<Appointment> oldAppointments) {
@@ -167,18 +214,14 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 				throw new MalformedException("AppointmentType does not fit the AppointmentRequest.");
 			}
 
-			if (appointment.getId() == null) {
+			if (appointment.getId() == null || !appointmentRepository.exists(appointment.getId())) {
 				appointment.setAppointmentRequest(oldRequest);
-				oldRequest.getAppointments().add(appointment);
+				appointment = appointmentRepository.saveAndFlush(appointment);
 
-				for (AppointmentMember member : oldRequest.getAppointmentMembers()) {
-					if (oldRequest.getAppointmentRequestConfig().getDecisionType() == DecisionType.NUMBER) {
-						member.getAppointmentDecisions().add(new AppointmentDecision(0, appointment, member));
-					} else {
-						member.getAppointmentDecisions()
-								.add(new AppointmentDecision(Decision.NO_ANSWER, appointment, member));
-					}
+				for(AppointmentMember member: oldRequest.getAppointmentMembers()) {
+					appointmentDecisionRepository.save(new AppointmentDecision(Decision.NO_ANSWER, appointment, member));
 				}
+				appointmentDecisionRepository.flush();
 			}
 		}
 	}
@@ -192,9 +235,10 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 	public void anonymizeAppointmentRequests(Integer userId) {
 		getAppointmentRequestsForUser(userId)
 			.stream()
-			.peek(r -> r.setBackendUserId(null))
+			.peek(r -> r.setUserId(null))
 			.peek(r -> r.setOrganizerName(null))
 			.peek(r -> r.setOrganizerMail(null))
 			.forEach(appointmentRequestRepository::save);
+		backendUserAccessRepository.deleteByUserId(userId);
 	}
 }

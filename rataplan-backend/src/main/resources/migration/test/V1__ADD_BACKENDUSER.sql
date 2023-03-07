@@ -8,4 +8,4 @@ ALTER TABLE `appointmentRequest`
 ADD COLUMN `backendUserId` int;
 
 ALTER TABLE `appointmentRequest` 
-ADD FOREIGN KEY (backendUserId) REFERENCES backendUser (id);
+ADD CONSTRAINT appointmentrequest_backenduserid_fkey FOREIGN KEY (backendUserId) REFERENCES backendUser (id);

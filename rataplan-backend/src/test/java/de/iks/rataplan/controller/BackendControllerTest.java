@@ -6,7 +6,8 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.repository.BackendUserRepository;
+import de.iks.rataplan.repository.AppointmentMemberRepository;
+import de.iks.rataplan.repository.AppointmentRequestRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +35,18 @@ public class BackendControllerTest {
     private BackendController backendController;
     
     @Autowired
-    private BackendUserRepository rawRepository;
+    private AppointmentMemberRepository rawRepository1;
+    
+    @Autowired
+    private AppointmentRequestRepository rawRepository2;
     
     @Test
     @DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void testDelete() {
         backendController.deleteData(2, null);
-        rawRepository.flush(); //transaction is not automatically flushed by testing environment before comparison
+        rawRepository1.flush();
+        rawRepository2.flush(); //transaction is not automatically flushed by testing environment before comparison
     }
     
     @Test
@@ -49,6 +54,7 @@ public class BackendControllerTest {
     @ExpectedDatabase(value = FILE_PATH + ANONYMIZE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void testAnonymize() {
         backendController.anonymizeData(2, null);
-        rawRepository.flush(); //transaction is not automatically flushed by testing environment before comparison
+        rawRepository1.flush();
+        rawRepository2.flush(); //transaction is not automatically flushed by testing environment before comparison
     }
 }

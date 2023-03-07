@@ -1,6 +1,4 @@
 <dataset>
-  <backendUser />
-  
   <appointmentRequestConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
   
   <appointmentRequest id="1" title="RAW__##__Coding Dojo" description="RAW__##__Fun with code" organizerMail="RAW__##__iks@iks-gmbh.com" deadline="2050-10-10" isExpired="false" appointmentRequestConfigid="1"/>
@@ -10,8 +8,8 @@
 
   <appointmentMember id="1" name="RubberBandMan" appointmentRequestId="1" />
 
-  <appointmentDecision id="1" decision="0" appointmentId="1" appointmentMemberId="1"/>
-  <appointmentDecision id="2" decision="3" appointmentId="2" appointmentMemberId="1"/>
+  <appointmentDecision decision="0" appointmentId="1" appointmentMemberId="1"/>
+  <appointmentDecision decision="3" appointmentId="2" appointmentMemberId="1"/>
   
   <backendUserAccess />
 </dataset>
