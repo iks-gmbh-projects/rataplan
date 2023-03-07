@@ -55,7 +55,7 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/register", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/users/register", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<User> registerUser(@RequestBody User user) {
         User dbUser = userService.registerUser(user);
 
@@ -64,19 +64,19 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(dbUser, responseHeaders, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/users/mailExists", method = RequestMethod.POST)
+    @PostMapping(value = "/users/mailExists")
     public boolean checkIfMailExists(@RequestBody String mail) {
 
         return userService.checkIfMailExists(mail);
     }
 
-    @RequestMapping(value = "/users/usernameExists", method = RequestMethod.POST)
+    @PostMapping(value = "/users/usernameExists")
     public boolean checkIfUsernameExists(@RequestBody String username) {
 
         return userService.checkIfUsernameExists(username);
     }
 
-    @RequestMapping(value = "/users/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/users/login", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<User> loginUser(@RequestBody User user) {
         User dbUser = userService.loginUser(user);
 
@@ -94,7 +94,7 @@ public class RataplanAuthRestController {
         return ResponseEntity.ok().headers(responseHeaders).body(true);
     }
 
-    @RequestMapping(value = "/users/profile", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> deleteUserData(
         @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
         @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
@@ -113,7 +113,7 @@ public class RataplanAuthRestController {
         return logoutUser(token);
     }
 
-    @RequestMapping(value = "/users/profile", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<User> getUserData(
             @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie
@@ -126,7 +126,7 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(dbUser, responseHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/profile/changePassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/users/profile/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> changePassword(
             @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
@@ -138,7 +138,7 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/profile/changeEmail", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/users/profile/changeEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> changeEmail(
             @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
@@ -150,7 +150,7 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/users/profile/changeDisplayName", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/users/profile/changeDisplayName", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> changeDisplayName(
             @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
@@ -175,7 +175,7 @@ public class RataplanAuthRestController {
         return true;
     }
 
-    @RequestMapping(value = "/users/resetPassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/users/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
         if (this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
             int userId = this.authTokenService.getIdFromAuthToken(resetPasswordData.getToken());
