@@ -100,15 +100,6 @@ export class OverviewSubformComponent implements OnInit {
     return isInputInForm;
   }
 
-  addEndDate() {
-    this.appointmentConfig.endDate = !this.appointmentConfig.endDate;
-  }
-
-  addEndTime() {
-    console.log(this.appointmentConfig);
-    this.appointmentConfig.endTime = !this.appointmentConfig.endTime;
-  }
-
   deleteVoteOption(index: number) {
     this.store.dispatch(new RemoveAppointmentAction(index));
   }

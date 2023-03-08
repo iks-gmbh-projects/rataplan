@@ -3,10 +3,6 @@
     <mat-card-header>
       <mat-card-title>Abstimmungoption</mat-card-title>
     </mat-card-header>
-    <div *ngIf='appointmentConfig.startDate'>
-      <mat-checkbox (change)='addEndDate()' [checked]='appointmentConfig.endDate'>Zeitraum über mehrere Tage?
-      </mat-checkbox>
-    </div>
     <div *ngIf='appointmentConfig.startDate && !appointmentConfig.endDate'>
       <mat-form-field appearance='fill'>
         <mat-label>Datum</mat-label>
@@ -34,10 +30,6 @@
                                [for]='picker'></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
-    </div>
-    <div *ngIf='appointmentConfig.startTime'>
-      <mat-checkbox (change)='addEndTime()' [checked]='appointmentConfig.endTime'>Zeitraum über längerer Uhrzeit?
-      </mat-checkbox>
     </div>
     <div *ngIf='appointmentConfig.startTime'>
       <mat-form-field floatLabel='never'
