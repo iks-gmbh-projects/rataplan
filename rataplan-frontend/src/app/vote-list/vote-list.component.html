@@ -7,13 +7,13 @@
     <mat-card-actions>
       <a mat-raised-button
          color="primary"
-         [routerLink]="['/vote', vote.participationToken]">
+         [routerLink]="['/vote', vote.participationToken || vote.id]">
          Anzeigen
       </a>
       <a *ngIf="!vote.expired"
          mat-raised-button
          color="primary"
-         [routerLink]="['/vote', 'edit', vote.editToken]">
+         [routerLink]="['/vote', 'edit', vote.editToken || vote.id]">
          Editieren
       </a>
     </mat-card-actions>
@@ -26,7 +26,7 @@
     <mat-card-actions>
       <a mat-raised-button
          color="primary"
-        [routerLink]="['/vote', vote.participationToken]">
+        [routerLink]="['/vote', vote.participationToken || vote.id]">
         Anzeigen
       </a>
     </mat-card-actions>
