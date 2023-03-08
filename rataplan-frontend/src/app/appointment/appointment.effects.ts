@@ -93,7 +93,7 @@ export class AppointmentRequestEffects {
 
   successFullPost = createEffect(() => this.actions$.pipe(
     ofType(AppointmentActions.POST_SUCCESS),
-    map((action: PostAppointmentRequestSuccessAction) => this.router.navigate(action.editToken ? ["/vote/edit", action.editToken, "links"] : ["/create-vote/links"], {
+    map((action: PostAppointmentRequestSuccessAction) => this.router.navigate(["/vote/links"], {
       queryParams: {
         participationToken: action.created.participationToken,
         editToken: action.created.editToken,
