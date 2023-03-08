@@ -19,6 +19,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
   busy: boolean = false;
   consigneeList: string[] = [];
+  simpleCalendar: boolean = false;
 
   emailSubform = new FormGroup({
     'name': new FormControl(null, ExtraValidators.containsSomeWhitespace),
@@ -44,6 +45,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
         this.emailSubform.get('name')?.setValue(appointmentRequest.organizerName);
         this.emailSubform.get('email')?.setValue(appointmentRequest.organizerMail);
         this.consigneeList = appointmentRequest.consigneeList;
+        const config = appointmentRequest.appointmentRequestConfig.appointmentConfig;
+        this.simpleCalendar = !!config.startDate &&
+          !config.startTime &&
+          !config.endDate &&
+          !config.endTime &&
+          !config.description &&
+          !config.url;
       });
   }
 
