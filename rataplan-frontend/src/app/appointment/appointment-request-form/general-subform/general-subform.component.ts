@@ -23,7 +23,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     'title': new FormControl(null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
     'description': new FormControl(null),
     'deadline': new FormControl(null, Validators.required),
-    'decision': new FormControl('0', Validators.required),
+    'decision': new FormControl(0, Validators.required),
   });
 
   showDescription = false;
