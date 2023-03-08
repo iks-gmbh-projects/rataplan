@@ -74,13 +74,13 @@ export class AppointmentRequestEffects {
     )),
     concatLatestFrom(() => this.urlService.appointmentURL$),
     map(([request, url]) => {
-      if (request.request.editToken) {
+      if (request.request.id) {
         const sanatizedRequest: Partial<AppointmentRequestModel> = {...request.request};
         if(!request.appointmentsEdited) {
           delete sanatizedRequest.appointments;
           delete sanatizedRequest.appointmentMembers;
         }
-        return {editToken: request.request.editToken, request: this.http.put<AppointmentRequestModel<true>>(url + "/appointmentRequests/edit/" + request.request.editToken, sanatizedRequest, {withCredentials: true})};
+        return {editToken: request.request.editToken || request.request.id?.toString(), request: this.http.put<AppointmentRequestModel<true>>(url + "/appointmentRequests/edit/" + (request.request.editToken || request.request.id), sanatizedRequest, {withCredentials: true})};
       }
       return {request: this.http.post<AppointmentRequestModel<true>>(url + "/appointmentRequests", request.request, {withCredentials: true})};
     }),
@@ -95,8 +95,8 @@ export class AppointmentRequestEffects {
     ofType(AppointmentActions.POST_SUCCESS),
     map((action: PostAppointmentRequestSuccessAction) => this.router.navigate(["/vote/links"], {
       queryParams: {
-        participationToken: action.created.participationToken,
-        editToken: action.created.editToken,
+        participationToken: action.created.participationToken || action.created.id,
+        editToken: action.created.editToken || action.created.id,
       },
     })),
     switchMap(from)
