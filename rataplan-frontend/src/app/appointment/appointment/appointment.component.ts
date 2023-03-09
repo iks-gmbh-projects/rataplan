@@ -152,7 +152,6 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   checkVoteOfMember(appointment: AppointmentModel, number: number) {
-    const index = this.appointmentRequest!.appointments.indexOf(appointment);
-    return this.member.appointmentDecisions[index].decision === number;
+    return this.member.appointmentDecisions.find(a => a.appointmentId === appointment.id)?.decision === number;
   }
 }
