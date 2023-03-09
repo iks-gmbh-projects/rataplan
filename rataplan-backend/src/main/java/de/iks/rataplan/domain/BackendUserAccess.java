@@ -1,15 +1,22 @@
 package de.iks.rataplan.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "backendUserAccess")
 public class BackendUserAccess {
+    
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Instant creationTime;
+    @UpdateTimestamp
+    private Instant lastUpdated;
+    @Version
+    private Integer version;
     
     private Integer id;
     private Integer appointmentRequestId;
@@ -26,6 +33,30 @@ public class BackendUserAccess {
     
     public BackendUserAccess() {
         // Nothing to do here
+    }
+    
+    public Instant getCreationTime() {
+        return creationTime;
+    }
+    
+    public void setCreationTime(Instant creationTime) {
+        this.creationTime = creationTime;
+    }
+    
+    public Instant getLastUpdated() {
+        return lastUpdated;
+    }
+    
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+    
+    public Integer getVersion() {
+        return version;
+    }
+    
+    public void setVersion(Integer version) {
+        this.version = version;
     }
     
     @Id
@@ -73,5 +104,16 @@ public class BackendUserAccess {
     
     public void setInvited(boolean isInvited) {
         this.isInvited = isInvited;
+    }
+    
+    // Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
+    @PrePersist
+    @PreUpdate
+    public void hibernateStupidity() {
+        final Instant now = Instant.now();
+        if(this.creationTime == null) this.creationTime = now;
+        this.lastUpdated = now;
+        if(this.version == null) this.version = 1;
+        else this.version++;
     }
 }
