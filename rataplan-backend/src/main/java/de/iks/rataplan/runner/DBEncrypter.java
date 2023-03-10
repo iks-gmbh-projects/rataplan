@@ -1,9 +1,8 @@
 package de.iks.rataplan.runner;
 
-import de.iks.rataplan.domain.Appointment;
-import de.iks.rataplan.domain.AppointmentMember;
-import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.domain.EncryptedString;
+import de.iks.rataplan.repository.AppointmentMemberRepository;
+import de.iks.rataplan.repository.AppointmentRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 import de.iks.rataplan.service.CryptoService;
 import lombok.RequiredArgsConstructor;
@@ -20,27 +19,32 @@ import java.util.function.Supplier;
 @Transactional
 public class DBEncrypter implements ApplicationRunner {
     private final AppointmentRequestRepository appointmentRequestRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final AppointmentMemberRepository appointmentMemberRepository;
     private final CryptoService cryptoService;
 
     @Override
     public void run(ApplicationArguments args) {
-        for(AppointmentRequest appointmentRequest: appointmentRequestRepository.findAll()) {
-            boolean altered = ensureEncrypted(appointmentRequest::getTitle, appointmentRequest::setTitle);
-            altered |= ensureEncrypted(appointmentRequest::getDescription, appointmentRequest::setDescription);
-            altered |= ensureEncrypted(appointmentRequest::getOrganizerName, appointmentRequest::setOrganizerName);
-            altered |= ensureEncrypted(appointmentRequest::getOrganizerMail, appointmentRequest::setOrganizerMail);
-            for(Appointment appointment: appointmentRequest.getAppointments()) {
-                altered |= ensureEncrypted(appointment::getDescription, appointment::setDescription);
-                altered |= ensureEncrypted(appointment::getUrl, appointment::setUrl);
-            }
-            for(AppointmentMember appointmentMember: appointmentRequest.getAppointmentMembers()) {
-                altered|= ensureEncrypted(appointmentMember::getName, appointmentMember::setName);
-            }
-            if(altered) {
-                appointmentRequestRepository.save(appointmentRequest);
-            }
-        }
+        appointmentRequestRepository.findUnencrypted()
+            .peek(appointmentRequest -> {
+                ensureEncrypted(appointmentRequest::getTitle, appointmentRequest::setTitle);
+                ensureEncrypted(appointmentRequest::getDescription, appointmentRequest::setDescription);
+                ensureEncrypted(appointmentRequest::getOrganizerName, appointmentRequest::setOrganizerName);
+                ensureEncrypted(appointmentRequest::getOrganizerMail, appointmentRequest::setOrganizerMail);
+            })
+            .forEach(appointmentRequestRepository::save);
+        appointmentRepository.findUnencrypted()
+            .peek(appointment -> {
+                ensureEncrypted(appointment::getDescription, appointment::setDescription);
+                ensureEncrypted(appointment::getUrl, appointment::setUrl);
+            })
+            .forEach(appointmentRepository::save);
+        appointmentMemberRepository.findUnencrypted()
+            .peek(appointmentMember -> ensureEncrypted(appointmentMember::getName, appointmentMember::setName))
+            .forEach(appointmentMemberRepository::save);
         appointmentRequestRepository.flush();
+        appointmentRepository.flush();
+        appointmentMemberRepository.flush();
     }
 
     private boolean ensureEncrypted(Supplier<? extends EncryptedString> sup, Consumer<? super EncryptedString> con) {
