@@ -47,7 +47,8 @@
   </div>
   <div>
     <button mat-raised-button
-            [routerLink]="simpleCalendar ? '../datepicker' :  '../configuration'">Zurück
+            [routerLink]="simpleCalendar ? '../datepicker' :  '../configuration'"
+            (click)="setEmailForm()">Zurück
     </button>
     <button class='next-button'
             type='button'
