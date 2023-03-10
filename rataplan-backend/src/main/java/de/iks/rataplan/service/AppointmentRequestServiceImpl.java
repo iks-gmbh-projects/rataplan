@@ -140,7 +140,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 		}
 
 		if(newAppointmentRequest.getTitle() != null) dbAppointmentRequest.setTitle(newAppointmentRequest.getTitle());
-		if(newAppointmentRequest.getDescription() != null) dbAppointmentRequest.setDescription(newAppointmentRequest.getDescription());
+		dbAppointmentRequest.setDescription(newAppointmentRequest.getDescription());
 		if(newAppointmentRequest.getAppointmentRequestConfig() != null) {
 			AppointmentRequestConfig newConfig = newAppointmentRequest.getAppointmentRequestConfig();
 			AppointmentRequestConfig dbConfig = dbAppointmentRequest.getAppointmentRequestConfig();
@@ -177,7 +177,8 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 				dbAppointmentRequest.getAppointments().clear();
 			}
 		}
-		if(newAppointmentRequest.getOrganizerMail() != null) dbAppointmentRequest.setOrganizerMail(newAppointmentRequest.getOrganizerMail());
+		dbAppointmentRequest.setOrganizerName(newAppointmentRequest.getOrganizerName());
+		dbAppointmentRequest.setOrganizerMail(newAppointmentRequest.getOrganizerMail());
 		
 		AppointmentRequest ret;
 		
