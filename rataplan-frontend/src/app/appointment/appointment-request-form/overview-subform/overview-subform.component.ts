@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AppointmentConfig, AppointmentModel } from '../../../models/appointment.model';
@@ -19,9 +19,6 @@ function extractTime(date?: string): string | undefined {
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',
   styleUrls: ['./overview-subform.component.css'],
-})
-@Injectable({
-  providedIn: 'root',
 })
 export class OverviewSubformComponent implements OnInit {
   appointments: AppointmentModel[] = [];
