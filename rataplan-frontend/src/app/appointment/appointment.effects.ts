@@ -54,7 +54,7 @@ export class AppointmentRequestEffects {
         consigneeList: [],
       }));
       else return this.urlService.appointmentURL$.pipe(
-        switchMap(url => this.http.get<AppointmentRequestModel<true>>(url + "/appointmentRequests/edit/" + action.id)),
+        switchMap(url => this.http.get<AppointmentRequestModel<true>>(url + "/appointmentRequests/edit/" + action.id, {withCredentials: true})),
         map(deserializeAppointmentRequestModel),
         map(request => new InitAppointmentRequestSuccessAction(request)),
         catchError(err => of(new InitAppointmentRequestErrorAction(err)))
