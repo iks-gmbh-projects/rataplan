@@ -1,11 +1,19 @@
 package de.iks.rataplan.domain;
 
 import de.iks.rataplan.exceptions.MalformedException;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@EqualsAndHashCode
+@Getter
+@Setter
+@NoArgsConstructor
 public class AppointmentConfig {
 	private boolean startDate;
 	private boolean startTime;
@@ -13,10 +21,6 @@ public class AppointmentConfig {
 	private boolean endTime;
 	private boolean url;
 	private boolean description;
-	
-	public AppointmentConfig() {
-		//Nothing to do here
-	}
 	
 	public AppointmentConfig(boolean description, boolean url, boolean startDate, boolean startTime, boolean endDate, boolean endTime) {
 		this.description = description;
@@ -32,17 +36,9 @@ public class AppointmentConfig {
 		return startDate;
 	}
 	
-	public void setStartDate(boolean startDate) {
-		this.startDate = startDate;
-	}
-	
 	@Column(name = "isEndDate")
 	public boolean isEndDate() {
 		return endDate;
-	}
-	
-	public void setEndDate(boolean endDate) {
-		this.endDate = endDate;
 	}
 	
 	@Column(name = "isStartTime")
@@ -50,17 +46,9 @@ public class AppointmentConfig {
 		return startTime;
 	}
 	
-	public void setStartTime(boolean startTime) {
-		this.startTime = startTime;
-	}
-	
 	@Column(name = "isEndTime")
 	public boolean isEndTime() {
 		return endTime;
-	}
-	
-	public void setEndTime(boolean endTime) {
-		this.endTime = endTime;
 	}
 	
 	@Column(name = "isUrl")
@@ -68,19 +56,11 @@ public class AppointmentConfig {
 		return url;
 	}
 	
-	public void setUrl(boolean url) {
-		this.url = url;
-	}
-	
 	@Column(name = "isDescription")
 	public boolean isDescription() {
 		return description;
 	}
 	
-	public void setDescription(boolean description) {
-		this.description = description;
-	}
-
 	public void assertValid() {
 		if(startDate || startTime || endDate || endTime || description || url) return;
 		throw new MalformedException("Invalid input fields");

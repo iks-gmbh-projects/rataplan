@@ -146,35 +146,22 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			AppointmentRequestConfig dbConfig = dbAppointmentRequest.getAppointmentRequestConfig();
 			if(newConfig.getDecisionType() != null) {
 				if(dbConfig.getDecisionType() != newConfig.getDecisionType()) {
+					if(dbConfig.getDecisionType() == DecisionType.NUMBER || newConfig.getDecisionType() == DecisionType.NUMBER) {
+						dbAppointmentRequest.getAppointmentMembers().clear();
+					} else if(newConfig.getDecisionType() == DecisionType.DEFAULT) {
+						dbAppointmentRequest.getAppointmentMembers().stream()
+							.map(AppointmentMember::getAppointmentDecisions)
+							.flatMap(List::stream)
+							.filter(d -> d.getDecision() == Decision.ACCEPT_IF_NECESSARY)
+							.forEach(d -> d.setDecision(Decision.NO_ANSWER));
+					}
 					dbConfig.setDecisionType(newConfig.getDecisionType());
-					dbAppointmentRequest.getAppointmentMembers().stream()
-						.map(AppointmentMember::getAppointmentDecisions)
-						.flatMap(List::stream)
-						.forEach(d -> {
-							switch(newConfig.getDecisionType()) {
-							case DEFAULT:
-								if(d.getParticipants() != null) {
-									d.setParticipants(null);
-									d.setDecision(Decision.NO_ANSWER);
-								} else if(d.getDecision() == Decision.ACCEPT_IF_NECESSARY) d.setDecision(Decision.NO_ANSWER);
-								break;
-							case EXTENDED:
-								if(d.getParticipants() != null) {
-									d.setParticipants(null);
-									d.setDecision(Decision.NO_ANSWER);
-								}
-								break;
-							case NUMBER:
-								d.setDecision(null);
-								d.setParticipants(0);
-								break;
-							}
-						});
 				}
 			}
-			if(newConfig.getAppointmentConfig() != null) {
+			if(newConfig.getAppointmentConfig() != null && !dbConfig.getAppointmentConfig().equals(newConfig.getAppointmentConfig())) {
 				dbConfig.setAppointmentConfig(newConfig.getAppointmentConfig());
 				dbAppointmentRequest.getAppointments().clear();
+				dbAppointmentRequest.getAppointmentMembers().clear();
 			}
 		}
 		dbAppointmentRequest.setOrganizerName(newAppointmentRequest.getOrganizerName());
