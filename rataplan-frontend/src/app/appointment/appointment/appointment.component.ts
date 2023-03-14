@@ -6,6 +6,7 @@ import { exhaustMap, Subject, take, takeUntil } from 'rxjs';
 import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentMemberModel } from '../../models/appointment-member.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
+import { DeadlineService } from '../../services/deadline-service/deadline.service';
 import { AppointmentDecisionType, DecisionType } from '../appointment-request-form/decision-type.enum';
 import { AppointmentService } from './appointment-service/appointment.service';
 import { MemberDecisionSubformComponent } from './member-decision-subform/member-decision-subform.component';
@@ -33,6 +34,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private appointmentService: AppointmentService,
+    public deadlineService: DeadlineService,
     public readonly errorMessageService: FormErrorMessageService
   ) {
   }
@@ -49,6 +51,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         if (!this.appointmentRequest.expired) {
           this.setAppointments();
         }
+        this.deadlineService.setDeadline(new Date(appointmentRequest.deadline));
       });
   }
 
