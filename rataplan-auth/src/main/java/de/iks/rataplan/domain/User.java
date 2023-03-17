@@ -37,23 +37,21 @@ public class User implements Serializable {
     @JsonIgnore
     private boolean encrypted;
 
-    public User(Integer id, String mail, String username, String password, String displayname, boolean encrypted, Integer version) {
+    public User(Integer id, String mail, String username, String password, String displayname, boolean encrypted) {
         this.id = id;
         this.mail = mail;
         this.username = username;
         this.password = password;
         this.displayname = displayname;
         this.encrypted = encrypted;
-        this.version = version;
-
     }
 
-    public User(Integer id, String mail, String username, String password, String displayname,Integer version) {
-        this(id, mail, username, password, displayname, false, version);
+    public User(Integer id, String mail, String username, String password, String displayname) {
+        this(id, mail, username, password, displayname, false);
     }
 
     public User(User cpy) {
-        this(cpy.getId(), cpy.getMail(), cpy.getUsername(), cpy.getPassword(), cpy.getDisplayname(), cpy.isEncrypted(),cpy.getVersion());
+        this(cpy.getId(), cpy.getMail(), cpy.getUsername(), cpy.getPassword(), cpy.getDisplayname(), cpy.isEncrypted());
     }
 
     public User() {
