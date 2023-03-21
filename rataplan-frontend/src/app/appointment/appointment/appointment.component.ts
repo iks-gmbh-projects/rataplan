@@ -34,7 +34,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   currentUser?: FrontendUser;
   private loggedInSub?: Subscription;
-  private userVoted: AppointmentMemberModel<false> | undefined;
+  private userVoted = false;
 
   constructor(
     public dialog: MatDialog,
@@ -61,6 +61,8 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         if (!this.appointmentRequest.expired) {
           this.setAppointments();
         }
+        this.userVoted = this.appointmentRequest.appointmentMembers.some(member =>
+          member.userId === this.currentUser?.id);
         if (this.currentUser !== null) {
           this.member.name = this.currentUser?.displayname
         }
@@ -74,20 +76,29 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   saveVote() {
     if (this.isEditMember) {
-      this.appointmentService.updateAppointmentMember(this.appointmentRequest!, this.member)
-        .pipe(takeUntil(this.destroySubject))
-        .subscribe(() => {
-          this.resetVote();
-          this.isEditMember = false;
-        });
-    } else {
-      this.appointmentService.addAppointmentMember(this.appointmentRequest!, this.member)
-        .pipe(takeUntil(this.destroySubject))
-        .subscribe(member => {
-          this.appointmentRequest!.appointmentMembers.push(member);
-          this.resetVote();
-        });
+      this.updateVote();
+      return;
     }
+    if (this.currentUser != null && this.userVoted) {
+      console.log(this.currentUser + " hat schon abgestimmt");
+      this.resetVote();
+      return
+    }
+    this.appointmentService.addAppointmentMember(this.appointmentRequest!, this.member)
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(member => {
+        this.appointmentRequest!.appointmentMembers.push(member);
+        this.resetVote();
+      });
+  }
+
+  updateVote() {
+    this.appointmentService.updateAppointmentMember(this.appointmentRequest!, this.member)
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        this.resetVote();
+        this.isEditMember = false;
+      });
   }
 
   resetVote() {
