@@ -134,8 +134,8 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   deleteMember(member: AppointmentMemberModel) {
     this.appointmentService.deleteAppointmentMember(this.appointmentRequest!, member)
       .pipe(
-        exhaustMap(() => this.appointmentService.getAppointmentByParticipationToken(this.appointmentRequest!.participationToken!)),
-        take(1)
+        exhaustMap(() => this.appointmentService.getAppointmentByParticipationToken(this.participationToken!)),
+        take(1),
       )
       .subscribe(updatedRequest => {
         this.isEditMember = false;
