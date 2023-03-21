@@ -16,9 +16,16 @@
 }
 
 ::ng-deep .member {
-  span {
-    display: flex;
+  > span {
     justify-content: space-between;
-    width: 100%;
   }
+}
+
+.icon-name {
+    display: flex;
+    align-items: center;
+}
+
+.user-icon {
+  padding-right: 10px;
 }

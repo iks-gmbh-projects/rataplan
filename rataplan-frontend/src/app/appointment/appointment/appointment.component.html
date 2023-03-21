@@ -24,8 +24,11 @@
       </mat-expansion-panel-header>
       <mat-list *ngFor='let member of (this.appointmentRequest?.appointmentMembers || [])'>
         <mat-list-item class='member'>
-          {{ member.name }}
-          <div>
+          <div class='icon-name'>
+            <mat-icon *ngIf='member.userId' class='user-icon'>person</mat-icon>
+            {{ member.name }}
+          </div>
+          <div *ngIf='!member.userId || currentUser' class='member-button'>
             <button mat-icon-button
                     (click)='editMember(member)'>
               <mat-icon mat-list-icon>edit_square</mat-icon>
@@ -42,10 +45,11 @@
   <div>
     <mat-form-field appearance='fill'>
       <mat-label>Name</mat-label>
-      <input [(ngModel)]='member!.name'
+      <input [(ngModel)]='member.name'
              matInput
+             [disabled]='currentUser !== null'
              autocomplete='off'
-             #nameField="ngModel">
+             #nameField='ngModel'>
       <mat-error>{{errorMessageService.genericFormError(nameField.control)}}</mat-error>
     </mat-form-field>
   </div>
@@ -56,61 +60,62 @@
     <mat-list-item *ngFor='let appointment of (appointmentRequest?.appointments || []); let appointmentIndex=index'>
       <div mat-line
            style='font-size: 90%'>
-        {{ appointment.startDate | date:'dd.MM.yyyy'+(appointmentRequest!.appointmentRequestConfig.appointmentConfig.startTime?' HH:mm':''):undefined:'de' }}
-        <ng-template [ngIf]="appointment.endDate">
-          {{ appointment.endDate | date:'- dd.MM.yyyy'+(appointmentRequest!.appointmentRequestConfig.appointmentConfig.endTime?' HH:mm':''):undefined:'de' }}
+        {{ appointment.startDate | date:'dd.MM.yyyy' + (appointmentRequest!.appointmentRequestConfig.appointmentConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}
+        <ng-template [ngIf]='appointment.endDate'>
+          {{ appointment.endDate | date:'- dd.MM.yyyy' + (appointmentRequest!.appointmentRequestConfig.appointmentConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
         </ng-template>
         {{appointment.description || ''}}
-        <a *ngIf="appointment.url" [href]="appointment.url">Link</a>
+        <a *ngIf='appointment.url'
+           [href]='appointment.url'>Link</a>
       </div>
       <button mat-icon-button
               (click)='openDialog(appointment)'>
         <mat-icon>info</mat-icon>
       </button>
       <mat-form-field *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType === DecisionType.NUMBER; else decisionComplex'
-                      appearance="fill">
+                      appearance='fill'>
         <mat-label>Teilnehmerzahl</mat-label>
-        <input type="number"
-               min="0"
+        <input type='number'
+               min='0'
                required
                matInput
-               [(ngModel)]="member!.appointmentDecisions[appointmentIndex].participants"
+               [(ngModel)]='member!.appointmentDecisions[appointmentIndex].participants'
                mat-line
-               #participantField="ngModel">
+               #participantField='ngModel'>
         <mat-error mat-line>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
       </mat-form-field>
       <ng-template #decisionComplex>
-      <mat-button-toggle-group style='scale: 90%'>
-        <mat-button-toggle (click)='setDecision(appointment, 1)'
-                           [checked]='checkVoteOfMember(appointment, 1)'
-                           [disabled]='appointmentRequest?.expired'
-                           matTooltip='Ja'
-                           matTooltipPosition='above'>
-          <mat-icon>done</mat-icon>
-        </mat-button-toggle>
-        <mat-button-toggle *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType === DecisionType.EXTENDED'
-                           (click)='setDecision(appointment, 2)'
-                           [checked]='checkVoteOfMember(appointment, 2)'
-                           [disabled]='appointmentRequest?.expired'
-                           matTooltip='Vielleicht'
-                           matTooltipPosition='above'>
-          <mat-icon>question_mark</mat-icon>
-        </mat-button-toggle>
-        <mat-button-toggle (click)='setDecision(appointment, 3)'
-                           [checked]='checkVoteOfMember(appointment, 3)'
-                           [disabled]='appointmentRequest?.expired'
-                           matTooltip='Nein'
-                           matTooltipPosition='above'>
-          <mat-icon>close</mat-icon>
-        </mat-button-toggle>
-        <mat-button-toggle (click)='setDecision(appointment, 0)'
-                           [checked]='checkVoteOfMember(appointment, 0)'
-                           [disabled]='appointmentRequest?.expired'
-                           matTooltip='Keine Antwort'
-                           matTooltipPosition='above'>
-          <mat-icon></mat-icon>
-        </mat-button-toggle>
-      </mat-button-toggle-group>
+        <mat-button-toggle-group style='scale: 90%'>
+          <mat-button-toggle (click)='setDecision(appointment, 1)'
+                             [checked]='checkVoteOfMember(appointment, 1)'
+                             [disabled]='appointmentRequest?.expired'
+                             matTooltip='Ja'
+                             matTooltipPosition='above'>
+            <mat-icon>done</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType === DecisionType.EXTENDED'
+                             (click)='setDecision(appointment, 2)'
+                             [checked]='checkVoteOfMember(appointment, 2)'
+                             [disabled]='appointmentRequest?.expired'
+                             matTooltip='Vielleicht'
+                             matTooltipPosition='above'>
+            <mat-icon>question_mark</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle (click)='setDecision(appointment, 3)'
+                             [checked]='checkVoteOfMember(appointment, 3)'
+                             [disabled]='appointmentRequest?.expired'
+                             matTooltip='Nein'
+                             matTooltipPosition='above'>
+            <mat-icon>close</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle (click)='setDecision(appointment, 0)'
+                             [checked]='checkVoteOfMember(appointment, 0)'
+                             [disabled]='appointmentRequest?.expired'
+                             matTooltip='Keine Antwort'
+                             matTooltipPosition='above'>
+            <mat-icon></mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
       </ng-template>
     </mat-list-item>
   </mat-list>
