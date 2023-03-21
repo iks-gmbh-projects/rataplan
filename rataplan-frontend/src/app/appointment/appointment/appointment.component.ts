@@ -1,21 +1,24 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { exhaustMap, Subject, take, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { exhaustMap, Subject, Subscription, take, takeUntil } from 'rxjs';
+import { appState } from '../../app.reducers';
 
 import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentMemberModel } from '../../models/appointment-member.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
+import { FrontendUser } from '../../models/user.model';
 import { AppointmentDecisionType, DecisionType } from '../appointment-request-form/decision-type.enum';
 import { AppointmentService } from './appointment-service/appointment.service';
 import { MemberDecisionSubformComponent } from './member-decision-subform/member-decision-subform.component';
-import { FormErrorMessageService } from "../../services/form-error-message-service/form-error-message.service";
+import { FormErrorMessageService } from '../../services/form-error-message-service/form-error-message.service';
 
 
 @Component({
   selector: 'app-appointment',
   templateUrl: './appointment.component.html',
-  styleUrls: ['./appointment.component.scss']
+  styleUrls: ['./appointment.component.scss'],
 })
 export class AppointmentComponent implements OnInit, OnDestroy {
   readonly DecisionType = DecisionType;
@@ -29,11 +32,16 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   participationToken = '';
   isEditMember = false;
 
+  currentUser?: FrontendUser;
+  private loggedInSub?: Subscription;
+  private userVoted: AppointmentMemberModel<false> | undefined;
+
   constructor(
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private appointmentService: AppointmentService,
-    public readonly errorMessageService: FormErrorMessageService
+    private store: Store<appState>,
+    public readonly errorMessageService: FormErrorMessageService,
   ) {
   }
 
@@ -42,12 +50,19 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       this.participationToken = '' + params.get('id');
     });
 
+    this.loggedInSub = this.store.select('auth')
+      .pipe(takeUntil(this.destroySubject))
+      .subscribe(auth => this.currentUser = auth.user);
+
     this.appointmentService.getAppointmentByParticipationToken(this.participationToken)
       .pipe(takeUntil(this.destroySubject))
       .subscribe(appointmentRequest => {
         this.appointmentRequest = appointmentRequest;
         if (!this.appointmentRequest.expired) {
           this.setAppointments();
+        }
+        if (this.currentUser !== null) {
+          this.member.name = this.currentUser?.displayname
         }
       });
   }
@@ -81,10 +96,13 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       appointmentDecisions: [],
     };
     this.setAppointments();
+    if (this.currentUser !== null) {
+      this.member.name = this.currentUser?.displayname
+    }
   }
 
   setAppointments() {
-    if(this.appointmentRequest?.appointmentRequestConfig.decisionType === DecisionType.NUMBER) {
+    if (this.appointmentRequest?.appointmentRequestConfig.decisionType === DecisionType.NUMBER) {
       this.member.appointmentDecisions = this.appointmentRequest!.appointments.map(appointment => ({
         appointmentId: appointment.id!,
         participants: 0,
@@ -104,7 +122,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         appointmentMembers: this.appointmentRequest!.appointmentMembers,
         decisionType: this.appointmentRequest!.appointmentRequestConfig.decisionType,
       },
-      autoFocus: false
+      autoFocus: false,
     });
   }
 
@@ -119,15 +137,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     const appointmentDecision = this.member.appointmentDecisions[index];
 
     switch (decision) {
-      case 1:
-        appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
-        break;
-      case 2:
-        appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
-        break;
-      default:
-        appointmentDecision.decision = AppointmentDecisionType.DECLINE;
-        break;
+    case 1:
+      appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
+      break;
+    case 2:
+      appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
+      break;
+    default:
+      appointmentDecision.decision = AppointmentDecisionType.DECLINE;
+      break;
     }
   }
 
