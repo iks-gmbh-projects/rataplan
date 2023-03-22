@@ -1,3 +1,11 @@
-.bottomspace {
-  margin-bottom: 1ex;
+.bottomSpace {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.inputFieldWrapper {
+  width: 100%;
+}
+.newLine {
+  white-space: normal;
 }

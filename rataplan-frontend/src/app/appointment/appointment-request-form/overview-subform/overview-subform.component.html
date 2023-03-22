@@ -1,5 +1,6 @@
+<div class="wrapper">
 <div [formGroup]='voteOptions'>
-  <mat-card style='min-width: 400px'>
+  <mat-card style='min-width: 80%'>
     <mat-card-header>
       <mat-card-title>Abstimmungoption</mat-card-title>
     </mat-card-header>
@@ -59,7 +60,7 @@
     </div>
     <div *ngIf='appointmentConfig.description'>
       <mat-form-field appearance='fill'
-                      class='form-size'>
+                      >
         <mat-label>Textfeld</mat-label>
         <input type='text'
                formControlName='descriptionInput'
@@ -69,7 +70,7 @@
     </div>
     <div *ngIf='appointmentConfig.url'>
       <mat-form-field appearance='fill'
-                      class='form-size'>
+                      >
         <mat-label>URL</mat-label>
         <input type='text'
                formControlName='linkInput'
@@ -135,4 +136,5 @@
           mat-raised-button
           routerLink='../email'>Weiter
   </button>
+</div>
 </div>

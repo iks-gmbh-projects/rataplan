@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <h2>Abstimmung {{editing ? 'ändern' : 'erstellen' }}</h2>
+  <h1>Abstimmung {{editing ? 'ändern' : 'erstellen' }}</h1>
   <mat-spinner *ngIf="busy"></mat-spinner>
   <div [ngStyle]="{display: busy ? 'none' : 'block'}">
     <router-outlet></router-outlet>

@@ -1,4 +1,9 @@
-<form class="form-container" [formGroup]="contact" (ngSubmit)="submit()">
+<div class="wrapper">
+
+      <form class="form-container" [formGroup]="contact" (ngSubmit)="submit()">
+  <div>
+    <h1 class="centered">Kontakt</h1>
+  </div>
   <div class="email">
     <mat-form-field appearance="fill">
       <mat-label>E-Mail</mat-label>
@@ -20,9 +25,11 @@
       <mat-error>{{errorMessageService.genericFormError(content)}}</mat-error>
     </mat-form-field>
   </div>
-  <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="contact.invalid">
-    Abschicken
-  </button>
+    <div class="button">
+      <button type="submit" class="button-space" mat-raised-button color="primary" [disabled]="contact.invalid">
+        Abschicken
+      </button>
+    </div>
 </form>
-
+</div>
 

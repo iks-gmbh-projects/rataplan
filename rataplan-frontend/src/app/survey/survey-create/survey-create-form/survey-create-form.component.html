@@ -1,32 +1,39 @@
-<form *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="preview()">
-  <mat-stepper orientation="vertical" #stepper="matStepper">
+
+<form class="form-field-max-length-wrapper" *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="preview()">
+  <mat-stepper orientation="vertical" #stepper="matStepper" id="survey">
     <mat-step [label]="formGroup.value.name || 'Kopfdaten'" [completed]="headerComplete()">
-      <mat-form-field appearance="fill">
+      <div class="inputFieldWrapper">
+      <mat-form-field class="mat-form-field-flex" appearance="fill">
         <mat-label>Umfragename</mat-label>
         <input type="text" matInput formControlName="name">
         <mat-error>{{errorMessageService.genericFormError(formGroup.get('name'))}}</mat-error>
-      </mat-form-field><br>
-      <mat-form-field appearance="fill">
+      </mat-form-field>
+      </div>
+      <div>
+      <mat-form-field class="mat-form-field-flex" appearance="fill">
         <mat-label>Beschreibung</mat-label>
         <textarea matInput formControlName="description"></textarea>
         <mat-error>{{errorMessageService.genericFormError(formGroup.get('description'))}}</mat-error>
-      </mat-form-field><br>
-      <mat-checkbox formControlName="anonymousParticipation">Erlaube anonyme Antworten</mat-checkbox><br><br>
-      <mat-form-field appearance="fill">
+      </mat-form-field>
+      </div>
+      <mat-checkbox formControlName="anonymousParticipation"><span class="newLine">Erlaube anonyme Antworten</span>
+      </mat-checkbox><br><br>
+      <mat-form-field class="mat-form-field-flex" appearance="fill">
         <mat-label>Von</mat-label>
         <input type="localdatetime" [min]="yesterday" matInput [ngxMatDatetimePicker]="startTime" formControlName="startDate">
         <mat-datepicker-toggle matSuffix [for]="$any(startTime)"></mat-datepicker-toggle>
         <ngx-mat-datetime-picker [defaultTime]="[0,0,0]" #startTime></ngx-mat-datetime-picker>
         <mat-error>{{errorMessageService.genericFormError(formGroup.get('startDate'))}}</mat-error>
       </mat-form-field><br>
-      <mat-form-field appearance="fill">
+      <mat-form-field class="mat-form-field-flex" appearance="fill">
         <mat-label>Bis</mat-label>
         <input type="localdatetime" [min]="(formGroup.get('startDate')?.value || yesterday)" matInput [ngxMatDatetimePicker]="endTime" formControlName="endDate">
         <mat-datepicker-toggle matSuffix [for]="$any(endTime)"></mat-datepicker-toggle>
         <ngx-mat-datetime-picker [defaultTime]="[24,0,0]" #endTime></ngx-mat-datetime-picker>
         <mat-error>{{errorMessageService.genericFormError(formGroup.get('endDate'))}}</mat-error>
       </mat-form-field><br>
-      <mat-checkbox formControlName="openAccess">Liste die Umfrage in der Liste auf.</mat-checkbox><br><br>
+      <mat-checkbox  formControlName="openAccess"><span class="newLine">Liste die Umfrage in der Liste auf.</span>
+      </mat-checkbox><br><br>
       <button style="float:right;" type="button" mat-raised-button color="primary" matStepperNext [disabled]="!headerComplete()">
         <mat-icon>navigate_next</mat-icon>
       </button>
@@ -35,7 +42,7 @@
       <mat-step label="{{ formGroup.value.questionGroups[i].title || 'Frageblock '+(i+1)}}" *ngFor="let questionGroup of getQuestionGroups().controls; index as i"
         [formGroupName]="i" [stepControl]="formGroup.get(['questionGroups', i])!">
         <div>
-          <mat-form-field style="margin-top: 1em;" appearance="fill">
+          <mat-form-field class="mat-form-field-flex" style="margin-top: 1em;" appearance="fill">
             <mat-label>Frageblocküberschrift</mat-label>
             <input type="text" matInput formControlName="title">
             <mat-error>{{errorMessageService.genericFormError(formGroup.get(['questionGroups', i, 'title']))}}</mat-error>
@@ -44,7 +51,7 @@
             <mat-card class="bottomspace" *ngFor="let question of getQuestions(questionGroup).controls; index as j"
               [formGroupName]="j">
               <mat-card-content>
-                <mat-form-field>
+                <mat-form-field class="mat-form-field-flex">
                   <mat-label>Frage {{j+1}}</mat-label>
                   <input type="text" matInput formControlName="text">
                   <mat-error>{{errorMessageService.genericFormError(formGroup.get(['questionGroups', i, 'questions', j, 'text']))}}</mat-error>
@@ -58,21 +65,21 @@
                       <mat-checkbox formControlName="multipleSelect" #multi="matCheckbox">Mehrfachauswahl</mat-checkbox>
                       <br>
                       <ng-template [ngIf]="multi.checked">
-                        <mat-form-field>
+                        <mat-form-field class="mat-form-field-flex">
                           <mat-label>Minimale Auswahlanzahl</mat-label>
                           <input type="number" matInput formControlName="minSelect">
                           <mat-error>{{errorMessageService.genericFormError(formGroup.get(['questionGroups', i, 'questions', j, 'checkboxGroup', 'minSelect']))}}</mat-error>
                         </mat-form-field><br>
-                        <mat-form-field>
+                        <mat-form-field class="mat-form-field-flex">
                           <mat-label>Maximale Auswahlanzahl</mat-label>
                           <input type="number" matInput formControlName="maxSelect">
                           <mat-error>{{errorMessageService.genericFormError(formGroup.get(['questionGroups', i, 'questions', j, 'checkboxGroup', 'maxSelect']))}}</mat-error>
-                        </mat-form-field><br>
+                        </mat-form-field>
                       </ng-template>
                       <div formArrayName="checkboxes">
                         <div style="margin-bottom: 1ex;"
                           *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
-                          <mat-form-field>
+                          <mat-form-field class="mat-form-field-flex">
                             <mat-label>Antwortmöglichkeit {{k+1}}</mat-label>
                             <input type="text" matInput formControlName="text">
                             <mat-error>{{errorMessageService.genericFormError(formGroup.get(['questionGroups', i, 'questions', j, 'checkboxGroup', 'checkboxes', k, 'text']))}}</mat-error>
@@ -134,8 +141,11 @@
 
   </mat-stepper>
   <!--<button mat-mini-fab color="primary" style="margin-right: 1ex"><mat-icon>preview</mat-icon></button>-->
-  <a mat-raised-button color="primary" routerLink="..">Abbrechen</a>
-  <button mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid">
+  <div class="bottomSpace">
+    <a mat-raised-button color="primary" routerLink="..">Abbrechen</a>
+  <button class="right" mat-raised-button color="primary" type="submit" [disabled]="formGroup.invalid">
     Vorschau
   </button>
+  </div>
 </form>
+

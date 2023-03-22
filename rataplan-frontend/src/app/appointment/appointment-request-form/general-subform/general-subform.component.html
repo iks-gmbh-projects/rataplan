@@ -1,7 +1,8 @@
-<form [formGroup]="generalSubform">
+<div class="center">
+  <form [formGroup]="generalSubform">
   <div>
     <div>
-      <mat-form-field class="form-size"
+      <mat-form-field
                       appearance="fill">
         <mat-label>Titel</mat-label>
         <input type="text"
@@ -19,7 +20,7 @@
     </div>
     <div *ngIf="showDescription">
       <div>
-        <mat-form-field class="form-size"
+        <mat-form-field
                         appearance="fill">
           <mat-label>Beschreibung</mat-label>
           <textarea type="text"
@@ -68,11 +69,14 @@
       </div>
     </div>
   </div>
-  <button [disabled]="this.generalSubform.invalid"
-          class="next-button"
+  <div class="button-space">
+    <button [disabled]="this.generalSubform.invalid"
+          class="right"
           type="button"
           color="primary"
           mat-raised-button
           (click)="nextPage()">Weiter
-  </button>
+    </button>
+  </div>
 </form>
+</div>

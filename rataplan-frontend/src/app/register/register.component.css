@@ -1,20 +1,2 @@
-.form-container {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-items: center;
-}
 
-.mat-form-field {
-  width: 80vw;
-  max-width: 400px;
-}
 
-.username {
-  margin-top: 21.5px;
-}
-
-.submit-container {
-  display: flex;
-  justify-content: flex-end;
-}

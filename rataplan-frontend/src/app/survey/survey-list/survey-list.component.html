@@ -1,11 +1,15 @@
-<div class="wrapper">
-  <button mat-icon-button aria-label="Neu Laden" [disabled]="busy" type="button"
+
+<div class="centered">
+<div class=>
+  <a class="button" mat-raised-button color="primary" routerLink="../create">Erstellen</a>
+  <button mat-raised-button aria-label="Neu Laden" [disabled]="busy" type="button"
     (click)="updateList()">
     <mat-icon>{{error ? 'sync_problem' : 'sync'}}</mat-icon>
   </button>
-  <a class="rightSpace" mat-raised-button color="primary" routerLink="../create">Erstellen</a>
-  <hr>
-  <h3>Umfragen</h3>
+</div>
+  <div>
+  <h2>Umfragen</h2>
+  </div>
   <div>
     <mat-spinner *ngIf="busy; else done"></mat-spinner>
     <ng-template #done>
