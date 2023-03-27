@@ -1,12 +1,14 @@
-<div class="wrapper">
+<div>
   <ng-template #missing>
     <h3>Umfrage existiert nicht</h3>
     <p>Wie sind sie hierhin gekommen?</p>
   </ng-template>
   <ng-template [ngIf]="survey" [ngIfElse]="missing">
-    <h3>
+
+    <h2 class="middle">
       {{survey.name}}
-    </h3>
+    </h2>
+    <div class="centered">
     <mat-spinner *ngIf="busy; else finished"></mat-spinner>
     <ng-template #finished>
       <div *ngIf="error; else success">Fehler beim Laden der Daten</div>
@@ -45,9 +47,12 @@
       </div>
     </ng-template>
   </ng-template>
+  </div>
 </ng-template>
+<div class="rightButton">
 <a mat-raised-button color="primary" routerLink="..">Zurück</a>
 <button *ngIf="!error" [disabled]="busy" mat-icon-button color="primary" (click)="downloadResults()">
   <mat-icon>download</mat-icon>
 </button>
+</div>
 </div>

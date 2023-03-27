@@ -5,3 +5,20 @@
 .bottomspace {
   margin-bottom: 1ex;
 }
+
+.middle{
+  display: flex;
+  justify-content: center;
+}
+
+.centered{
+  max-width: 80%;
+  padding: 1rem 5% 1rem 10%;
+}
+
+.rightButton{
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 10%;
+  max-width: 80%;
+}

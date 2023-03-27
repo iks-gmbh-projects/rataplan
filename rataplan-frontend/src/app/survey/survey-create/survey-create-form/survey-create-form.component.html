@@ -44,7 +44,7 @@
         <div>
           <mat-form-field class="mat-form-field-flex" style="margin-top: 1em;" appearance="fill">
             <mat-label>Frageblocküberschrift</mat-label>
-            <input type="text" matInput formControlName="title">
+            <textarea maxlength="255" cols="40" class="maxSize" type="text" matInput formControlName="title"></textarea>
             <mat-error>{{errorMessageService.genericFormError(formGroup.get(['questionGroups', i, 'title']))}}</mat-error>
           </mat-form-field>
           <div formArrayName="questions">
