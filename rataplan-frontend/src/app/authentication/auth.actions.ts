@@ -17,7 +17,9 @@ export const AuthActions = {
   RESET_PASSWORD_ERROR_ACTION: "[Auth] Reset Password Error",
   CHANGE_EMAIL_ACTION: "[Auth] Change Email",
   CHANGE_EMAIL_ERROR_ACTION: "[Auth] Change Email Error",
+  CHANGE_PROFILE_DETAILS_ACTION:"[Auth] Change Profile Details",
   CHANGE_DISPLAYNAME_ACTION: "[Auth] Change Displayname",
+  CHANGE_PROFILE_DETAILS_SUCCESS_ACTION:"[Auth] Change Profile Details Success",
   CHANGE_DISPLAYNAME_ERROR_ACTION: "[Auth] Change Displayname Error",
   UPDATE_USERDATA_ACTION: "[Auth] Update Userdata",
   UPDATE_USERDATA_SUCCESS_ACTION: "[Auth] Update Userdata Success",
@@ -26,6 +28,24 @@ export const AuthActions = {
   DELETE_USER_SUCCESS_ACTION: "[Auth] Delete User Success",
   DELETE_USER_ERROR_ACTION: "[Auth] Delete User Error",
 } as const;
+
+
+export class ChangeProfileDetailsAction implements Action {
+
+  readonly type = AuthActions.CHANGE_PROFILE_DETAILS_ACTION;
+
+  constructor(readonly payload:FrontendUser) {
+  }
+
+}
+export class ChangeProfileDetailsSuccessAction implements Action {
+
+  readonly type = AuthActions.CHANGE_PROFILE_DETAILS_SUCCESS_ACTION;
+
+  constructor(readonly payload:FrontendUser) {
+  }
+
+}
 
 export class RegisterAction implements Action {
   readonly type = AuthActions.REGISTER_ACTION;
@@ -198,4 +218,6 @@ export type AuthActions =
   | LogoutAction
   | DeleteUserAction
   | DeleteUserSuccessAction
-  | DeleteUserErrorAction;
+  | DeleteUserErrorAction
+  |ChangeProfileDetailsAction
+  |ChangeProfileDetailsSuccessAction;

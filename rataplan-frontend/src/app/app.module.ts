@@ -50,7 +50,7 @@ import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { LoginComponent } from './login/login.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
-import { ProfileComponent } from './profile/profile.component';
+import { EditProfileComponent } from './profile/edit-profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
@@ -59,6 +59,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { environment } from "../environments/environment";
 import { appReducers } from "./app.reducers";
 import { appEffects } from "./app.effects";
+import { ViewProfileComponent } from './view-profile/view-profile.component';
 
 registerLocaleData(localeDE);
 
@@ -82,7 +83,7 @@ registerLocaleData(localeDE);
     DatepickerSubformComponent,
     EmailSubformComponent,
     LinkSubformComponent,
-    ProfileComponent,
+    EditProfileComponent,
     AppointmentComponent,
     MemberDecisionSubformComponent,
     ChangePasswordComponent,
@@ -90,6 +91,7 @@ registerLocaleData(localeDE);
     OverviewSubformComponent,
     DeleteProfileComponent,
     VoteListComponent,
+    ViewProfileComponent,
   ],
   imports: [
     BrowserModule,

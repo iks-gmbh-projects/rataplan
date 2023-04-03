@@ -28,7 +28,8 @@
       </mat-form-field>
     </div>
     <div class="submit-container">
-      <button type="submit" mat-raised-button color="warn" [disabled]="busy || formGroup.invalid">Profil endgültig löschen</button>
+      <button style="margin: 10px" type="submit" mat-raised-button color="warn" routerLink="/view-profile">Züruck</button>
+      <button style="margin: 10px" type="submit" mat-raised-button color="primary" [disabled]="busy || formGroup.invalid">Profil endgültig löschen</button>
     </div>
     <mat-spinner *ngIf="busy"></mat-spinner>
   </form>

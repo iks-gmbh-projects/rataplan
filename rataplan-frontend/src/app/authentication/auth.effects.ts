@@ -1,12 +1,19 @@
-import { Injectable } from "@angular/core";
-import { Actions, concatLatestFrom, createEffect, ofType, rootEffectsInit } from "@ngrx/effects";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Actions, concatLatestFrom, createEffect, ofType, rootEffectsInit } from '@ngrx/effects';
+import { EMPTY, from, of } from 'rxjs';
+import { catchError, concatMap, map, switchMap, tap } from 'rxjs/operators';
+
+import { FrontendUser } from '../models/user.model';
+import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 import {
   AuthActions,
   AutoLoginAction,
   ChangeDisplaynameAction,
   ChangeDisplaynameErrorAction,
   ChangeEmailAction,
-  ChangeEmailErrorAction,
+  ChangeEmailErrorAction, ChangeProfileDetailsAction, ChangeProfileDetailsSuccessAction,
   DeleteUserAction,
   DeleteUserErrorAction,
   DeleteUserSuccessAction,
@@ -21,16 +28,10 @@ import {
   ResetPasswordSuccessAction,
   UpdateUserdataAction,
   UpdateUserdataSuccessAction
-} from "./auth.actions";
-import { catchError, concatMap, map, switchMap, tap } from "rxjs/operators";
-import { EMPTY, from, of } from "rxjs";
-import { BackendUrlService } from "../services/backend-url-service/backend-url.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { FrontendUser } from "../models/user.model";
-import { Router } from "@angular/router";
+} from './auth.actions';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class AuthEffects {
   constructor(
@@ -41,80 +42,96 @@ export class AuthEffects {
   ) {
   }
 
-  registerUser = createEffect(() => this.actions$.pipe(
+
+  changeProfileDetails = createEffect(() => { return this.actions$.pipe(
+    ofType(AuthActions.CHANGE_PROFILE_DETAILS_ACTION),
+    concatLatestFrom(() => this.urlService.authURL$),
+    switchMap(([displaynameAction, authURL]: [ChangeProfileDetailsAction, string]) => {
+      console.log(displaynameAction.payload + 'in effect');
+      const url = authURL + 'users/profile/updateProfileDetails';
+      const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
+      return this.httpClient.post<FrontendUser>(url, displaynameAction.payload, httpOptions)
+        .pipe(
+          map(success => success ? new ChangeProfileDetailsSuccessAction(displaynameAction.payload) : new ChangeDisplaynameErrorAction(success)),
+          catchError(err => of(new ChangeDisplaynameErrorAction(err)))
+        );
+    })
+  ); },{ dispatch:true });
+
+  registerUser = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.REGISTER_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([action, authURL]: [RegisterAction, string]) => {
       const url = authURL + 'users/register';
 
-      return this.httpClient.post<FrontendUser>(url, action.payload, {withCredentials: true})
+      return this.httpClient.post<FrontendUser>(url, action.payload, { withCredentials: true })
         .pipe(
           map(userData => new RegisterSuccessAction(userData)),
           catchError(err => of(new RegisterErrorAction(err))),
-          tap(() => this.router.navigateByUrl(action.redirect || "/"))
+          tap(() => this.router.navigateByUrl(action.redirect || '/'))
         );
     })
-  ));
+  ); });
 
-  autoLoginStart = createEffect(() => this.actions$.pipe(
+  autoLoginStart = createEffect(() => { return this.actions$.pipe(
     ofType(rootEffectsInit),
     map(() => new AutoLoginAction())
-  ));
+  ); });
 
-  autoLogin = createEffect(() => this.actions$.pipe(
+  autoLogin = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.AUTO_LOGIN_ACTION),
     concatMap(() => this.urlService.authURL$),
     map(authURL => {
-      let url = authURL + 'users/profile'
-      return this.httpClient.get<FrontendUser>(url, {withCredentials: true})
+      const url = authURL + 'users/profile';
+      return this.httpClient.get<FrontendUser>(url, { withCredentials: true });
     }),
     switchMap(observable => observable.pipe(
       map(userData => new LoginSuccessAction(userData)),
       catchError(err => of(new LoginErrorAction(err.status == 401 ? undefined : err)))
     ))
-  ));
+  ); });
 
-  manualLogin = createEffect(() => this.actions$.pipe(
+  manualLogin = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.LOGIN_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([action, authURL]: [LoginAction, string]) => {
-      let url = authURL + 'users/login'
-      return this.httpClient.post<FrontendUser>(url, action.payload, {withCredentials: true})
+      const url = authURL + 'users/login';
+      return this.httpClient.post<FrontendUser>(url, action.payload, { withCredentials: true })
         .pipe(
-          tap(() => this.router.navigateByUrl(action.redirect || "/")),
+          tap(() => this.router.navigateByUrl(action.redirect || '/')),
           map(userData => new LoginSuccessAction(userData)),
           catchError(err => of(new LoginErrorAction(err)))
         );
     })
-  ));
+  ); });
 
-  resetPassword = createEffect(() => this.actions$.pipe(
+  resetPassword = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.RESET_PASSWORD_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([resetPasswordAction, authURL]: [ResetPasswordAction, string]) => {
       const url = authURL + 'users/resetPassword';
 
       return this.httpClient.post<boolean>(url, resetPasswordAction.payload, {
-        headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})
+        headers: new HttpHeaders({ 'Content-Type': 'application/json;charset=utf-8' })
       }).pipe(
         map(success => success ? new ResetPasswordSuccessAction() : new ResetPasswordErrorAction(success)),
         catchError(err => of(new ResetPasswordErrorAction(err)))
       );
     }),
-  ));
+  ); });
 
-  resetPasswordSuccess = createEffect(() => this.actions$.pipe(
+  resetPasswordSuccess = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.RESET_PASSWORD_SUCCESS_ACTION),
-    switchMap(() => from(this.router.navigateByUrl("/login")))
-  ), {dispatch: false});
+    switchMap(() => from(this.router.navigateByUrl('/login')))
+  ); }, { dispatch: false });
 
-  changeEmail = createEffect(() => this.actions$.pipe(
+  changeEmail = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.CHANGE_EMAIL_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([emailAction, authURL]: [ChangeEmailAction, string]) => {
-      const url = authURL + 'users/profile/changeEmail'
+      const url = authURL + 'users/profile/changeEmail';
 
-      const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+      const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
       return this.httpClient.post<boolean>(url, emailAction.email, httpOptions)
         .pipe(
@@ -122,15 +139,15 @@ export class AuthEffects {
           catchError(err => of(new ChangeEmailErrorAction(err)))
         );
     })
-  ));
+  ); });
 
-  changeDisplayname = createEffect(() => this.actions$.pipe(
+  changeDisplayname = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.CHANGE_DISPLAYNAME_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([displaynameAction, authURL]: [ChangeDisplaynameAction, string]) => {
-      const url = authURL + 'users/profile/changeDisplayName'
+      const url = authURL + 'users/profile/changeDisplayName';
 
-      const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+      const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
       return this.httpClient.post<boolean>(url, displaynameAction.displayname, httpOptions)
         .pipe(
@@ -138,45 +155,45 @@ export class AuthEffects {
           catchError(err => of(new ChangeDisplaynameErrorAction(err)))
         );
     })
-  ));
+  ); });
 
-  updateUserData = createEffect(() => this.actions$.pipe(
+  updateUserData = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.UPDATE_USERDATA_ACTION),
     switchMap(() => this.urlService.authURL$),
     concatMap(authURL => {
-      let url = authURL + 'users/profile'
-      const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+      const url = authURL + 'users/profile';
+      const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
       return this.httpClient.get<FrontendUser>(url, httpOptions).pipe(
         catchError(() => EMPTY)
-      )
+      );
     }),
     map(userData => new UpdateUserdataSuccessAction(userData))
-  ));
+  ); });
 
-  logoutUser = createEffect(() => this.actions$.pipe(
+  logoutUser = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.LOGOUT_ACTION),
     switchMap(() => this.urlService.authURL$),
     switchMap(authURL => {
-      let url = authURL + 'users/logout'
-      return this.httpClient.get<any>(url, {withCredentials: true}).pipe(
+      const url = authURL + 'users/logout';
+      return this.httpClient.get<any>(url, { withCredentials: true }).pipe(
         catchError(() => EMPTY)
       );
     })
-  ), {dispatch: false});
+  ); }, { dispatch: false });
 
-  deleteUser = createEffect(() => this.actions$.pipe(
+  deleteUser = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.DELETE_USER_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([action, url]: [DeleteUserAction, string]) => {
-      return this.httpClient.delete(url + "users/profile", {
+      return this.httpClient.delete(url + 'users/profile', {
         body: action.payload,
         withCredentials: true,
       }).pipe(
-        tap(() => this.router.navigateByUrl("/")),
+        tap(() => this.router.navigateByUrl('/')),
         map(() => new DeleteUserSuccessAction()),
         catchError(err => of(new DeleteUserErrorAction(err))),
       );
     })
-  ));
+  ); });
 }

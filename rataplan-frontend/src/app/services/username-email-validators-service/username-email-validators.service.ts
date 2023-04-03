@@ -18,7 +18,7 @@ export class UsernameEmailValidatorsService {
     return this.urlService.authURL$.pipe(
       exhaustMap(authURL => {
         const url = authURL + 'users/mailExists';
-
+        console.log(mail);
         return this.http.post<boolean>(url, mail, {headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})});
       })
     );

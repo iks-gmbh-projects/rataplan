@@ -48,7 +48,7 @@ export class ChangePasswordComponent implements OnInit {
         this.snackBar.open('Passwort erfolgreich geändert', '', {
           duration: 3000
         });
-        this.router.navigate(["/profile"]);
+        this.router.navigate(["/view-profile"]);
       },
       error: () => {
         this.oldPassword.setErrors({'wrongPassword': true});
