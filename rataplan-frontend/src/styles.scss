@@ -1,7 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+$line-height: 36px;
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 
 .form-field-max-length-wrapper .mat-form-field-wrapper {
@@ -13,6 +22,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   width: 80vw;
   max-width: 400px;
 }
+
 .survey-wrapper {
   /*max-width: 80%;*/
   /*padding: 1rem 5% 10% 10%;*/
@@ -27,38 +37,60 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .username {
   margin-top: 21.5px;
 }
+
 .links {
   display: flex;
   width: 80vw;
   max-width: 400px;
   justify-content: space-evenly;
 }
+
 .right {
   float: right;
 }
+
 .button {
   display: flex;
   justify-content: flex-end;
   width: 80vw;
   max-width: 400px;
   margin-top: 1rem;
+  max-height: $line-height;
+
+  button #icon {
+    max-height: 100%;
+  }
 }
+
 .content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
+
 .submit-container {
   display: flex;
   justify-content: flex-end;
 }
+
 .wrapper {
-  padding: 50px;
+  padding: 0 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+
+/*Appointment*/
+
+
+/*Survey */
+
+.width {
+  width: 400px;
+  max-width: 80%;
 }
 /* Main-Nav */
 
@@ -76,80 +108,54 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   z-index: 100;
 }
 
-.fillRemainingSpace{
+.fillRemainingSpace {
   flex: 1 1 auto;
 }
-.button-space{
+
+.button-space {
   margin-top: 1rem;
 }
-.submit-button{
+
+.submit-button {
   margin-left: 1rem;
 }
+
 /* Homepage*/
 
-.neue-abstimmung{
-  width:40%;
-  margin-left:30%;
-  margin-right:30%;
+.neue-abstimmung {
+  width: 40%;
+  margin-left: 30%;
+  margin-right: 30%;
 }
 
-.logo{
+.logo {
   width: 40%;
-  margin-left:30%;
-  margin-right:30%;
+  margin-left: 30%;
+  margin-right: 30%;
 }
+
 /* Legals*/
 
 .inner {
-  padding: 0 20px;
+  padding: 0 10px;
 }
 
-.wrapper {
+.legals-wrapper {
   overflow-y: scroll;
   padding: 0 30px;
 }
+
 .centered {
-  display:flex;
+  display: flex;
   justify-content: center;
 
 }
+
 .bold {
   font-weight: bold;
 }
-/* Loading */
 
-.lds-ring {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border: 8px solid #3f51b5;
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: #3f51b5 transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+
+.mat-radio-label-content{
+  white-space: break-spaces
 }

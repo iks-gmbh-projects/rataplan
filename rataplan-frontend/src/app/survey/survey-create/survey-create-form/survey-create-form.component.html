@@ -1,7 +1,7 @@
 
 <form class="form-field-max-length-wrapper" *ngIf="formGroup" [formGroup]="formGroup" (ngSubmit)="preview()">
-  <mat-stepper orientation="vertical" #stepper="matStepper" id="survey">
-    <mat-step [label]="formGroup.value.name || 'Kopfdaten'" [completed]="headerComplete()">
+  <mat-stepper class="max-width" orientation="vertical" #stepper="matStepper" id="survey">
+    <mat-step  [label]="formGroup.value.name || 'Kopfdaten'" [completed]="headerComplete()">
       <div class="inputFieldWrapper">
       <mat-form-field class="mat-form-field-flex" appearance="fill">
         <mat-label>Umfragename</mat-label>
