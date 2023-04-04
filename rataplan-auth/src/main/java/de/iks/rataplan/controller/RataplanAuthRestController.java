@@ -77,7 +77,7 @@ public class RataplanAuthRestController {
     }
 
     @PostMapping(value = "/users/login", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<UserDTO> loginUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO user) {
         UserDTO userDTO = userService.loginUser(user);
 
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
@@ -94,24 +94,24 @@ public class RataplanAuthRestController {
         return ResponseEntity.ok().headers(responseHeaders).body(true);
     }
 
-//    @DeleteMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    public ResponseEntity<?> deleteUserData(
-//            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-//            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-//            @RequestBody DeleteUserRequest request
-//    ) {
-//        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
-//        String username = jwtTokenService.getUsernameFromToken(token);
-//        User dbUser = userService.getUserData(username);
-//        userService.verifyPasswordOrThrow(dbUser, request.getPassword());
-//        try {
-//            userService.deleteUser(dbUser, request);
-//        } catch (UserDeletionException | ResourceAccessException ex) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-//        }
-//
-//        return logoutUser(token);
-//    }
+    @DeleteMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<?> deleteUserData(
+            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+            @RequestBody DeleteUserRequest request
+    ) {
+        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
+        String username = jwtTokenService.getUsernameFromToken(token);
+        User dbUser = userService.getUserData(username);
+        userService.verifyPasswordOrThrow(dbUser, request.getPassword());
+        try {
+            userService.deleteUser(dbUser, request);
+        } catch (UserDeletionException | ResourceAccessException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+
+        return logoutUser(token);
+    }
 
     @GetMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UserDTO> getUserData(

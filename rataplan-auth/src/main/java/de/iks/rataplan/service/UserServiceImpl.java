@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setId(null);
-            return userRepository.saveAndFlush(user);
+            return createUserDTO(userRepository.saveAndFlush(user));
         }
     }
 
@@ -61,7 +61,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDTO loginUser(User user) {
+    public UserDTO loginUser(UserDTO userDto) {
+        User user = new User(null,userDto.getMail(),userDto.getUsername(),userDto.getPassword(),userDto.getDisplayname());
         user.trimUserCredentials();
         if(user.invalidLogin()) throw new InvalidUserDataException();
         User dbUser;

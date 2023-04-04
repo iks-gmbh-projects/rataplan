@@ -26,7 +26,6 @@ public class User implements Serializable {
     private Instant creationTime;
     @UpdateTimestamp
     private Instant lastUpdated;
-    @Version
     private Integer version;
 
     private Integer id;
@@ -74,10 +73,10 @@ public class User implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
+    @Version
     public Integer getVersion() {
         return version;
     }
-
     public void setVersion(Integer version) {
         this.version = version;
     }
@@ -168,8 +167,6 @@ public class User implements Serializable {
         final Instant now = Instant.now();
         if(this.creationTime == null) this.creationTime = now;
         this.lastUpdated = now;
-        if(this.version == null) this.version = 1;
-        else this.version++;
     }
 
 	/*@Override

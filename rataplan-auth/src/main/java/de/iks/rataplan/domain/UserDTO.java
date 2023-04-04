@@ -38,6 +38,13 @@ public class UserDTO  {
         this.displayname = displayName;
         this.mail = mail;
     }
+    public UserDTO(int id, String userName, String displayName, String mail,String password) {
+        this.id = id;
+        this.username = userName;
+        this.displayname = displayName;
+        this.mail = mail;
+        this.password = password;
+    }
 
     public UserDTO (User user){
         this(user.getId(),user.getUsername(),user.getDisplayname(),user.getMail());

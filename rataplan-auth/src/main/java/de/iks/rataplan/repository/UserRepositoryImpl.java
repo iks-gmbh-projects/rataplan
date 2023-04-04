@@ -1,7 +1,6 @@
 package de.iks.rataplan.repository;
 
 import de.iks.rataplan.domain.User;
-import de.iks.rataplan.domain.UserDTO;
 import de.iks.rataplan.service.CryptoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,13 +15,13 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findOneByMail(String cmail) {
         final String mail = cmail.toLowerCase();
-        return userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail), true).orElseGet(() -> userRepository.findOneByMailAndEncrypted(mail, false).orElse(null));
+        return cryptoService.ensureEncrypted(userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail), true).orElseGet(() -> userRepository.findOneByMailAndEncrypted(mail, false).orElse(null)));
     }
 
     @Override
     public User findOneByUsername(String cusername) {
         final String username = cusername.toLowerCase();
-        return userRepository.findOneByUsernameAndEncrypted(cryptoService.encryptDB(username), true).orElseGet(() -> userRepository.findOneByUsernameAndEncrypted(username, false).orElse(null));
+        return cryptoService.ensureEncrypted(userRepository.findOneByUsernameAndEncrypted(cryptoService.encryptDB(username), true).orElseGet(() -> userRepository.findOneByUsernameAndEncrypted(username, false).orElse(null)));
     }
 
     @Override
@@ -43,14 +42,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public UserDTO saveAndFlush(User user) {
+    public User saveAndFlush(User user) {
         user.setUsername(user.getUsername().toLowerCase());
         user.setMail(user.getMail().toLowerCase());
         if (user.getId() == null && (userRepository.existsByUsernameAndEncrypted(user.getUsername(), false) || userRepository.existsByMailAndEncrypted(user.getMail(), false))) {
             throw new DataIntegrityViolationException("Username or Email already in use");
         }
-        User savedUser = userRepository.saveAndFlush(cryptoService.ensureEncrypted(user));
-        return new UserDTO(savedUser.getId(),cryptoService.decryptDB(savedUser.getUsername()),cryptoService.decryptDB(savedUser.getDisplayname()),cryptoService.decryptDB(savedUser.getMail()));
+        return userRepository.saveAndFlush(cryptoService.ensureEncrypted(user));
     }
 
     public void updateUser(User user){
