@@ -96,9 +96,9 @@ public class UserServiceImpl implements UserService {
             throw new WrongCredentialsException("These credentials have no match!");
         }
     }
-    
+
     @Override
-    public UserDTO getUserData(String username) {
+    public UserDTO getUserDtoFromUsername(String username) {
         User dbUser;
         if (username != null) {
             dbUser = userRepository.findOneByUsername(username.trim());
@@ -106,42 +106,51 @@ public class UserServiceImpl implements UserService {
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
     }
+    @Override
+    public User getUserData(String username) {
+        User dbUser;
+        if (username != null) {
+            dbUser = userRepository.findOneByUsername(username.trim());
+            return dbUser;
+        }
+        throw new InvalidTokenException("Token is not allowed to get data.");
+    }
 
     @Override
     public Boolean changePassword(String username, PasswordChange passwords) {
-//        User user = this.getUserData(username);
-//        if (user != null && passwordEncoder.matches(passwords.getOldPassword(), user.getPassword())) {
-//            user.setPassword(passwordEncoder.encode(passwords.getNewPassword()));
-//            userRepository.saveAndFlush(user);
-//            return true;
-//        } else {
+        User user = this.getUserData(username);
+        if (user != null && passwordEncoder.matches(passwords.getOldPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(passwords.getNewPassword()));
+            userRepository.saveAndFlush(user);
+            return true;
+        } else {
             return false;
-//        }
+        }
     }
 
     @Override
     public Boolean changeEmail(String username, String email) {
-//        User user = this.getUserData(username);
-//        if (user != null) {
-//            user.setMail(email);
-//            user.trimUserCredentials();
-//            if(user.invalidFull()) throw new InvalidUserDataException();
-//            userRepository.saveAndFlush(user);
-//            return true;
-//        }
+        User user = this.getUserData(username);
+        if (user != null) {
+            user.setMail(email);
+            user.trimUserCredentials();
+            if(user.invalidFull()) throw new InvalidUserDataException();
+            userRepository.saveAndFlush(user);
+            return true;
+        }
         return false;
     }
 
     @Override
     public Boolean changeDisplayName(String username, String displayName) {
-//        User user = this.getUserData(username);
-//        if (user != null) {
-//            user.setDisplayname(displayName);
-//            user.trimUserCredentials();
-//             if(user.invalidFull()) throw new InvalidUserDataException();
-//            userRepository.saveAndFlush(user);
-//            return true;
-//        }
+        User user = this.getUserData(username);
+        if (user != null) {
+            user.setDisplayname(displayName);
+            user.trimUserCredentials();
+            if(user.invalidFull()) throw new InvalidUserDataException();
+            userRepository.saveAndFlush(user);
+            return true;
+        }
         return false;
     }
 

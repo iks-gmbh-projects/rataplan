@@ -10,6 +10,8 @@ import de.iks.rataplan.exceptions.WrongCredentialsException;
 public interface UserService {
     UserDTO registerUser(UserDTO user);
 
+    UserDTO getUserDtoFromUsername(String username);
+
     boolean checkIfMailExists(String mail);
 
     boolean checkIfUsernameExists(String username);
@@ -19,7 +21,7 @@ public interface UserService {
     boolean verifyPassword(User user, String password);
     void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;
 
-    UserDTO getUserData(String username);
+    User getUserData(String username);
 
     Boolean changePassword(String token, PasswordChange passwords);
 

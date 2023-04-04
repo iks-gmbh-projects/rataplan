@@ -120,7 +120,7 @@ public class RataplanAuthRestController {
     ) {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         String username = jwtTokenService.getUsernameFromToken(token);
-        UserDTO userDTO = userService.getUserData(username);
+        UserDTO userDTO = userService.getUserDtoFromUsername(username);
 
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
         return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
