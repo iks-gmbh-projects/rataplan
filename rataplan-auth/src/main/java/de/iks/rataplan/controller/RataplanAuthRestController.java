@@ -96,9 +96,9 @@ public class RataplanAuthRestController {
 
 //    @DeleteMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 //    public ResponseEntity<?> deleteUserData(
-//        @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-//        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-//        @RequestBody DeleteUserRequest request
+//            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+//            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+//            @RequestBody DeleteUserRequest request
 //    ) {
 //        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
 //        String username = jwtTokenService.getUsernameFromToken(token);
@@ -106,26 +106,26 @@ public class RataplanAuthRestController {
 //        userService.verifyPasswordOrThrow(dbUser, request.getPassword());
 //        try {
 //            userService.deleteUser(dbUser, request);
-//        } catch(UserDeletionException | ResourceAccessException ex) {
+//        } catch (UserDeletionException | ResourceAccessException ex) {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 //        }
 //
 //        return logoutUser(token);
 //    }
-//
-//    @GetMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    public ResponseEntity<User> getUserData(
-//            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-//            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie
-//    ) {
-//        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
-//        String username = jwtTokenService.getUsernameFromToken(token);
-//        User dbUser = userService.getUserData(username);
-//
-//        HttpHeaders responseHeaders = createResponseHeaders(dbUser);
-//        return new ResponseEntity<>(dbUser, responseHeaders, HttpStatus.OK);
-//    }
-//
+
+    @GetMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<UserDTO> getUserData(
+            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie
+    ) {
+        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
+        String username = jwtTokenService.getUsernameFromToken(token);
+        UserDTO userDTO = userService.getUserData(username);
+
+        HttpHeaders responseHeaders = createResponseHeaders(userDTO);
+        return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
+    }
+
 //    @PostMapping(value = "/users/profile/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<Boolean> changePassword(
 //            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
@@ -194,7 +194,7 @@ public class RataplanAuthRestController {
 //        if(user == null) return ResponseEntity.notFound().build();
 //        return ResponseEntity.ok(user.getDisplayname());
 //    }
-
+//
     private HttpHeaders createResponseHeaders(UserDTO user) {
         HttpHeaders responseHeaders = new HttpHeaders();
 
@@ -205,4 +205,5 @@ public class RataplanAuthRestController {
         return responseHeaders;
     }
 
+//}
 }

@@ -19,7 +19,7 @@ public interface UserService {
     boolean verifyPassword(User user, String password);
     void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;
 
-    User getUserData(String username);
+    UserDTO getUserData(String username);
 
     Boolean changePassword(String token, PasswordChange passwords);
 
