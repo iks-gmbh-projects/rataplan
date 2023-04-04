@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
         User user = this.getUserData(username);
         if (user != null && passwordEncoder.matches(passwords.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwords.getNewPassword()));
-            userRepository.saveAndFlush(user);
+            userRepository.updateUser(user);
             return true;
         } else {
             return false;

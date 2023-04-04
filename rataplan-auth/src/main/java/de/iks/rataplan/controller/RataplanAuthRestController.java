@@ -138,17 +138,17 @@ public class RataplanAuthRestController {
         }
 
     }
-//    @PostMapping(value = "/users/profile/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Boolean> changePassword(
-//            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-//            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-//            @RequestBody PasswordChange passwords
-//    ) {
-//        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
-//        String username = jwtTokenService.getUsernameFromToken(token);
-//        boolean success = this.userService.changePassword(username, passwords);
-//        return new ResponseEntity<>(success, HttpStatus.OK);
-//    }
+    @PostMapping(value = "/users/profile/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> changePassword(
+            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+            @RequestBody PasswordChange passwords
+    ) {
+        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
+        String username = jwtTokenService.getUsernameFromToken(token);
+        boolean success = this.userService.changePassword(username, passwords);
+        return new ResponseEntity<>(success, HttpStatus.OK);
+    }
 //
 //    @PostMapping(value = "/users/profile/changeEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<Boolean> changeEmail(
@@ -175,30 +175,30 @@ public class RataplanAuthRestController {
 //        return new ResponseEntity<>(success, HttpStatus.OK);
 //    }
 //
-//    @PostMapping("/users/forgotPassword")
-//    public boolean sendForgotPasswordMail(@RequestBody String mail) {
-//        AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
+    @PostMapping("/users/forgotPassword")
+    public boolean sendForgotPasswordMail(@RequestBody String mail) {
+        AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
+
+        ResetPasswordMailData resetPasswordMailData = new ResetPasswordMailData();
+        resetPasswordMailData.setMail(mail);
+        resetPasswordMailData.setToken(response.getToken());
+
+        mailService.sendMailForResetPassword(resetPasswordMailData);
+        return true;
+    }
 //
-//        ResetPasswordMailData resetPasswordMailData = new ResetPasswordMailData();
-//        resetPasswordMailData.setMail(mail);
-//        resetPasswordMailData.setToken(response.getToken());
-//
-//        mailService.sendMailForResetPassword(resetPasswordMailData);
-//        return true;
-//    }
-//
-//    @PostMapping(value = "/users/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
-//        if (this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
-//            int userId = this.authTokenService.getIdFromAuthToken(resetPasswordData.getToken());
-//            User user = this.userService.getUserFromId(userId);
-//            boolean success = this.userService.changePasswordByToken(user, resetPasswordData.getPassword());
-//            this.authTokenService.deleteById(userId);
-//
-//            return new ResponseEntity<>(success, HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-//    }
+    @PostMapping(value = "/users/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
+        if (this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
+            int userId = this.authTokenService.getIdFromAuthToken(resetPasswordData.getToken());
+            User user = this.userService.getUserFromId(userId);
+            boolean success = this.userService.changePasswordByToken(user, resetPasswordData.getPassword());
+            this.authTokenService.deleteById(userId);
+
+            return new ResponseEntity<>(success, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
+    }
 //
 //    @GetMapping("/users/displayName/{userId}")
 //    public ResponseEntity<?> getDisplayName(@PathVariable int userId) {
