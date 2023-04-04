@@ -26,6 +26,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SurveyToolMessageService surveyToolMessageService;
+    @Autowired
+    CryptoServiceImpl cryptoService;
     
     @Autowired
     private BackendMessageService backendMessageService;
@@ -60,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User loginUser(User user) {
+    public UserDTO loginUser(User user) {
         user.trimUserCredentials();
         if(user.invalidLogin()) throw new InvalidUserDataException();
         User dbUser;
@@ -71,12 +73,20 @@ public class UserServiceImpl implements UserService {
         }
 
         if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            return dbUser;
+            return createUserDTO(dbUser);
         } else {
             throw new WrongCredentialsException("These credentials have no match!");
         }
     }
-    
+
+    public UserDTO createUserDTO (User user){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(cryptoService.decryptDB(user.getUsername()));
+        userDTO.setMail(cryptoService.decryptDB(user.getMail()));
+        userDTO.setId(user.getId());
+        userDTO.setDisplayname(cryptoService.decryptDB(user.getDisplayname()));
+        return userDTO;
+    }
     @Override
     public boolean verifyPassword(User user, String password) {
         return passwordEncoder.matches(password, user.getPassword());

@@ -77,12 +77,12 @@ public class RataplanAuthRestController {
     }
 
     @PostMapping(value = "/users/login", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<User> loginUser(@RequestBody User user) {
-        User dbUser = userService.loginUser(user);
+    public ResponseEntity<UserDTO> loginUser(@RequestBody User user) {
+        UserDTO userDTO = userService.loginUser(user);
 
-        HttpHeaders responseHeaders = createResponseHeaders(new UserDTO());
+        HttpHeaders responseHeaders = createResponseHeaders(userDTO);
 
-        return new ResponseEntity<>(dbUser, responseHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/users/logout")

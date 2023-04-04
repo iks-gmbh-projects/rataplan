@@ -14,7 +14,7 @@ public interface UserService {
 
     boolean checkIfUsernameExists(String username);
 
-    User loginUser(User user);
+    UserDTO loginUser(User user);
     
     boolean verifyPassword(User user, String password);
     void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;

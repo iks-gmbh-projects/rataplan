@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import de.iks.rataplan.domain.UserDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,11 @@ public class JwtTokenServiceTest {
 
 	@Test
 	public void generateTokenAndValidateTokenAndGetUsernameFromToken() {
-		User user = new User();
+		UserDTO user = new UserDTO();
 
 		user.setUsername("Peter");
 		user.setMail("peter@sch.mitz");
-		user.setPassword("geheim");
+//		user.setPassword("geheim");
 
 		String token = jwtTokenService.generateToken(user);
 		assertNotNull(token);
