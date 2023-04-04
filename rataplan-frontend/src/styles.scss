@@ -12,28 +12,10 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-
-.form-field-max-length-wrapper .mat-form-field-wrapper {
-  position: relative;
-  width: 100%;
-}
-
 .mat-form-field {
   width: 80vw;
   max-width: 400px;
 }
-
-.survey-wrapper {
-  /*max-width: 80%;*/
-  /*padding: 1rem 5% 10% 10%;*/
-}
-
-@media (max-width: 400px) {
-  .survey-wrapper {
-    /*padding: 1rem 5% 10% 2%;*/
-  }
-}
-
 .username {
   margin-top: 21.5px;
 }
