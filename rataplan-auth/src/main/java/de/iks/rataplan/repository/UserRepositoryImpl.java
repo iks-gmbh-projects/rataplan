@@ -53,6 +53,17 @@ public class UserRepositoryImpl implements UserRepository {
         return new UserDTO(savedUser.getId(),cryptoService.decryptDB(savedUser.getUsername()),cryptoService.decryptDB(savedUser.getDisplayname()),cryptoService.decryptDB(savedUser.getMail()));
     }
 
+    public void updateUser(User user){
+        if (user.getId() == null && (userRepository.existsByUsernameAndEncrypted(user.getUsername(), false)
+                || userRepository.existsByMailAndEncrypted(user.getMail(), false))) {
+            throw new DataIntegrityViolationException("Username or Email already in use");
+        }else {
+            userRepository.saveAndFlush(user);
+        }
+    }
+
+
+
     @Override
     public void delete(User user) {
         userRepository.delete(user.getId());

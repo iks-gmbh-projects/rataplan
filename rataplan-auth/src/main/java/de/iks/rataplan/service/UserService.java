@@ -22,7 +22,7 @@ public interface UserService {
     void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;
 
     User getUserData(String username);
-
+    Boolean updateProfileDetails(UserDTO userDTO);
     Boolean changePassword(String token, PasswordChange passwords);
 
     Boolean changeEmail (String token, String email);

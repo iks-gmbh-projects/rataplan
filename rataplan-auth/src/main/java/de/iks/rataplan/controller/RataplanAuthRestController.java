@@ -125,7 +125,19 @@ public class RataplanAuthRestController {
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
         return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
     }
+    @PostMapping(value = "/users/profile/updateProfileDetails", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> updateProfileDetails(@RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+                                                        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+                                                        @RequestBody UserDTO userDTO) {
+        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
+        if (userService.checkIfUsernameExists(jwtTokenService.getUsernameFromToken((token)))) {
+            boolean success = userService.updateProfileDetails(userDTO);
+            return new ResponseEntity<>(success, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
+        }
 
+    }
 //    @PostMapping(value = "/users/profile/changePassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<Boolean> changePassword(
 //            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,

@@ -11,4 +11,5 @@ public interface UserRepository {
     boolean existsByUsername(String username);
     UserDTO saveAndFlush(User user);
     void delete(User user);
+    void updateUser(User user);
 }

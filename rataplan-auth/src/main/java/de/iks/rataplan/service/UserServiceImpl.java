@@ -127,7 +127,20 @@ public class UserServiceImpl implements UserService {
             return false;
         }
     }
+    @Override
+    public Boolean updateProfileDetails(UserDTO userDTO){
+        User user = userRepository.findOneByUsername(userDTO.getUsername());
+        if (user != null){
+            user = userRepository.findById(userDTO.getId());
+            user.setMail(cryptoService.encryptDB((userDTO.getMail())));
+            user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
+            userRepository.updateUser(user);
+            return true;
+        }else {
+            return false;
+        }
 
+    }
     @Override
     public Boolean changeEmail(String username, String email) {
         User user = this.getUserData(username);
