@@ -89,7 +89,7 @@ public class CryptoServiceImpl implements CryptoService {
     @Override
     public User ensureDecrypted(User user) throws CryptoException {
         if(user != null && user.isEncrypted()) {
-            user = new User(user);
+//            user = new User(user);
             user.setMail(decryptDB(user.getMail()));
             user.setUsername(decryptDB(user.getUsername()));
             user.setDisplayname(decryptDB(user.getDisplayname()));
@@ -101,7 +101,7 @@ public class CryptoServiceImpl implements CryptoService {
     @Override
     public User ensureEncrypted(User user) throws CryptoException {
         if(user != null && !user.isEncrypted()) {
-            user = new User(user);
+//            user = new User(user);
             user.setMail(encryptDB(user.getMail()));
             user.setUsername(encryptDB(user.getUsername()));
             user.setDisplayname(encryptDB(user.getDisplayname()));

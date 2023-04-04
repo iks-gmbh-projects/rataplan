@@ -49,10 +49,10 @@ public class User implements Serializable {
     public User(Integer id, String mail, String username, String password, String displayname) {
         this(id, mail, username, password, displayname, false);
     }
-
-    public User(User cpy) {
-        this(cpy.getId(), cpy.getMail(), cpy.getUsername(), cpy.getPassword(), cpy.getDisplayname(), cpy.isEncrypted());
-    }
+//
+//    public User(User cpy) {
+//        this(cpy.getId(), cpy.getMail(), cpy.getUsername(), cpy.getPassword(), cpy.getDisplayname(), cpy.isEncrypted());
+//    }
 
     public User() {
         // Required for Hibernate

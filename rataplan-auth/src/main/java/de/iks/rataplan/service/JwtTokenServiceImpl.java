@@ -3,6 +3,7 @@ package de.iks.rataplan.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.iks.rataplan.domain.UserDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 	static final String CLAIM_KEY_CREATED = "created";
 
 	@Override
-	public String generateToken(User user) {
+	public String generateToken(UserDTO user) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put(CLAIM_KEY_USERNAME, user.getUsername());
 		claims.put(CLAIM_KEY_MAIL, user.getMail());

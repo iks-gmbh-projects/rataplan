@@ -1,6 +1,7 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.DeleteUserRequest;
+import de.iks.rataplan.domain.UserDTO;
 import de.iks.rataplan.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -29,8 +30,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private BackendMessageService backendMessageService;
 
-    @Override
-    public User registerUser(User user) {
+    public UserDTO registerUser(UserDTO userDto) {
+        User user = new User(null,userDto.getMail(),userDto.getUsername(),userDto.getPassword(),userDto.getDisplayname());
         user.trimUserCredentials();
         if(user.invalidFull()) throw new InvalidUserDataException();
         if (userRepository.findOneByUsername(user.getUsername()) != null) {
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
             return userRepository.saveAndFlush(user);
         }
     }
+
 
     @Override
     public boolean checkIfMailExists(String mail) {
