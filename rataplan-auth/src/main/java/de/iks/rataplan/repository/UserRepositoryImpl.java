@@ -15,13 +15,13 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findOneByMail(String cmail) {
         final String mail = cmail.toLowerCase();
-        return cryptoService.ensureEncrypted(userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail), true).orElseGet(() -> userRepository.findOneByMailAndEncrypted(mail, false).orElse(null)));
+        return userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail), true).orElseGet(() -> userRepository.findOneByMailAndEncrypted(mail, false).orElse(null));
     }
 
     @Override
     public User findOneByUsername(String cusername) {
         final String username = cusername.toLowerCase();
-        return cryptoService.ensureEncrypted(userRepository.findOneByUsernameAndEncrypted(cryptoService.encryptDB(username), true).orElseGet(() -> userRepository.findOneByUsernameAndEncrypted(username, false).orElse(null)));
+        return userRepository.findOneByUsernameAndEncrypted(cryptoService.encryptDB(username), true).orElseGet(() -> userRepository.findOneByUsernameAndEncrypted(username, false).orElse(null));
     }
 
     @Override

@@ -25,9 +25,9 @@ public interface UserService {
     Boolean updateProfileDetails(UserDTO userDTO);
     Boolean changePassword(String token, PasswordChange passwords);
 
-    Boolean changeEmail (String token, String email);
+//    Boolean changeEmail (String token, String email);
 
-    Boolean changeDisplayName(String token, String email);
+//    Boolean changeDisplayName(String token, String email);
 
     Boolean changePasswordByToken(User user, String password);
 

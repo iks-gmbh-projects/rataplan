@@ -48,6 +48,10 @@ public class User implements Serializable {
     public User(Integer id, String mail, String username, String password, String displayname) {
         this(id, mail, username, password, displayname, false);
     }
+
+    public User (UserDTO userDTO){
+        this(userDTO.getId(),userDTO.getMail(),userDTO.getUsername(),userDTO.getPassword(),userDTO.getDisplayname());
+    }
 //
 //    public User(User cpy) {
 //        this(cpy.getId(), cpy.getMail(), cpy.getUsername(), cpy.getPassword(), cpy.getDisplayname(), cpy.isEncrypted());

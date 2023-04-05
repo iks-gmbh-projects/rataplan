@@ -5,13 +5,11 @@ import static de.iks.rataplan.testutils.TestConstants.FILE_INITIAL;
 import static de.iks.rataplan.testutils.TestConstants.USER_1;
 import static org.junit.Assert.*;
 
-import de.iks.rataplan.domain.UserDTO;
 import de.iks.rataplan.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -75,11 +73,11 @@ public class UserRepositoryTest {
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
 	public void getOneByMail() {
-		UserDTO userDTO = userService.getUserDtoFromUsername("PeTER");
-		assertNotNull(userDTO);
-		assertEquals(1,userDTO.getId());
-		assertEquals("peter", userDTO.getUsername());
-		assertEquals("peter@sch.mitz", userDTO.getMail());
+		User user = userRepository.findOneByMail("PeTer@SCh.mitz");
+		assertNotNull(user);
+		assertEquals(1,(long) user.getId());
+		assertEquals("peter", user.getUsername());
+		assertEquals("peter@sch.mitz", user.getMail());
 	}
 
 	@Test
@@ -92,11 +90,11 @@ public class UserRepositoryTest {
 	@Test
 	@DatabaseSetup(USER_FILE_INITIAL)
 	public void getOneByUsername() {
-		UserDTO userDTO = userService.getUserDtoFromUsername("PeTER");
-		assertNotNull(userDTO);
-		assertEquals(1, userDTO.getId());
-		assertEquals("peter", userDTO.getUsername());
-		assertEquals("peter@sch.mitz", userDTO.getMail());
+		User user = userRepository.findOneByUsername("PeTER");
+		assertNotNull(user);
+		assertEquals(1,(long) user.getId());
+		assertEquals("peter", user.getUsername());
+		assertEquals("peter@sch.mitz", user.getMail());
 	}
 
 	@Test

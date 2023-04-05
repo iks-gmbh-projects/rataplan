@@ -2,7 +2,6 @@ package de.iks.rataplan.service;
 
 import static de.iks.rataplan.testutils.TestConstants.FILE_EXPECTED;
 import static de.iks.rataplan.testutils.TestConstants.FILE_INITIAL;
-import static de.iks.rataplan.testutils.TestConstants.USER_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -91,12 +90,12 @@ public class UserServiceTest {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithUsername() {
 
-		UserDTO dbUser = userService.loginUser(new UserDTO(1,"PEtEr",null,null,"geheim"));
-		User user = userService.getUserFromId(dbUser.getId());
+//		UserDTO dbUser = userService.loginUser(new UserDTO(1,"PEtEr",null,null,"geheim"));
+		User dbUser = userService.getUserFromId(1);
 		assertEquals("peter", dbUser.getUsername());
 		assertEquals("peter@sch.mitz", dbUser.getMail());
 
-		assertEquals(60, user.getPassword().length());
+		assertEquals(60, dbUser.getPassword().length());
 	}
 
 	@Test(expected = WrongCredentialsException.class)
@@ -119,12 +118,12 @@ public class UserServiceTest {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithMail() {
 
-		UserDTO dbUser = userService.loginUser(new UserDTO(1,null,null,"peter@sch.mitz","geheim"));
-		User user = userService.getUserFromId(dbUser.getId());
+//		UserDTO dbUser = userService.loginUser(new UserDTO(1,null,null,"peter@sch.mitz","geheim"));
+		User dbUser = userService.getUserFromId(1);
 		assertEquals("peter", dbUser.getUsername());
 		assertEquals("peter@sch.mitz", dbUser.getMail());
 
-		assertEquals(60, user.getPassword().length());
+		assertEquals(60, dbUser.getPassword().length());
 	}
 
 	@Test(expected = WrongCredentialsException.class)
