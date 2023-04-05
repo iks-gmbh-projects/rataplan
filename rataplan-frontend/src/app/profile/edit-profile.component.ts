@@ -1,37 +1,34 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AbstractControl, FormControl, ValidationErrors, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Actions, ofType} from '@ngrx/effects';
-import {Store} from '@ngrx/store';
-import {catchError, Observable, of, Subscription, switchMap} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { catchError, Observable, of, Subscription, switchMap } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import {appState} from '../app.reducers';
+import { appState } from '../app.reducers';
 import {
   AuthActions,
   ChangeDisplaynameAction,
-  ChangeEmailAction, ChangeProfileDetailsAction, LoginSuccessAction, UpdateUserdataSuccessAction
+  ChangeEmailAction,
+  ChangeProfileDetailsAction,
 } from '../authentication/auth.actions';
-import {FrontendUser} from '../models/user.model';
-import {BackendUrlService} from '../services/backend-url-service/backend-url.service';
-import {FormErrorMessageService} from '../services/form-error-message-service/form-error-message.service';
-import {
-  UsernameEmailValidatorsService
-} from '../services/username-email-validators-service/username-email-validators.service';
-import {ExtraValidators} from '../validator/validators';
+import { FrontendUser } from '../models/user.model';
+import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
+import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../validator/validators';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './edit-profile.component.html',
-  styleUrls: ['./edit-profile.component.css']
+  styleUrls: ['./edit-profile.component.css'],
 })
 export class EditProfileComponent implements OnInit, OnDestroy {
   userData?: FrontendUser;
   private userDataSub?: Subscription;
   private errorSub?: Subscription;
-  private update?:boolean;
 
   constructor(
     private router: Router,
@@ -41,16 +38,16 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     private snackbar: MatSnackBar,
     public readonly errorMessageService: FormErrorMessageService,
     public http: HttpClient,
-    public urlService: BackendUrlService
+    public urlService: BackendUrlService,
   ) {
   }
 
   ngOnInit(): void {
     this.userDataSub = this.store.select('auth')
       .subscribe(authData => {
-        if (this.emailField.value !== '' && this.displayNameField.value !== ''){
-          this.snackbar.open("Profil erfolgreich akutalisiert",'OK');
-          this.router.navigateByUrl("/view-profile");
+        if (this.emailField.value !== '' && this.displayNameField.value !== '') {
+          this.snackbar.open('Profil erfolgreich akutalisiert', 'OK');
+          this.router.navigateByUrl('/view-profile');
         }
         this.userData = authData.user;
         if (authData.busy) {
@@ -80,7 +77,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   }
 
 
-  displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace],);
+  displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
   emailField = new FormControl('', [Validators.required, Validators.email], ctrl => this.emailAlreadyExists(ctrl));
 
   changeDisplayName() {
@@ -103,7 +100,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       id: this.userData!.id,
       displayname: this.displayNameField.value,
       mail: this.emailField.value,
-      username: this.userData!.username
+      username: this.userData!.username,
     };
     // this.urlService.authURL$.pipe(switchMap(
     //   s1 => {
@@ -113,7 +110,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     //       withCredentials: true
     //     });
     //     this.store.dispatch(new LoginSuccessAction(payload));
-      // }
+    // }
     // )).subscribe(
     //   s1 => {
     //     this.store.dispatch(new UpdateUserdataSuccessAction(payload));
@@ -136,11 +133,14 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       const url$ = this.urlService.authURL$;
       return url$.pipe(
         switchMap(url => {
-          const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+          const httpOptions = {
+            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+            withCredentials: true,
+          };
           return this.http.post<boolean>(`${url}users/mailExists`, email, httpOptions);
         }),
-        map(emailExists => emailExists ? {"mailExists": true} : null),
-        catchError(() => of(null))
+        map(emailExists => emailExists ? { 'mailExists': true } : null),
+        catchError(() => of(null)),
       );
     }
   }
