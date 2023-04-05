@@ -11,7 +11,6 @@
       >
       <mat-error>{{errorMessageService.genericFormError(displayNameField)}}</mat-error>
     </mat-form-field>
-    <!--  <button type="button" class="submit-button" mat-raised-button color="primary"  [disabled]="displayNameField.invalid" (click)="changeDisplayName()">Ändern</button>-->
   </form>
   <form class="mail">
     <mat-form-field appearance="fill">
@@ -21,7 +20,6 @@
              [formControl]="emailField">
       <mat-error>{{errorMessageService.genericFormError(emailField)}}</mat-error>
     </mat-form-field>
-    <!--    <button type="button" class="submit-button" mat-raised-button color="primary"  [disabled]="emailField.invalid" (click)="changeEmail()">Ändern</button>-->
   </form>
   <div>
     <button  mat-raised-button color="warn" style="margin: 10px"
@@ -31,7 +29,5 @@
             [disabled]="displayNameField.invalid || emailField.invalid" style="margin: 10px" (click)="updateProfile()">
       Speichern
     </button>
-    <!--    <button type="button" mat-raised-button color="primary" routerLink="/change-password">Password ändern</button>-->
-    <!--    <button type="button" mat-raised-button color="warn" routerLink="/delete-profile">Profil löschen</button>-->
   </div>
 </div>

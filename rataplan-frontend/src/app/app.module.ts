@@ -26,9 +26,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
+import { appEffects } from './app.effects';
+import { appReducers } from './app.reducers';
 import { AppCommonModule } from './app-common.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppointmentComponent } from './appointment/appointment/appointment.component';
@@ -53,13 +58,8 @@ import { MainNavComponent } from './main-nav/main-nav.component';
 import { EditProfileComponent } from './profile/edit-profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { VoteListComponent } from './vote-list/vote-list.component';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { environment } from "../environments/environment";
-import { appReducers } from "./app.reducers";
-import { appEffects } from "./app.effects";
 import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { VoteListComponent } from './vote-list/vote-list.component';
 
 registerLocaleData(localeDE);
 

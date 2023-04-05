@@ -1,51 +1,35 @@
-import { Action } from "@ngrx/store";
-import { FrontendUser, LoginData, RegisterData } from "../models/user.model";
-import { UrlTree } from "@angular/router";
-import { deletionChoices } from "../models/delete-profile.model";
-import { ResetPasswordDataModel } from "../models/reset-password-data.model";
+import { UrlTree } from '@angular/router';
+import { Action } from '@ngrx/store';
+
+import { deletionChoices } from '../models/delete-profile.model';
+import { ResetPasswordDataModel } from '../models/reset-password-data.model';
+import { FrontendUser, LoginData, RegisterData } from '../models/user.model';
 
 export const AuthActions = {
-  REGISTER_ACTION: "[Auth] Register",
-  REGISTER_SUCCESS_ACTION: "[Auth] Register Success",
-  REGISTER_ERROR_ACTION: "[Auth] Register Error",
-  AUTO_LOGIN_ACTION: "[Auth] Auto Login",
-  LOGIN_ACTION: "[Auth] Login",
-  LOGIN_SUCCESS_ACTION: "[Auth] Login Success",
-  LOGIN_ERROR_ACTION: "[Auth] Login Error",
-  RESET_PASSWORD_ACTION: "[Auth] Reset Password",
-  RESET_PASSWORD_SUCCESS_ACTION: "[Auth] Reset Password Success",
-  RESET_PASSWORD_ERROR_ACTION: "[Auth] Reset Password Error",
-  CHANGE_EMAIL_ACTION: "[Auth] Change Email",
-  CHANGE_EMAIL_ERROR_ACTION: "[Auth] Change Email Error",
-  CHANGE_PROFILE_DETAILS_ACTION:"[Auth] Change Profile Details",
-  CHANGE_DISPLAYNAME_ACTION: "[Auth] Change Displayname",
-  CHANGE_PROFILE_DETAILS_SUCCESS_ACTION:"[Auth] Change Profile Details Success",
-  CHANGE_DISPLAYNAME_ERROR_ACTION: "[Auth] Change Displayname Error",
-  UPDATE_USERDATA_ACTION: "[Auth] Update Userdata",
-  UPDATE_USERDATA_SUCCESS_ACTION: "[Auth] Update Userdata Success",
-  LOGOUT_ACTION: "[Auth] Logout",
-  DELETE_USER_ACTION: "[Auth] Delete User",
-  DELETE_USER_SUCCESS_ACTION: "[Auth] Delete User Success",
-  DELETE_USER_ERROR_ACTION: "[Auth] Delete User Error",
+  REGISTER_ACTION: '[Auth] Register',
+  REGISTER_SUCCESS_ACTION: '[Auth] Register Success',
+  REGISTER_ERROR_ACTION: '[Auth] Register Error',
+  AUTO_LOGIN_ACTION: '[Auth] Auto Login',
+  LOGIN_ACTION: '[Auth] Login',
+  LOGIN_SUCCESS_ACTION: '[Auth] Login Success',
+  LOGIN_ERROR_ACTION: '[Auth] Login Error',
+  RESET_PASSWORD_ACTION: '[Auth] Reset Password',
+  RESET_PASSWORD_SUCCESS_ACTION: '[Auth] Reset Password Success',
+  RESET_PASSWORD_ERROR_ACTION: '[Auth] Reset Password Error',
+  CHANGE_EMAIL_ACTION: '[Auth] Change Email',
+  CHANGE_EMAIL_ERROR_ACTION: '[Auth] Change Email Error',
+  CHANGE_DISPLAYNAME_ACTION: '[Auth] Change Displayname',
+  CHANGE_DISPLAYNAME_ERROR_ACTION: '[Auth] Change Displayname Error',
+  CHANGE_PROFILE_DETAILS_ACTION:'[Auth] Change Profile Details',
+  CHANGE_PROFILE_DETAILS_SUCCESS_ACTION:'[Auth] Change Profile Details Success',
+  UPDATE_USERDATA_ACTION: '[Auth] Update Userdata',
+  UPDATE_USERDATA_SUCCESS_ACTION: '[Auth] Update Userdata Success',
+  LOGOUT_ACTION: '[Auth] Logout',
+  DELETE_USER_ACTION: '[Auth] Delete User',
+  DELETE_USER_SUCCESS_ACTION: '[Auth] Delete User Success',
+  DELETE_USER_ERROR_ACTION: '[Auth] Delete User Error',
 } as const;
 
-
-export class ChangeProfileDetailsAction implements Action {
-
-  readonly type = AuthActions.CHANGE_PROFILE_DETAILS_ACTION;
-
-  constructor(readonly payload:FrontendUser) {
-  }
-
-}
-export class ChangeProfileDetailsSuccessAction implements Action {
-
-  readonly type = AuthActions.CHANGE_PROFILE_DETAILS_SUCCESS_ACTION;
-
-  constructor(readonly payload:FrontendUser) {
-  }
-
-}
 
 export class RegisterAction implements Action {
   readonly type = AuthActions.REGISTER_ACTION;
@@ -161,6 +145,22 @@ export class ChangeDisplaynameErrorAction implements Action {
   }
 }
 
+export class ChangeProfileDetailsAction implements Action {
+
+  readonly type = AuthActions.CHANGE_PROFILE_DETAILS_ACTION;
+
+  constructor(readonly payload:FrontendUser) {
+  }
+}
+
+export class ChangeProfileDetailsSuccessAction implements Action {
+
+  readonly type = AuthActions.CHANGE_PROFILE_DETAILS_SUCCESS_ACTION;
+
+  constructor(readonly payload:FrontendUser) {
+  }
+}
+
 export class UpdateUserdataAction implements Action {
   readonly type = AuthActions.UPDATE_USERDATA_ACTION;
 }
@@ -219,5 +219,5 @@ export type AuthActions =
   | DeleteUserAction
   | DeleteUserSuccessAction
   | DeleteUserErrorAction
-  |ChangeProfileDetailsAction
-  |ChangeProfileDetailsSuccessAction;
+  | ChangeProfileDetailsAction
+  | ChangeProfileDetailsSuccessAction;

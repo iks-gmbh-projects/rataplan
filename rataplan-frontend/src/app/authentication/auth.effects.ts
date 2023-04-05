@@ -13,7 +13,9 @@ import {
   ChangeDisplaynameAction,
   ChangeDisplaynameErrorAction,
   ChangeEmailAction,
-  ChangeEmailErrorAction, ChangeProfileDetailsAction, ChangeProfileDetailsSuccessAction,
+  ChangeEmailErrorAction,
+  ChangeProfileDetailsAction,
+  ChangeProfileDetailsSuccessAction,
   DeleteUserAction,
   DeleteUserErrorAction,
   DeleteUserSuccessAction,
@@ -46,13 +48,13 @@ export class AuthEffects {
   changeProfileDetails = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.CHANGE_PROFILE_DETAILS_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
-    switchMap(([displaynameAction, authURL]: [ChangeProfileDetailsAction, string]) => {
-      console.log(displaynameAction.payload + 'in effect');
+    switchMap(([displayNameAction, authURL]: [ChangeProfileDetailsAction, string]) => {
+      console.log(displayNameAction.payload + 'in effect');
       const url = authURL + 'users/profile/updateProfileDetails';
       const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
-      return this.httpClient.post<FrontendUser>(url, displaynameAction.payload, httpOptions)
+      return this.httpClient.post<FrontendUser>(url, displayNameAction.payload, httpOptions)
         .pipe(
-          map(success => success ? new ChangeProfileDetailsSuccessAction(displaynameAction.payload) : new ChangeDisplaynameErrorAction(success)),
+          map(success => success ? new ChangeProfileDetailsSuccessAction(displayNameAction.payload) : new ChangeDisplaynameErrorAction(success)),
           catchError(err => of(new ChangeDisplaynameErrorAction(err)))
         );
     })
@@ -141,15 +143,15 @@ export class AuthEffects {
     })
   ); });
 
-  changeDisplayname = createEffect(() => { return this.actions$.pipe(
+  changeDisplayName = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.CHANGE_DISPLAYNAME_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
-    switchMap(([displaynameAction, authURL]: [ChangeDisplaynameAction, string]) => {
+    switchMap(([displayNameAction, authURL]: [ChangeDisplaynameAction, string]) => {
       const url = authURL + 'users/profile/changeDisplayName';
 
       const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
-      return this.httpClient.post<boolean>(url, displaynameAction.displayname, httpOptions)
+      return this.httpClient.post<boolean>(url, displayNameAction.displayname, httpOptions)
         .pipe(
           map(success => success ? new UpdateUserdataAction() : new ChangeDisplaynameErrorAction(false)),
           catchError(err => of(new ChangeDisplaynameErrorAction(err)))
