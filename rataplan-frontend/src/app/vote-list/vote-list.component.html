@@ -1,5 +1,6 @@
 <div class="wrapper">
-  <h3>Erstellte Abstimmungen</h3>
+  <h2>Erstellte Abstimmungen</h2>
+  <div class="width">
   <mat-card class="bottomSpace" *ngFor="let vote of createdVotes">
     <mat-card-title>{{vote.title}}</mat-card-title>
     <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
@@ -18,7 +19,7 @@
       </a>
     </mat-card-actions>
   </mat-card>
-  <h3>Teilgenommene Abstimmungen</h3>
+  <h2>Teilgenommene Abstimmungen</h2>
   <mat-card class="bottomSpace" *ngFor="let vote of participatedVotes">
     <mat-card-title>{{vote.title}}</mat-card-title>
     <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
@@ -31,4 +32,5 @@
       </a>
     </mat-card-actions>
   </mat-card>
+</div>
 </div>
