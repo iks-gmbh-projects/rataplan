@@ -84,7 +84,7 @@ export class AuthEffects {
     ofType(AuthActions.AUTO_LOGIN_ACTION),
     concatMap(() => this.urlService.authURL$),
     map(authURL => {
-      const url = authURL + 'users/profile';
+      const url = authURL + 'users/edit-profile';
       return this.httpClient.get<FrontendUser>(url, { withCredentials: true });
     }),
     switchMap(observable => observable.pipe(
@@ -131,7 +131,7 @@ export class AuthEffects {
     ofType(AuthActions.CHANGE_EMAIL_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([emailAction, authURL]: [ChangeEmailAction, string]) => {
-      const url = authURL + 'users/profile/changeEmail';
+      const url = authURL + 'users/edit-profile/changeEmail';
 
       const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
@@ -147,7 +147,7 @@ export class AuthEffects {
     ofType(AuthActions.CHANGE_DISPLAYNAME_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
     switchMap(([displayNameAction, authURL]: [ChangeDisplaynameAction, string]) => {
-      const url = authURL + 'users/profile/changeDisplayName';
+      const url = authURL + 'users/edit-profile/changeDisplayName';
 
       const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
@@ -163,7 +163,7 @@ export class AuthEffects {
     ofType(AuthActions.UPDATE_USERDATA_ACTION),
     switchMap(() => this.urlService.authURL$),
     concatMap(authURL => {
-      const url = authURL + 'users/profile';
+      const url = authURL + 'users/edit-profile';
       const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
       return this.httpClient.get<FrontendUser>(url, httpOptions).pipe(
