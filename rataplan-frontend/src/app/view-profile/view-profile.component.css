@@ -35,7 +35,9 @@
 }
 
 .button {
-  margin: 10px
+  margin: 15px;
+  width: fit-content;
+  display: block;
 }
 
 .form-container {
@@ -51,6 +53,12 @@
   grid-template-columns: 1fr 1fr;
   align-items: center;
   column-gap: 50px;
+}
+
+.edit-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
 }
 
 .profile-info-type {

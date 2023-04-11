@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { appState } from '../app.reducers';
   templateUrl: './view-profile.component.html',
   styleUrls: ['./view-profile.component.css']
 })
-export class ViewProfileComponent implements OnInit {
+export class ViewProfileComponent implements OnInit,OnDestroy {
 
   userName?: string;
   displayName?: string;
@@ -29,4 +29,9 @@ export class ViewProfileComponent implements OnInit {
         this.email = authData.user!.mail;
       });
   }
+
+  ngOnDestroy():void {
+    this.userDataSub?.unsubscribe();
+  }
+
 }

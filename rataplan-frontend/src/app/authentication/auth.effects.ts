@@ -103,8 +103,7 @@ export class AuthEffects {
           tap(() => this.router.navigateByUrl(action.redirect || '/')),
           map(userData => new LoginSuccessAction(userData)),
           catchError(err => of(new LoginErrorAction(err)))
-        );
-    })
+        );})
   ); });
 
   resetPassword = createEffect(() => { return this.actions$.pipe(

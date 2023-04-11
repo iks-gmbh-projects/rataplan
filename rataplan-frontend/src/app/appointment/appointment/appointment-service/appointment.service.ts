@@ -5,6 +5,7 @@ import { AppointmentRequestModel, deserializeAppointmentRequestModel } from '../
 import { BackendUrlService } from "../../../services/backend-url-service/backend-url.service";
 import { exhaustMap, map, Observable } from "rxjs";
 import { deserializeAppointmentDecisionModel } from "../../../models/appointment-decision.model";
+import {tap} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,7 @@ export class AppointmentService {
               'Content-Type': 'application/json;charset=utf-8',
             }),
           });
-      }),
+      }),tap(s1 => console.log(s1)),
       map(deserializeAppointmentRequestModel)
     );
   }

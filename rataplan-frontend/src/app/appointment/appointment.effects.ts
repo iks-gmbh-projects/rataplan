@@ -80,9 +80,9 @@ export class AppointmentRequestEffects {
           delete sanatizedRequest.appointments;
           delete sanatizedRequest.appointmentMembers;
         }
-        return {editToken: request.request.editToken || request.request.id?.toString(), request: this.http.put<AppointmentRequestModel<true>>(url + "/appointmentRequests/edit/" + (request.request.editToken || request.request.id), sanatizedRequest, {withCredentials: true})};
+        return {editToken: request.request.editToken || request.request.id?.toString(), request: this.http.put<AppointmentRequestModel<true>>(url + "appointmentRequests/edit/" + (request.request.editToken || request.request.id), sanatizedRequest, {withCredentials: true})};
       }
-      return {request: this.http.post<AppointmentRequestModel<true>>(url + "/appointmentRequests", request.request, {withCredentials: true})};
+      return {request: this.http.post<AppointmentRequestModel<true>>(url + "appointmentRequests", request.request, {withCredentials: true})};
     }),
     switchMap(({request, editToken}) => request.pipe(
       map(deserializeAppointmentRequestModel),
