@@ -17,11 +17,11 @@ import java.sql.Timestamp;
 @ToString
 public class AuthToken {
 
-//    @CreationTimestamp
-//    @Column(updatable = false)
-//    private Timestamp creationTime;
-//    @UpdateTimestamp
-//    private Timestamp lastUpdated;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp creationTime;
+    @UpdateTimestamp
+    private Timestamp lastUpdated;
     @Version
     private Integer version;
 

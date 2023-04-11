@@ -12,4 +12,9 @@ public interface RawUserRepository extends JpaRepository<User, Integer> {
     boolean existsByMailAndEncrypted(String mail, boolean encrypted);
     boolean existsByUsernameAndEncrypted(String username, boolean encrypted);
     Stream<User> findByEncrypted(boolean encrypted);
+
+    Optional<User> findOneByUsername(String username);
+
+    Optional<User> findOneByMail(String mail);
+
 }

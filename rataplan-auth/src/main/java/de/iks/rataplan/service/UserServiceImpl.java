@@ -3,6 +3,7 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.domain.UserDTO;
 import de.iks.rataplan.exceptions.*;
+import de.iks.rataplan.repository.RawUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -22,28 +25,31 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private RawUserRepository rawUserRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private SurveyToolMessageService surveyToolMessageService;
     @Autowired
     CryptoServiceImpl cryptoService;
-    
+
     @Autowired
     private BackendMessageService backendMessageService;
 
     public UserDTO registerUser(UserDTO userDto) {
-        User user = new User(userDto);
+        User user = mapToUser(userDto);
         user.trimUserCredentials();
-        if(user.invalidFull()) throw new InvalidUserDataException();
-        if (userRepository.findOneByUsername(user.getUsername()) != null) {
+        if (user.invalidFull()) throw new InvalidUserDataException();
+        if (rawUserRepository.findOneByUsername(user.getUsername()).isPresent()) {
             throw new UsernameAlreadyInUseException("The username \"" + user.getUsername() + "\" is already in use!");
-        } else if (userRepository.findOneByMail(user.getMail()) != null) {
+        } else if (rawUserRepository.findOneByMail(user.getMail()).isPresent()) {
             throw new MailAlreadyInUseException("The email \"" + user.getMail() + "\" is already in use!");
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setId(null);
-            return createUserDTO(userRepository.saveAndFlush(user));
+            return mapToUserDTO(rawUserRepository.saveAndFlush(user));
         }
     }
 
@@ -51,49 +57,62 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkIfMailExists(String mail) {
 
-        return this.userRepository.existsByMail(mail);
+        return this.rawUserRepository.findOneByMail(cryptoService.encryptDB(mail.toLowerCase().trim())).isPresent();
     }
 
     @Override
     public boolean checkIfUsernameExists(String username) {
-        return this.userRepository.existsByUsername(username);
+        return this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.toLowerCase().trim())).isPresent();
     }
 
 
     @Override
     public UserDTO loginUser(UserDTO userDto) {
-        User user = new User(userDto);
+        User user = mapToUser(userDto);
         user.trimUserCredentials();
-        if(user.invalidLogin()) throw new InvalidUserDataException();
+        if (user.invalidLogin()) throw new InvalidUserDataException();
         User dbUser;
         if (user.getUsername() != null) {
-            dbUser = userRepository.findOneByUsername(user.getUsername());
+             dbUser = this.rawUserRepository.findOneByUsername(user.getUsername()).get();
         } else {
-            dbUser = userRepository.findOneByMail(user.getMail());
+            dbUser = this.rawUserRepository.findOneByMail(user.getMail()).get();
         }
 
         if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            return createUserDTO(dbUser);
+            return mapToUserDTO(dbUser);
         } else {
             throw new WrongCredentialsException("These credentials have no match!");
         }
     }
 
-    public UserDTO createUserDTO (User user){
+    private User mapToUser(UserDTO userDTO) {
+        User user = new User();
+        user.setUsername(cryptoService.encryptDB(userDTO.getUsername()));
+        user.setMail(cryptoService.encryptDB(userDTO.getMail()));
+        user.setPassword(userDTO.getPassword());
+        user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
+        user.setEncrypted(true);
+        return user;
+    }
+
+    public UserDTO mapToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(cryptoService.decryptDB(user.getUsername()));
         userDTO.setMail(cryptoService.decryptDB(user.getMail()));
         userDTO.setId(user.getId());
         userDTO.setDisplayname(cryptoService.decryptDB(user.getDisplayname()));
+
         return userDTO;
     }
+
     @Override
     public boolean verifyPassword(User user, String password) {
         return passwordEncoder.matches(password, user.getPassword());
     }
+
     @Override
     public void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException {
-        if(!verifyPassword(user, password)) {
+        if (!verifyPassword(user, password)) {
             throw new WrongCredentialsException("These credentials have no match!");
         }
     }
@@ -102,16 +121,17 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserDtoFromUsername(String username) {
         User dbUser;
         if (username != null) {
-            dbUser = userRepository.findOneByUsername(username.trim());
-            return createUserDTO(dbUser);
+            dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase())).get();
+            return mapToUserDTO(dbUser);
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
     }
+
     @Override
     public User getUserData(String username) {
         User dbUser;
         if (username != null) {
-            dbUser = userRepository.findOneByUsername(username.trim());
+            dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase())).get();
             return dbUser;
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
@@ -128,19 +148,13 @@ public class UserServiceImpl implements UserService {
             return false;
         }
     }
-    @Override
-    public Boolean updateProfileDetails(UserDTO userDTO){
-        User user = userRepository.findOneByUsername(userDTO.getUsername());
-        if (user != null){
-            user = userRepository.findById(userDTO.getId());
-            user.setMail(cryptoService.encryptDB((userDTO.getMail())));
-            user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
-            userRepository.updateUser(user);
-            return true;
-        }else {
-            return false;
-        }
 
+    @Override
+    public Boolean updateProfileDetails(UserDTO userDTO) {
+        User user = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase().trim())).get();
+        user.setMail(cryptoService.encryptDB((userDTO.getMail())));
+        user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
+        return true;
     }
 //    @Override
 //    public Boolean changeEmail(String username, String email) {
@@ -172,7 +186,7 @@ public class UserServiceImpl implements UserService {
     public Boolean changePasswordByToken(User user, String password) {
         if (user != null) {
             user.setPassword(passwordEncoder.encode(password));
-            userRepository.saveAndFlush(user);
+            this.rawUserRepository.saveAndFlush(user);
             return true;
         } else {
             return false;
@@ -188,49 +202,49 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException {
         ResponseEntity<?> surveyToolResponse;
         switch (request.getSurveyToolChoice()) {
-        default:
-        case DELETE:
-            surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
-            break;
-        case ANONYMIZE:
-            surveyToolResponse = surveyToolMessageService.anonymizeUserData(user.getId());
-            break;
+            default:
+            case DELETE:
+                surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
+                break;
+            case ANONYMIZE:
+                surveyToolResponse = surveyToolMessageService.anonymizeUserData(user.getId());
+                break;
         }
         if (!surveyToolResponse.getStatusCode().is2xxSuccessful()) {
             throw new UserDeletionException(
-                "SurveyTool returned " +
-                    surveyToolResponse.getStatusCode() +
-                    " " +
-                    (surveyToolResponse.hasBody() ?
-                        surveyToolResponse.getBody() :
-                        ""
-                    )
+                    "SurveyTool returned " +
+                            surveyToolResponse.getStatusCode() +
+                            " " +
+                            (surveyToolResponse.hasBody() ?
+                                    surveyToolResponse.getBody() :
+                                    ""
+                            )
             );
         }
         ResponseEntity<?> backendResponse;
         switch (request.getBackendChoice()) {
-        default:
-        case DELETE:
-            backendResponse = backendMessageService.deleteUserData(user.getId());
-            break;
-        case ANONYMIZE:
-            backendResponse = backendMessageService.anonymizeUserData(user.getId());
-            break;
+            default:
+            case DELETE:
+                backendResponse = backendMessageService.deleteUserData(user.getId());
+                break;
+            case ANONYMIZE:
+                backendResponse = backendMessageService.anonymizeUserData(user.getId());
+                break;
         }
         if (!backendResponse.getStatusCode().is2xxSuccessful()) {
             throw new UserDeletionException(
-                "Backend returned " +
-                    backendResponse.getStatusCode() +
-                    " " +
-                    (backendResponse.hasBody() ?
-                        backendResponse.getBody() :
-                        ""
-                    )
+                    "Backend returned " +
+                            backendResponse.getStatusCode() +
+                            " " +
+                            (backendResponse.hasBody() ?
+                                    backendResponse.getBody() :
+                                    ""
+                            )
             );
         }
         try {
-            userRepository.delete(user);
-        } catch(DataAccessException ex) {
+            this.rawUserRepository.delete(user.getId());
+        } catch (DataAccessException ex) {
             throw new UserDeletionException(ex);
         }
     }
