@@ -102,26 +102,6 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       mail: this.emailField.value,
       username: this.userData!.username,
     };
-    // this.urlService.authURL$.pipe(switchMap(
-    //   s1 => {
-    //     const url = s1 + 'users/profile/updateProfileDetails';
-    //     return this.http.post(url, payload, {
-    //       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    //       withCredentials: true
-    //     });
-    //     this.store.dispatch(new LoginSuccessAction(payload));
-    // }
-    // )).subscribe(
-    //   s1 => {
-    //     this.store.dispatch(new UpdateUserdataSuccessAction(payload));
-    //     this.snackbar.open('Profil Daten wurde erfolgreich aktualisiert', 'ok');
-    //   },
-    //   error => {
-    //     this.snackbar.open('Ein Fehler ist aufgetreten');
-    //   }
-    // ).unsubscribe();
-    //
-    //
     this.store.dispatch(new ChangeProfileDetailsAction(payload));
   }
 
