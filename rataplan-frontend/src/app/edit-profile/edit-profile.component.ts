@@ -1,12 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, Observable, of, Subscription, switchMap } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 import { appState } from '../app.reducers';
 import {
@@ -18,6 +17,9 @@ import {
 import { FrontendUser } from '../models/user.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
+import {
+  UsernameEmailValidatorsService
+} from '../services/username-email-validators-service/username-email-validators.service';
 import { ExtraValidators } from '../validator/validators';
 
 @Component({
@@ -36,6 +38,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     private store: Store<appState>,
     private actions$: Actions,
     private snackbar: MatSnackBar,
+    private emailValidatorsService: UsernameEmailValidatorsService,
     public readonly errorMessageService: FormErrorMessageService,
     public http: HttpClient,
     public urlService: BackendUrlService,
@@ -78,7 +81,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
 
   displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
-  emailField = new FormControl('', [Validators.required, Validators.email], ctrl => this.emailAlreadyExists(ctrl));
+  emailField = new FormControl('', [Validators.required, Validators.email], ctrl => this.emailValidatorsService.mailExists(ctrl));
 
   changeDisplayName() {
     const displayName = this.displayNameField.value;
@@ -104,25 +107,4 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     };
     this.store.dispatch(new ChangeProfileDetailsAction(payload));
   }
-
-  emailAlreadyExists(control: AbstractControl): Observable<ValidationErrors | null> {
-    const email = control.value;
-    if (email === this.userData?.mail) {
-      return of(null);
-    } else {
-      const url$ = this.urlService.authURL$;
-      return url$.pipe(
-        switchMap(url => {
-          const httpOptions = {
-            headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-            withCredentials: true,
-          };
-          return this.http.post<boolean>(`${url}users/mailExists`, email, httpOptions);
-        }),
-        map(emailExists => emailExists ? { 'mailExists': true } : null),
-        catchError(() => of(null)),
-      );
-    }
-  }
-
 }
