@@ -91,13 +91,6 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   }
 
-  changeEmail() {
-    const email = this.emailField.value;
-    if (this.emailField.valid) {
-      this.store.dispatch(new ChangeEmailAction(email));
-    }
-  }
-
   updateProfile() {
     const payload: FrontendUser = {
       id: this.userData!.id,
