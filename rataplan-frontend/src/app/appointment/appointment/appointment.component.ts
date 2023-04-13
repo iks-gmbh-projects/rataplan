@@ -7,10 +7,10 @@ import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentMemberModel } from '../../models/appointment-member.model';
 import { AppointmentRequestModel } from '../../models/appointment-request.model';
 import { DeadlineService } from '../../services/deadline-service/deadline.service';
+import { FormErrorMessageService } from '../../services/form-error-message-service/form-error-message.service';
 import { AppointmentDecisionType, DecisionType } from '../appointment-request-form/decision-type.enum';
 import { AppointmentService } from './appointment-service/appointment.service';
 import { MemberDecisionSubformComponent } from './member-decision-subform/member-decision-subform.component';
-import { FormErrorMessageService } from "../../services/form-error-message-service/form-error-message.service";
 
 
 @Component({
@@ -48,10 +48,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject))
       .subscribe(appointmentRequest => {
         this.appointmentRequest = appointmentRequest;
-        if (!this.appointmentRequest.expired) {
+        this.deadlineService.setDeadline(new Date(appointmentRequest.deadline));
+        if (!this.deadlineService.hasDeadlinePassed()) {
           this.setAppointments();
         }
-        this.deadlineService.setDeadline(new Date(appointmentRequest.deadline));
       });
   }
 
@@ -122,15 +122,15 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     const appointmentDecision = this.member.appointmentDecisions[index];
 
     switch (decision) {
-      case 1:
-        appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
-        break;
-      case 2:
-        appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
-        break;
-      default:
-        appointmentDecision.decision = AppointmentDecisionType.DECLINE;
-        break;
+    case 1:
+      appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
+      break;
+    case 2:
+      appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
+      break;
+    default:
+      appointmentDecision.decision = AppointmentDecisionType.DECLINE;
+      break;
     }
   }
 
