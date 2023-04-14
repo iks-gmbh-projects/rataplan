@@ -1,10 +1,8 @@
 package de.iks.rataplan.domain;
 
-import com.sun.istack.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 
 
 
@@ -12,22 +10,13 @@ import javax.persistence.*;
 @Setter
 public class UserDTO  {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String username;
     private String displayname;
     private String mail;
-    @Nullable
     private String password;
 
-
-
-
-    public UserDTO (){
-
-    }
+    public UserDTO (){}
     public UserDTO(int id, String userName, String displayName, String mail) {
         this.id = id;
         this.username = userName;
@@ -45,8 +34,4 @@ public class UserDTO  {
     public UserDTO (User user){
         this(user.getId(),user.getUsername(),user.getDisplayname(),user.getMail());
     }
-
-
-
-
 }

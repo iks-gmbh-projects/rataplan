@@ -23,25 +23,12 @@ import org.springframework.web.client.ResourceAccessException;
 @RequestMapping("/v1")
 public class RataplanAuthRestController {
 
-
     private final UserService userService;
     private final AuthTokenService authTokenService;
     private final MailService mailService;
     private final JwtTokenService jwtTokenService;
     private static final String JWT_COOKIE_NAME = "jwttoken";
     private final CookieBuilder cookieBuilder;
-
-    private String validateTokenOrThrow(String cookieToken, String headerToken) throws RataplanAuthException {
-        String token;
-        if (headerToken == null) token = cookieToken;
-        else if (cookieToken == null) token = headerToken;
-        else if (cookieToken.equals(headerToken)) token = cookieToken;
-        else throw new RataplanAuthException("Different tokens provided by cookie and header.");
-        if (!jwtTokenService.isTokenValid(token)) {
-            throw new InvalidTokenException("Invalid token");
-        }
-        return token;
-    }
 
     @RequestMapping(value = "*", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> handle() {
@@ -138,32 +125,6 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
-    //
-//    @PostMapping(value = "/users/profile/changeEmail", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Boolean> changeEmail(
-//            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-//            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-//            @RequestBody String email
-//    ) {
-//        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
-//        String username = jwtTokenService.getUsernameFromToken(token);
-//        boolean success = this.userService.changeEmail(username, email);
-//        return new ResponseEntity<>(success, HttpStatus.OK);
-//    }
-//
-//    @PostMapping(value = "/users/profile/changeDisplayName", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Boolean> changeDisplayName(
-//            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-//            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-//            @RequestBody String displayName
-//    ) {
-//        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
-//        String username = jwtTokenService.getUsernameFromToken(token);
-//        boolean success = this.userService.changeDisplayName(username, displayName);
-//
-//        return new ResponseEntity<>(success, HttpStatus.OK);
-//    }
-//
     @PostMapping("/users/forgotPassword")
     public boolean sendForgotPasswordMail(@RequestBody String mail) {
         AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
@@ -174,7 +135,6 @@ public class RataplanAuthRestController {
         return true;
     }
 
-    //
     @PostMapping(value = "/users/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
         if (this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
@@ -187,14 +147,17 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 
-    //
-//    @GetMapping("/users/displayName/{userId}")
-//    public ResponseEntity<?> getDisplayName(@PathVariable int userId) {
-//        User user = userService.getUserFromId(userId);
-//        if(user == null) return ResponseEntity.notFound().build();
-//        return ResponseEntity.ok(user.getDisplayname());
-//    }
-//
+    private String validateTokenOrThrow(String cookieToken, String headerToken) throws RataplanAuthException {
+        String token;
+        if (headerToken == null) token = cookieToken;
+        else if (cookieToken == null) token = headerToken;
+        else if (cookieToken.equals(headerToken)) token = cookieToken;
+        else throw new RataplanAuthException("Different tokens provided by cookie and header.");
+        if (!jwtTokenService.isTokenValid(token)) {
+            throw new InvalidTokenException("Invalid token");
+        }
+        return token;
+    }
     private HttpHeaders createResponseHeaders(UserDTO user) {
         HttpHeaders responseHeaders = new HttpHeaders();
         String token = jwtTokenService.generateToken(user);
@@ -202,6 +165,4 @@ public class RataplanAuthRestController {
         responseHeaders.add("Set-Cookie", cookieBuilder.generateCookieValue(token, false));
         return responseHeaders;
     }
-
-//}
 }
