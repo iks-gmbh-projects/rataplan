@@ -1,5 +1,4 @@
 package de.iks.rataplan.service;
-
 import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.domain.UserDTO;
 import de.iks.rataplan.exceptions.*;
@@ -10,19 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.repository.UserRepository;
-
-import java.util.Optional;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private RawUserRepository rawUserRepository;
@@ -139,7 +133,7 @@ public class UserServiceImpl implements UserService {
         User user = this.getUserData(username);
         if (user != null && passwordEncoder.matches(passwords.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwords.getNewPassword()));
-            userRepository.updateUser(user);
+            rawUserRepository.saveAndFlush(user);
             return true;
         } else {
             return false;
@@ -153,31 +147,6 @@ public class UserServiceImpl implements UserService {
         user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
         return true;
     }
-//    @Override
-//    public Boolean changeEmail(String username, String email) {
-//        User user = this.getUserData(username);
-//        if (user != null) {
-//            user.setMail(email);
-//            user.trimUserCredentials();
-//            if(user.invalidFull()) throw new InvalidUserDataException();
-//            userRepository.saveAndFlush(user);
-//            return true;
-//        }
-//        return false;
-//    }
-
-//    @Override
-//    public Boolean changeDisplayName(String username, String displayName) {
-//        User user = this.getUserData(username);
-//        if (user != null) {
-//            user.setDisplayname(displayName);
-//            user.trimUserCredentials();
-//            if(user.invalidFull()) throw new InvalidUserDataException();
-//            userRepository.saveAndFlush(user);
-//            return true;
-//        }
-//        return false;
-//    }
 
     @Override
     public Boolean changePasswordByToken(User user, String password) {
@@ -192,7 +161,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserFromId(int id) {
-        return userRepository.findById(id);
+        return rawUserRepository.findOne(id);
     }
 
     @Override
