@@ -1,20 +1,14 @@
-
-.container{
-  margin-right: auto;
-  width: 50%;
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.col-sm-3 {
-  font-size: 18px;
-}
-
-.col-sm-6{
-  font-size: 18px;
-}
-
-.btn {
-
-  margin: 20px;
+.profile-overview-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  column-gap: 50px;
 }
 
 .mat-raised-button {
@@ -40,20 +34,10 @@
   display: block;
 }
 
-.form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /*width: 320px;*/
-}
 
 
-.profile-overview-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  column-gap: 50px;
-}
+
+
 
 .edit-choices {
   display: grid;
@@ -65,13 +49,9 @@
   font-size: 18px;
   font-weight: bold;
   text-align: right;
-  /*padding-right: 5px;*/
-  /*width: 60%;*/
 }
 
 .profile-info {
-
   font-size: 18px;
   text-align: left;
-;
 }
