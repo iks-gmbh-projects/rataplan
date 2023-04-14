@@ -1,6 +1,6 @@
 package de.iks.rataplan.service;
 import de.iks.rataplan.domain.DeleteUserRequest;
-import de.iks.rataplan.domain.UserDTO;
+import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
 import de.iks.rataplan.repository.RawUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.domain.User;
-import de.iks.rataplan.repository.UserRepository;
 
 @Service
 @Transactional
@@ -60,8 +59,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDTO loginUser(UserDTO userDto) {
-        User user = mapToUser(userDto);
+    public UserDTO loginUser(UserDTO userDTO) {
+        User user = mapToUser(userDTO);
         user.trimUserCredentials();
         if (user.invalidLogin()) throw new InvalidUserDataException();
         User dbUser;
@@ -109,7 +108,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserDtoFromUsername(String username) {
+    public UserDTO getUserDTOFromUsername(String username) {
         User dbUser;
         if (username != null) {
             dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase())).get();

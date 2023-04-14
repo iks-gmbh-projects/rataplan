@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import de.iks.rataplan.domain.UserDTO;
+import de.iks.rataplan.dto.UserDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.domain.User;
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)

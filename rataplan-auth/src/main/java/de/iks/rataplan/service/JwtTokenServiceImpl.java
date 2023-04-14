@@ -3,11 +3,10 @@ package de.iks.rataplan.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.iks.rataplan.domain.UserDTO;
+import de.iks.rataplan.dto.UserDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.iks.rataplan.domain.User;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 
 import java.io.Serializable;

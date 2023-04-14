@@ -1,5 +1,6 @@
-package de.iks.rataplan.domain;
+package de.iks.rataplan.dto;
 
+import de.iks.rataplan.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,7 +1,6 @@
 package de.iks.rataplan.service;
 
-import de.iks.rataplan.domain.User;
-import de.iks.rataplan.domain.UserDTO;
+import de.iks.rataplan.dto.UserDTO;
 
 import java.util.Date;
 

@@ -3,13 +3,13 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.domain.PasswordChange;
 import de.iks.rataplan.domain.User;
-import de.iks.rataplan.domain.UserDTO;
+import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.UserDeletionException;
 import de.iks.rataplan.exceptions.WrongCredentialsException;
 
 public interface UserService {
     UserDTO registerUser(UserDTO user);
-    UserDTO getUserDtoFromUsername(String username);
+    UserDTO getUserDTOFromUsername(String username);
     boolean checkIfMailExists(String mail);
     boolean checkIfUsernameExists(String username);
     UserDTO loginUser(UserDTO user);

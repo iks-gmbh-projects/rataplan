@@ -1,6 +1,7 @@
 package de.iks.rataplan.controller;
 
 import de.iks.rataplan.domain.*;
+import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.RataplanAuthException;
 import de.iks.rataplan.exceptions.UserDeletionException;
 import de.iks.rataplan.service.AuthTokenService;
@@ -94,7 +95,7 @@ public class RataplanAuthRestController {
     ) {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         String username = jwtTokenService.getUsernameFromToken(token);
-        UserDTO userDTO = userService.getUserDtoFromUsername(username);
+        UserDTO userDTO = userService.getUserDTOFromUsername(username);
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
         return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
     }
