@@ -1,11 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { exhaustMap, map, Observable } from 'rxjs';
+
+import { deserializeAppointmentDecisionModel } from '../../../models/appointment-decision.model';
 import { AppointmentMemberModel } from '../../../models/appointment-member.model';
 import { AppointmentRequestModel, deserializeAppointmentRequestModel } from '../../../models/appointment-request.model';
-import { BackendUrlService } from "../../../services/backend-url-service/backend-url.service";
-import { exhaustMap, map, Observable } from "rxjs";
-import { deserializeAppointmentDecisionModel } from "../../../models/appointment-decision.model";
-import {tap} from "rxjs/operators";
+import { BackendUrlService } from '../../../services/backend-url-service/backend-url.service';
 
 @Injectable({
   providedIn: 'root',
@@ -29,14 +29,14 @@ export class AppointmentService {
               'Content-Type': 'application/json;charset=utf-8',
             }),
           });
-      }),tap(s1 => console.log(s1)),
+      }),
       map(deserializeAppointmentRequestModel)
     );
   }
 
   addAppointmentMember(appointmentRequest: AppointmentRequestModel, appointmentMember: AppointmentMemberModel): Observable<AppointmentMemberModel> {
     const token = this.getParticipationToken(appointmentRequest);
-    const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
+    const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
     return this.url$.pipe(
       exhaustMap(url => {
