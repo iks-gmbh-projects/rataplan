@@ -1,17 +1,16 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import {AbstractControl, FormControl, ValidationErrors, Validators} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, of, Subscription} from 'rxjs';
 
 import { appState } from '../app.reducers';
 import {
   AuthActions,
   ChangeDisplaynameAction,
-  ChangeEmailAction,
   ChangeProfileDetailsAction,
 } from '../authentication/auth.actions';
 import { FrontendUser } from '../models/user.model';
@@ -81,7 +80,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
 
   displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
-  emailField = new FormControl('', [Validators.required, Validators.email], ctrl => this.emailValidatorsService.mailExists(ctrl));
+  emailField = new FormControl('', [Validators.required, Validators.email], ctrl => this.checkIfEmailIsAvailable(ctrl));
 
   changeDisplayName() {
     const displayName = this.displayNameField.value;
@@ -100,4 +99,13 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     };
     this.store.dispatch(new ChangeProfileDetailsAction(payload));
   }
+
+  checkIfEmailIsAvailable(ctrl:AbstractControl):Observable<ValidationErrors|null>{
+    if (ctrl.value == this.userData?.mail){
+      return of(null);
+    }else {
+      return this.emailValidatorsService.checkIfEmailIsAvailable(ctrl);
+    }
+  }
+
 }

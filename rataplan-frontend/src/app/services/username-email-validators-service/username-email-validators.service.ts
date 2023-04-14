@@ -1,10 +1,10 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 
-import { BackendUrlService } from "../backend-url-service/backend-url.service";
-import { exhaustMap, Observable, switchMap, timer } from "rxjs";
-import { AbstractControl, ValidationErrors } from "@angular/forms";
-import { map } from "rxjs/operators";
+import {BackendUrlService} from "../backend-url-service/backend-url.service";
+import {catchError, exhaustMap, Observable, of, switchMap, timer} from "rxjs";
+import {AbstractControl, ValidationErrors} from "@angular/forms";
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,21 @@ import { map } from "rxjs/operators";
 export class UsernameEmailValidatorsService {
 
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
+  }
+
+  checkIfEmailIsAvailable(control: AbstractControl): Observable<ValidationErrors | null> {
+    const url$ = this.urlService.authURL$;
+    return url$.pipe(
+      switchMap(url => {
+        const httpOptions = {
+          headers: new HttpHeaders({'Content-Type': 'application/json'}),
+          withCredentials: true,
+        };
+        return this.http.post<boolean>(`${url}users/mailExists`, control.value, httpOptions);
+      }),
+      map(emailExists => emailExists ? {'mailExists': true} : null),
+      catchError(() => of(null)),
+    );
   }
 
   public checkIfMailExists(mail: string): Observable<boolean> {
@@ -27,14 +42,14 @@ export class UsernameEmailValidatorsService {
   mailExists(control: AbstractControl): Observable<ValidationErrors | null> {
     return timer(1000).pipe(
       switchMap(() => this.checkIfMailExists(control.value)),
-      map(resp => resp ? {mailExists:true} : null)
+      map(resp => resp ? {mailExists: true} : null)
     );
   }
 
   mailNotExists(control: AbstractControl): Observable<ValidationErrors | null> {
     return timer(1000).pipe(
       switchMap(() => this.checkIfMailExists(control.value)),
-      map(resp => !resp ? {mailDoesNotExist:true} : null)
+      map(resp => !resp ? {mailDoesNotExist: true} : null)
     );
   }
 
@@ -51,14 +66,14 @@ export class UsernameEmailValidatorsService {
   usernameExists(control: AbstractControl): Observable<ValidationErrors | null> {
     return timer(1000).pipe(
       switchMap(() => this.checkIfUsernameExists(control.value)),
-      map(resp => resp ? {usernameExists:true} : null)
+      map(resp => resp ? {usernameExists: true} : null)
     );
   }
 
   usernameNotExists(control: AbstractControl): Observable<ValidationErrors | null> {
     return timer(1000).pipe(
       switchMap(() => this.checkIfUsernameExists(control.value)),
-      map(resp => !resp ? {usernameDoesNotExist:true} : null)
+      map(resp => !resp ? {usernameDoesNotExist: true} : null)
     );
   }
 }
