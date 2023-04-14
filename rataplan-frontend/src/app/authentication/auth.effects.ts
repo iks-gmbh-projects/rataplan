@@ -44,22 +44,6 @@ export class AuthEffects {
   ) {
   }
 
-
-  changeProfileDetails = createEffect(() => { return this.actions$.pipe(
-    ofType(AuthActions.CHANGE_PROFILE_DETAILS_ACTION),
-    concatLatestFrom(() => this.urlService.authURL$),
-    switchMap(([displayNameAction, authURL]: [ChangeProfileDetailsAction, string]) => {
-      console.log(displayNameAction.payload + 'in effect');
-      const url = authURL + 'users/profile/updateProfileDetails';
-      const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
-      return this.httpClient.post<FrontendUser>(url, displayNameAction.payload, httpOptions)
-        .pipe(
-          map(success => success ? new ChangeProfileDetailsSuccessAction(displayNameAction.payload) : new ChangeDisplaynameErrorAction(success)),
-          catchError(err => of(new ChangeDisplaynameErrorAction(err)))
-        );
-    })
-  ); },{ dispatch:true });
-
   registerUser = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.REGISTER_ACTION),
     concatLatestFrom(() => this.urlService.authURL$),
@@ -158,6 +142,20 @@ export class AuthEffects {
     })
   ); });
 
+  changeProfileDetails = createEffect(() => { return this.actions$.pipe(
+    ofType(AuthActions.CHANGE_PROFILE_DETAILS_ACTION),
+    concatLatestFrom(() => this.urlService.authURL$),
+    switchMap(([displayNameAction, authURL]: [ChangeProfileDetailsAction, string]) => {
+      console.log(displayNameAction.payload + 'in effect');
+      const url = authURL + 'users/profile/updateProfileDetails';
+      const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
+      return this.httpClient.post<FrontendUser>(url, displayNameAction.payload, httpOptions)
+        .pipe(
+          map(success => success ? new ChangeProfileDetailsSuccessAction(displayNameAction.payload) : new ChangeDisplaynameErrorAction(success)),
+          catchError(err => of(new ChangeDisplaynameErrorAction(err)))
+        );
+    })
+  ); },{ dispatch:true });
   updateUserData = createEffect(() => { return this.actions$.pipe(
     ofType(AuthActions.UPDATE_USERDATA_ACTION),
     switchMap(() => this.urlService.authURL$),
