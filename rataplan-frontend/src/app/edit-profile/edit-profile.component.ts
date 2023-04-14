@@ -30,6 +30,8 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   userData?: FrontendUser;
   private userDataSub?: Subscription;
   private errorSub?: Subscription;
+  displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
+  emailField = new FormControl('', [Validators.required, Validators.email], ctrl => this.checkIfEmailIsAvailable(ctrl));
 
   constructor(
     private router: Router,
@@ -78,18 +80,6 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     this.errorSub?.unsubscribe();
   }
 
-
-  displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
-  emailField = new FormControl('', [Validators.required, Validators.email], ctrl => this.checkIfEmailIsAvailable(ctrl));
-
-  changeDisplayName() {
-    const displayName = this.displayNameField.value;
-    if (this.displayNameField.valid) {
-      this.store.dispatch(new ChangeDisplaynameAction(displayName));
-    }
-
-  }
-
   updateProfile() {
     const payload: FrontendUser = {
       id: this.userData!.id,
@@ -104,7 +94,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     if (ctrl.value == this.userData?.mail){
       return of(null);
     }else {
-      return this.emailValidatorsService.checkIfEmailIsAvailable(ctrl);
+      return this.emailValidatorsService.mailExists(ctrl);
     }
   }
 

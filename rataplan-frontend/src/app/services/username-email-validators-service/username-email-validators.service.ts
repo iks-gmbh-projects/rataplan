@@ -14,21 +14,6 @@ export class UsernameEmailValidatorsService {
   constructor(private http: HttpClient, private urlService: BackendUrlService) {
   }
 
-  checkIfEmailIsAvailable(control: AbstractControl): Observable<ValidationErrors | null> {
-    const url$ = this.urlService.authURL$;
-    return url$.pipe(
-      switchMap(url => {
-        const httpOptions = {
-          headers: new HttpHeaders({'Content-Type': 'application/json'}),
-          withCredentials: true,
-        };
-        return this.http.post<boolean>(`${url}users/mailExists`, control.value, httpOptions);
-      }),
-      map(emailExists => emailExists ? {'mailExists': true} : null),
-      catchError(() => of(null)),
-    );
-  }
-
   public checkIfMailExists(mail: string): Observable<boolean> {
     return this.urlService.authURL$.pipe(
       exhaustMap(authURL => {
