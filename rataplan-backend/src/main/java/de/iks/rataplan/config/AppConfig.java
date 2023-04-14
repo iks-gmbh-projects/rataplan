@@ -1,13 +1,19 @@
 package de.iks.rataplan.config;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import de.iks.rataplan.domain.AppointmentRequest;
+import de.iks.rataplan.dto.AppointmentRequestDTO;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
+import io.swagger.models.Model;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,7 +30,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -102,6 +110,7 @@ public class AppConfig {
 	 * @return ModelMapper instance
 	 */
 	@Bean
+	@Qualifier(value = "authModelMapper")
 	public ModelMapper modelMapper(ToEncryptedStringConverter toEncryptedStringConverter, FromEncryptedStringConverter fromEncryptedStringConverter) {
 		ModelMapper mapper = new ModelMapper();
 		mapper.addConverter(decisionConverter.toDAO);
@@ -109,6 +118,15 @@ public class AppConfig {
 		mapper.addConverter(toEncryptedStringConverter);
 		mapper.addConverter(fromEncryptedStringConverter);
 		return mapper;
+	}
+
+	@Bean
+	@Qualifier(value = "participantModelMapper")
+	public ModelMapper modelMapper (){
+		ModelMapper modelMapper = new ModelMapper();
+		TypeMap<AppointmentRequest, AppointmentRequestDTO> typeMap = modelMapper.createTypeMap(AppointmentRequest.class, AppointmentRequestDTO.class);
+		typeMap.addMappings(mapper -> mapper.skip(AppointmentRequestDTO::setEditToken));
+		return modelMapper;
 	}
 
 	@Bean
@@ -157,5 +175,6 @@ public class AppConfig {
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
 
 }

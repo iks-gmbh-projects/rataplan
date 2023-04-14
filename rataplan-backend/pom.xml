@@ -164,7 +164,7 @@
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
-			<version>${modelmapper.version}</version>
+			<version>3.1.1</version>
 		</dependency>
 
 		<!-- Gson -->
