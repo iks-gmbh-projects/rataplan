@@ -56,7 +56,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkIfMailExists(String mail) {
-
         return this.rawUserRepository.findOneByMail(cryptoService.encryptDB(mail.toLowerCase().trim())).isPresent();
     }
 
@@ -77,7 +76,6 @@ public class UserServiceImpl implements UserService {
         } else {
             dbUser = this.rawUserRepository.findOneByMail(user.getMail()).get();
         }
-
         if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
             return mapToUserDTO(dbUser);
         } else {
@@ -101,7 +99,6 @@ public class UserServiceImpl implements UserService {
         userDTO.setMail(cryptoService.decryptDB(user.getMail()));
         userDTO.setId(user.getId());
         userDTO.setDisplayname(cryptoService.decryptDB(user.getDisplayname()));
-
         return userDTO;
     }
 

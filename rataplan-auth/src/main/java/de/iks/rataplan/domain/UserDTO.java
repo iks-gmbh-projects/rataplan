@@ -1,15 +1,11 @@
 package de.iks.rataplan.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.Nullable;
-import de.iks.rataplan.service.CryptoServiceImpl;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 
-import static de.iks.rataplan.domain.User.trimAndNull;
 
 
 @Getter
