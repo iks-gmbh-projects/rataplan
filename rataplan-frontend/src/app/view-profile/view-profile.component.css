@@ -11,6 +11,23 @@
   column-gap: 50px;
 }
 
+.profile-info-type {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.profile-info {
+  font-size: 18px;
+  text-align: left;
+}
+
+.edit-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+
 .mat-raised-button {
   height: 36px;
   min-width: 88px;
@@ -34,24 +51,3 @@
   display: block;
 }
 
-
-
-
-
-
-.edit-choices {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: center;
-}
-
-.profile-info-type {
-  font-size: 18px;
-  font-weight: bold;
-  text-align: right;
-}
-
-.profile-info {
-  font-size: 18px;
-  text-align: left;
-}
