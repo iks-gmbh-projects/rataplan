@@ -1,16 +1,15 @@
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {AbstractControl, FormControl, ValidationErrors, Validators} from '@angular/forms';
+import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { Observable, of, Subscription} from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 
 import { appState } from '../app.reducers';
 import {
   AuthActions,
-  ChangeDisplaynameAction,
   ChangeProfileDetailsAction,
 } from '../authentication/auth.actions';
 import { FrontendUser } from '../models/user.model';
