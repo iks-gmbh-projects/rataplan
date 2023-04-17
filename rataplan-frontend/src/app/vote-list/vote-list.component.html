@@ -1,36 +1,40 @@
-<div class="wrapper">
-  <h2>Erstellte Abstimmungen</h2>
-  <div class="width">
-  <mat-card class="bottomSpace" *ngFor="let vote of createdVotes">
-    <mat-card-title>{{vote.title}}</mat-card-title>
-    <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
-    <mat-card-content>{{vote.description}}</mat-card-content>
-    <mat-card-actions>
-      <a mat-raised-button
-         color="primary"
-         [routerLink]="['/vote', vote.participationToken || vote.id]">
-         Anzeigen
-      </a>
-      <a *ngIf="!vote.expired"
-         mat-raised-button
-         color="primary"
-         [routerLink]="['/vote', 'edit', vote.editToken || vote.id]">
-         Editieren
-      </a>
-    </mat-card-actions>
-  </mat-card>
-  <h2>Teilgenommene Abstimmungen</h2>
-  <mat-card class="bottomSpace" *ngFor="let vote of participatedVotes">
-    <mat-card-title>{{vote.title}}</mat-card-title>
-    <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
-    <mat-card-content>{{vote.description}}</mat-card-content>
-    <mat-card-actions>
-      <a mat-raised-button
-         color="primary"
-        [routerLink]="['/vote', vote.participationToken || vote.id]">
-        Anzeigen
-      </a>
-    </mat-card-actions>
-  </mat-card>
-</div>
+<div class='wrapper'>
+  <h2 class='centered'>Erstellte Abstimmungen</h2>
+  <div class='width'>
+    <mat-card class='bottomSpace'
+              *ngFor='let vote of createdVotes'>
+      <mat-card-title>{{vote.title}}</mat-card-title>
+      <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+      <mat-card-content>{{vote.description}}</mat-card-content>
+      <mat-card-actions>
+        <a mat-raised-button
+           color='primary'
+           [routerLink]="['/vote', vote.participationToken || vote.id]">
+          Anzeigen
+        </a>
+        <a *ngIf='!vote.expired'
+           mat-raised-button
+           color='primary'
+           [routerLink]="['/vote', 'edit', vote.editToken || vote.id]">
+          Editieren
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <h2 class='centered'>Teilgenommene Abstimmungen</h2>
+  <div class='width'>
+    <mat-card class='bottomSpace'
+              *ngFor='let vote of participatedVotes'>
+      <mat-card-title>{{vote.title}}</mat-card-title>
+      <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+      <mat-card-content>{{vote.description}}</mat-card-content>
+      <mat-card-actions>
+        <a mat-raised-button
+           color='primary'
+           [routerLink]="['/vote', vote.participationToken || vote.id]">
+          Anzeigen
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 </div>

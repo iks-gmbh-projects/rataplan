@@ -1,7 +1,6 @@
-
 <div class="wrapper">
   <div>
-  <h1 class="header">Abstimmung {{editing ? 'ändern' : 'erstellen' }}</h1>
+  <h1 class="centered">Abstimmung {{editing ? 'ändern' : 'erstellen' }}</h1>
   </div>
   <mat-spinner *ngIf="busy"></mat-spinner>
   <div [ngStyle]="{display: busy ? 'none' : 'block'}">
