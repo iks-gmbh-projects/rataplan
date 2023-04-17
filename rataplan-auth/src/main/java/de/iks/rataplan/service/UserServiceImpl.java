@@ -1,4 +1,5 @@
 package de.iks.rataplan.service;
+
 import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
@@ -25,15 +26,17 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SurveyToolMessageService surveyToolMessageService;
+
     @Autowired
     CryptoServiceImpl cryptoService;
 
     @Autowired
     private BackendMessageService backendMessageService;
 
-    public UserDTO registerUser(UserDTO userDto) {
-        User user = mapToUser(userDto);
+    public UserDTO registerUser(UserDTO userDTO) {
+        User user = mapToUser(userDTO);
         user.trimUserCredentials();
+
         if (user.invalidFull()) throw new InvalidUserDataException();
         if (rawUserRepository.findOneByUsername(user.getUsername()).isPresent()) {
             throw new UsernameAlreadyInUseException("The username \"" + user.getUsername() + "\" is already in use!");
@@ -46,7 +49,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     @Override
     public boolean checkIfMailExists(String mail) {
         return this.rawUserRepository.findOneByMail(cryptoService.encryptDB(mail.toLowerCase().trim())).isPresent();
@@ -57,7 +59,6 @@ public class UserServiceImpl implements UserService {
         return this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.toLowerCase().trim())).isPresent();
     }
 
-
     @Override
     public UserDTO loginUser(UserDTO userDTO) {
         User user = mapToUser(userDTO);
@@ -65,10 +66,11 @@ public class UserServiceImpl implements UserService {
         if (user.invalidLogin()) throw new InvalidUserDataException();
         User dbUser;
         if (user.getUsername() != null) {
-             dbUser = this.rawUserRepository.findOneByUsername(user.getUsername()).get();
+            dbUser = this.rawUserRepository.findOneByUsername(user.getUsername()).get();
         } else {
             dbUser = this.rawUserRepository.findOneByMail(user.getMail()).get();
         }
+
         if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
             return mapToUserDTO(dbUser);
         } else {

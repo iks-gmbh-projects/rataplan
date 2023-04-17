@@ -51,16 +51,14 @@ public class UserRepositoryImpl implements UserRepository {
         return userRepository.saveAndFlush(cryptoService.ensureEncrypted(user));
     }
 
-    public void updateUser(User user){
+    public void updateUser(User user) {
         if (user.getId() == null && (userRepository.existsByUsernameAndEncrypted(user.getUsername(), false)
                 || userRepository.existsByMailAndEncrypted(user.getMail(), false))) {
             throw new DataIntegrityViolationException("Username or Email already in use");
-        }else {
+        } else {
             userRepository.saveAndFlush(user);
         }
     }
-
-
 
     @Override
     public void delete(User user) {
