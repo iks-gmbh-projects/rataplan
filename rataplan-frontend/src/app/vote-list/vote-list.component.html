@@ -12,10 +12,10 @@
            [routerLink]="['/vote', vote.participationToken || vote.id]">
           Anzeigen
         </a>
-        <a *ngIf='!vote.expired'
+        <a *ngIf='!vote.expired &&  && vote.editToken"'
            mat-raised-button
            color='primary'
-           [routerLink]="['/vote', 'edit', vote.editToken || vote.id]">
+           [routerLink]="['/vote', 'edit', vote.editToken]">
           Editieren
         </a>
       </mat-card-actions>
