@@ -146,7 +146,9 @@ public class AppointmentRequestControllerService {
 			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
 			AuthUser authUser = authServiceResponse.getBody();
 			if(!Objects.equals(appointmentRequest.getUserId(), authUser.getId()) &&
-				appointmentRequest.getAccessList().stream().filter(BackendUserAccess::isEdit).mapToInt(BackendUserAccess::getUserId).noneMatch(authUser.getId()::equals)) {
+				appointmentRequest.getAccessList().stream().filter(BackendUserAccess::isEdit)
+						.mapToInt(BackendUserAccess::getUserId).noneMatch(authUser.getId()::equals)
+			) {
 				throw new ForbiddenException();
 			}
 		} else if(appointmentRequest.getUserId() != null) {
