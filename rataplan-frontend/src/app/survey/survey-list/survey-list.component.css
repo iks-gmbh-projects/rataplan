@@ -2,10 +2,16 @@
   margin-bottom: 1ex;
 }
 
-.rightSpace {
-  margin-right: 1em;
-}
-
 .wrapper {
   padding: 1em;
+}
+.centered{
+  align-items: center;
+  flex-direction: column;
+}
+.button {
+  width: 105px;
+  margin-top: 1rem;
+  margin-right: 1rem;
+
 }

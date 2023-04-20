@@ -19,7 +19,7 @@
       <button mat-raised-button color="basic" (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')">
         <mat-icon>content_copy</mat-icon>
       </button>
-      <a mat-raised-button color="warn" routerLink="edit" *ngIf="!expired">
+      <a mat-raised-button color="primary" routerLink="edit" *ngIf="!expired">
         <mat-icon>edit</mat-icon>
       </a>
       <a mat-raised-button color="primary" routerLink="results">

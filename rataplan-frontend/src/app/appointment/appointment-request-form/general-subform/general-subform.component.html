@@ -1,78 +1,85 @@
-<form [formGroup]="generalSubform">
-  <div>
-    <div>
-      <mat-form-field class="form-size"
-                      appearance="fill">
-        <mat-label>Titel</mat-label>
-        <input type="text"
-               autocomplete="off"
-               matInput
-               formControlName="title">
-        <mat-error>{{errorMessageService.genericFormError(generalSubform.get("title"))}}</mat-error>
-      </mat-form-field>
-    </div>
-    <div *ngIf="!showDescription">
-      <button mat-raised-button
-              type="button"
-              (click)="addAndDeleteDescription()">+ Beschreibung
-      </button>
-    </div>
-    <div *ngIf="showDescription">
+ <div class="center">
+    <form [formGroup]="generalSubform">
       <div>
-        <mat-form-field class="form-size"
-                        appearance="fill">
-          <mat-label>Beschreibung</mat-label>
-          <textarea type="text"
-                    formControlName="description"
-                    matInput></textarea>
-          <mat-error>{{errorMessageService.genericFormError(generalSubform.get("description"))}}</mat-error>
-        </mat-form-field>
+        <div>
+          <mat-form-field
+            appearance="fill">
+            <mat-label>Titel</mat-label>
+            <input type="text"
+                   autocomplete="off"
+                   matInput
+                   formControlName="title">
+            <mat-error>{{errorMessageService.genericFormError(generalSubform.get("title"))}}</mat-error>
+          </mat-form-field>
+        </div>
+        <div *ngIf="!showDescription">
+          <button mat-raised-button
+                  type="button"
+                  (click)="addAndDeleteDescription()">+ Beschreibung
+          </button>
+        </div>
+        <div *ngIf="showDescription">
+          <div>
+            <mat-form-field
+              appearance="fill">
+              <mat-label>Beschreibung</mat-label>
+              <textarea type="text"
+                        formControlName="description"
+                        matInput></textarea>
+              <mat-error>{{errorMessageService.genericFormError(generalSubform.get("description"))}}</mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <button mat-raised-button
+                    type="button"
+                    color="warn"
+                    (click)="addAndDeleteDescription()">Beschreibung löschen
+            </button>
+          </div>
+        </div>
+        <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Deadline</mat-label>
+            <input autocomplete="off"
+                   matInput
+                   [matDatepicker]="picker"
+                   [max]="maxDate"
+                   [min]="minDate"
+                   formControlName="deadline">
+            <mat-datepicker-toggle matSuffix
+                                   [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error>{{errorMessageService.genericFormError(generalSubform.get("deadline"))}}</mat-error>
+          </mat-form-field>
+        </div>
+        <div>
+          <label id="example-radio-group-label">Antwortmöglichkeiten</label>
+          <div>
+            <mat-radio-group formControlName="decision">
+              <mat-radio-button [value]="DecisionType.DEFAULT">
+                Ja/Nein
+              </mat-radio-button>
+              <br>
+              <mat-radio-button [value]="DecisionType.EXTENDED">
+                Ja/Vielleicht/Nein
+              </mat-radio-button>
+              <br>
+              <mat-radio-button [value]="DecisionType.NUMBER">
+                Teilnehmerzahl
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
       </div>
-      <div>
-        <button mat-raised-button
+      <div class="button-space">
+        <button [disabled]="this.generalSubform.invalid"
+                class="right"
                 type="button"
-                color="warn"
-                (click)="addAndDeleteDescription()">Beschreibung löschen
+                color="primary"
+                mat-raised-button
+                (click)="nextPage()">Weiter
         </button>
       </div>
-    </div>
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Deadline</mat-label>
-        <input autocomplete="off"
-               matInput
-               [matDatepicker]="picker"
-               [max]="maxDate"
-               [min]="minDate"
-               formControlName="deadline">
-        <mat-datepicker-toggle matSuffix
-                               [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-error>{{errorMessageService.genericFormError(generalSubform.get("deadline"))}}</mat-error>
-      </mat-form-field>
-    </div>
-    <div>
-      <label id="example-radio-group-label">Antwortmöglichkeiten</label>
-      <div>
-        <mat-radio-group formControlName="decision">
-          <mat-radio-button [value]="DecisionType.DEFAULT">
-            Ja/Nein
-          </mat-radio-button><br>
-          <mat-radio-button [value]="DecisionType.EXTENDED">
-            Ja/Vielleicht/Nein
-          </mat-radio-button><br>
-          <mat-radio-button [value]="DecisionType.NUMBER">
-            Teilnehmerzahl
-          </mat-radio-button>
-        </mat-radio-group>
-      </div>
-    </div>
+    </form>
   </div>
-  <button [disabled]="this.generalSubform.invalid"
-          class="next-button"
-          type="button"
-          color="primary"
-          mat-raised-button
-          (click)="nextPage()">Weiter
-  </button>
-</form>
+

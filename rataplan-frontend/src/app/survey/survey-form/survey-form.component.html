@@ -1,25 +1,42 @@
-<div *ngIf="survey" class="wrapper">
-  <mat-card class="bottomspace">
-    <mat-card-title>{{survey.name}}</mat-card-title>
-    <mat-card-content>
-      <p>{{survey.description}}</p>
-      <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
-      <p>
-        Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
-        {{survey.anonymousParticipation ?
-        " anonym" :
-        " Angemeldeten"}}</p>
-    </mat-card-content>
-  </mat-card>
-  <a class="bottomspace" mat-raised-button color="primary" routerLink="/survey/list">Zurück</a>
+<div *ngIf="survey">
+  <div class="parent-div">
+    <div class="centered">
+      <mat-card class="bottomspace">
+        <mat-card-title>{{survey.name}}</mat-card-title>
+        <mat-card-content>
+          <p>{{survey.description}}</p>
+          <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
+          <p>
+            Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
+            {{survey.anonymousParticipation ?
+            " anonym" :
+            " Angemeldeten"}}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="button-div">
+      <a mat-raised-button color="primary" routerLink="/survey/list">Zurück</a>
+    </div>
+  </div>
   <mat-divider class="bottomspace"></mat-divider>
-  <mat-stepper #stepper="matStepper" orientation="vertical">
-    <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title" #step="matStep">
-      <app-survey-form-page [questionGroup]="questionGroup" [isFirst]="page==0" (onSubmit)="pageSubmit(stepper, $event)" (formAfterViewInit)="step.stepControl=$event"></app-survey-form-page>
-    </mat-step>
-    <mat-step label="Fertig">
-      <button style="margin:1ex;" mat-raised-button color="basic" matStepperPrevious><mat-icon>navigate_before</mat-icon></button>
-      <button style="margin:1ex;" mat-raised-button color="primary" [disabled]="isInvalid(stepper)" (click)="submit(stepper)">Einreichen</button>
-    </mat-step>
-  </mat-stepper>
+  <div>
+    <div class="size-div">
+    <mat-stepper #stepper="matStepper" orientation="vertical">
+      <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title"
+                #step="matStep">
+        <app-survey-form-page  [questionGroup]="questionGroup" [isFirst]="page==0"
+                              (onSubmit)="pageSubmit(stepper, $event)"
+                              (formAfterViewInit)="step.stepControl=$event"></app-survey-form-page>
+      </mat-step>
+      <mat-step label="Fertig">
+        <button class="left" mat-raised-button color="basic" matStepperPrevious>
+          <mat-icon>navigate_before</mat-icon>
+        </button>
+        <button class="right" mat-raised-button color="primary" [disabled]="isInvalid(stepper)"
+                (click)="submit(stepper)">Einreichen
+        </button>
+      </mat-step>
+    </mat-stepper>
+  </div>
+</div>
 </div>

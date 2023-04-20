@@ -1,4 +1,5 @@
-<mat-card *ngIf="survey">
+<div class="content">
+<mat-card class="width" *ngIf="survey">
   <mat-card-content>
     <mat-stepper orientation="vertical" #stepper="matStepper">
      <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title" #step="matStep">
@@ -7,12 +8,13 @@
       </mat-step>
     </mat-stepper>
   </mat-card-content>
-  <mat-card-actions>
+    <div>
     <button mat-raised-button color="primary" (click)="onSubmit.emit()">
       Zurück
     </button>
-    <button mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
+    <button class="right" mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
       Erstellen
     </button>
-  </mat-card-actions>
+    </div>
 </mat-card>
+</div>

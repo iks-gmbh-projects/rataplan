@@ -4,4 +4,34 @@
 
 .bottomspace {
   margin-bottom: 1ex;
+
 }
+
+.parent-div {
+  max-width: 300px;
+  width: 100%;
+  margin: auto;
+}
+
+.size-div{
+  max-width: 500px;
+  width: 100%;
+  margin: auto;
+}
+
+.button-div {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.right {
+  margin: 1rem 0;
+}
+
+.left{
+  float: left;
+  margin: 1rem 0;
+}
+
+

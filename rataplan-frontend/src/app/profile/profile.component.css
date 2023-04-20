@@ -4,9 +4,7 @@
   align-items: center;
   justify-content: center;
 }
-.header {
-  color: #3f51b5;
-}
+
 .mat-form-field {
   width: 60vw;
   max-width: 300px;
