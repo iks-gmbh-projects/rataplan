@@ -4,23 +4,23 @@
   <ng-template #loaded>
     <ng-container *ngIf="error" [ngSwitch]="error.status">
       <ng-template [ngSwitchCase]="404">
-        <h2>Die zu bearbeitende Abstimmung existiert nicht.</h2>
+        <h2 class="centered">Die zu bearbeitende Abstimmung existiert nicht.</h2>
         <a mat-raised-button color="primary" routerLink="/create-vote">
           Neue Abstimmung erstellen
         </a>
       </ng-template>
       <ng-template [ngSwitchCase]="403">
-        <h2>Kein Zutritt</h2>
+        <h2 class="centered">Kein Zutritt</h2>
         <p>Nur der Ersteller darf diese Abstimmung bearbeiten.</p>
         <a mat-raised-button color="primary" routerLink="/vote/own">Eigene Abstimmungen</a>
       </ng-template>
       <ng-template [ngSwitchCase]="401">
-        <h2>Anmeldung benötigt</h2>
+        <h2 class="centered">Anmeldung benötigt</h2>
         <p>Nur der Ersteller darf diese Abstimmung bearbeiten.</p>
         <a mat-raised-button color="primary" routerLink="/login" [queryParams]="redirectParams | async">Anmelden</a>
       </ng-template>
       <ng-template ngSwitchDefault>
-        <h2>Unerwarteter Fehler beim Laden der Abstimmung.</h2>
+        <h2 class="centered">Unerwarteter Fehler beim Laden der Abstimmung.</h2>
         <button type="button" mat-raised-button color="primary" (click)="refetchData()">Nochmal versuchen</button>
       </ng-template>
     </ng-container>
