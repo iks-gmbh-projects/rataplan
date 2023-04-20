@@ -16,5 +16,6 @@
   position: absolute;
   right: 10%;
 }
-
-
+.form-container{
+  width: 100%;
+}

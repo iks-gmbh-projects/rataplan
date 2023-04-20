@@ -22,3 +22,7 @@
   max-width: 80%;
   margin-left: 7%;
 }
+
+.max-width mat-form-field input {
+  width: 100%;
+}
