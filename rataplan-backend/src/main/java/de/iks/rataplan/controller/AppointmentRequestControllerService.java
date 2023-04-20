@@ -3,6 +3,7 @@ package de.iks.rataplan.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import de.iks.rataplan.domain.AuthUser;
 import de.iks.rataplan.restservice.AuthService;
@@ -60,14 +61,8 @@ public class AppointmentRequestControllerService {
 			new BackendUserAccess(null, authUser.getId(), true, false)
 		));
         appointmentRequestService.createAppointmentRequest(appointmentRequest);
-        AppointmentRequestDTO createdDTORequest = modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
 
-//		if (jwtToken != null && createdDTORequest.getUserId() != null) {
-//			backendUser.addAccess(createdDTORequest.getId(), true);
-//			backendUserService.updateBackendUser(backendUser);
-//		}
-
-		return createdDTORequest;
+		return modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
 	}
 
 	public AppointmentRequestDTO updateAppointmentRequest(String editToken, AppointmentRequestDTO appointmentRequestDTO, String jwtToken) {
@@ -99,10 +94,8 @@ public class AppointmentRequestControllerService {
 			throw new ForbiddenException();
 		}
 
-		AuthUser authUser = null;
-
 		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-		authUser = authServiceResponse.getBody();
+		AuthUser authUser = authServiceResponse.getBody();
 		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
 		List<AppointmentRequest> appointmentRequests = appointmentRequestService
@@ -124,10 +117,8 @@ public class AppointmentRequestControllerService {
 
 		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
-		AuthUser authUser = null;
-
 		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-		authUser = authServiceResponse.getBody();
+		AuthUser authUser = authServiceResponse.getBody();
 
 		List<AppointmentRequest> appointmentRequests = appointmentRequestService
 				.getAppointmentRequestsWhereUserTakesPartIn(authUser.getId());
@@ -143,15 +134,27 @@ public class AppointmentRequestControllerService {
 
     public AppointmentRequestDTO getAppointmentRequestByParticipationToken(String participationToken) {
         AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
-        AppointmentRequestDTO appointmentRequestDTO = modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
-
-        return appointmentRequestDTO;
+	
+		return modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
     }
 
-	public AppointmentRequestDTO getAppointmentRequestByEditToken(String editToken) {
+	public AppointmentRequestDTO getAppointmentRequestByEditToken(String editToken, String jwtToken) {
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByEditToken(editToken);
-		AppointmentRequestDTO appointmentRequestDTO = modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
-
-		return appointmentRequestDTO;
+		
+		if(appointmentRequest == null) return null;
+		if(jwtToken != null && appointmentRequest.getUserId() != null) {
+			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
+			AuthUser authUser = authServiceResponse.getBody();
+			if(!Objects.equals(appointmentRequest.getUserId(), authUser.getId()) &&
+				appointmentRequest.getAccessList().stream().filter(BackendUserAccess::isEdit)
+						.mapToInt(BackendUserAccess::getUserId).noneMatch(authUser.getId()::equals)
+			) {
+				throw new ForbiddenException();
+			}
+		} else if(appointmentRequest.getUserId() != null) {
+			throw new RequiresAuthorizationException();
+		}
+		
+		return modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
 	}
 }

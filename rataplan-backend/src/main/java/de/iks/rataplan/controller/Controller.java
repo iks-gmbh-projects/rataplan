@@ -77,7 +77,7 @@ public class Controller {
                                                                                   @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
         AppointmentRequestDTO appointmentRequestDTO = appointmentRequestControllerService
-                .getAppointmentRequestByEditToken(editToken);
+                .getAppointmentRequestByEditToken(editToken, jwtToken);
         return new ResponseEntity<>(appointmentRequestDTO, HttpStatus.OK);
     }
     
