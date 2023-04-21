@@ -78,6 +78,7 @@
         <input type='number'
                min='0'
                required
+               integer
                matInput
                [ngModel]='member!.appointmentDecisions[appointmentIndex]?.participants'
                (ngModelChange)='setParticipantNumber(appointment, $event)'
