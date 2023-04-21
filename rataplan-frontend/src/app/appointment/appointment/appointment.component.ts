@@ -64,7 +64,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
         this.userVoted = this.appointmentRequest.appointmentMembers.some(member =>
           member.userId === this.currentUser?.id);
         if (this.currentUser !== null) {
-          this.member.name = this.currentUser?.displayname
+          this.member.name = this.currentUser?.displayname;
         }
       });
   }
@@ -82,7 +82,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     if (this.currentUser != null && this.userVoted) {
       console.log(this.currentUser + " hat schon abgestimmt");
       this.resetVote();
-      return
+      return;
     }
     this.appointmentService.addAppointmentMember(this.appointmentRequest!, this.member)
       .pipe(takeUntil(this.destroySubject))
@@ -108,7 +108,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     };
     this.setAppointments();
     if (this.currentUser !== null) {
-      this.member.name = this.currentUser?.displayname
+      this.member.name = this.currentUser?.displayname;
     }
   }
 
