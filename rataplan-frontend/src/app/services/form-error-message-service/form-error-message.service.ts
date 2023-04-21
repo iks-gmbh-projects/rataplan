@@ -12,6 +12,7 @@ export class FormErrorMessageService {
     if (!element) return "Interner Fehler der Seite";
     if (element.hasError("required")) return "Dieses Feld darf nicht leer bleiben.";
     if (element.hasError("email")) return "Keine gültige E-Mail";
+    if (element.hasError("mustBeWholeNumber")) return "Muss ganzzahlig sein";
     if (element.hasError("cannotContainWhitespace")) return "Darf keine Leerzeichen enthalten.";
     if (element.hasError("mustContainSomeWhitespace")) return "Muss mindestens ein sichtbares Zeichen enthalten.";
     if (element.hasError("minlength")) return "Benötigt mindestens " + element.getError("minlength").requiredLength + " Zeichen";
