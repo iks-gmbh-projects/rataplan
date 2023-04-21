@@ -119,8 +119,24 @@
             type='submit'
             color='primary'
             mat-raised-button
+            *ngIf='!isPreview; else previewButtons'
             [disabled]='appointmentRequest?.expired'
             (click)='saveVote()'>{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
     </button>
+    <ng-template #previewButtons>
+      <a class='back-button'
+         mat-raised-button
+         routerLink="../email">
+        Zurück
+      </a>
+      <a class='vote-button'
+         type='submit'
+         color='primary'
+         mat-raised-button
+         [disabled]='busy'
+         (click)='acceptPreview()'>
+        Fertig
+      </a>
+    </ng-template>
   </div>
 </div>
