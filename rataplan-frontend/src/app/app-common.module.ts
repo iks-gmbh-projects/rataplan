@@ -7,6 +7,7 @@ import { SomeNonWhitespaceDirective } from "./validator/some-non-whitespace.dire
 import { CheckboxCountMinDirective } from "./validator/checkbox-count-min.directive";
 import { CheckboxCountMaxDirective } from "./validator/checkbox-count-max.directive";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { WholeNumberDirective } from './validator/whole-number.directive';
 
 
 
@@ -17,6 +18,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     SomeNonWhitespaceDirective,
     CheckboxCountMinDirective,
     CheckboxCountMaxDirective,
+    WholeNumberDirective,
   ],
   imports: [
     CommonModule,
@@ -31,6 +33,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     SomeNonWhitespaceDirective,
     CheckboxCountMinDirective,
     CheckboxCountMaxDirective,
+    WholeNumberDirective,
   ],
 })
 export class AppCommonModule { }
