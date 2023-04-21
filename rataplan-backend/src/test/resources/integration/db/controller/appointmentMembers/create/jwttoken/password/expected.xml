@@ -1,6 +1,4 @@
 <dataset>
-  <backendUser id="1" authUserid="1" />
-  <!-- password = "password", adminpassword="adminpassword" -->
   <appointmentRequestConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" password="$2a$10$d7KcSMsnhOG1ZiXzbTy8quw2kKxrBsio3V8lWkm0tmAujv9PwPLsG" adminPassword="$2a$10$eCT.ISZ.WZ8Y7xSDOHUh2.r5RDUAM4p/oRo2xxJIBidK.2F6OiFJC"/>
   
   <appointmentRequest id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isExpired="false" appointmentRequestConfigId="1" />
@@ -8,10 +6,10 @@
   <appointment id="1" appointmentRequestId="1" description="iks Hilden" />
   <appointment id="2" appointmentRequestId="1" description="homeoffice" />
 
-  <appointmentMember appointmentRequestId="1" name="IKS_1" backendUserId="1" />
+  <appointmentMember appointmentRequestId="1" name="IKS_1" userId="1" />
 
   <appointmentDecision appointmentId="1" decision="0" />
   <appointmentDecision appointmentId="2" decision="1" />
   
-  <backendUserAccess appointmentRequestId="1" isEdit="false" isInvited="false" backendUserId="1" />
+  <backendUserAccess appointmentRequestId="1" isEdit="false" isInvited="false" userId="1" />
 </dataset>

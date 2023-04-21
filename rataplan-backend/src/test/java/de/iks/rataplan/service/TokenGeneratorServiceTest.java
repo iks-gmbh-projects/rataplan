@@ -1,4 +1,4 @@
-package de.iks.rataplan.controller;
+package de.iks.rataplan.service;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -6,7 +6,6 @@ import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
 import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
-import de.iks.rataplan.service.TokenGeneratorService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ import static org.junit.Assert.*;
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class GeneratorTokenTest {
+public class TokenGeneratorServiceTest {
 
     private static final String FILE_PATH = PATH + CONTROLLERSERVICE + GENERATORTOKEN;
 

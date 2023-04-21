@@ -1,5 +1,6 @@
 package de.iks.rataplan.controller;
 
+import de.iks.rataplan.exceptions.RataplanException;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.service.AppointmentRequestService;
 import org.modelmapper.ModelMapper;
@@ -44,16 +45,19 @@ public class AppointmentMemberControllerService {
 
 	public AppointmentMemberDTO createAppointmentMember(AppointmentMemberDTO appointmentMemberDTO, String participationToken, String jwtToken) {
 
+		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+
 		//BackendUser backendUser = null;
 		AuthUser authUser = null;
-		
+
 		if (jwtToken != null) {
-			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken); 
+			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
 			authUser = authServiceResponse.getBody();
+			if (isUserMemberInAppointmentRequest(appointmentRequest, authUser)) {
+				throw new RataplanException("User already participated in this appointmentRequest");
+			}
 			//backendUser = backendUserService.getBackendUserByAuthUserId(authUser.getId());
 		}
-		
-		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
 //				authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		
 		this.createValidDTOMember(appointmentRequest, appointmentMemberDTO, authUser);
@@ -125,9 +129,9 @@ public class AppointmentMemberControllerService {
 		throw new ForbiddenException();
 	}
 	
-	private boolean isBackendUserMemberInAppointmentRequest(AppointmentRequest appointmentRequest, int userId) {
+	private boolean isUserMemberInAppointmentRequest(AppointmentRequest appointmentRequest, AuthUser authUser) {
 		for (AppointmentMember appointmentMember : appointmentRequest.getAppointmentMembers()) {
-			if (appointmentMember.getUserId() != null && appointmentMember.getUserId() == userId) {
+			if (appointmentMember.getUserId() != null && appointmentMember.getUserId().equals(authUser.getId())) {
 				return true;
 			}
 		}

@@ -23,6 +23,7 @@ public final class ITConstants {
 	public static final String EDIT = "/edit";
 	public static final String GET = "/get";
 	public static final String JWTTOKEN = "/jwttoken";
+	public static final String PARTICIPATE_TWICE = "/participateTwice";
 	public static final String LOGIN = "/login";
 	public static final String LOGOUT = "/logout";
 	public static final String PARTICIPATIONS = "/participations";
