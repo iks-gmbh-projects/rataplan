@@ -52,7 +52,7 @@ export class ExtraValidators {
     return ctrl => ExtraValidators.countEntries(ctrl.value, predicate) > max ? {selectMax: true} : null;
   }
 
-  static wholeNumber(ctrl: AbstractControl): ValidationErrors | null {
-    return /^\d*$/.test('' + ctrl.value) ? null : {mustBeWholeNumber: true};
+  static integer(ctrl: AbstractControl): ValidationErrors | null {
+    return /^\d*$/.test('' + ctrl.value) ? null : {integer: true};
   }
 }
