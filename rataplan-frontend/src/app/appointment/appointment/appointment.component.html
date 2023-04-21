@@ -28,7 +28,7 @@
             <mat-icon *ngIf='member.userId' class='user-icon'>person</mat-icon>
             {{ member.name }}
           </div>
-          <div *ngIf='member.userId === null || member.userId === currentUser!.id' class='member-button'>
+          <div *ngIf='!member.userId || member.userId === currentUser?.id' class='member-button'>
             <button mat-icon-button
                     (click)='editMember(member)'>
               <mat-icon mat-list-icon>edit_square</mat-icon>
