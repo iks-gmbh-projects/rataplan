@@ -158,6 +158,26 @@ export function appointmentRequestReducer(
         busy: false,
       };
     }
+    case AppointmentActions.EDIT_APPOINTMENT: {
+      if (!state.appointmentRequest) return {
+        ...state,
+        complete: false,
+        error: {
+          ...state.error,
+          missing_request: "Initialize request first",
+        },
+      };
+      const request: AppointmentRequestModel = {
+        ...state.appointmentRequest,
+        appointments: [...state.appointmentRequest.appointments.slice(0, action.index), action.appointment, ...state.appointmentRequest.appointments.slice(action.index+1)],
+      }
+      return {
+        appointmentRequest: request,
+        complete: isComplete(request),
+        appointmentsChanged: true,
+        busy: false,
+      };
+    }
     case AppointmentActions.REMOVE_APPOINTMENT: {
       if (!state.appointmentRequest) return {
         ...state,

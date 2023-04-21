@@ -11,6 +11,7 @@ export const AppointmentActions = {
   SET_APPOINTMENT_CONFIG: "[appointmentRequest] set appointment config",
   SET_APPOINTMENTS: "[appointmentRequest] set appointments",
   ADD_APPOINTMENTS: "[appointmentRequest] add appointments",
+  EDIT_APPOINTMENT: "[appointmentRequest] edit appointments",
   REMOVE_APPOINTMENT: "[appointmentRequest] remove appointment",
   SET_ORGANIZER_INFO: "[appointmentRequest] set organizer info",
   POST: "[appointmentRequest] post",
@@ -84,6 +85,15 @@ export class AddAppointmentsAction implements Action {
   }
 }
 
+export class EditAppointmentAction implements Action {
+  readonly type = AppointmentActions.EDIT_APPOINTMENT;
+  constructor(
+    readonly index: number,
+    readonly appointment: AppointmentModel
+  ) {
+  }
+}
+
 export class RemoveAppointmentAction implements Action {
   readonly type = AppointmentActions.REMOVE_APPOINTMENT;
   constructor(
@@ -136,6 +146,7 @@ export type AppointmentAction =
   | SetAppointmentConfigAction
   | SetAppointmentsAction
   | AddAppointmentsAction
+  | EditAppointmentAction
   | RemoveAppointmentAction
   | SetOrganizerInfoAppointmentAction
   | PostAppointmentRequestAction
