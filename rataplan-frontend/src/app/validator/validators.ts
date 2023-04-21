@@ -27,7 +27,7 @@ export class ExtraValidators {
   }
 
   static containsSomeWhitespace(control: AbstractControl): ValidationErrors | null {
-    if(control.value == "" || /\S/.test(control.value)) return null;
+    if (control.value == "" || /\S/.test(control.value)) return null;
     return {mustContainSomeWhitespace: true};
   }
 
@@ -41,7 +41,7 @@ export class ExtraValidators {
 
   static countEntries(object: any, predicate: (value: any) => any = x => x): number {
     return Object.entries(object)
-      .reduce((c, x) => predicate(x[1]) ? c+1 : c, 0);
+      .reduce((c, x) => predicate(x[1]) ? c + 1 : c, 0);
   }
 
   static filterCountMin(min: number, predicate: (value: any) => any = x => x): ValidatorFn {
@@ -50,5 +50,9 @@ export class ExtraValidators {
 
   static filterCountMax(max: number, predicate: (value: any) => any = x => x): ValidatorFn {
     return ctrl => ExtraValidators.countEntries(ctrl.value, predicate) > max ? {selectMax: true} : null;
+  }
+
+  static wholeNumber(ctrl: AbstractControl): ValidationErrors | null {
+    return /^\d*$/.test('' + ctrl.value) ? null : {mustBeWholeNumber: true};
   }
 }
