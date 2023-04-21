@@ -1,4 +1,4 @@
-export function combineDateTime(date: string, time: string): string {
+export function combineDateTime(date: string|null|undefined, time: string|null|undefined): string {
   console.log(date);
   let dateString = '';
   if (date) {

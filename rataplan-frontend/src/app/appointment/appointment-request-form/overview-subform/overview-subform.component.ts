@@ -1,19 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AppointmentConfig, AppointmentModel } from '../../../models/appointment.model';
-import { appState } from "../../../app.reducers";
-import { Store } from "@ngrx/store";
-import { Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
-import { combineDateTime } from "../appointment-request-form.service";
-import { AddAppointmentsAction, RemoveAppointmentAction } from "../../appointment.actions";
+import { Store } from '@ngrx/store';
+import { filter, map, Subscription } from 'rxjs';
 
-function extractTime(date?: string): string | undefined {
-  if(!date) return date;
+import { AppointmentConfig, AppointmentModel } from '../../../models/appointment.model';
+import { AddAppointmentsAction, EditAppointmentAction, RemoveAppointmentAction } from '../../appointment.actions';
+import { appState } from '../../../app.reducers';
+import { combineDateTime } from '../appointment-request-form.service';
+
+function extractTime(date: string | undefined | null): string | null {
+  if (!date) return null;
   const dateObject = new Date(date);
-  return (dateObject.getHours()+':'+dateObject.getMinutes()).replace(/^\d:/, "0$0").replace(/:(\d)$/, ":0$1");
+  return (dateObject.getHours() + ':' + dateObject.getMinutes()).replace(/^\d:/, "0$0").replace(/:(\d)$/, ":0$1");
 }
+
+type formValue = {
+  appointmentIndex: number | null,
+  startDateInput: string | null,
+  endDateInput: string | null,
+  startTimeInput: string | null,
+  endTimeInput: string | null,
+  descriptionInput: string | null,
+  linkInput: string | null,
+};
 
 @Component({
   selector: 'app-overview-subform',
@@ -31,12 +41,13 @@ export class OverviewSubformComponent implements OnInit {
     url: false,
   };
   voteOptions = this.formBuilder.group({
+    appointmentIndex: null,
     startDateInput: null,
     endDateInput: null,
     startTimeInput: null,
     endTimeInput: null,
     descriptionInput: null,
-    linkInput: null
+    linkInput: null,
   });
 
   private storeSub?: Subscription;
@@ -48,9 +59,9 @@ export class OverviewSubformComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select("appointmentRequest").pipe(
+    this.storeSub = this.store.select('appointmentRequest').pipe(
       filter(request => !!request.appointmentRequest),
-      map(state => state.appointmentRequest!)
+      map(state => state.appointmentRequest!),
     ).subscribe(request => {
       this.appointmentConfig = request.appointmentRequestConfig.appointmentConfig;
       this.appointments = request.appointments;
@@ -66,20 +77,25 @@ export class OverviewSubformComponent implements OnInit {
       return;
     }
 
+    const formValue: formValue = this.voteOptions.value;
     const voteOption: AppointmentModel = {};
     voteOption.startDate = combineDateTime(
-      this.voteOptions.get('startDateInput')?.value, this.voteOptions.get('startTimeInput')?.value,
+      formValue.startDateInput, formValue.startTimeInput,
     );
     if (this.appointmentConfig.endDate) {
       voteOption.endDate = combineDateTime(
-        this.voteOptions.get('endDateInput')?.value, this.voteOptions.get('endTimeInput')?.value,
+        formValue.endDateInput, formValue.endTimeInput,
       );
     }
 
-    voteOption.description = this.voteOptions.get('descriptionInput')?.value;
-    voteOption.url = this.voteOptions.get('linkInput')?.value;
+    voteOption.description = formValue.descriptionInput || undefined;
+    voteOption.url = formValue.linkInput || undefined;
 
-    this.store.dispatch(new AddAppointmentsAction(voteOption));
+    if (formValue.appointmentIndex !== null) {
+      this.store.dispatch(new EditAppointmentAction(formValue.appointmentIndex, voteOption));
+    } else {
+      this.store.dispatch(new AddAppointmentsAction(voteOption));
+    }
 
     console.log(this.voteOptions.get('timeInput')?.value);
     console.log(this.appointments);
@@ -103,12 +119,14 @@ export class OverviewSubformComponent implements OnInit {
 
   editVoteOption(index: number) {
     const voteOption = this.appointments[index];
-    this.voteOptions.controls['startDateInput'].setValue(voteOption.startDate);
-    this.voteOptions.controls['endDateInput'].setValue(voteOption.endDate);
-    this.voteOptions.controls['startTimeInput'].setValue(extractTime(voteOption.startDate));
-    this.voteOptions.controls['endTimeInput'].setValue(extractTime(voteOption.endDate));
-    this.voteOptions.controls['descriptionInput'].setValue(voteOption.description);
-    this.voteOptions.controls['linkInput'].setValue(voteOption.url);
-    this.deleteVoteOption(index);
+    this.voteOptions.setValue({
+      startDateInput: voteOption.startDate || null,
+      endDateInput: voteOption.endDate || null,
+      startTimeInput: extractTime(voteOption.startDate),
+      endTimeInput: extractTime(voteOption.endDate),
+      descriptionInput: voteOption.description || null,
+      linkInput: voteOption.url || null,
+      appointmentIndex: index,
+    });
   }
 }
