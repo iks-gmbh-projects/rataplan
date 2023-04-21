@@ -5,10 +5,10 @@
       <p></p>
       <p>{{ appointmentRequest?.description }}</p>
     </mat-card-content>
-    <mat-card-subtitle *ngIf='!appointmentRequest?.expired'>
+    <mat-card-subtitle>
       Abstimmung aktiv bis: {{ appointmentRequest?.deadline | date:'dd MMMM yyyy':'+0200':'de' }}
     </mat-card-subtitle>
-    <mat-card-subtitle *ngIf='appointmentRequest?.expired'>
+    <mat-card-subtitle *ngIf='deadlineService.hasDeadlinePassed()'>
       <span class='mat-error'>Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
     </mat-card-subtitle>
     <div *ngIf='appointmentRequest?.organizerName'>
@@ -25,7 +25,7 @@
       <mat-list *ngFor='let member of (this.appointmentRequest?.appointmentMembers || [])'>
         <mat-list-item class='member'>
           {{ member.name }}
-          <div>
+          <div *ngIf='!deadlineService.hasDeadlinePassed()'>
             <button mat-icon-button
                     (click)='editMember(member)'>
               <mat-icon mat-list-icon>edit_square</mat-icon>
@@ -39,7 +39,7 @@
       </mat-list>
     </mat-expansion-panel>
   </div>
-  <div>
+  <div *ngIf='!deadlineService.hasDeadlinePassed()'>
     <mat-form-field appearance='fill'>
       <mat-label>Name</mat-label>
       <input [(ngModel)]='member!.name'
@@ -83,7 +83,7 @@
       <mat-button-toggle-group style='scale: 90%'>
         <mat-button-toggle (click)='setDecision(appointment, 1)'
                            [checked]='checkVoteOfMember(appointment, 1)'
-                           [disabled]='appointmentRequest?.expired'
+                           [disabled]='deadlineService.hasDeadlinePassed()'
                            matTooltip='Ja'
                            matTooltipPosition='above'>
           <mat-icon>done</mat-icon>
@@ -91,21 +91,21 @@
         <mat-button-toggle *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType === DecisionType.EXTENDED'
                            (click)='setDecision(appointment, 2)'
                            [checked]='checkVoteOfMember(appointment, 2)'
-                           [disabled]='appointmentRequest?.expired'
+                           [disabled]='deadlineService.hasDeadlinePassed()'
                            matTooltip='Vielleicht'
                            matTooltipPosition='above'>
           <mat-icon>question_mark</mat-icon>
         </mat-button-toggle>
         <mat-button-toggle (click)='setDecision(appointment, 3)'
                            [checked]='checkVoteOfMember(appointment, 3)'
-                           [disabled]='appointmentRequest?.expired'
+                           [disabled]='deadlineService.hasDeadlinePassed()'
                            matTooltip='Nein'
                            matTooltipPosition='above'>
           <mat-icon>close</mat-icon>
         </mat-button-toggle>
         <mat-button-toggle (click)='setDecision(appointment, 0)'
                            [checked]='checkVoteOfMember(appointment, 0)'
-                           [disabled]='appointmentRequest?.expired'
+                           [disabled]='deadlineService.hasDeadlinePassed()'
                            matTooltip='Keine Antwort'
                            matTooltipPosition='above'>
           <mat-icon></mat-icon>
@@ -114,12 +114,11 @@
       </ng-template>
     </mat-list-item>
   </mat-list>
-  <div>
+  <div *ngIf='!deadlineService.hasDeadlinePassed()'>
     <button class='vote-button'
             type='submit'
             color='primary'
             mat-raised-button
-            [disabled]='appointmentRequest?.expired'
             (click)='saveVote()'>{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
     </button>
   </div>
