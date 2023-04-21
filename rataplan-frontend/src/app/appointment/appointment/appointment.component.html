@@ -79,7 +79,8 @@
                min='0'
                required
                matInput
-               [(ngModel)]='member!.appointmentDecisions[appointmentIndex].participants'
+               [ngModel]='member!.appointmentDecisions[appointmentIndex]?.participants'
+               (ngModelChange)='setParticipantNumber(appointment, $event)'
                mat-line
                #participantField='ngModel'>
         <mat-error mat-line>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
