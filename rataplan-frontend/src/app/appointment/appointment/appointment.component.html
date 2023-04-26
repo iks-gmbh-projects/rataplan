@@ -75,7 +75,8 @@
       <mat-form-field *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType === DecisionType.NUMBER; else decisionComplex'
                       appearance='fill'>
         <mat-label>Teilnehmerzahl</mat-label>
-        <input type='number'
+        <input type='text'
+               inputmode='numeric'
                min='0'
                required
                integer

@@ -53,6 +53,6 @@ export class ExtraValidators {
   }
 
   static integer(ctrl: AbstractControl): ValidationErrors | null {
-    return /^\d*$/.test('' + ctrl.value) ? null : {integer: true};
+    return /^[-+]?\d*$/.test('' + ctrl.value) ? null : {integer: true};
   }
 }

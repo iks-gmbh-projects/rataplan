@@ -65,8 +65,8 @@ export class SurveyCreateFormComponent {
 
   public createQuestion(question?: Question): FormGroup {
     const checkboxes= new FormArray(question?.checkboxGroup?.checkboxes?.map(this.createCheckbox, this) || []);
-    const minSelect = new FormControl(question?.checkboxGroup?.minSelect || 0, [Validators.min(0), ExtraValidators.indexValue(checkboxes, true)]);
-    const maxSelect = new FormControl(question?.checkboxGroup?.maxSelect || 2, [Validators.min(1), ExtraValidators.valueGreaterThan(minSelect), ExtraValidators.indexValue(checkboxes, true)]);
+    const minSelect = new FormControl(question?.checkboxGroup?.minSelect || 0, [ExtraValidators.integer, Validators.min(0), ExtraValidators.indexValue(checkboxes, true)]);
+    const maxSelect = new FormControl(question?.checkboxGroup?.maxSelect || 2, [ExtraValidators.integer, Validators.min(1), ExtraValidators.valueGreaterThan(minSelect), ExtraValidators.indexValue(checkboxes, true)]);
     minSelect.addValidators(ExtraValidators.valueLessThan(maxSelect));
     return new FormGroup({
       id: new FormControl(question?.id),
