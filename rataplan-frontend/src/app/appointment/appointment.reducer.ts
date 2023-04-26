@@ -1,8 +1,11 @@
 import { AppointmentRequestModel } from "../models/appointment-request.model";
-import { AppointmentAction, AppointmentActions } from "./appointment.actions";
-import { isConfiguredEqual } from "../models/appointment.model";
+import { ActionRequiresInit, AppointmentAction, AppointmentActions } from "./appointment.actions";
+import { isConfiguredEqual, matchConfiguration, matchesConfiguration } from "../models/appointment.model";
 
-export type appointmentRequestState = {busy: boolean, error?: any} & ({
+export type appointmentRequestState = {
+  busy: boolean,
+  error?: any,
+} & ({
   appointmentRequest?: undefined,
   complete?: false,
   appointmentsChanged?: undefined,
@@ -19,16 +22,44 @@ function isComplete(appointmentRequest?: AppointmentRequestModel): boolean {
     appointmentRequest.appointments.length > 0;
 }
 
+function assembleRequestState(request: AppointmentRequestModel, appointmentsChanged: boolean): appointmentRequestState {
+  return {
+    appointmentRequest: request,
+    complete: isComplete(request),
+    appointmentsChanged: appointmentsChanged,
+    busy: false,
+  };
+}
+
 export function appointmentRequestReducer(
   state: appointmentRequestState = {complete: false, busy: false},
-  action: AppointmentAction
+  action: AppointmentAction,
 ): appointmentRequestState {
+  if (ActionRequiresInit[action.type] && !state.appointmentRequest) {
+    return {
+      complete: false,
+      busy: false,
+      error: {
+        ...state.error,
+        missing_request: "Initialize request first",
+      },
+    };
+  }
+  if ("appointments" in action && !matchConfiguration(action.appointments, state.appointmentRequest!.appointmentRequestConfig.appointmentConfig)) {
+    return {
+      ...state,
+      error: {
+        ...state.error,
+        invalid_appointment: "Appointment information does not match configuration",
+      },
+    };
+  }
   switch (action.type) {
     case AppointmentActions.INIT:
       return {
         complete: false,
         busy: true,
-      }
+      };
     case AppointmentActions.INIT_SUCCESS:
       return {
         appointmentRequest: action.request,
@@ -43,45 +74,31 @@ export function appointmentRequestReducer(
         error: action.error,
       };
     case AppointmentActions.SET_GENERAL_VALUES:
-      if(!state.appointmentRequest) return {
-        complete: false,
-        busy: false,
-        error: {
-          ...state.error,
-          missing_request: "Initialize request first",
+      return assembleRequestState(
+        {
+          ...state.appointmentRequest!,
+          title: action.payload.title,
+          description: action.payload.description,
+          deadline: action.payload.deadline.toISOString(),
+          appointmentRequestConfig: {
+            ...state.appointmentRequest!.appointmentRequestConfig,
+            decisionType: action.payload.decisionType,
+          },
         },
-      };
-      const request: AppointmentRequestModel = {
-        ...state.appointmentRequest,
-        title: action.payload.title,
-        description: action.payload.description,
-        deadline: action.payload.deadline.toISOString(),
-        appointmentRequestConfig: {
-          ...state.appointmentRequest.appointmentRequestConfig,
-          decisionType: action.payload.decisionType,
-        },
-      };
-      return {
-        appointmentRequest: request,
-        complete: isComplete(request),
-        appointmentsChanged: state.appointmentsChanged,
-        busy: false,
-      };
+        state.appointmentsChanged!,
+      );
     case AppointmentActions.SET_APPOINTMENT_CONFIG:
-      if(!state.appointmentRequest) return {
-        complete: false,
-        busy: false,
-        error: {
-          ...state.error,
-          missing_request: "Initialize request first",
-        },
-      };
-      if(isConfiguredEqual(state.appointmentRequest.appointmentRequestConfig.appointmentConfig, action.config)) return state;
+      if (isConfiguredEqual(
+        state.appointmentRequest!.appointmentRequestConfig.appointmentConfig,
+        action.config,
+      )) {
+        return state;
+      }
       return {
         appointmentRequest: {
-          ...state.appointmentRequest,
+          ...state.appointmentRequest!,
           appointmentRequestConfig: {
-            ...state.appointmentRequest.appointmentRequestConfig,
+            ...state.appointmentRequest!.appointmentRequestConfig,
             appointmentConfig: {...action.config},
           },
           appointments: [],
@@ -90,139 +107,71 @@ export function appointmentRequestReducer(
         appointmentsChanged: true,
         busy: false,
       };
-    case AppointmentActions.SET_APPOINTMENTS: {
-      if (!state.appointmentRequest) return {
-        ...state,
-        complete: false,
-        error: {
-          ...state.error,
-          missing_request: "Initialize request first",
+    case AppointmentActions.SET_APPOINTMENTS:
+      return assembleRequestState(
+        {
+          ...state.appointmentRequest!,
+          appointments: [...action.appointments],
         },
-      };
-      const config = state.appointmentRequest.appointmentRequestConfig.appointmentConfig;
-      if (!action.appointments.every(a =>
-        ((config.startDate || config.startTime) == !!a.startDate) &&
-        ((config.endDate || config.endTime) == !!a.endDate) &&
-        (config.description == !!a.description) &&
-        (config.url == !!a.url)
+        true,
+      );
+    case AppointmentActions.ADD_APPOINTMENTS:
+      return assembleRequestState({
+          ...state.appointmentRequest!,
+          appointments: [...state.appointmentRequest!.appointments, ...action.appointments],
+        },
+        true,
+      );
+    case AppointmentActions.EDIT_APPOINTMENT:
+      if (!matchesConfiguration(
+        action.appointment,
+        state.appointmentRequest!.appointmentRequestConfig.appointmentConfig,
       )) return {
         ...state,
-        complete: false,
         error: {
           ...state.error,
           invalid_appointment: "Appointment information does not match configuration",
-        }
-      };
-      const request: AppointmentRequestModel = {
-        ...state.appointmentRequest,
-        appointments: [...action.appointments],
-      }
-      return {
-        appointmentRequest: request,
-        complete: isComplete(request),
-        appointmentsChanged: true,
-        busy: false,
-      };
-    }
-    case AppointmentActions.ADD_APPOINTMENTS: {
-      if (!state.appointmentRequest) return {
-        ...state,
-        complete: false,
-        error: {
-          ...state.error,
-          missing_request: "Initialize request first",
         },
       };
-      const config = state.appointmentRequest.appointmentRequestConfig.appointmentConfig;
-      if (!action.appointments.every(a =>
-        ((config.startDate || config.startTime) == !!a.startDate) &&
-        ((config.endDate || config.endTime) == !!a.endDate) &&
-        (config.description == !!a.description) &&
-        (config.url == !!a.url)
-      )) return {
-        ...state,
-        complete: false,
-        error: {
-          ...state.error,
-          invalid_appointment: "Appointment information does not match configuration",
-        }
-      };
-      const request: AppointmentRequestModel = {
-        ...state.appointmentRequest,
-        appointments: [...state.appointmentRequest.appointments, ...action.appointments],
-      }
-      return {
-        appointmentRequest: request,
-        complete: isComplete(request),
-        appointmentsChanged: true,
-        busy: false,
-      };
-    }
-    case AppointmentActions.EDIT_APPOINTMENT: {
-      if (!state.appointmentRequest) return {
-        ...state,
-        complete: false,
-        error: {
-          ...state.error,
-          missing_request: "Initialize request first",
+      return assembleRequestState(
+        {
+          ...state.appointmentRequest!,
+          appointments: [
+            ...state.appointmentRequest!.appointments.slice(0, action.index),
+            action.appointment,
+            ...state.appointmentRequest!.appointments.slice(action.index + 1),
+          ],
         },
-      };
-      const request: AppointmentRequestModel = {
-        ...state.appointmentRequest,
-        appointments: [...state.appointmentRequest.appointments.slice(0, action.index), action.appointment, ...state.appointmentRequest.appointments.slice(action.index+1)],
-      }
-      return {
-        appointmentRequest: request,
-        complete: isComplete(request),
-        appointmentsChanged: true,
-        busy: false,
-      };
-    }
-    case AppointmentActions.REMOVE_APPOINTMENT: {
-      if (!state.appointmentRequest) return {
-        ...state,
-        complete: false,
-        error: {
-          ...state.error,
-          missing_request: "Initialize request first",
+        true,
+      );
+    case AppointmentActions.REMOVE_APPOINTMENT:
+      return assembleRequestState(
+        {
+          ...state.appointmentRequest!,
+          appointments: [
+            ...state.appointmentRequest!.appointments.slice(0, action.index),
+            ...state.appointmentRequest!.appointments.slice(action.index + 1),
+          ],
         },
-      };
-      const request: AppointmentRequestModel = {
-        ...state.appointmentRequest,
-        appointments: [...state.appointmentRequest.appointments.slice(0, action.index), ...state.appointmentRequest.appointments.slice(action.index+1)],
-      }
-      return {
-        appointmentRequest: request,
-        complete: isComplete(request),
-        appointmentsChanged: true,
-        busy: false,
-      };
-    }
+        true,
+      );
     case AppointmentActions.SET_ORGANIZER_INFO:
-      if(!state.appointmentRequest) return {
-        ...state,
-        complete: false,
-        error: {
-          ...state.error,
-          missing_request: "Initialize request first",
-        },
-      };
       return {
         appointmentRequest: {
-          ...state.appointmentRequest,
+          ...state.appointmentRequest!,
           organizerName: action.payload.name,
           organizerMail: action.payload.email,
           consigneeList: action.payload.consigneeList,
         },
-        complete: state.complete,
-        appointmentsChanged: state.appointmentsChanged,
+        complete: state.complete!,
+        appointmentsChanged: state.appointmentsChanged!,
         busy: false,
       };
     case AppointmentActions.POST:
       return {
         ...state,
         busy: true,
-      }
+      };
     case AppointmentActions.POST_SUCCESS:
       return {
         complete: false,
@@ -233,7 +182,7 @@ export function appointmentRequestReducer(
         ...state,
         busy: false,
         error: action.error,
-      }
+      };
   }
   return state;
 }

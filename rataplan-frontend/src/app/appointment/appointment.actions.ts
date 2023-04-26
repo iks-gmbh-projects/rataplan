@@ -19,6 +19,35 @@ export const AppointmentActions = {
   POST_ERROR: "[appointmentRequest] post error",
 } as const;
 
+/**
+ * Signifies if the given Action requires an AppointmentRequestModel in store.
+ * This is used to unify the code to handle the potential error of no AppointmentRequestModel being in the store.
+ */
+export const ActionRequiresInit = {
+  [AppointmentActions.INIT]: false,
+  [AppointmentActions.INIT_SUCCESS]: false,
+  [AppointmentActions.INIT_ERROR]: false,
+  [AppointmentActions.SET_GENERAL_VALUES]: true,
+  [AppointmentActions.SET_APPOINTMENT_CONFIG]: true,
+  [AppointmentActions.SET_APPOINTMENTS]: true,
+  [AppointmentActions.ADD_APPOINTMENTS]: true,
+  [AppointmentActions.EDIT_APPOINTMENT]: true,
+  [AppointmentActions.REMOVE_APPOINTMENT]: true,
+  [AppointmentActions.SET_ORGANIZER_INFO]: true,
+  [AppointmentActions.POST]: true,
+  [AppointmentActions.POST_SUCCESS]: false,
+  [AppointmentActions.POST_ERROR]: false,
+} as const;
+
+/**
+ * Asserts that ActionsRequiresInit is defined for every AppointmentAction
+ * without affecting how typescript can infer literal types for the values of ActionRequiresInit.
+ * E.g. typescript will still know that ActionRequiresInit[AppointmentActions.INIT] is false at compile time.
+ */
+const ActionRequiresInitTypeAssertion: {
+  readonly [type in typeof AppointmentActions[keyof typeof AppointmentActions]]: boolean
+} = ActionRequiresInit;
+
 export class InitAppointmentRequestAction implements Action {
   readonly type = AppointmentActions.INIT;
   constructor(
