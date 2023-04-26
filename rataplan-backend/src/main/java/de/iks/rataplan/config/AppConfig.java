@@ -110,7 +110,6 @@ public class AppConfig {
 	 * @return ModelMapper instance
 	 */
 	@Bean
-	@Qualifier(value = "authModelMapper")
 	public ModelMapper modelMapper(ToEncryptedStringConverter toEncryptedStringConverter, FromEncryptedStringConverter fromEncryptedStringConverter) {
 		ModelMapper mapper = new ModelMapper();
 		mapper.addConverter(decisionConverter.toDAO);
@@ -118,15 +117,6 @@ public class AppConfig {
 		mapper.addConverter(toEncryptedStringConverter);
 		mapper.addConverter(fromEncryptedStringConverter);
 		return mapper;
-	}
-
-	@Bean
-	@Qualifier(value = "participantModelMapper")
-	public ModelMapper modelMapper (){
-		ModelMapper modelMapper = new ModelMapper();
-		TypeMap<AppointmentRequest, AppointmentRequestDTO> typeMap = modelMapper.createTypeMap(AppointmentRequest.class, AppointmentRequestDTO.class);
-		typeMap.addMappings(mapper -> mapper.skip(AppointmentRequestDTO::setEditToken));
-		return modelMapper;
 	}
 
 	@Bean
