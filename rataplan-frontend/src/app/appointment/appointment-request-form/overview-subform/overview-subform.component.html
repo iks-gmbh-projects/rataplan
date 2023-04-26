@@ -1,4 +1,3 @@
-
 <div [formGroup]='voteOptions'>
   <mat-card style='min-width: 80%'>
     <mat-card-header>
@@ -96,32 +95,32 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
-      <mat-list>
-        <mat-list-item *ngFor='let voteOption of this.appointments; let index = index'>
+      <div class="vote-option" *ngFor='let voteOption of this.appointments; let index = index'>
+        <div>
           <div *ngIf='appointmentConfig.startDate'>
             {{ voteOption.startDate | date:(this.appointmentConfig.startTime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'):undefined:'de' }}
             <ng-template [ngIf]="appointmentConfig.endDate">
               {{ voteOption.endDate | date:(this.appointmentConfig.endTime ? '- dd.MM.yyyy HH:mm' : '- dd.MM.yyyy'):undefined:'de' }}
             </ng-template>
           </div>
-          <div *ngIf='this.appointmentConfig.description'>
+          <p class="vote-option-description" *ngIf='this.appointmentConfig.description'>
             {{ voteOption.description }}
-          </div>
+          </p>
           <div *ngIf='this.appointmentConfig.url'>
             <a [href]='voteOption.url'>Link</a>
           </div>
-          <div style="margin-left: auto">
-            <button mat-icon-button
-                    (click)='editVoteOption(index)'>
-              <mat-icon mat-list-icon>edit_square</mat-icon>
-            </button>
-            <button mat-icon-button color="warn"
-                    (click)='deleteVoteOption(index)'>
-              <mat-icon mat-list-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-list-item>
-      </mat-list>
+        </div>
+        <div class="vote-option-buttons">
+          <button mat-icon-button
+                  (click)='editVoteOption(index)'>
+            <mat-icon mat-list-icon>edit_square</mat-icon>
+          </button>
+          <button mat-icon-button color="warn"
+                  (click)='deleteVoteOption(index)'>
+            <mat-icon mat-list-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
     </ng-template>
   </mat-expansion-panel>
 </div>
