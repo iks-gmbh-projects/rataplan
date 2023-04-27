@@ -72,11 +72,11 @@ export class OverviewSubformComponent implements OnInit {
     const voteOption: AppointmentModel = {};
     voteOption.startDate = combineDateTime(
       this.voteOptions.get('startDateInput')?.value, this.voteOptions.get('startTimeInput')?.value,
-    );
+    )!;
     if (this.appointmentConfig.endDate) {
       voteOption.endDate = combineDateTime(
         this.voteOptions.get('endDateInput')?.value, this.voteOptions.get('endTimeInput')?.value,
-      );
+      )!;
     }
 
     voteOption.description = this.voteOptions.get('descriptionInput')?.value;

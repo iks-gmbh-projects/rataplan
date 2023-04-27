@@ -7,6 +7,8 @@ import { SomeNonWhitespaceDirective } from "./validator/some-non-whitespace.dire
 import { CheckboxCountMinDirective } from "./validator/checkbox-count-min.directive";
 import { CheckboxCountMaxDirective } from "./validator/checkbox-count-max.directive";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { CombinedDatetimeMaxDirective } from './validator/combined-datetime-max.directive';
+import { CombinedDatetimeMinDirective } from './validator/combined-datetime-min.directive';
 
 
 
@@ -17,6 +19,8 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     SomeNonWhitespaceDirective,
     CheckboxCountMinDirective,
     CheckboxCountMaxDirective,
+    CombinedDatetimeMaxDirective,
+    CombinedDatetimeMinDirective,
   ],
   imports: [
     CommonModule,
@@ -31,6 +35,8 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     SomeNonWhitespaceDirective,
     CheckboxCountMinDirective,
     CheckboxCountMaxDirective,
+    CombinedDatetimeMaxDirective,
+    CombinedDatetimeMinDirective,
   ],
 })
 export class AppCommonModule { }

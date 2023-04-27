@@ -1,4 +1,4 @@
-export function combineDateTime(date: string, time: string): string {
+export function combineDateTime(date: string|null, time: string|null): string|null {
   console.log(date);
   let dateString = '';
   if (date) {
@@ -10,5 +10,9 @@ export function combineDateTime(date: string, time: string): string {
   if (time) {
     dateString = dateString + ' ' + time + ':00';
   }
-  return new Date(dateString).toISOString();
+  try {
+    return new Date(dateString).toISOString();
+  } catch {
+    return null;
+  }
 }
