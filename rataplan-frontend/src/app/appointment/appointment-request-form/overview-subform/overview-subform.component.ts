@@ -8,11 +8,12 @@ import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { combineDateTime } from "../appointment-request-form.service";
 import { AddAppointmentsAction, RemoveAppointmentAction } from "../../appointment.actions";
+import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 
 function extractTime(date?: string): string | undefined {
-  if(!date) return date;
+  if (!date) return date;
   const dateObject = new Date(date);
-  return (dateObject.getHours()+':'+dateObject.getMinutes()).replace(/^\d:/, "0$0").replace(/:(\d)$/, ":0$1");
+  return (dateObject.getHours() + ':' + dateObject.getMinutes()).replace(/^\d:/, "0$0").replace(/:(\d)$/, ":0$1");
 }
 
 @Component({
@@ -36,7 +37,7 @@ export class OverviewSubformComponent implements OnInit {
     startTimeInput: null,
     endTimeInput: null,
     descriptionInput: null,
-    linkInput: null
+    linkInput: null,
   });
 
   private storeSub?: Subscription;
@@ -44,13 +45,15 @@ export class OverviewSubformComponent implements OnInit {
   constructor(
     private store: Store<appState>,
     private router: Router,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    public errorMessageService: FormErrorMessageService,
+  ) {
   }
 
   ngOnInit(): void {
     this.storeSub = this.store.select("appointmentRequest").pipe(
       filter(request => !!request.appointmentRequest),
-      map(state => state.appointmentRequest!)
+      map(state => state.appointmentRequest!),
     ).subscribe(request => {
       this.appointmentConfig = request.appointmentRequestConfig.appointmentConfig;
       this.appointments = request.appointments;

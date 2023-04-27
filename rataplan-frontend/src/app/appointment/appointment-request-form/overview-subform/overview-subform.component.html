@@ -14,6 +14,7 @@
         <mat-datepicker-toggle matSuffix
                                [for]='picker'></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
+        <mat-error>{{errorMessageService.genericFormError(voteOptions.get('startDateInput'))}}</mat-error>
       </mat-form-field>
     </div>
     <div *ngIf='appointmentConfig.endDate'>
@@ -30,6 +31,8 @@
         <mat-datepicker-toggle matSuffix
                                [for]='picker'></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-error>{{errorMessageService.genericFormError(voteOptions.get('startDateInput'))}}</mat-error>
+        <mat-error>{{errorMessageService.genericFormError(voteOptions.get('endDateInput'))}}</mat-error>
       </mat-form-field>
     </div>
     <div *ngIf='appointmentConfig.startTime'>
@@ -43,6 +46,7 @@
                [format]='24'
                readonly>
         <ngx-material-timepicker #fullTime></ngx-material-timepicker>
+        <mat-error>{{errorMessageService.genericFormError(voteOptions.get('startTimeInput'))}}</mat-error>
       </mat-form-field>
     </div>
     <div *ngIf='appointmentConfig.endTime'>
@@ -56,6 +60,7 @@
                [format]='24'
                readonly>
         <ngx-material-timepicker #fullTime></ngx-material-timepicker>
+        <mat-error>{{errorMessageService.genericFormError(voteOptions.get('endTimeInput'))}}</mat-error>
       </mat-form-field>
     </div>
     <div *ngIf='appointmentConfig.description'>
@@ -65,7 +70,9 @@
         <input type='text'
                formControlName='descriptionInput'
                autocomplete='off'
-               matInput>
+               matInput
+               required>
+        <mat-error>{{errorMessageService.genericFormError(voteOptions.get('descriptionInput'))}}</mat-error>
       </mat-form-field>
     </div>
     <div *ngIf='appointmentConfig.url'>
@@ -75,7 +82,9 @@
         <input type='text'
                formControlName='linkInput'
                autocomplete='off'
-               matInput>
+               matInput
+               required>
+        <mat-error>{{errorMessageService.genericFormError(voteOptions.get('linkInput'))}}</mat-error>
       </mat-form-field>
     </div>
     <mat-card-actions>
@@ -83,6 +92,7 @@
               (click)='clearContent()'>Zurücksetzen
       </button>
       <button mat-button
+              [disabled]='voteOptions.invalid'
               (click)='addVoteOption()'>Hinzufügen
       </button>
     </mat-card-actions>

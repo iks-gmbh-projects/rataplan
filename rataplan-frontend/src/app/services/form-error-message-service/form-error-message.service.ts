@@ -10,6 +10,8 @@ export class FormErrorMessageService {
 
   public genericFormError(element: AbstractControl | null): string | null {
     if (!element) return "Interner Fehler der Seite";
+    if (element.hasError("matDatepickerParse")) return "Kein gültiges Datum";
+    if (element.hasError("matDatetimePickerParse")) return "Kein gültiger Zeitpunkt";
     if (element.hasError("required")) return "Dieses Feld darf nicht leer bleiben.";
     if (element.hasError("email")) return "Keine gültige E-Mail";
     if (element.hasError("cannotContainWhitespace")) return "Darf keine Leerzeichen enthalten.";
