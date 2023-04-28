@@ -51,13 +51,21 @@
             [routerLink]="simpleCalendar ? '../datepicker' :  '../configuration'"
             (click)="setEmailForm()">Zurück
     </button>
-    <button class='right'
-            type='button'
-            color='primary'
-            mat-raised-button
-            [disabled]='!emailSubform.valid || busy'
-            (click)=sendEndOfAppointment()>Fertig
-    </button>
+    <div class="right">
+      <button type='button'
+              color='primary'
+              mat-raised-button
+              [disabled]='!emailSubform.valid'
+              routerLink='../preview'
+              (click)=setEmailForm()>Vorschau
+      </button>
+      <button type='button'
+              color='primary'
+              mat-raised-button
+              [disabled]='!emailSubform.valid'
+              (click)=sendEndOfAppointment()>Fertig
+      </button>
+    </div>
   </div>
 </form>
 

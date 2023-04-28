@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { exhaustMap, Subject, Subscription, take, takeUntil } from 'rxjs';
-import { appState } from '../../app.reducers';
+import { exhaustMap, filter, map, Subject, take, takeUntil } from 'rxjs';
 
 import { AppointmentModel } from '../../models/appointment.model';
 import { AppointmentMemberModel } from '../../models/appointment-member.model';
@@ -14,6 +13,8 @@ import { FormErrorMessageService } from '../../services/form-error-message-servi
 import { AppointmentDecisionType, DecisionType } from '../appointment-request-form/decision-type.enum';
 import { AppointmentService } from './appointment-service/appointment.service';
 import { MemberDecisionSubformComponent } from './member-decision-subform/member-decision-subform.component';
+import { appState } from '../../app.reducers';
+import { PostAppointmentRequestAction } from '../appointment.actions';
 
 
 @Component({
@@ -30,11 +31,11 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     appointmentDecisions: [],
   };
 
-  participationToken = '';
+  isPreview = false;
+  busy = false;
   isEditMember = false;
 
   currentUser?: FrontendUser;
-  private loggedInSub?: Subscription;
   private userVoted = false;
 
   constructor(
@@ -48,28 +49,30 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.participationToken = '' + params.get('id');
+    this.store.select('auth').pipe(
+      filter(state => !state.busy),
+      takeUntil(this.destroySubject),
+    ).subscribe(state => this.currentUser = state.user);
+
+    this.route.data.subscribe(({isPreview, appointmentRequest}) => {
+      this.isPreview = isPreview;
+      this.appointmentRequest = appointmentRequest;
+      this.deadlineService.setDeadline(new Date(appointmentRequest.deadline));
+      if (!this.deadlineService.hasDeadlinePassed()) {
+        this.setAppointments();
+      }
+      this.userVoted = this.appointmentRequest!.appointmentMembers.some(member =>
+        member.userId === this.currentUser?.id);
+      if (this.currentUser) {
+        this.member.name = this.currentUser.displayname;
+      }
     });
 
-    this.loggedInSub = this.store.select('auth')
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(auth => this.currentUser = auth.user);
-
-    this.appointmentService.getAppointmentByParticipationToken(this.participationToken)
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(appointmentRequest => {
-        this.appointmentRequest = appointmentRequest;
-        this.deadlineService.setDeadline(new Date(appointmentRequest.deadline));
-        if (!this.deadlineService.hasDeadlinePassed()) {
-          this.setAppointments();
-        }
-        this.userVoted = this.appointmentRequest.appointmentMembers.some(member =>
-          member.userId === this.currentUser?.id);
-        if (this.currentUser !== null) {
-          this.member.name = this.currentUser?.displayname;
-        }
-      });
+    this.store.select('appointmentRequest')
+      .pipe(
+        map(appointmentRequestState => appointmentRequestState.busy),
+        takeUntil(this.destroySubject),
+      ).subscribe(busy => this.busy = busy);
   }
 
   ngOnDestroy(): void {
@@ -151,22 +154,22 @@ export class AppointmentComponent implements OnInit, OnDestroy {
     const appointmentDecision = this.member.appointmentDecisions[index];
 
     switch (decision) {
-    case 1:
-      appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
-      break;
-    case 2:
-      appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
-      break;
-    default:
-      appointmentDecision.decision = AppointmentDecisionType.DECLINE;
-      break;
+      case 1:
+        appointmentDecision.decision = AppointmentDecisionType.ACCEPT;
+        break;
+      case 2:
+        appointmentDecision.decision = AppointmentDecisionType.ACCEPT_IF_NECESSARY;
+        break;
+      default:
+        appointmentDecision.decision = AppointmentDecisionType.DECLINE;
+        break;
     }
   }
 
   deleteMember(member: AppointmentMemberModel) {
     this.appointmentService.deleteAppointmentMember(this.appointmentRequest!, member)
       .pipe(
-        exhaustMap(() => this.appointmentService.getAppointmentByParticipationToken(this.participationToken!)),
+        exhaustMap(() => this.appointmentService.getAppointmentByParticipationToken(this.appointmentRequest!.participationToken!)),
         take(1),
       )
       .subscribe(updatedRequest => {
@@ -185,5 +188,10 @@ export class AppointmentComponent implements OnInit, OnDestroy {
 
   checkVoteOfMember(appointment: AppointmentModel, number: number) {
     return this.member.appointmentDecisions.find(a => a.appointmentId === appointment.id)?.decision === number;
+  }
+
+  acceptPreview() {
+    this.busy = true;
+    this.store.dispatch(new PostAppointmentRequestAction());
   }
 }
