@@ -1,4 +1,5 @@
 <div class='wrapper'>
+  <h2 *ngIf='isPreview'>Vorschau</h2>
   <mat-card>
     <mat-card-title>{{ appointmentRequest?.title }}</mat-card-title>
     <mat-card-content>
@@ -114,16 +115,17 @@
       </ng-template>
     </mat-list-item>
   </mat-list>
-  <div>
+  <div *ngIf='!isPreview; else previewButtons'>
     <button class='vote-button'
             type='submit'
             color='primary'
             mat-raised-button
-            *ngIf='!isPreview; else previewButtons'
             [disabled]='appointmentRequest?.expired'
             (click)='saveVote()'>{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
     </button>
-    <ng-template #previewButtons>
+  </div>
+  <ng-template #previewButtons>
+    <div class='fill-width'>
       <a class='back-button'
          mat-raised-button
          routerLink="../email">
@@ -137,6 +139,6 @@
          (click)='acceptPreview()'>
         Fertig
       </a>
-    </ng-template>
-  </div>
+    </div>
+  </ng-template>
 </div>
