@@ -25,10 +25,15 @@ import org.springframework.web.client.ResourceAccessException;
 public class RataplanAuthRestController {
 
     private final UserService userService;
+
     private final AuthTokenService authTokenService;
+
     private final MailService mailService;
+
     private final JwtTokenService jwtTokenService;
+
     private static final String JWT_COOKIE_NAME = "jwttoken";
+
     private final CookieBuilder cookieBuilder;
 
     @RequestMapping(value = "*", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -57,6 +62,7 @@ public class RataplanAuthRestController {
     public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO user) {
         UserDTO userDTO = userService.loginUser(user);
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
+
         return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
     }
 
@@ -66,6 +72,7 @@ public class RataplanAuthRestController {
     ) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Set-Cookie", cookieBuilder.generateCookieValue(tokenCookie, true));
+
         return ResponseEntity.ok().headers(responseHeaders).body(true);
     }
 
@@ -97,6 +104,7 @@ public class RataplanAuthRestController {
         String username = jwtTokenService.getUsernameFromToken(token);
         UserDTO userDTO = userService.getUserDTOFromUsername(username);
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
+
         return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
     }
 
@@ -105,6 +113,7 @@ public class RataplanAuthRestController {
                                                         @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
                                                         @RequestBody UserDTO userDTO) {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
+
         if (userService.checkIfUsernameExists(jwtTokenService.getUsernameFromToken((token)))) {
             boolean success = userService.updateProfileDetails(userDTO);
             return new ResponseEntity<>(success, HttpStatus.OK);
@@ -123,15 +132,18 @@ public class RataplanAuthRestController {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         String username = jwtTokenService.getUsernameFromToken(token);
         boolean success = this.userService.changePassword(username, passwords);
+
         return new ResponseEntity<>(success, HttpStatus.OK);
     }
 
     @PostMapping("/users/forgotPassword")
     public boolean sendForgotPasswordMail(@RequestBody String mail) {
         AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
+
         ResetPasswordMailData resetPasswordMailData = new ResetPasswordMailData();
         resetPasswordMailData.setMail(mail);
         resetPasswordMailData.setToken(response.getToken());
+
         mailService.sendMailForResetPassword(resetPasswordMailData);
         return true;
     }
@@ -145,6 +157,7 @@ public class RataplanAuthRestController {
             this.authTokenService.deleteById(userId);
             return new ResponseEntity<>(success, HttpStatus.OK);
         }
+
         return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 
@@ -159,11 +172,14 @@ public class RataplanAuthRestController {
         }
         return token;
     }
+
     private HttpHeaders createResponseHeaders(UserDTO user) {
         HttpHeaders responseHeaders = new HttpHeaders();
+
         String token = jwtTokenService.generateToken(user);
         responseHeaders.set(JWT_COOKIE_NAME, token);
         responseHeaders.add("Set-Cookie", cookieBuilder.generateCookieValue(token, false));
+
         return responseHeaders;
     }
 }

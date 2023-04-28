@@ -1,4 +1,5 @@
 package de.iks.rataplan.service;
+
 import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
@@ -25,19 +26,21 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SurveyToolMessageService surveyToolMessageService;
+
     @Autowired
     CryptoServiceImpl cryptoService;
 
     @Autowired
     private BackendMessageService backendMessageService;
 
-    public UserDTO registerUser(UserDTO userDto) {
-        User user = mapToUser(userDto);
+    public UserDTO registerUser(UserDTO userDTO) {
+        User user = mapToUser(userDTO);
         user.trimUserCredentials();
+
         if (user.invalidFull()) throw new InvalidUserDataException();
-        if (rawUserRepository.findOneByUsername(user.getUsername()).isPresent() || rawUserRepository.findOneByUsername(userDto.getUsername().trim().toLowerCase()).isPresent()) {
+        if (rawUserRepository.findOneByUsername(user.getUsername()).isPresent() || rawUserRepository.findOneByUsername(userDTO.getUsername().trim().toLowerCase()).isPresent()) {
             throw new UsernameAlreadyInUseException("The username \"" + user.getUsername() + "\" is already in use!");
-        } else if (rawUserRepository.findOneByMail(user.getMail()).isPresent() || rawUserRepository.findOneByMail(userDto.getMail().toLowerCase().trim()).isPresent()) {
+        } else if (rawUserRepository.findOneByMail(user.getMail()).isPresent() || rawUserRepository.findOneByMail(userDTO.getMail().toLowerCase().trim()).isPresent()) {
             throw new MailAlreadyInUseException("The email \"" + user.getMail() + "\" is already in use!");
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -71,23 +74,26 @@ public class UserServiceImpl implements UserService {
             dbUser = this.rawUserRepository.findOneByUsername(user.getUsername())
                     .orElse(this.rawUserRepository.findOneByUsername(userDTO.getUsername())
                             .orElse(null));
-        } else if (user.getMail() != null){
+        } else {
             dbUser = this.rawUserRepository.findOneByMail(user.getMail())
                     .orElse(this.rawUserRepository.findOneByMail(userDTO.getMail())
                             .orElse(null));
         }
 
-        if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) return dbUser.isEncrypted() ?  mapToUserDTO(user) : new UserDTO(user);
+        if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword()))
+            return dbUser.isEncrypted() ? mapToUserDTO(user) : new UserDTO(user);
         else throw new WrongCredentialsException("These credentials have no match!");
 
     }
 
     private User mapToUser(UserDTO userDTO) {
         User user = new User();
-        if (userDTO.getUsername() != null) user.setUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase().trim()));
+        if (userDTO.getUsername() != null)
+            user.setUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase().trim()));
         if (userDTO.getMail() != null) user.setMail(cryptoService.encryptDB(userDTO.getMail().toLowerCase().trim()));
         user.setPassword(userDTO.getPassword());
-        if (userDTO.getDisplayname() != null) user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname().trim()));
+        if (userDTO.getDisplayname() != null)
+            user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname().trim()));
         user.setEncrypted(true);
         return user;
     }
@@ -152,76 +158,79 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean updateProfileDetails(UserDTO userDTO) {
         User user = getUserData(userDTO.getUsername());
-        user.setMail(cryptoService.encryptDB((userDTO.getMail())));
-        user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
-        rawUserRepository.saveAndFlush(user);
-        return true;
-    }
-
-    @Override
-    public Boolean changePasswordByToken(User user, String password) {
         if (user != null) {
-            user.setPassword(passwordEncoder.encode(password));
-            this.rawUserRepository.saveAndFlush(user);
+            user.setMail(cryptoService.encryptDB((userDTO.getMail())));
+            user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
+            rawUserRepository.saveAndFlush(user);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
-    @Override
-    public User getUserFromId(int id) {
-        return rawUserRepository.findOne(id);
-    }
+        @Override
+        public Boolean changePasswordByToken (User user, String password){
+            if (user != null) {
+                user.setPassword(passwordEncoder.encode(password));
+                this.rawUserRepository.saveAndFlush(user);
+                return true;
+            } else {
+                return false;
+            }
+        }
 
-    @Override
-    public void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException {
-        ResponseEntity<?> surveyToolResponse;
-        switch (request.getSurveyToolChoice()) {
-            default:
-            case DELETE:
-                surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
-                break;
-            case ANONYMIZE:
-                surveyToolResponse = surveyToolMessageService.anonymizeUserData(user.getId());
-                break;
+        @Override
+        public User getUserFromId ( int id){
+            return rawUserRepository.findOne(id);
         }
-        if (!surveyToolResponse.getStatusCode().is2xxSuccessful()) {
-            throw new UserDeletionException(
-                    "SurveyTool returned " +
-                            surveyToolResponse.getStatusCode() +
-                            " " +
-                            (surveyToolResponse.hasBody() ?
-                                    surveyToolResponse.getBody() :
-                                    ""
-                            )
-            );
-        }
-        ResponseEntity<?> backendResponse;
-        switch (request.getBackendChoice()) {
-            default:
-            case DELETE:
-                backendResponse = backendMessageService.deleteUserData(user.getId());
-                break;
-            case ANONYMIZE:
-                backendResponse = backendMessageService.anonymizeUserData(user.getId());
-                break;
-        }
-        if (!backendResponse.getStatusCode().is2xxSuccessful()) {
-            throw new UserDeletionException(
-                    "Backend returned " +
-                            backendResponse.getStatusCode() +
-                            " " +
-                            (backendResponse.hasBody() ?
-                                    backendResponse.getBody() :
-                                    ""
-                            )
-            );
-        }
-        try {
-            this.rawUserRepository.delete(user.getId());
-        } catch (DataAccessException ex) {
-            throw new UserDeletionException(ex);
+
+        @Override
+        public void deleteUser (User user, DeleteUserRequest request) throws UserDeletionException {
+            ResponseEntity<?> surveyToolResponse;
+            switch (request.getSurveyToolChoice()) {
+                default:
+                case DELETE:
+                    surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
+                    break;
+                case ANONYMIZE:
+                    surveyToolResponse = surveyToolMessageService.anonymizeUserData(user.getId());
+                    break;
+            }
+            if (!surveyToolResponse.getStatusCode().is2xxSuccessful()) {
+                throw new UserDeletionException(
+                        "SurveyTool returned " +
+                                surveyToolResponse.getStatusCode() +
+                                " " +
+                                (surveyToolResponse.hasBody() ?
+                                        surveyToolResponse.getBody() :
+                                        ""
+                                )
+                );
+            }
+            ResponseEntity<?> backendResponse;
+            switch (request.getBackendChoice()) {
+                default:
+                case DELETE:
+                    backendResponse = backendMessageService.deleteUserData(user.getId());
+                    break;
+                case ANONYMIZE:
+                    backendResponse = backendMessageService.anonymizeUserData(user.getId());
+                    break;
+            }
+            if (!backendResponse.getStatusCode().is2xxSuccessful()) {
+                throw new UserDeletionException(
+                        "Backend returned " +
+                                backendResponse.getStatusCode() +
+                                " " +
+                                (backendResponse.hasBody() ?
+                                        backendResponse.getBody() :
+                                        ""
+                                )
+                );
+            }
+            try {
+                this.rawUserRepository.delete(user.getId());
+            } catch (DataAccessException ex) {
+                throw new UserDeletionException(ex);
+            }
         }
     }
-}
