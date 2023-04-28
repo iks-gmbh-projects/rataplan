@@ -35,9 +35,9 @@ public class UserServiceImpl implements UserService {
         User user = mapToUser(userDto);
         user.trimUserCredentials();
         if (user.invalidFull()) throw new InvalidUserDataException();
-        if (rawUserRepository.findOneByUsername(user.getUsername()).isPresent()) {
+        if (rawUserRepository.findOneByUsername(user.getUsername()).isPresent() || rawUserRepository.findOneByUsername(userDto.getUsername().trim().toLowerCase()).isPresent()) {
             throw new UsernameAlreadyInUseException("The username \"" + user.getUsername() + "\" is already in use!");
-        } else if (rawUserRepository.findOneByMail(user.getMail()).isPresent()) {
+        } else if (rawUserRepository.findOneByMail(user.getMail()).isPresent() || rawUserRepository.findOneByMail(userDto.getMail().toLowerCase().trim()).isPresent()) {
             throw new MailAlreadyInUseException("The email \"" + user.getMail() + "\" is already in use!");
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -49,12 +49,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean checkIfMailExists(String mail) {
-        return this.rawUserRepository.findOneByMail(cryptoService.encryptDB(mail.toLowerCase().trim())).isPresent();
+        return this.rawUserRepository.findOneByMail(cryptoService.encryptDB(mail.toLowerCase().trim())).isPresent()
+                || (this.rawUserRepository.findOneByMail(mail.toLowerCase().trim())).isPresent();
     }
 
     @Override
     public boolean checkIfUsernameExists(String username) {
-        return this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.toLowerCase().trim())).isPresent();
+        return this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.toLowerCase().trim())).isPresent()
+                || this.rawUserRepository.findOneByUsername(username.toLowerCase().trim()).isPresent();
     }
 
 
@@ -63,25 +65,29 @@ public class UserServiceImpl implements UserService {
         User user = mapToUser(userDTO);
         user.trimUserCredentials();
         if (user.invalidLogin()) throw new InvalidUserDataException();
-        User dbUser;
+
+        User dbUser = null;
         if (user.getUsername() != null) {
-             dbUser = this.rawUserRepository.findOneByUsername(user.getUsername()).get();
-        } else {
-            dbUser = this.rawUserRepository.findOneByMail(user.getMail()).get();
+            dbUser = this.rawUserRepository.findOneByUsername(user.getUsername())
+                    .orElse(this.rawUserRepository.findOneByUsername(userDTO.getUsername())
+                            .orElse(null));
+        } else if (user.getMail() != null){
+            dbUser = this.rawUserRepository.findOneByMail(user.getMail())
+                    .orElse(this.rawUserRepository.findOneByMail(userDTO.getMail())
+                            .orElse(null));
         }
-        if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            return mapToUserDTO(dbUser);
-        } else {
-            throw new WrongCredentialsException("These credentials have no match!");
-        }
+
+        if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) return dbUser.isEncrypted() ?  mapToUserDTO(user) : new UserDTO(user);
+        else throw new WrongCredentialsException("These credentials have no match!");
+
     }
 
     private User mapToUser(UserDTO userDTO) {
         User user = new User();
-        user.setUsername(cryptoService.encryptDB(userDTO.getUsername()));
-        user.setMail(cryptoService.encryptDB(userDTO.getMail()));
+        if (userDTO.getUsername() != null) user.setUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase().trim()));
+        if (userDTO.getMail() != null) user.setMail(cryptoService.encryptDB(userDTO.getMail().toLowerCase().trim()));
         user.setPassword(userDTO.getPassword());
-        user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
+        if (userDTO.getDisplayname() != null) user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname().trim()));
         user.setEncrypted(true);
         return user;
     }
@@ -111,8 +117,10 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserDTOFromUsername(String username) {
         User dbUser;
         if (username != null) {
-            dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase())).get();
-            return mapToUserDTO(dbUser);
+            dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase()))
+                    .orElse(this.rawUserRepository.findOneByUsername(username)
+                            .orElse(null));
+            if (dbUser != null) return dbUser.isEncrypted() ? mapToUserDTO(dbUser) : new UserDTO(dbUser);
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
     }
@@ -121,7 +129,9 @@ public class UserServiceImpl implements UserService {
     public User getUserData(String username) {
         User dbUser;
         if (username != null) {
-            dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase())).get();
+            dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase()))
+                    .orElse(rawUserRepository.findOneByUsername(username.toLowerCase().trim())
+                            .orElse(null));
             return dbUser;
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
@@ -141,9 +151,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean updateProfileDetails(UserDTO userDTO) {
-        User user = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase().trim())).get();
+        User user = getUserData(userDTO.getUsername());
         user.setMail(cryptoService.encryptDB((userDTO.getMail())));
         user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
+        rawUserRepository.saveAndFlush(user);
         return true;
     }
 

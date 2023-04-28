@@ -75,7 +75,6 @@ public class UserServiceTest {
 	@ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void registerUserShouldFailUsernameAlreadyExists() {
 		userService.registerUser(new UserDTO(1,"PeTEr","peter","neuerpeter@sch.mitz","password"));
-
 	}
 
 	@Test(expected = MailAlreadyInUseException.class)

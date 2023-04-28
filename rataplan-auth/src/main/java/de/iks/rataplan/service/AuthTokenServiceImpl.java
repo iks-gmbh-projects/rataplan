@@ -29,7 +29,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     public AuthToken saveAuthTokenToUserWithMail(String mail) {
         mail = mail.trim();
         if(mail.isEmpty()) throw new InvalidUserDataException();
-        Optional<User> userOptional = userRepository.findOneByMail(cryptoService.encryptDB(mail));
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findOneByMail(cryptoService.encryptDB(mail)).orElse(userRepository.findOneByMail(mail).orElse(null)));
         if (!userOptional.isPresent()) throw new NullPointerException();
         int id = userOptional.get().getId();
         String token = generateAuthToken(6);
