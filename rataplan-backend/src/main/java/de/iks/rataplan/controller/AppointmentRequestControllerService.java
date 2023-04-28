@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import de.iks.rataplan.domain.AuthUser;
+import de.iks.rataplan.dto.ParticipantAppointmentRequestDTO;
 import de.iks.rataplan.restservice.AuthService;
 import de.iks.rataplan.domain.BackendUserAccess;
 import de.iks.rataplan.exceptions.RequiresAuthorizationException;
@@ -36,6 +37,7 @@ public class AppointmentRequestControllerService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+
 
 //	public AppointmentRequestDTO getAppointmentRequestById(boolean isEdit, Integer requestId, String jwtToken, String accessToken) {
 //
@@ -110,7 +112,7 @@ public class AppointmentRequestControllerService {
 		return appointmentRequestsDTO;
 	}
 
-	public List<AppointmentRequestDTO> getAppointmentRequestsWhereUserParticipates(String jwtToken) {
+	public List<ParticipantAppointmentRequestDTO> getAppointmentRequestsWhereUserParticipates(String jwtToken) {
 		if (jwtToken == null) {
 			throw new ForbiddenException();
 		}
@@ -123,19 +125,19 @@ public class AppointmentRequestControllerService {
 		List<AppointmentRequest> appointmentRequests = appointmentRequestService
 				.getAppointmentRequestsWhereUserTakesPartIn(authUser.getId());
 
-		List<AppointmentRequestDTO> appointmentRequestsDTO = new ArrayList<>();
+		List<ParticipantAppointmentRequestDTO> appointmentRequestsDTO = new ArrayList<>();
 
         for (AppointmentRequest appointmentRequest : appointmentRequests) {
-            appointmentRequestsDTO.add(modelMapper.map(appointmentRequest, AppointmentRequestDTO.class));
+            appointmentRequestsDTO.add(modelMapper.map(appointmentRequest, ParticipantAppointmentRequestDTO.class));
         }
 
         return appointmentRequestsDTO;
     }
 
-    public AppointmentRequestDTO getAppointmentRequestByParticipationToken(String participationToken) {
+    public ParticipantAppointmentRequestDTO getAppointmentRequestByParticipationToken(String participationToken) {
         AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
 	
-		return modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
+		return modelMapper.map(appointmentRequest, ParticipantAppointmentRequestDTO.class);
     }
 
 	public AppointmentRequestDTO getAppointmentRequestByEditToken(String editToken, String jwtToken) {

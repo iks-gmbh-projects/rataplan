@@ -3,6 +3,7 @@ package de.iks.rataplan.controller;
 import java.util.List;
 
 import de.iks.rataplan.domain.*;
+import de.iks.rataplan.dto.ParticipantAppointmentRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,10 +47,10 @@ public class Controller {
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @GetMapping(value = "/appointmentRequests/{participationToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AppointmentRequestDTO> getAppointmentRequestById(@PathVariable String participationToken,
+    public ResponseEntity<ParticipantAppointmentRequestDTO> getAppointmentRequestById(@PathVariable String participationToken,
                                                                            @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
-        AppointmentRequestDTO appointmentRequestDTO = appointmentRequestControllerService
+        ParticipantAppointmentRequestDTO appointmentRequestDTO = appointmentRequestControllerService
                 .getAppointmentRequestByParticipationToken(participationToken);
         return new ResponseEntity<>(appointmentRequestDTO, HttpStatus.OK);
     }
@@ -178,10 +179,10 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @GetMapping(value = "/users/appointmentRequests/participations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<AppointmentRequestDTO>> getAppointmentRequestsWhereUserParticipates(
+    public ResponseEntity<List<ParticipantAppointmentRequestDTO>> getAppointmentRequestsWhereUserParticipates(
             @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
 
-        List<AppointmentRequestDTO> appointmentRequestsDTO = appointmentRequestControllerService.getAppointmentRequestsWhereUserParticipates(jwtToken);
+        List<ParticipantAppointmentRequestDTO> appointmentRequestsDTO = appointmentRequestControllerService.getAppointmentRequestsWhereUserParticipates(jwtToken);
         return new ResponseEntity<>(appointmentRequestsDTO, HttpStatus.OK);
     }
 
