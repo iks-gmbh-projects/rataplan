@@ -62,7 +62,9 @@ public class AppointmentConfig {
 	}
 	
 	public void assertValid() {
-		if(startDate || startTime || endDate || endTime || description || url) return;
-		throw new MalformedException("Invalid input fields");
+		if(!startDate && (startTime || endDate)) throw new MalformedException("Invalid appointment config");
+		if(!startTime && endTime) throw new MalformedException("Invalid appointment config");
+		if(startDate || description || url) return;
+		throw new MalformedException("Invalid appointment config");
 	}
 }

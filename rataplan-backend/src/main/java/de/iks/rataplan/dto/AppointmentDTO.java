@@ -90,7 +90,7 @@ public class AppointmentDTO implements Serializable {
     
     public void assertValid(AppointmentConfig appointmentConfig) {
         if((startDate == null) == appointmentConfig.isStartDate() ||
-            (endDate == null) == appointmentConfig.isEndDate() ||
+            (endDate == null) == (appointmentConfig.isEndDate() || appointmentConfig.isEndTime()) ||
             (description == null || description.trim().isEmpty()) == appointmentConfig.isDescription() ||
             (url == null || url.trim().isEmpty()) == appointmentConfig.isUrl()
         ) throw new MalformedException("Missing or invalid input fields");
