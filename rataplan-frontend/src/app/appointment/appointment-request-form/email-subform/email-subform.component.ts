@@ -61,8 +61,8 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
 
   setEmailForm() {
     this.store.dispatch(new SetOrganizerInfoAppointmentAction({
-      name: this.emailSubform.get('name')?.value,
-      email: this.emailSubform.get('email')?.value,
+      name: this.emailSubform.get('name')?.value || undefined,
+      email: this.emailSubform.get('email')?.value || undefined,
       consigneeList: this.consigneeList,
     }));
   }
