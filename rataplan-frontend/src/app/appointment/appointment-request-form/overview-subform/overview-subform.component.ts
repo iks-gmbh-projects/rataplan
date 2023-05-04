@@ -12,7 +12,7 @@ import { combineDateTime } from '../appointment-request-form.service';
 function extractTime(date: string | undefined | null): string | null {
   if (!date) return null;
   const dateObject = new Date(date);
-  return (dateObject.getHours() + ':' + dateObject.getMinutes()).replace(/^\d:/, "0$0").replace(/:(\d)$/, ":0$1");
+  return dateObject.getHours().toString().padStart(2, "0") + ':' + dateObject.getMinutes().toString().padStart(2, "0");
 }
 
 type formValue = {
