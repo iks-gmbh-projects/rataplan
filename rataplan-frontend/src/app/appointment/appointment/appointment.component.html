@@ -49,6 +49,8 @@
     <mat-form-field appearance='fill'>
       <mat-label>Name</mat-label>
       <input [(ngModel)]='member.name'
+             required
+             someNonWhitespace
              matInput
              [disabled]='isPreview || !!currentUser'
              autocomplete='off'
