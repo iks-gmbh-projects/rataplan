@@ -81,15 +81,14 @@ public class UserServiceImpl implements UserService {
         }
 
         if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword()))
-            return dbUser.isEncrypted() ? mapToUserDTO(user) : new UserDTO(user);
+            return dbUser.isEncrypted() ? mapToUserDTO(dbUser) : new UserDTO(dbUser);
         else throw new WrongCredentialsException("These credentials have no match!");
 
     }
 
     private User mapToUser(UserDTO userDTO) {
         User user = new User();
-        if (userDTO.getUsername() != null)
-            user.setUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase().trim()));
+        if (userDTO.getUsername() != null) user.setUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase().trim()));
         if (userDTO.getMail() != null) user.setMail(cryptoService.encryptDB(userDTO.getMail().toLowerCase().trim()));
         user.setPassword(userDTO.getPassword());
         if (userDTO.getDisplayname() != null)
