@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -15,6 +15,7 @@ import { AppointmentService } from './appointment-service/appointment.service';
 import { MemberDecisionSubformComponent } from './member-decision-subform/member-decision-subform.component';
 import { appState } from '../../app.reducers';
 import { PostAppointmentRequestAction } from '../appointment.actions';
+import { NgModel } from '@angular/forms';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
   isPreview = false;
   busy = false;
   isEditMember = false;
+  @ViewChild('nameField') nameField? : NgModel;
 
   currentUser?: FrontendUser;
   private userVoted = false;
@@ -112,6 +114,7 @@ export class AppointmentComponent implements OnInit, OnDestroy {
       appointmentRequestId: this.appointmentRequest!.id!,
       appointmentDecisions: [],
     };
+    this.nameField?.reset();
     this.setAppointments();
     if (this.currentUser !== null) {
       this.member.name = this.currentUser?.displayname;
