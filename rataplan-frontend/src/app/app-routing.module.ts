@@ -25,6 +25,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
 import { VoteListComponent } from './vote-list/vote-list.component';
+import { AppointmentRequestResolver } from './appointment/appointment/resolver/appointment-request.resolver';
+import { AppointmentRequestPreviewResolver } from './appointment/appointment/resolver/appointment-request-preview.resolver';
 
 // function matcherFunction(url: UrlSegment[]) {
 //
@@ -52,12 +54,24 @@ const routes: Routes = [
       { path: 'configurationOptions', component: ConfigSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'configuration', component: OverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
       { path: 'email', component: EmailSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
+      {
+        path: 'preview',
+        data: { isPreview: true },
+        resolve: { appointmentRequest: AppointmentRequestPreviewResolver },
+        component: AppointmentComponent,
+        canActivate: [AppointmentRequestAuthGuard]
+      },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
   },
   { path: 'vote/links', component: LinkSubformComponent },
   { path: 'vote/own', component: VoteListComponent },
-  { path: 'vote/:id', component: AppointmentComponent },
+  {
+    path: 'vote/:id',
+    data: { isPreview: false },
+    resolve: { appointmentRequest: AppointmentRequestResolver },
+    component: AppointmentComponent
+  },
   { path: 'vote/edit/:id', component: AppointmentRequestFormComponent,
     children: [
       { path: '', redirectTo: 'general', pathMatch: 'full' },
@@ -66,6 +80,12 @@ const routes: Routes = [
       { path: 'configurationOptions', component: ConfigSubformComponent },
       { path: 'configuration', component: OverviewSubformComponent },
       { path: 'email', component: EmailSubformComponent },
+      {
+        path: 'preview',
+        data: { isPreview: true },
+        resolve: { appointmentRequest: AppointmentRequestPreviewResolver },
+        component: AppointmentComponent
+      },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
   },
