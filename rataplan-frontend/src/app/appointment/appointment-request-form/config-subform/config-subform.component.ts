@@ -1,10 +1,10 @@
 import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExtraValidators } from '../../../validator/validators';
 import { appState } from "../../../app.reducers";
 import { Store } from "@ngrx/store";
-import { Subscription } from "rxjs";
+import { combineLatest, startWith, Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { SetAppointmentConfigAction } from "../../appointment.actions";
 import { AppointmentConfig } from "../../../models/appointment.model";
@@ -18,15 +18,18 @@ import { AppointmentConfig } from "../../../models/appointment.model";
   providedIn: 'root'
 })
 export class ConfigSubformComponent implements OnInit, OnDestroy {
-  configForm = this.formBuilder.group({
-    isDateChecked: [false],
-    isTimeChecked: [false],
-    isEndDateChecked: [false],
-    isEndTimeChecked: [false],
-    isDescriptionChecked: [false],
-    isUrlChecked: [false],
-  });
+  private readonly fields = {
+    isDateChecked: new FormControl(false),
+    isTimeChecked: new FormControl(false),
+    isEndDateChecked: new FormControl(false),
+    isEndTimeChecked: new FormControl(false),
+    isDescriptionChecked: new FormControl(false),
+    isUrlChecked: new FormControl(false),
+  };
+  configForm = new FormGroup(this.fields);
   private storeSub?: Subscription;
+  private formSub1?: Subscription;
+  private formSub2?: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -52,10 +55,33 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
           isUrlChecked: appointmentConfig.url,
         });
       });
+    this.formSub1 = this.fields.isDateChecked.valueChanges.subscribe((enabled: boolean) => {
+      if(enabled) {
+        this.fields.isTimeChecked.enable();
+        this.fields.isEndDateChecked.enable();
+      } else {
+        this.fields.isTimeChecked.disable({emitEvent: false});
+        this.fields.isTimeChecked.setValue(false);
+        this.fields.isEndDateChecked.disable({emitEvent: false});
+        this.fields.isEndDateChecked.setValue(false);
+      }
+    });
+    this.formSub2 = combineLatest([
+      this.fields.isTimeChecked.valueChanges.pipe(startWith(this.fields.isTimeChecked.value)),
+      this.fields.isEndDateChecked.valueChanges.pipe(startWith(this.fields.isEndDateChecked.value))
+    ]).subscribe(([timeEnabled, endDateEnabled]: [boolean, boolean]) => {
+      if(timeEnabled || endDateEnabled) {
+        this.fields.isEndTimeChecked.enable();
+      } else {
+        this.fields.isEndTimeChecked.disable({emitEvent: false});
+        this.fields.isEndTimeChecked.setValue(false);
+      }
+    })
   }
 
   ngOnDestroy(): void {
     this.storeSub?.unsubscribe();
+    this.formSub1?.unsubscribe();
   }
 
   nextPage() {

@@ -99,7 +99,7 @@
         <div>
           <div *ngIf='appointmentConfig.startDate'>
             {{ voteOption.startDate | date:(this.appointmentConfig.startTime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'):undefined:'de' }}
-            <ng-template [ngIf]="appointmentConfig.endDate">
+            <ng-template [ngIf]='appointmentConfig.endDate || appointmentConfig.endTime'>
               {{ voteOption.endDate | date:(this.appointmentConfig.endTime ? '- dd.MM.yyyy HH:mm' : '- dd.MM.yyyy'):undefined:'de' }}
             </ng-template>
           </div>
