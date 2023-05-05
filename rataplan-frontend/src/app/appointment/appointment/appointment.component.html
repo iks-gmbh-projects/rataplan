@@ -1,4 +1,5 @@
 <div class='wrapper'>
+  <h2 *ngIf='isPreview'>Vorschau</h2>
   <mat-card>
     <mat-card-title>{{ appointmentRequest?.title }}</mat-card-title>
     <mat-card-content>
@@ -30,11 +31,13 @@
           </div>
           <div *ngIf='!deadlineService.hasDeadlinePassed() && (!member.userId || member.userId === currentUser?.id)' class='member-button'>
             <button mat-icon-button
-                    (click)='editMember(member)'>
+                    [disabled]='isPreview'
+                    (click)='isPreview || editMember(member)'>
               <mat-icon mat-list-icon>edit_square</mat-icon>
             </button>
             <button mat-icon-button
-                    (click)='deleteMember(member)'>
+                    [disabled]='isPreview'
+                    (click)='isPreview || deleteMember(member)'>
               <mat-icon mat-list-icon>delete</mat-icon>
             </button>
           </div>
@@ -46,8 +49,10 @@
     <mat-form-field appearance='fill'>
       <mat-label>Name</mat-label>
       <input [(ngModel)]='member.name'
+             required
+             someNonWhitespace
              matInput
-             [disabled]='currentUser !== undefined'
+             [disabled]='isPreview || !!currentUser'
              autocomplete='off'
              #nameField='ngModel'>
       <mat-error>{{errorMessageService.genericFormError(nameField.control)}}</mat-error>
@@ -82,36 +87,37 @@
                [ngModel]='member!.appointmentDecisions[appointmentIndex]?.participants'
                (ngModelChange)='setParticipantNumber(appointment, $event)'
                mat-line
+               [disabled]='isPreview'
                #participantField='ngModel'>
         <mat-error mat-line>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
       </mat-form-field>
       <ng-template #decisionComplex>
         <mat-button-toggle-group style='scale: 90%'>
-          <mat-button-toggle (click)='setDecision(appointment, 1)'
+          <mat-button-toggle (click)='isPreview || setDecision(appointment, 1)'
                              [checked]='checkVoteOfMember(appointment, 1)'
-                             [disabled]='deadlineService.hasDeadlinePassed()'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
                              matTooltip='Ja'
                              matTooltipPosition='above'>
             <mat-icon>done</mat-icon>
           </mat-button-toggle>
           <mat-button-toggle *ngIf='appointmentRequest?.appointmentRequestConfig?.decisionType === DecisionType.EXTENDED'
-                             (click)='setDecision(appointment, 2)'
+                             (click)='isPreview || setDecision(appointment, 2)'
                              [checked]='checkVoteOfMember(appointment, 2)'
-                             [disabled]='deadlineService.hasDeadlinePassed()'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
                              matTooltip='Vielleicht'
                              matTooltipPosition='above'>
             <mat-icon>question_mark</mat-icon>
           </mat-button-toggle>
-          <mat-button-toggle (click)='setDecision(appointment, 3)'
+          <mat-button-toggle (click)='isPreview || setDecision(appointment, 3)'
                              [checked]='checkVoteOfMember(appointment, 3)'
-                             [disabled]='deadlineService.hasDeadlinePassed()'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
                              matTooltip='Nein'
                              matTooltipPosition='above'>
             <mat-icon>close</mat-icon>
           </mat-button-toggle>
-          <mat-button-toggle (click)='setDecision(appointment, 0)'
+          <mat-button-toggle (click)='isPreview || setDecision(appointment, 0)'
                              [checked]='checkVoteOfMember(appointment, 0)'
-                             [disabled]='deadlineService.hasDeadlinePassed()'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
                              matTooltip='Keine Antwort'
                              matTooltipPosition='above'>
             <mat-icon></mat-icon>
@@ -120,12 +126,30 @@
       </ng-template>
     </mat-list-item>
   </mat-list>
-  <div *ngIf='!deadlineService.hasDeadlinePassed()'>
-    <button class='vote-button'
+  <div *ngIf='!isPreview; else previewButtons'>
+    <button *ngIf='!deadlineService.hasDeadlinePassed()'
+            class='vote-button'
             type='submit'
             color='primary'
             mat-raised-button
             (click)='saveVote()'>{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
     </button>
   </div>
+  <ng-template #previewButtons>
+    <div class='fill-width'>
+      <a class='back-button'
+         mat-raised-button
+         routerLink="../email">
+        Zurück
+      </a>
+      <a class='vote-button'
+         type='submit'
+         color='primary'
+         mat-raised-button
+         [disabled]='busy'
+         (click)='acceptPreview()'>
+        Fertig
+      </a>
+    </div>
+  </ng-template>
 </div>

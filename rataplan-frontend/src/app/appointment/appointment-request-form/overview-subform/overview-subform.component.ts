@@ -69,18 +69,26 @@ export class OverviewSubformComponent implements OnInit {
       return;
     }
 
+    const input: {
+      startDateInput: string|null,
+      startTimeInput: string|null,
+      endDateInput: string|null,
+      endTimeInput: string|null,
+      descriptionInput: string|null,
+      linkInput: string|null,
+    } = this.voteOptions.value;
     const voteOption: AppointmentModel = {};
     voteOption.startDate = combineDateTime(
-      this.voteOptions.get('startDateInput')?.value, this.voteOptions.get('startTimeInput')?.value,
+      input['startDateInput'], input['startTimeInput'],
     )!;
-    if (this.appointmentConfig.endDate) {
+    if (this.appointmentConfig.endDate || this.appointmentConfig.endTime) {
       voteOption.endDate = combineDateTime(
-        this.voteOptions.get('endDateInput')?.value, this.voteOptions.get('endTimeInput')?.value,
+        input['endDateInput'] || input['startDateInput'], input['endTimeInput'],
       )!;
     }
 
-    voteOption.description = this.voteOptions.get('descriptionInput')?.value;
-    voteOption.url = this.voteOptions.get('linkInput')?.value;
+    voteOption.description = input['descriptionInput'] || undefined;
+    voteOption.url = input['linkInput'] || undefined;
 
     this.store.dispatch(new AddAppointmentsAction(voteOption));
 

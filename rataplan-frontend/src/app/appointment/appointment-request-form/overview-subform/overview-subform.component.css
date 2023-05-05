@@ -1,5 +1,16 @@
+.vote-option {
+  display: flex;
+  margin-top: 1rem;
+}
 
+.vote-option-buttons {
+  margin-left: auto;
+}
 
+.vote-option-description {
+  max-width: 220px;
+  word-wrap: break-word;
+}
 
 .wrapper {
   padding: 2%;
