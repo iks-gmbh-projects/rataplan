@@ -1,7 +1,7 @@
 <dataset>
   <appointmentRequestconfig id="1" decisiontype="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndtIme="0" isUrl="0"/>
   
-  <appointmentRequest id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isExpired="false" appointmentRequestconfigId="1"/>
+  <appointmentRequest id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" appointmentRequestconfigId="1"/>
 
   <appointment id="1" appointmentRequestId="1" description="iks Hilden" />
   <appointment id="2" appointmentRequestId="1" description="homeoffice" />
