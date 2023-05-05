@@ -17,6 +17,8 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
+import static de.iks.rataplan.testutils.TestConstants.FILE_EXPECTED;
+import static de.iks.rataplan.testutils.TestConstants.FILE_INITIAL;
 import static org.junit.Assert.*;
 
 @ActiveProfiles("test")
@@ -27,21 +29,19 @@ import static org.junit.Assert.*;
         TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class AuthTokenServiceTest {
 
-    private static final String BASE_LINK = "classpath:test/db/service/user";
-    private static final String USER_FILE_INITIAL = BASE_LINK + "/initial.xml";
+    private static final String BASE_LINK = "classpath:test/db/service/authToken";
+    private static final String USER_FILE_INITIAL = BASE_LINK + FILE_INITIAL;
 
     @Autowired
     private AuthTokenService authTokenService;
 
     @Test
-    @DatabaseSetup(USER_FILE_INITIAL)
     public void generateAuthToken() {
         String token = authTokenService.generateAuthToken(6);
         assertNotNull(token);
     }
 
     @Test
-    @DatabaseSetup(USER_FILE_INITIAL)
     public void checkValidForm() {
         String token = authTokenService.generateAuthToken(64);
         assertTrue(String.format("Invalid Token: %s", token), token.matches("[a-zA-Z0-9]{64}"));
@@ -54,5 +54,11 @@ public class AuthTokenServiceTest {
         System.out.println(authToken.getToken());
         assertNotNull(authToken.getToken());
         assertEquals(6, authToken.getToken().length());
+    }
+    
+    @Test(expected = Exception.class)
+    @DatabaseSetup(USER_FILE_INITIAL)
+    public void setAuthTokenInDBViaBadEmail() {
+        authTokenService.saveAuthTokenToUserWithMail("KoBbpLwGdBuAgJDBBIYmfQ==");
     }
 }
