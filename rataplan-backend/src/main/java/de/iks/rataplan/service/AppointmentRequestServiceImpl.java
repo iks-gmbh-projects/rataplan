@@ -135,7 +135,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 		if(newAppointmentRequest.getDeadline() != null) {
 			dbAppointmentRequest.setDeadline(newAppointmentRequest.getDeadline());
 			if (newAppointmentRequest.getDeadline().after(new Date(Calendar.getInstance().getTimeInMillis()))) {
-				dbAppointmentRequest.setExpired(false);
+				dbAppointmentRequest.setNotified(false);
 			}
 		}
 

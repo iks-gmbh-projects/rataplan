@@ -107,7 +107,7 @@ public class AppointmentRequestRepositoryTest {
 		assertEquals("Coding Dojo", appointmentRequest.getTitle().getString());
 		assertEquals("Fun with code", appointmentRequest.getDescription().getString());
 		assertEquals(IKS_MAIL, appointmentRequest.getOrganizerMail().getString());
-		assertEquals(false, appointmentRequest.isExpired());
+		assertEquals(false, appointmentRequest.isNotified());
 
 		assertEquals(2, appointmentRequest.getAppointments().size());
 	}

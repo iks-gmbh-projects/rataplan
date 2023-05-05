@@ -80,7 +80,7 @@ public class ParticipantAppointmentRequestDTO implements Serializable {
         this.userId = userId;
     }
 
-    public boolean isExpired() {
+    public boolean isNotified() {
         return expired;
     }
 

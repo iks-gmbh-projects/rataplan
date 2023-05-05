@@ -25,11 +25,11 @@ public class SchedulerService {
 //	@Scheduled(fixedRate = 10000)		// Alle 10 Sekunden
     public void reportCurrentTime() {
 
-        List<AppointmentRequest> requests = appointmentRequestRepository.findByDeadlineBeforeAndExpiredFalse(new Date(Calendar.getInstance().getTimeInMillis()));
+        List<AppointmentRequest> requests = appointmentRequestRepository.findByDeadlineBeforeAndNotifiedFalse(new Date(Calendar.getInstance().getTimeInMillis()));
 
         for (AppointmentRequest request : requests) {
 
-            request.setExpired(true);
+            request.setNotified(true);
             appointmentRequestRepository.saveAndFlush(request);
 
             if (request.getOrganizerMail() != null) {

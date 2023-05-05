@@ -35,7 +35,7 @@ public class AppointmentRequest implements Serializable {
 	private EncryptedString organizerName;
 	private EncryptedString organizerMail;
 	private Integer userId;
-	private boolean isExpired = false;
+	private boolean isNotified = false;
 	private String participationToken;
 	private String editToken;
 
@@ -48,7 +48,8 @@ public class AppointmentRequest implements Serializable {
 
 	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
 							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
-			List<AppointmentMember> appointmentMembers, boolean isExpired) {
+			List<AppointmentMember> appointmentMembers, boolean isNotified
+	) {
 		this.title = title;
 		this.description = description;
 		this.deadline = deadline;
@@ -57,7 +58,7 @@ public class AppointmentRequest implements Serializable {
 		this.appointments = appointments;
 		this.appointmentMembers = appointmentMembers;
 		this.appointmentRequestConfig = appointmentRequestConfig;
-		this.isExpired = isExpired;
+		this.isNotified = isNotified;
 	}
 
 	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
@@ -195,13 +196,13 @@ public class AppointmentRequest implements Serializable {
 		this.appointmentRequestConfig = appointmentRequestConfig;
 	}
 
-	@Column(name = "isExpired")
-	public boolean isExpired() {
-		return isExpired;
+	@Column(name = "isNotified")
+	public boolean isNotified() {
+		return isNotified;
 	}
 
-	public void setExpired(boolean isExpired) {
-		this.isExpired = isExpired;
+	public void setNotified(boolean isNotified) {
+		this.isNotified = isNotified;
 	}
 
 	@Column(name = "participationToken")

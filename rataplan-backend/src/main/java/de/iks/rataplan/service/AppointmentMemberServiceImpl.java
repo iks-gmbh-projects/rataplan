@@ -103,7 +103,7 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
     }
     
     private void validateExpirationDate(AppointmentRequest appointmentRequest) {
-    	if (appointmentRequest.isExpired()) {
+    	if (appointmentRequest.isNotified()) {
 			throw new ForbiddenException("Appointmentrequest ist expired!");
 		}
     }
