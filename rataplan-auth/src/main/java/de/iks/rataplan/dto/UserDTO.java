@@ -35,4 +35,24 @@ public class UserDTO {
     public UserDTO(User user) {
         this(user.getId(), user.getUsername(), user.getDisplayname(), user.getMail());
     }
+
+    public void trimUserCredentials() {
+        username = trimAndNull(username);
+        mail = trimAndNull(mail);
+        displayname = trimAndNull(displayname);
+    }
+
+    public static String trimAndNull(String toTrim) {
+        if (toTrim != null) {
+            toTrim = toTrim.trim();
+            if (toTrim.isEmpty()) {
+                return null;
+            }
+        }
+        return toTrim;
+    }
+
+    public boolean invalidLogin() {
+        return (trimAndNull(username) == null && trimAndNull(mail) == null) || password == null;
+    }
 }

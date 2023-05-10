@@ -17,7 +17,6 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import static de.iks.rataplan.testutils.TestConstants.FILE_EXPECTED;
 import static de.iks.rataplan.testutils.TestConstants.FILE_INITIAL;
 import static org.junit.Assert.*;
 
@@ -51,7 +50,6 @@ public class AuthTokenServiceTest {
     @DatabaseSetup(USER_FILE_INITIAL)
     public void setAuthTokenInDB() {
         AuthToken authToken = authTokenService.saveAuthTokenToUserWithMail("peter@sch.mitz");
-        System.out.println(authToken.getToken());
         assertNotNull(authToken.getToken());
         assertEquals(6, authToken.getToken().length());
     }

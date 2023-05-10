@@ -4,19 +4,18 @@ import de.iks.rataplan.domain.AuthToken;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.exceptions.InvalidUserDataException;
 import de.iks.rataplan.repository.AuthTokenRepository;
-import de.iks.rataplan.repository.RawUserRepository;
+import de.iks.rataplan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
 public class AuthTokenServiceImpl implements AuthTokenService {
 
-    private final RawUserRepository userRepository;
+    private final UserService userService;
 
     private final AuthTokenRepository authTokenRepository;
 
@@ -29,10 +28,9 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     public AuthToken saveAuthTokenToUserWithMail(String mail) {
         mail = mail.trim();
         if(mail.isEmpty()) throw new InvalidUserDataException();
-        Optional<User> userOptional = Optional.ofNullable(userRepository.findOneByMail(cryptoService.encryptDB(mail)).
-                orElse(userRepository.findOneByMail(mail).orElse(null)));
-        if (!userOptional.isPresent()) throw new NullPointerException();
-        int id = userOptional.get().getId();
+        User user = userService.getUserFromEmail(mail);
+        if (user == null) throw new NullPointerException();
+        int id = user.getId();
         String token = generateAuthToken(6);
         while (authTokenRepository.findByToken(token) != null) {
             token = generateAuthToken(6);

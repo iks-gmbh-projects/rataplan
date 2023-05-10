@@ -84,7 +84,7 @@ public class RataplanAuthRestController {
     ) {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         String username = jwtTokenService.getUsernameFromToken(token);
-        User dbUser = userService.getUserData(username);
+        User dbUser = userService.getUserFromUsername(username);
         userService.verifyPasswordOrThrow(dbUser, request.getPassword());
         try {
             userService.deleteUser(dbUser, request);
@@ -181,5 +181,12 @@ public class RataplanAuthRestController {
         responseHeaders.add("Set-Cookie", cookieBuilder.generateCookieValue(token, false));
 
         return responseHeaders;
+    }
+
+    @GetMapping("/users/displayName/{userId}")
+    public ResponseEntity<?> getDisplayName(@PathVariable int userId) {
+        User user = userService.getUserFromId(userId);
+        if(user == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(user.getDisplayname());
     }
 }

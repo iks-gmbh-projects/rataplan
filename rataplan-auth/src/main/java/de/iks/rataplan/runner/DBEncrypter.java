@@ -1,6 +1,6 @@
 package de.iks.rataplan.runner;
 
-import de.iks.rataplan.repository.RawUserRepository;
+import de.iks.rataplan.repository.UserRepository;
 import de.iks.rataplan.service.CryptoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class DBEncrypter implements ApplicationRunner {
-    private final RawUserRepository userRepository;
+    private final UserRepository userRepository;
 
     private final CryptoService cryptoService;
 

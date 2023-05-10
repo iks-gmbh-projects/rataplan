@@ -3,7 +3,7 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
-import de.iks.rataplan.repository.RawUserRepository;
+import de.iks.rataplan.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Autowired
-    private RawUserRepository rawUserRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -34,65 +34,63 @@ public class UserServiceImpl implements UserService {
     private BackendMessageService backendMessageService;
 
     public UserDTO registerUser(UserDTO userDTO) {
+        if (userDTO.getMail().trim().isEmpty() || userDTO.getUsername().trim().isEmpty())
+            throw new InvalidUserDataException();
         User user = mapToUser(userDTO);
-        user.trimUserCredentials();
 
         if (user.invalidFull()) throw new InvalidUserDataException();
-        if (rawUserRepository.findOneByUsername(user.getUsername()).isPresent() || rawUserRepository.findOneByUsername(userDTO.getUsername().trim().toLowerCase()).isPresent()) {
+        if (checkIfUsernameExists(userDTO.getUsername())) {
             throw new UsernameAlreadyInUseException("The username \"" + user.getUsername() + "\" is already in use!");
-        } else if (rawUserRepository.findOneByMail(user.getMail()).isPresent() || rawUserRepository.findOneByMail(userDTO.getMail().toLowerCase().trim()).isPresent()) {
+        } else if (checkIfMailExists(userDTO.getMail())) {
             throw new MailAlreadyInUseException("The email \"" + user.getMail() + "\" is already in use!");
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setId(null);
-            return mapToUserDTO(rawUserRepository.saveAndFlush(user));
+            return mapToUserDTO(userRepository.saveAndFlush(user));
         }
     }
 
 
     @Override
     public boolean checkIfMailExists(String mail) {
-        return this.rawUserRepository.findOneByMail(cryptoService.encryptDB(mail.toLowerCase().trim())).isPresent()
-                || (this.rawUserRepository.findOneByMail(mail.toLowerCase().trim())).isPresent();
+        return this.userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail.toLowerCase().trim()), true).isPresent()
+                || this.userRepository.findOneByMailAndEncrypted(mail.toLowerCase().trim(), false).isPresent();
     }
 
     @Override
     public boolean checkIfUsernameExists(String username) {
-        return this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.toLowerCase().trim())).isPresent()
-                || this.rawUserRepository.findOneByUsername(username.toLowerCase().trim()).isPresent();
+        return this.userRepository.findOneByUsernameAndEncrypted(cryptoService.encryptDB(username.toLowerCase().trim()), true).isPresent()
+                || this.userRepository.findOneByUsernameAndEncrypted(username.toLowerCase().trim(), false).isPresent();
     }
 
 
     @Override
     public UserDTO loginUser(UserDTO userDTO) {
-        User user = mapToUser(userDTO);
-        user.trimUserCredentials();
-        if (user.invalidLogin()) throw new InvalidUserDataException();
+        if (userDTO.invalidLogin()) throw new InvalidUserDataException();
 
-        User dbUser = null;
-        if (user.getUsername() != null) {
-            dbUser = this.rawUserRepository.findOneByUsername(user.getUsername())
-                    .orElse(this.rawUserRepository.findOneByUsername(userDTO.getUsername())
-                            .orElse(null));
+        User dbUser;
+        if (userDTO.getUsername() != null) {
+            dbUser = getUserFromUsername(userDTO.getUsername());
         } else {
-            dbUser = this.rawUserRepository.findOneByMail(user.getMail())
-                    .orElse(this.rawUserRepository.findOneByMail(userDTO.getMail())
-                            .orElse(null));
+            dbUser = getUserFromEmail(userDTO.getMail());
         }
 
-        if (dbUser != null && passwordEncoder.matches(user.getPassword(), dbUser.getPassword()))
+        if (dbUser != null && passwordEncoder.matches(userDTO.getPassword(), dbUser.getPassword()))
             return dbUser.isEncrypted() ? mapToUserDTO(dbUser) : new UserDTO(dbUser);
         else throw new WrongCredentialsException("These credentials have no match!");
 
     }
 
     private User mapToUser(UserDTO userDTO) {
+        userDTO.trimUserCredentials();
         User user = new User();
-        if (userDTO.getUsername() != null) user.setUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase().trim()));
-        if (userDTO.getMail() != null) user.setMail(cryptoService.encryptDB(userDTO.getMail().toLowerCase().trim()));
-        user.setPassword(userDTO.getPassword());
+        if (userDTO.getUsername() != null)
+            user.setUsername(cryptoService.encryptDB(userDTO.getUsername().toLowerCase()));
+        if (userDTO.getMail() != null)
+            user.setMail(cryptoService.encryptDB(userDTO.getMail().toLowerCase()));
         if (userDTO.getDisplayname() != null)
-            user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname().trim()));
+            user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname().toLowerCase()));
+        user.setPassword(userDTO.getPassword());
         user.setEncrypted(true);
         return user;
     }
@@ -122,21 +120,27 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserDTOFromUsername(String username) {
         User dbUser;
         if (username != null) {
-            dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase()))
-                    .orElse(this.rawUserRepository.findOneByUsername(username)
+            dbUser = this.userRepository.findOneByUsernameAndEncrypted(cryptoService.encryptDB(username.trim().toLowerCase()), true)
+                    .orElseGet(() -> this.userRepository.findOneByUsernameAndEncrypted(username.trim().toLowerCase(), false)
                             .orElse(null));
             if (dbUser != null) return dbUser.isEncrypted() ? mapToUserDTO(dbUser) : new UserDTO(dbUser);
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
     }
 
+    public User getUserFromEmail(String mail) {
+        return this.userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail.trim().toLowerCase()), true)
+                .orElseGet(() -> this.userRepository.findOneByMailAndEncrypted(mail.trim().toLowerCase(), false)
+                        .orElse(null));
+    }
+
     @Override
-    public User getUserData(String username) {
+    public User getUserFromUsername(String username) {
         User dbUser;
         if (username != null) {
-            dbUser = this.rawUserRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase()))
-                    .orElse(rawUserRepository.findOneByUsername(username.toLowerCase().trim())
-                            .orElse(null));
+            dbUser = this.userRepository.findOneByUsernameAndEncrypted(cryptoService.encryptDB(username.trim().toLowerCase()), true)
+                    .orElseGet(() -> userRepository.findOneByUsernameAndEncrypted(username.toLowerCase().trim(), false)
+                            .orElseGet(() -> null));
             return dbUser;
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
@@ -144,10 +148,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean changePassword(String username, PasswordChange passwords) {
-        User user = this.getUserData(username);
+        User user = this.getUserFromUsername(username);
         if (user != null && passwordEncoder.matches(passwords.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwords.getNewPassword()));
-            rawUserRepository.saveAndFlush(user);
+            userRepository.saveAndFlush(user);
             return true;
         } else {
             return false;
@@ -156,80 +160,82 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean updateProfileDetails(UserDTO userDTO) {
-        User user = getUserData(userDTO.getUsername());
+        User user = getUserFromUsername(userDTO.getUsername());
         if (user != null) {
-            user.setMail(cryptoService.encryptDB((userDTO.getMail())));
-            user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
-            rawUserRepository.saveAndFlush(user);
-            return true;
+            if (!checkIfMailExists(userDTO.getMail()) || user.getId().equals(getUserFromEmail(userDTO.getMail()).getId())) {
+                user.setMail(cryptoService.encryptDB((userDTO.getMail())).toLowerCase().trim());
+                user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
+                userRepository.saveAndFlush(user);
+                return true;
+            }
         }
         return false;
     }
 
-        @Override
-        public Boolean changePasswordByToken (User user, String password){
-            if (user != null) {
-                user.setPassword(passwordEncoder.encode(password));
-                this.rawUserRepository.saveAndFlush(user);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public User getUserFromId ( int id){
-            return rawUserRepository.findOne(id);
-        }
-
-        @Override
-        public void deleteUser (User user, DeleteUserRequest request) throws UserDeletionException {
-            ResponseEntity<?> surveyToolResponse;
-            switch (request.getSurveyToolChoice()) {
-                default:
-                case DELETE:
-                    surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
-                    break;
-                case ANONYMIZE:
-                    surveyToolResponse = surveyToolMessageService.anonymizeUserData(user.getId());
-                    break;
-            }
-            if (!surveyToolResponse.getStatusCode().is2xxSuccessful()) {
-                throw new UserDeletionException(
-                        "SurveyTool returned " +
-                                surveyToolResponse.getStatusCode() +
-                                " " +
-                                (surveyToolResponse.hasBody() ?
-                                        surveyToolResponse.getBody() :
-                                        ""
-                                )
-                );
-            }
-            ResponseEntity<?> backendResponse;
-            switch (request.getBackendChoice()) {
-                default:
-                case DELETE:
-                    backendResponse = backendMessageService.deleteUserData(user.getId());
-                    break;
-                case ANONYMIZE:
-                    backendResponse = backendMessageService.anonymizeUserData(user.getId());
-                    break;
-            }
-            if (!backendResponse.getStatusCode().is2xxSuccessful()) {
-                throw new UserDeletionException(
-                        "Backend returned " +
-                                backendResponse.getStatusCode() +
-                                " " +
-                                (backendResponse.hasBody() ?
-                                        backendResponse.getBody() :
-                                        ""
-                                )
-                );
-            }
-            try {
-                this.rawUserRepository.delete(user.getId());
-            } catch (DataAccessException ex) {
-                throw new UserDeletionException(ex);
-            }
+    @Override
+    public Boolean changePasswordByToken(User user, String password) {
+        if (user != null) {
+            user.setPassword(passwordEncoder.encode(password));
+            this.userRepository.saveAndFlush(user);
+            return true;
+        } else {
+            return false;
         }
     }
+
+    @Override
+    public User getUserFromId(int id) {
+        return userRepository.findOne(id);
+    }
+
+    @Override
+    public void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException {
+        ResponseEntity<?> surveyToolResponse;
+        switch (request.getSurveyToolChoice()) {
+            default:
+            case DELETE:
+                surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
+                break;
+            case ANONYMIZE:
+                surveyToolResponse = surveyToolMessageService.anonymizeUserData(user.getId());
+                break;
+        }
+        if (!surveyToolResponse.getStatusCode().is2xxSuccessful()) {
+            throw new UserDeletionException(
+                    "SurveyTool returned " +
+                            surveyToolResponse.getStatusCode() +
+                            " " +
+                            (surveyToolResponse.hasBody() ?
+                                    surveyToolResponse.getBody() :
+                                    ""
+                            )
+            );
+        }
+        ResponseEntity<?> backendResponse;
+        switch (request.getBackendChoice()) {
+            default:
+            case DELETE:
+                backendResponse = backendMessageService.deleteUserData(user.getId());
+                break;
+            case ANONYMIZE:
+                backendResponse = backendMessageService.anonymizeUserData(user.getId());
+                break;
+        }
+        if (!backendResponse.getStatusCode().is2xxSuccessful()) {
+            throw new UserDeletionException(
+                    "Backend returned " +
+                            backendResponse.getStatusCode() +
+                            " " +
+                            (backendResponse.hasBody() ?
+                                    backendResponse.getBody() :
+                                    ""
+                            )
+            );
+        }
+        try {
+            this.userRepository.delete(user.getId());
+        } catch (DataAccessException ex) {
+            throw new UserDeletionException(ex);
+        }
+    }
+}

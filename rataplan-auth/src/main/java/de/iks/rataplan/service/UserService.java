@@ -15,10 +15,11 @@ public interface UserService {
     UserDTO loginUser(UserDTO user);
     boolean verifyPassword(User user, String password);
     void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;
-    User getUserData(String username);
+    User getUserFromUsername(String username);
     Boolean updateProfileDetails(UserDTO userDTO);
     Boolean changePassword(String token, PasswordChange passwords);
     Boolean changePasswordByToken(User user, String password);
     User getUserFromId(int userId);
     void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException;
+    User getUserFromEmail (String mail);
 }
