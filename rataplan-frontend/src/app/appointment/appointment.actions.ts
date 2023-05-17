@@ -11,12 +11,42 @@ export const AppointmentActions = {
   SET_APPOINTMENT_CONFIG: "[appointmentRequest] set appointment config",
   SET_APPOINTMENTS: "[appointmentRequest] set appointments",
   ADD_APPOINTMENTS: "[appointmentRequest] add appointments",
+  EDIT_APPOINTMENT: "[appointmentRequest] edit appointments",
   REMOVE_APPOINTMENT: "[appointmentRequest] remove appointment",
   SET_ORGANIZER_INFO: "[appointmentRequest] set organizer info",
   POST: "[appointmentRequest] post",
   POST_SUCCESS: "[appointmentRequest] post success",
   POST_ERROR: "[appointmentRequest] post error",
 } as const;
+
+/**
+ * Signifies if the given Action requires an AppointmentRequestModel in store.
+ * This is used to unify the code to handle the potential error of no AppointmentRequestModel being in the store.
+ */
+export const ActionRequiresInit = {
+  [AppointmentActions.INIT]: false,
+  [AppointmentActions.INIT_SUCCESS]: false,
+  [AppointmentActions.INIT_ERROR]: false,
+  [AppointmentActions.SET_GENERAL_VALUES]: true,
+  [AppointmentActions.SET_APPOINTMENT_CONFIG]: true,
+  [AppointmentActions.SET_APPOINTMENTS]: true,
+  [AppointmentActions.ADD_APPOINTMENTS]: true,
+  [AppointmentActions.EDIT_APPOINTMENT]: true,
+  [AppointmentActions.REMOVE_APPOINTMENT]: true,
+  [AppointmentActions.SET_ORGANIZER_INFO]: true,
+  [AppointmentActions.POST]: true,
+  [AppointmentActions.POST_SUCCESS]: false,
+  [AppointmentActions.POST_ERROR]: false,
+} as const;
+
+/**
+ * Asserts that ActionsRequiresInit is defined for every AppointmentAction
+ * without affecting how typescript can infer literal types for the values of ActionRequiresInit.
+ * E.g. typescript will still know that ActionRequiresInit[AppointmentActions.INIT] is false at compile time.
+ */
+const ActionRequiresInitTypeAssertion: {
+  readonly [type in typeof AppointmentActions[keyof typeof AppointmentActions]]: boolean
+} = ActionRequiresInit;
 
 export class InitAppointmentRequestAction implements Action {
   readonly type = AppointmentActions.INIT;
@@ -84,6 +114,15 @@ export class AddAppointmentsAction implements Action {
   }
 }
 
+export class EditAppointmentAction implements Action {
+  readonly type = AppointmentActions.EDIT_APPOINTMENT;
+  constructor(
+    readonly index: number,
+    readonly appointment: AppointmentModel
+  ) {
+  }
+}
+
 export class RemoveAppointmentAction implements Action {
   readonly type = AppointmentActions.REMOVE_APPOINTMENT;
   constructor(
@@ -136,6 +175,7 @@ export type AppointmentAction =
   | SetAppointmentConfigAction
   | SetAppointmentsAction
   | AddAppointmentsAction
+  | EditAppointmentAction
   | RemoveAppointmentAction
   | SetOrganizerInfoAppointmentAction
   | PostAppointmentRequestAction

@@ -82,7 +82,8 @@
               (click)='clearContent()'>Zurücksetzen
       </button>
       <button mat-button
-              (click)='addVoteOption()'>Hinzufügen
+              (click)='addVoteOption()'>
+        {{ voteOptions.value.appointmentIndex === null ? 'Hinzufügen' : 'Ändern' }}
       </button>
     </mat-card-actions>
   </mat-card>

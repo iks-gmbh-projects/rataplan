@@ -33,3 +33,14 @@ export function isConfiguredEqual(a: AppointmentConfig, b: AppointmentConfig): b
     !a.description == !b.description &&
     !a.url == !b.url;
 }
+
+export function matchesConfiguration(a: AppointmentModel, config: AppointmentConfig): boolean {
+  return ((config.startDate || config.startTime) == !!a.startDate) &&
+    ((config.endDate || config.endTime) == !!a.endDate) &&
+    (config.description == !!a.description) &&
+    (config.url == !!a.url);
+}
+
+export function matchConfiguration(a: AppointmentModel[], config: AppointmentConfig): boolean {
+  return a.every(a => matchesConfiguration(a, config));
+}
