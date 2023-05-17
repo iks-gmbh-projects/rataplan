@@ -22,4 +22,5 @@ public interface UserService {
     User getUserFromId(int userId);
     void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException;
     User getUserFromEmail (String mail);
+    String getDisplayNameFromId(int id);
 }

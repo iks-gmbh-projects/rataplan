@@ -185,8 +185,8 @@ public class RataplanAuthRestController {
 
     @GetMapping("/users/displayName/{userId}")
     public ResponseEntity<?> getDisplayName(@PathVariable int userId) {
-        User user = userService.getUserFromId(userId);
-        if(user == null) return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(user.getDisplayname());
+        String displayName = userService.getDisplayNameFromId(userId);
+        if(displayName == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(displayName);
     }
 }

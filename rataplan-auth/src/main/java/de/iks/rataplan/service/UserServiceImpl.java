@@ -189,6 +189,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getDisplayNameFromId(int id){
+        User user = getUserFromId(id);
+        String displayName = null;
+        if (user != null) {
+            displayName = user.isEncrypted() ? cryptoService.decryptDB(user.getDisplayname()) : user.getDisplayname();
+        }
+        return displayName;
+    }
+
+    @Override
     public void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException {
         ResponseEntity<?> surveyToolResponse;
         switch (request.getSurveyToolChoice()) {
