@@ -55,4 +55,11 @@ public class UserDTO {
     public boolean invalidLogin() {
         return (trimAndNull(username) == null && trimAndNull(mail) == null) || password == null;
     }
+    
+    public boolean invalidFull() {
+        return trimAndNull(username) == null ||
+            trimAndNull(mail) == null ||
+            trimAndNull(displayname) == null ||
+            password == null;
+    }
 }
