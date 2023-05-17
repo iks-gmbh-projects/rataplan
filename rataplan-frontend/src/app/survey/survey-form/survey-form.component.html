@@ -24,15 +24,16 @@
     <mat-stepper #stepper="matStepper" orientation="vertical">
       <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title"
                 #step="matStep">
-        <app-survey-form-page  [questionGroup]="questionGroup" [isFirst]="page==0"
+        <app-survey-form-page [questionGroup]="questionGroup" [isFirst]="page==0"
                               (onSubmit)="pageSubmit(stepper, $event)"
-                              (formAfterViewInit)="step.stepControl=$event"></app-survey-form-page>
+                              (formAfterViewInit)="step.stepControl=$event"
+                              #surveyPage></app-survey-form-page>
       </mat-step>
       <mat-step label="Fertig">
         <button class="left" mat-raised-button color="basic" matStepperPrevious>
           <mat-icon>navigate_before</mat-icon>
         </button>
-        <button class="right" mat-raised-button color="primary" [disabled]="isInvalid(stepper)"
+        <button class="right" mat-raised-button color="primary" [disabled]="isResponseValid | async"
                 (click)="submit(stepper)">Einreichen
         </button>
       </mat-step>
