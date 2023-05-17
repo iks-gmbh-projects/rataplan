@@ -38,7 +38,7 @@ public class Survey extends AbstractEntity {
 
     private Long userId;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "survey")
     private List<QuestionGroup> questionGroups;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")

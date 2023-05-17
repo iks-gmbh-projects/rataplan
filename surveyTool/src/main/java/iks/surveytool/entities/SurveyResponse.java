@@ -16,7 +16,7 @@ public class SurveyResponse extends AbstractEntity {
     @JoinColumn(name = "surveyId", nullable = false)
     private Survey survey;
     private Long userId;
-    @OneToMany(mappedBy = "response", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
 
     public boolean validate() {

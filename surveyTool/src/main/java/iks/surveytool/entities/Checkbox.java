@@ -21,7 +21,7 @@ public class Checkbox extends AbstractEntity {
     @NotNull
     private boolean hasTextField;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "checkboxGroupId", nullable = false)
     private CheckboxGroup checkboxGroup;
 

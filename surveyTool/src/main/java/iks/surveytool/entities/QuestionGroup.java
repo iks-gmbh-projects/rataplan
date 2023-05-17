@@ -17,12 +17,12 @@ public class QuestionGroup extends AbstractEntity {
     @Convert(converter= DBEncryptedStringConverter.class)
     private EncryptedString title;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "surveyId", nullable = false)
     private Survey survey;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "questionGroupId")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "questionGroupId", nullable = false, insertable = false, updatable = false)
     @OrderBy("id")
     private List<Question> questions;
 

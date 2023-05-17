@@ -23,15 +23,15 @@ public class Question extends AbstractEntity {
     @NotNull
     private boolean hasCheckbox;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "questionGroupId", nullable = false)
     private QuestionGroup questionGroup;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "questionId")
+    @JoinColumn(name = "questionId", nullable = false, insertable = false, updatable = false)
     private List<Answer> answers;
 
-    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private CheckboxGroup checkboxGroup;
 
     public Question(EncryptedString text, boolean required, boolean hasCheckbox) {
