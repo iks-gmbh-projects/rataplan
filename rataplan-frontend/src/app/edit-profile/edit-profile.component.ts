@@ -69,7 +69,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         }
       });
     this.errorSub = this.actions$.pipe(
-      ofType(AuthActions.CHANGE_EMAIL_ERROR_ACTION, AuthActions.CHANGE_DISPLAYNAME_ERROR_ACTION),
+      ofType(AuthActions.CHANGE_PROFILE_DETAILS_ERROR_ACTION),
     ).subscribe(() => this.snackbar.open('Fehler beim Ändern der Daten', 'Ok'));
 
   }

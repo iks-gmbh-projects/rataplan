@@ -16,8 +16,7 @@ export function authReducer(state: AuthData = { busy: false }, action: AuthActio
       return { user: action.payload, busy: false };
     case AuthActions.LOGIN_ERROR_ACTION:
     case AuthActions.RESET_PASSWORD_ERROR_ACTION:
-    case AuthActions.CHANGE_EMAIL_ERROR_ACTION:
-    case AuthActions.CHANGE_DISPLAYNAME_ERROR_ACTION:
+    case AuthActions.CHANGE_PROFILE_DETAILS_ERROR_ACTION:
     case AuthActions.REGISTER_ERROR_ACTION:
     case AuthActions.DELETE_USER_ERROR_ACTION:
       return { user: state.user, busy: false, error: action.error };
