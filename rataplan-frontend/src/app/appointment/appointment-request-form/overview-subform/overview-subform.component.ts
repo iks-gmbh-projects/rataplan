@@ -10,7 +10,7 @@ import { appState } from '../../../app.reducers';
 import { combineDateTime } from '../appointment-request-form.service';
 
 function extractTime(date: string | undefined | null): string | null {
-  if (!date) return null;
+  if(!date) return null;
   const dateObject = new Date(date);
   return dateObject.getHours().toString().padStart(2, "0") + ':' + dateObject.getMinutes().toString().padStart(2, "0");
 }
@@ -73,23 +73,16 @@ export class OverviewSubformComponent implements OnInit {
   }
 
   addVoteOption() {
-    if (!this.isInputInForm()) {
+    if(!this.isInputInForm()) {
       return;
     }
 
-    const input: {
-      startDateInput: string|null,
-      startTimeInput: string|null,
-      endDateInput: string|null,
-      endTimeInput: string|null,
-      descriptionInput: string|null,
-      linkInput: string|null,
-    } = this.voteOptions.value;
+    const input: formValue = this.voteOptions.value;
     const voteOption: AppointmentModel = {};
     voteOption.startDate = combineDateTime(
       input.startDateInput, input.startTimeInput,
     );
-    if (this.appointmentConfig.endDate || this.appointmentConfig.endTime) {
+    if(this.appointmentConfig.endDate || this.appointmentConfig.endTime) {
       voteOption.endDate = combineDateTime(
         input.endDateInput || input.startDateInput, input.endTimeInput,
       );
@@ -98,8 +91,8 @@ export class OverviewSubformComponent implements OnInit {
     voteOption.description = input.descriptionInput || undefined;
     voteOption.url = input.linkInput || undefined;
 
-    if (formValue.appointmentIndex !== null) {
-      this.store.dispatch(new EditAppointmentAction(formValue.appointmentIndex, voteOption));
+    if(input.appointmentIndex !== null) {
+      this.store.dispatch(new EditAppointmentAction(input.appointmentIndex, voteOption));
     } else {
       this.store.dispatch(new AddAppointmentsAction(voteOption));
     }
@@ -113,7 +106,7 @@ export class OverviewSubformComponent implements OnInit {
     let isInputInForm = false;
     console.log(this.voteOptions);
     Object.values(this.voteOptions.value).forEach(value => {
-      if (value) {
+      if(value) {
         isInputInForm = true;
       }
     });
