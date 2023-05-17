@@ -1,0 +1,36 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-overview-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  column-gap: 50px;
+}
+
+.profile-info-type {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.profile-info {
+  font-size: 18px;
+  text-align: left;
+}
+
+.edit-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+
+.button {
+  margin: 15px;
+  width: fit-content;
+  display: block;
+}
+

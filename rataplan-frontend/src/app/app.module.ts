@@ -26,9 +26,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
+import { appEffects } from './app.effects';
+import { appReducers } from './app.reducers';
 import { AppCommonModule } from './app-common.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppointmentComponent } from './appointment/appointment/appointment.component';
@@ -50,15 +55,11 @@ import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { LoginComponent } from './login/login.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
-import { ProfileComponent } from './profile/profile.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { environment } from "../environments/environment";
-import { appReducers } from "./app.reducers";
-import { appEffects } from "./app.effects";
 
 registerLocaleData(localeDE);
 
@@ -82,7 +83,7 @@ registerLocaleData(localeDE);
     DatepickerSubformComponent,
     EmailSubformComponent,
     LinkSubformComponent,
-    ProfileComponent,
+    EditProfileComponent,
     AppointmentComponent,
     MemberDecisionSubformComponent,
     ChangePasswordComponent,
@@ -90,6 +91,7 @@ registerLocaleData(localeDE);
     OverviewSubformComponent,
     DeleteProfileComponent,
     VoteListComponent,
+    ViewProfileComponent,
   ],
   imports: [
     BrowserModule,

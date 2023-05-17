@@ -1,0 +1,33 @@
+<div class="content">
+  <div>
+    <h1 class="headline">Profil Bearbeiten</h1>
+  </div>
+  <form class="displayName">
+    <mat-form-field appearance="fill">
+      <mat-label>Anzeigename</mat-label>
+      <input matInput [placeholder]="userData?.displayname || ''"
+             autocomplete=off
+             [formControl]="displayNameField"
+      >
+      <mat-error>{{errorMessageService.genericFormError(displayNameField)}}</mat-error>
+    </mat-form-field>
+  </form>
+  <form class="mail">
+    <mat-form-field appearance="fill">
+      <mat-label>Mail</mat-label>
+      <input matInput [textContent]="userData?.mail || ''"
+             autocomplete=off
+             [formControl]="emailField">
+      <mat-error>{{errorMessageService.genericFormError(emailField)}}</mat-error>
+    </mat-form-field>
+  </form>
+  <div>
+    <button  mat-raised-button color="warn" style="margin: 10px"
+             routerLink="/view-profile">Zurück
+    </button>
+    <button mat-raised-button color="primary"
+            [disabled]="displayNameField.invalid || emailField.invalid" style="margin: 10px" (click)="updateProfile()">
+      Speichern
+    </button>
+  </div>
+</div>

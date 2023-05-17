@@ -19,11 +19,12 @@ import { ContactComponent } from './legals/contact/contact.component';
 import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { LoginComponent } from './login/login.component';
-import { ProfileComponent } from './profile/profile.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
+import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
 import { AppointmentRequestResolver } from './appointment/appointment/resolver/appointment-request.resolver';
 import { AppointmentRequestPreviewResolver } from './appointment/appointment/resolver/appointment-request-preview.resolver';
@@ -72,7 +73,8 @@ const routes: Routes = [
     resolve: { appointmentRequest: AppointmentRequestResolver },
     component: AppointmentComponent
   },
-  { path: 'vote/edit/:id', component: AppointmentRequestFormComponent,
+  {
+    path: 'vote/edit/:id', component: AppointmentRequestFormComponent,
     children: [
       { path: '', redirectTo: 'general', pathMatch: 'full' },
       { path: 'general', component: GeneralSubformComponent },
@@ -97,7 +99,8 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuardService], },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'profile', component: ProfileComponent, canActivate: [ProfilePasswordAuthService] },
+  { path: 'view-profile', component: ViewProfileComponent, canActivate: [ProfilePasswordAuthService] },
+  { path: 'edit-profile', component: EditProfileComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ProfilePasswordAuthService] },
@@ -108,4 +111,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

@@ -32,7 +32,7 @@
         <!--dirty hack as there is no decent way to get accurate data about the logged in user through a service-->
       </button>
       <mat-menu #menu="matMenu" >
-        <button mat-menu-item routerLink="/profile"><mat-icon>account_circle</mat-icon>Profil</button>
+        <button mat-menu-item routerLink="/view-profile"><mat-icon>account_circle</mat-icon>Profil</button>
         <button mat-menu-item routerLink="/survey/own"><mat-icon>campaign</mat-icon>Meine Umfragen</button>
         <button mat-menu-item routerLink="/vote/own"><mat-icon>campaign</mat-icon>Meine Abstimmungen</button>
         <button mat-menu-item routerLink="/" (click)="onLogout()"><mat-icon>logout</mat-icon>Logout</button>

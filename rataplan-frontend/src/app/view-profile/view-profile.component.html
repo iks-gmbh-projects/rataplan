@@ -1,0 +1,26 @@
+<div class="form-container">
+  <h1 class="headline">Profil Übersicht</h1>
+  <div>
+  <div class="profile-overview-container">
+    <div class="profile-info-type">Username</div>
+    <div class="profile-info">{{userName}}</div>
+  </div>
+  <div class="profile-overview-container">
+    <div class="profile-info-type">Anzeigename</div>
+    <div class="profile-info">{{displayName}}</div>
+  </div>
+    <div class="profile-overview-container">
+      <div class="profile-info-type">Email Adresse</div>
+      <div class="profile-info">{{email}}</div>
+    </div>
+  <div class="edit-choices">
+    <button mat-raised-button class="button" color="primary" routerLink="/edit-profile">Profil bearbeiten</button>
+    <button mat-raised-button class="button" color="primary" routerLink="/change-password">Passwort ändern</button>
+    <button mat-raised-button class="button" color="warn" routerLink="/delete-profile">Profil löschen</button>
+  </div>
+  </div>
+</div>
+
+
+
+
