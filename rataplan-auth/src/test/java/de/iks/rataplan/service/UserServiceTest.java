@@ -2,8 +2,7 @@ package de.iks.rataplan.service;
 
 import static de.iks.rataplan.testutils.TestConstants.FILE_EXPECTED;
 import static de.iks.rataplan.testutils.TestConstants.FILE_INITIAL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.InvalidUserDataException;
@@ -158,5 +157,17 @@ public class UserServiceTest {
 	@ExpectedDatabase(value = ENCRYPTED_USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void loginUserWithUsernameShouldFailMailDoesNotExist2() {
 		userService.loginUser(new UserDTO(1,"KoBbpLwGdBuAgJDBBIYmfQ==",null,null,"geheim"));
+	}
+	
+	@Test
+	@DatabaseSetup(USER_FILE_INITIAL)
+	public void updateUserProfileTest() {
+		assertTrue(userService.updateProfileDetails(new UserDTO(1, "peter", "GeänderterPeter", "peter@sch.mitz", null)));
+		
+		UserDTO changed = userService.getUserDTOFromUsername("peter");
+		assertNotNull(changed);
+		assertEquals((Integer)1, changed.getId()); //verify that we got the correct user
+		assertEquals("GeänderterPeter", changed.getDisplayname());
+		assertEquals("peter@sch.mitz", changed.getMail());
 	}
 }
