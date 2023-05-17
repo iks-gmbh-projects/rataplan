@@ -137,9 +137,9 @@ public class UserServiceImpl implements UserService {
     
     public User getUserFromEmail(String mail) {
         return cryptoService.ensureEncrypted(
-                this.userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail.trim().toLowerCase()), true)
-            .orElseGet(() -> this.userRepository.findOneByMailAndEncrypted(mail.trim().toLowerCase(), false)
-                .orElse(null))
+            this.userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail.trim().toLowerCase()), true)
+                .orElseGet(() -> this.userRepository.findOneByMailAndEncrypted(mail.trim().toLowerCase(), false)
+                    .orElse(null))
         );
     }
     
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
             dbUser = this.userRepository.findOneByUsernameAndEncrypted(cryptoService.encryptDB(username.trim()
                     .toLowerCase()), true)
                 .orElseGet(() -> userRepository.findOneByUsernameAndEncrypted(username.toLowerCase().trim(), false)
-                    .orElseGet(() -> null));
+                    .orElse(null));
             return cryptoService.ensureEncrypted(dbUser);
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
@@ -200,7 +200,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public String getDisplayNameFromId(int id){
+    public String getDisplayNameFromId(int id) {
         User user = getUserFromId(id);
         String displayName = null;
         if (user != null) {
@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
         }
         return displayName;
     }
-
+    
     @Override
     public void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException {
         ResponseEntity<?> surveyToolResponse;
