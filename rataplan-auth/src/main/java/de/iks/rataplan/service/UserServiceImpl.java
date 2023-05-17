@@ -136,9 +136,11 @@ public class UserServiceImpl implements UserService {
     }
     
     public User getUserFromEmail(String mail) {
-        return this.userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail.trim().toLowerCase()), true)
+        return cryptoService.ensureEncrypted(
+                this.userRepository.findOneByMailAndEncrypted(cryptoService.encryptDB(mail.trim().toLowerCase()), true)
             .orElseGet(() -> this.userRepository.findOneByMailAndEncrypted(mail.trim().toLowerCase(), false)
-                .orElse(null));
+                .orElse(null))
+        );
     }
     
     @Override
@@ -149,7 +151,7 @@ public class UserServiceImpl implements UserService {
                     .toLowerCase()), true)
                 .orElseGet(() -> userRepository.findOneByUsernameAndEncrypted(username.toLowerCase().trim(), false)
                     .orElseGet(() -> null));
-            return dbUser;
+            return cryptoService.ensureEncrypted(dbUser);
         }
         throw new InvalidTokenException("Token is not allowed to get data.");
     }
@@ -172,7 +174,7 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             if (!checkIfMailExists(userDTO.getMail()) || user.getId()
                 .equals(getUserFromEmail(userDTO.getMail()).getId())) {
-                user.setMail(cryptoService.encryptDB((userDTO.getMail())).toLowerCase().trim());
+                user.setMail(cryptoService.encryptDB((userDTO.getMail()).toLowerCase().trim()));
                 user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
                 userRepository.saveAndFlush(user);
                 return true;

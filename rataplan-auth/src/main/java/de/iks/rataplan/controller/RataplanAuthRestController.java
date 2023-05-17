@@ -113,7 +113,7 @@ public class RataplanAuthRestController {
                                                         @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
                                                         @RequestBody UserDTO userDTO) {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
-
+        userDTO.setUsername(jwtTokenService.getUsernameFromToken((token)));
         if (userService.checkIfUsernameExists(jwtTokenService.getUsernameFromToken((token)))) {
             boolean success = userService.updateProfileDetails(userDTO);
             return new ResponseEntity<>(success, HttpStatus.OK);
