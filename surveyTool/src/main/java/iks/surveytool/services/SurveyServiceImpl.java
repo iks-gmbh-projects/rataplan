@@ -3,7 +3,7 @@ package iks.surveytool.services;
 import iks.surveytool.domain.AuthUser;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
-import iks.surveytool.entities.Survey;
+import iks.surveytool.entities.*;
 import iks.surveytool.repositories.SurveyRepository;
 import iks.surveytool.repositories.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +19,9 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Type;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -217,13 +217,117 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setUserId(oldSurvey.getUserId());
         survey.setAccessId(oldSurvey.getAccessId());
         survey.setParticipationId(oldSurvey.getParticipationId());
-        survey.setCreationTime(oldSurvey.getCreationTime());
-        survey.setVersion(oldSurvey.getVersion());
+        
         if (!survey.validate()) return ResponseEntity.unprocessableEntity().build();
-        surveyResponseRepository.deleteAllBySurvey(oldSurvey);
-        survey = saveSurvey(survey);
+        
+        transferValues(survey, oldSurvey);
+        
+        survey = saveSurvey(oldSurvey);
+        surveyResponseRepository.deleteAllBySurvey(survey);
         SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTO(survey);
         return ResponseEntity.ok(surveyOverviewDTO);
+    }
+    
+    private void transferValues(Survey from, Survey to) {
+        to.setName(from.getName());
+        to.setDescription(from.getDescription());
+        to.setStartDate(from.getStartDate());
+        to.setEndDate(from.getEndDate());
+        to.setAnonymousParticipation(from.isAnonymousParticipation());
+        to.setOpenAccess(from.isOpenAccess());
+
+        Map<Boolean, List<QuestionGroup>> fromGroups = from.getQuestionGroups()
+            .stream()
+            .collect(Collectors.partitioningBy(qg -> qg.getId() != null));
+        Map<Long, QuestionGroup> fromMap = fromGroups.get(true)
+            .stream()
+            .collect(Collectors.toMap(
+                QuestionGroup::getId,
+                Function.identity()
+            ));
+        
+        ListIterator<QuestionGroup> it = to.getQuestionGroups().listIterator();
+        while(it.hasNext()) {
+            QuestionGroup toQuestionGroup = it.next();
+            QuestionGroup fromQuestionGroup = fromMap.get(toQuestionGroup.getId());
+            if(fromQuestionGroup == null) {
+                it.remove();
+                continue;
+            }
+            transferValues(fromQuestionGroup, toQuestionGroup);
+        }
+        to.getQuestionGroups().addAll(fromGroups.get(false));
+        fromGroups.get(false).forEach(qg -> qg.setSurvey(to));
+    }
+    
+    private void transferValues(QuestionGroup from, QuestionGroup to) {
+        to.setTitle(from.getTitle());
+        
+        Map<Boolean, List<Question>> fromQuestions = from.getQuestions()
+            .stream()
+            .collect(Collectors.partitioningBy(q -> q.getId() != null));
+        Map<Long, Question> fromMap = fromQuestions.get(true)
+            .stream()
+            .collect(Collectors.toMap(
+                Question::getId,
+                Function.identity()
+            ));
+        
+        ListIterator<Question> it = to.getQuestions().listIterator();
+        while(it.hasNext()) {
+            Question toQuestion = it.next();
+            Question fromQuestion = fromMap.get(toQuestion.getId());
+            if(fromQuestion == null) {
+                it.remove();
+                continue;
+            }
+            transferValues(fromQuestion, toQuestion);
+        }
+        to.getQuestions().addAll(fromQuestions.get(false));
+        fromQuestions.get(false).forEach(q -> q.setQuestionGroup(to));
+    }
+    
+    private void transferValues(Question from, Question to) {
+        to.setText(from.getText());
+        to.setRequired(from.isRequired());
+        to.setHasCheckbox(from.isHasCheckbox());
+        
+        if(to.getCheckboxGroup() != null && from.getCheckboxGroup() != null) {
+            transferValues(from.getCheckboxGroup(), to.getCheckboxGroup());
+        } else {
+            to.setCheckboxGroup(from.getCheckboxGroup());
+            if(from.getCheckboxGroup() != null) from.getCheckboxGroup().setQuestion(to);
+        }
+    }
+    
+    private void transferValues(CheckboxGroup from, CheckboxGroup to) {
+        to.setMultipleSelect(from.isMultipleSelect());
+        to.setMinSelect(from.getMinSelect());
+        to.setMaxSelect(from.getMaxSelect());
+        
+        Map<Boolean, List<Checkbox>> fromQuestions = from.getCheckboxes()
+            .stream()
+            .collect(Collectors.partitioningBy(q -> q.getId() != null));
+        Map<Long, Checkbox> fromMap = fromQuestions.get(true)
+            .stream()
+            .collect(Collectors.toMap(
+                Checkbox::getId,
+                Function.identity()
+            ));
+        
+        ListIterator<Checkbox> it = to.getCheckboxes().listIterator();
+        while(it.hasNext()) {
+            Checkbox toCheckbox = it.next();
+            Checkbox fromCheckbox = fromMap.get(toCheckbox.getId());
+            if(fromCheckbox == null) {
+                it.remove();
+                continue;
+            }
+            toCheckbox.setText(fromCheckbox.getText());
+            toCheckbox.setHasTextField(fromCheckbox.isHasTextField());
+        }
+        to.getCheckboxes().addAll(fromQuestions.get(false));
+        fromQuestions.get(false).forEach(c -> c.setCheckboxGroup(to));
     }
 
     @Override
