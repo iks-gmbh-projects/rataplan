@@ -16,7 +16,7 @@ public class ParticipantAppointmentRequestDTO implements Serializable {
     private String organizerMail;
     private Date deadline;
     private Integer userId;
-    private boolean expired;
+    private boolean notified;
     private String participationToken;
     private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
     private List<String> consigneeList;
@@ -81,11 +81,11 @@ public class ParticipantAppointmentRequestDTO implements Serializable {
     }
 
     public boolean isNotified() {
-        return expired;
+        return notified;
     }
 
-    public void setExpired(boolean expired) {
-        this.expired = expired;
+    public void setNotified(boolean notified) {
+        this.notified = notified;
     }
 
     public String getParticipationToken() {
