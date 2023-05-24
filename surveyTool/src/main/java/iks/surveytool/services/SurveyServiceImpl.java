@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -197,6 +198,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken) {
         final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
         if (optionalSurvey.isEmpty()) {

@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class SurveyResponse extends AbstractEntity {
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "surveyId", nullable = false)
     private Survey survey;
     private Long userId;
