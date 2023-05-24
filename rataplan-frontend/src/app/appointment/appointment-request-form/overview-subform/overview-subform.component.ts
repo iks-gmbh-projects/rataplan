@@ -8,11 +8,12 @@ import { AppointmentConfig, AppointmentModel } from '../../../models/appointment
 import { AddAppointmentsAction, EditAppointmentAction, RemoveAppointmentAction } from '../../appointment.actions';
 import { appState } from '../../../app.reducers';
 import { combineDateTime } from '../appointment-request-form.service';
+import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 
 function extractTime(date: string | undefined | null): string | null {
-  if(!date) return null;
+  if (!date) return null;
   const dateObject = new Date(date);
-  return dateObject.getHours().toString().padStart(2, "0") + ':' + dateObject.getMinutes().toString().padStart(2, "0");
+  return dateObject.getHours() .toString().padStart(2, "0") + ':' + dateObject.getMinutes().toString().padStart(2, "0");
 }
 
 type formValue = {
@@ -55,7 +56,9 @@ export class OverviewSubformComponent implements OnInit {
   constructor(
     private store: Store<appState>,
     private router: Router,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    public errorMessageService: FormErrorMessageService,
+  ) {
   }
 
   ngOnInit(): void {
@@ -81,11 +84,11 @@ export class OverviewSubformComponent implements OnInit {
     const voteOption: AppointmentModel = {};
     voteOption.startDate = combineDateTime(
       input.startDateInput, input.startTimeInput,
-    );
+    )!;
     if(this.appointmentConfig.endDate || this.appointmentConfig.endTime) {
       voteOption.endDate = combineDateTime(
         input.endDateInput || input.startDateInput, input.endTimeInput,
-      );
+      )!;
     }
 
     voteOption.description = input.descriptionInput || undefined;

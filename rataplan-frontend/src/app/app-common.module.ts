@@ -8,6 +8,8 @@ import { CheckboxCountMinDirective } from "./validator/checkbox-count-min.direct
 import { CheckboxCountMaxDirective } from "./validator/checkbox-count-max.directive";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { IntegerDirective } from './validator/integer.directive';
+import { CombinedDatetimeMaxDirective } from './validator/combined-datetime-max.directive';
+import { CombinedDatetimeMinDirective } from './validator/combined-datetime-min.directive';
 
 
 
@@ -19,6 +21,8 @@ import { IntegerDirective } from './validator/integer.directive';
     CheckboxCountMinDirective,
     CheckboxCountMaxDirective,
     IntegerDirective,
+    CombinedDatetimeMaxDirective,
+    CombinedDatetimeMinDirective,
   ],
   imports: [
     CommonModule,
@@ -34,6 +38,8 @@ import { IntegerDirective } from './validator/integer.directive';
     CheckboxCountMinDirective,
     CheckboxCountMaxDirective,
     IntegerDirective,
+    CombinedDatetimeMaxDirective,
+    CombinedDatetimeMinDirective,
   ],
 })
 export class AppCommonModule { }
