@@ -5,7 +5,7 @@ import { AppointmentRequestModel } from '../models/appointment-request.model';
 import { VoteListService } from '../services/dashboard-service/vote-list.service';
 
 @Component({
-  selector: 'app-survey-list',
+  selector: 'app-vote-list',
   templateUrl: './vote-list.component.html',
   styleUrls: ['./vote-list.component.css']
 })
