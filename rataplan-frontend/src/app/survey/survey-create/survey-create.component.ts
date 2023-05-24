@@ -41,12 +41,12 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
     if (!survey) return this.edit();
     survey = JSON.parse(JSON.stringify(survey)); // create copy of the input that we can modify freely
     for (let qg of survey!.questionGroups) {
-      delete qg.id;
+      if((qg.id || 0) < 0) delete qg.id;
       for (let question of qg.questions) {
-        delete question.id;
+        if((question.id || 0) < 0) delete question.id;
         if (question.checkboxGroup) {
           for (let checkbox of question.checkboxGroup.checkboxes) {
-            delete checkbox.id;
+            if((checkbox.id || 0) < 0) delete checkbox.id;
           }
         }
       }
@@ -59,7 +59,7 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
       next: surv => {
         this.router.navigate(["/survey", "access", surv.accessId], { relativeTo: this.route });
       },
-      error: err => {
+      error: () => {
         this.survey = survey;
       }
     });

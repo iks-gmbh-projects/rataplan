@@ -122,9 +122,9 @@ export class SurveyCreateFormComponent {
     survey.endDate = new Date(survey.endDate);
     let j: number = 0;
     survey.questionGroups.forEach((qg, i) => {
-      qg.id = i;
+      qg.id ??= -i;
       for (let q of qg.questions) {
-        q.id = j;
+        q.id ??= j;
         if (q.checkboxGroup) {
           if (q.checkboxGroup.checkboxes.length == 0) {
             delete q.checkboxGroup;
