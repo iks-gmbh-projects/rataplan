@@ -67,12 +67,12 @@
                       <ng-template [ngIf]="multi.checked">
                         <mat-form-field class="mat-form-field-flex">
                           <mat-label>Minimale Auswahlanzahl</mat-label>
-                          <input type="number" matInput formControlName="minSelect">
+                          <input type="text" inputmode="numeric" matInput formControlName="minSelect">
                           <mat-error>{{errorMessageService.genericFormError(formGroup.get(['questionGroups', i, 'questions', j, 'checkboxGroup', 'minSelect']))}}</mat-error>
                         </mat-form-field><br>
                         <mat-form-field class="mat-form-field-flex">
                           <mat-label>Maximale Auswahlanzahl</mat-label>
-                          <input type="number" matInput formControlName="maxSelect">
+                          <input type="text" inputmode="numeric" matInput formControlName="maxSelect">
                           <mat-error>{{errorMessageService.genericFormError(formGroup.get(['questionGroups', i, 'questions', j, 'checkboxGroup', 'maxSelect']))}}</mat-error>
                         </mat-form-field>
                       </ng-template>
