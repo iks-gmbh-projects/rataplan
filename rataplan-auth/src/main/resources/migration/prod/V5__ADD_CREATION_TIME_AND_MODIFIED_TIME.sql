@@ -5,7 +5,7 @@ ALTER TABLE auth_token
 
 ALTER TABLE auth_token
     ALTER COLUMN creationTime DROP DEFAULT,
-ALTER COLUMN lastUpdated DROP DEFAULT,
+    ALTER COLUMN lastUpdated DROP DEFAULT,
     ALTER COLUMN version DROP DEFAULT;
 
 ALTER TABLE rataplanuser
@@ -15,5 +15,5 @@ ALTER TABLE rataplanuser
 
 ALTER TABLE rataplanuser
     ALTER COLUMN creationTime DROP DEFAULT,
-ALTER COLUMN lastUpdated DROP DEFAULT,
+    ALTER COLUMN lastUpdated DROP DEFAULT,
     ALTER COLUMN version DROP DEFAULT;
