@@ -69,7 +69,7 @@ export class AuthEffects {
       ofType(AuthActions.AUTO_LOGIN_ACTION),
       concatMap(() => this.urlService.authURL$),
       map(authURL => {
-        const url = authURL + 'users/edit-profile';
+        const url = authURL + 'users/profile';
         return this.httpClient.get<FrontendUser>(url, { withCredentials: true });
       }),
       switchMap(observable => observable.pipe(
