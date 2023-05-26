@@ -1,6 +1,6 @@
 CREATE TABLE checkboxSelections (
-	answerId     BIGINT REFERENCES answer(id),
-	checkboxId   BIGINT REFERENCES checkbox(id),
+	answerId     BIGINT REFERENCES answer(id) ON DELETE CASCADE,
+	checkboxId   BIGINT REFERENCES checkbox(id) ON DELETE CASCADE,
 	PRIMARY KEY (answerId, checkboxId)
 );
 
