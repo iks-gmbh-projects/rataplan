@@ -3,9 +3,9 @@
   <h2>Abstimmungslinks</h2>
   <div>
     <p>Sie können nun folgenden Link an die Teilnehmer senden:</p>
-    <a [routerLink]='participationLink'>http://localhost:4200{{ participationLink }}</a>
+    <a [routerLink]='participationLink'>{{ host+participationLink }}</a>
     <p>Hier können Sie die Abstimmung bearbeiten:</p>
-    <a [routerLink]='editLink'>http://localhost:4200{{ editLink }}</a>
+    <a [routerLink]='editLink'>{{ host+editLink }}</a>
 
     <h5>(Links speichern, da diese ansonsten verloren gehen)</h5>
   </div>

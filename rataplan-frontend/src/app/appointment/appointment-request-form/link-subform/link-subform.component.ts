@@ -11,10 +11,12 @@ export class LinkSubformComponent implements OnInit, OnDestroy {
   participationLink = '/vote/';
   editLink = '/vote/edit/';
   private sub?: Subscription;
+  readonly host: string;
 
   constructor(
     private activateRoute: ActivatedRoute
   ){
+    this.host = location.protocol + '//' + location.host;
   }
 
   ngOnInit(): void {
