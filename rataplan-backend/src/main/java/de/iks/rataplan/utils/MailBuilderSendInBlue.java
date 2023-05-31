@@ -45,7 +45,9 @@ public class MailBuilderSendInBlue {
     }
     
     public List<SendSmtpEmail> buildMailListForAppointmentRequestInvitations(AppointmentRequest appointmentRequest) {
-        String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
+        String participationToken = appointmentRequest.getParticipationToken();
+        if(participationToken == null) participationToken = appointmentRequest.getId().toString();
+        String url = baseUrl + "/appointmentrequest/" + participationToken;
     
     
         Context ctx = new Context();
@@ -68,7 +70,9 @@ public class MailBuilderSendInBlue {
     }
 
     public SendSmtpEmail buildMailForAppointmentRequestExpired(AppointmentRequest appointmentRequest) {
-        String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
+        String participationToken = appointmentRequest.getParticipationToken();
+        if(participationToken == null) participationToken = appointmentRequest.getId().toString();
+        String url = baseUrl + "/appointmentrequest/" + participationToken;
 
         Context ctx = new Context();
         ctx.setVariable("url", url);
@@ -93,8 +97,11 @@ public class MailBuilderSendInBlue {
     }
 
     public SendSmtpEmail buildMailForAppointmentRequestCreation(AppointmentRequest appointmentRequest) {
-        String url = baseUrl + "/appointmentrequest/" + appointmentRequest.getId();
-        String adminUrl = baseUrl + "/appointmentrequest/" + appointmentRequest.getId() + "/edit";
+        String participationToken = appointmentRequest.getParticipationToken();
+        if(participationToken == null) participationToken = appointmentRequest.getId().toString();
+        String url = baseUrl + "/appointmentrequest/" + participationToken;
+        String editToken = appointmentRequest.getEditToken();
+        String adminUrl = editToken == null ? null : baseUrl + "/appointmentrequest/" + editToken + "/edit";
 
         Context ctx = new Context();
         ctx.setVariable("url", url);
