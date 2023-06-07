@@ -169,7 +169,7 @@ public class Vote implements Serializable {
 		this.userId = userId;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequest", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vote", cascade = CascadeType.ALL)
 	public List<VoteOption> getAppointments() {
 		return voteOptions;
 	}
@@ -178,7 +178,7 @@ public class Vote implements Serializable {
 		this.voteOptions = voteOptions;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequest", orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vote", orphanRemoval = true, cascade = CascadeType.ALL)
 	public List<VoteParticipant> getAppointmentMembers() {
 		return voteParticipants;
 	}
@@ -188,7 +188,7 @@ public class Vote implements Serializable {
 	}
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "appointmentRequestConfigId")
+	@JoinColumn(name = "voteConfigId")
 	public VoteConfig getAppointmentRequestConfig() {
 		return voteConfig;
 	}
@@ -251,7 +251,7 @@ public class Vote implements Serializable {
 		this.consigneeList = consigneeList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequestId", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "voteId", cascade = CascadeType.ALL)
 	public List<BackendUserAccess> getAccessList() {
 		return accessList;
 	}
@@ -269,17 +269,17 @@ public class Vote implements Serializable {
      */
 	public boolean validateDecisionsForAppointmentMember(VoteParticipant voteParticipant) {
 		List<Integer> appointmentIdList = new ArrayList<>(); 
-		if (this.voteOptions.size() != voteParticipant.getAppointmentDecisions().size()) {
+		if (this.voteOptions.size() != voteParticipant.getVoteDecisions().size()) {
 			return false;
 		}
 		
 		for (VoteOption voteOption : this.getAppointments()) {
-			for (VoteDecision decision : voteParticipant.getAppointmentDecisions()) {
+			for (VoteDecision decision : voteParticipant.getVoteDecisions()) {
 				this.decisionTypeVerification(decision);
 				
-				if (decision.getAppointment() == null) {
+				if (decision.getVoteOption() == null) {
 					return false;
-				} else if (Objects.equals(voteOption.getId(), decision.getAppointment().getId())
+				} else if (Objects.equals(voteOption.getId(), decision.getVoteOption().getId())
 						&& !appointmentIdList.contains(voteOption.getId())) {
 					appointmentIdList.add(voteOption.getId());
 				}

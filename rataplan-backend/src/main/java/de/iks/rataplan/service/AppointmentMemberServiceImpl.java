@@ -35,11 +35,11 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
 
         if (vote.validateDecisionsForAppointmentMember(voteParticipant)) {
         	
-            voteParticipant.setAppointmentRequest(vote);
+            voteParticipant.setVote(vote);
             vote.getAppointmentMembers().add(voteParticipant);
 
-            for (VoteDecision decision : voteParticipant.getAppointmentDecisions()) {
-                decision.setAppointmentMember(voteParticipant);
+            for (VoteDecision decision : voteParticipant.getVoteDecisions()) {
+                decision.setVoteParticipant(voteParticipant);
             }
 
             return appointmentMemberRepository.saveAndFlush(voteParticipant);
@@ -72,8 +72,8 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
         }
 
         dbVoteParticipant.setName(newVoteParticipant.getName());
-        dbVoteParticipant.setAppointmentRequest(vote);
-        this.updateAppointmentDecisionsForMember(dbVoteParticipant.getAppointmentDecisions(), newVoteParticipant.getAppointmentDecisions());
+        dbVoteParticipant.setVote(vote);
+        this.updateAppointmentDecisionsForMember(dbVoteParticipant.getVoteDecisions(), newVoteParticipant.getVoteDecisions());
         return appointmentMemberRepository.saveAndFlush(dbVoteParticipant);
     }
     
@@ -96,7 +96,7 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
             List<VoteDecision> newDecisions) {
         for (VoteDecision voteDecision : oldDecisions) {
             for (VoteDecision newdecision : newDecisions) {
-                if (Objects.equals(voteDecision.getAppointment().getId(), newdecision.getAppointment().getId())) {
+                if (Objects.equals(voteDecision.getVoteOption().getId(), newdecision.getVoteOption().getId())) {
                     voteDecision.setDecision(newdecision.getDecision());
                     voteDecision.setParticipants(newdecision.getParticipants());
                 }

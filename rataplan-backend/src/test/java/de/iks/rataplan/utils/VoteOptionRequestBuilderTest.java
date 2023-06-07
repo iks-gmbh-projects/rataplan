@@ -39,7 +39,7 @@ public class VoteOptionRequestBuilderTest {
 				);
 
 		for (VoteOption voteOption : voteOptions) {
-			assertEquals(vote, voteOption.getAppointmentRequest());
+			assertEquals(vote, voteOption.getVote());
 		}
 		
 		assertEquals("homeoffice", voteOptions.get(0).getDescription().getString());
@@ -65,7 +65,7 @@ public class VoteOptionRequestBuilderTest {
 				);
 
 		for (VoteOption voteOption : voteOptions) {
-			assertEquals(vote, voteOption.getAppointmentRequest());
+			assertEquals(vote, voteOption.getVote());
 		}
 		
 		assertEquals(voteOption0, voteOptions.get(0));
@@ -99,7 +99,7 @@ public class VoteOptionRequestBuilderTest {
 				);
 		
 		for (VoteOption voteOption : voteOptions) {
-			assertEquals(vote, voteOption.getAppointmentRequest());
+			assertEquals(vote, voteOption.getVote());
 		}
 		
 		assertEquals(voteOption0, voteOptions.get(0));
@@ -117,7 +117,7 @@ public class VoteOptionRequestBuilderTest {
 				);
 		
 		for (VoteParticipant voteParticipant : voteParticipants) {
-			assertEquals(vote, voteParticipant.getAppointmentRequest());
+			assertEquals(vote, voteParticipant.getVote());
 		}
 		
 		assertEquals("Fritz", voteParticipants.get(0).getName().getString());
@@ -139,7 +139,7 @@ public class VoteOptionRequestBuilderTest {
 				);
 		
 		for (VoteParticipant voteParticipant : voteParticipants) {
-			assertEquals(vote, voteParticipant.getAppointmentRequest());
+			assertEquals(vote, voteParticipant.getVote());
 		}
 		
 		assertEquals(voteParticipant0, voteParticipants.get(0));

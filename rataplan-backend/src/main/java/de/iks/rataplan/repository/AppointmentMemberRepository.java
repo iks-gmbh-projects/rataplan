@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.stream.Stream;
 
 public interface AppointmentMemberRepository extends JpaRepository<VoteParticipant, Integer> {
-    @Query(value = "SELECT * FROM appointmentMember" +
+    @Query(value = "SELECT * FROM voteParticipant" +
         " WHERE name NOT LIKE 'ENC\\_\\_##\\_\\_%'", nativeQuery = true)
     public Stream<VoteParticipant> findUnencrypted();
 }

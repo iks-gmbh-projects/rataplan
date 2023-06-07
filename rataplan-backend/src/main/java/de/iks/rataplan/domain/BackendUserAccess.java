@@ -19,13 +19,13 @@ public class BackendUserAccess {
     private Integer version;
     
     private Integer id;
-    private Integer appointmentRequestId;
+    private Integer voteId;
     private Integer userId;
     private boolean isEdit;
     private boolean isInvited;
     
     public BackendUserAccess(Integer requestId, Integer userId, boolean hasEditRights, boolean isInvited) {
-        this.appointmentRequestId = requestId;
+        this.voteId = requestId;
         this.userId = userId;
         this.isEdit = hasEditRights;
         this.isInvited = isInvited;
@@ -70,13 +70,13 @@ public class BackendUserAccess {
         this.id = id;
     }
     
-    @Column(name = "appointmentRequestId")
-    public Integer getAppointmentRequestId() {
-        return appointmentRequestId;
+    @Column(name = "voteId", nullable = false)
+    public Integer getVoteId() {
+        return voteId;
     }
     
-    public void setAppointmentRequestId(Integer requestId) {
-        this.appointmentRequestId = requestId;
+    public void setVoteId(Integer requestId) {
+        this.voteId = requestId;
     }
     
     @Column(name = "userId")

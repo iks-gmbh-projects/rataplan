@@ -172,7 +172,7 @@ public class VoteOptionRequestServiceTest {
 		VoteParticipant voteParticipant = new VoteParticipant();
 		voteParticipant.setId(1);
 		voteParticipant.setName(new EncryptedString("RubberBandMan", false));
-		voteParticipant.setAppointmentRequest(vote);
+		voteParticipant.setVote(vote);
 
 		List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
 		voteParticipants.add(voteParticipant);
@@ -180,13 +180,13 @@ public class VoteOptionRequestServiceTest {
 		vote.setAppointmentMembers(voteParticipants);
 
 		VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote);
-		voteOption1.setAppointmentRequest(vote);
+		voteOption1.setVote(vote);
 
 		VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote);
-		voteOption2.setAppointmentRequest(vote);
+		voteOption2.setVote(vote);
 
 		VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), vote);
-		voteOption3.setAppointmentRequest(vote);
+		voteOption3.setVote(vote);
 
 		vote.setAppointments(appointmentList(voteOption1, voteOption2, voteOption3));
 

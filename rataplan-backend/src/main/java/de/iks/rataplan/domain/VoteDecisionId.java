@@ -19,20 +19,20 @@ public class VoteDecisionId implements Serializable {
     }
 
     @ManyToOne
-    public VoteOption getAppointment() {
+    public VoteOption getVoteOption() {
         return voteOption;
     }
 
-    public void setAppointment(VoteOption voteOption) {
+    public void setVoteOption(VoteOption voteOption) {
         this.voteOption = voteOption;
     }
 
     @ManyToOne
-    public VoteParticipant getAppointmentMember() {
+    public VoteParticipant getVoteParticipant() {
         return voteParticipant;
     }
 
-    public void setAppointmentMember(VoteParticipant voteParticipant) {
+    public void setVoteParticipant(VoteParticipant voteParticipant) {
         this.voteParticipant = voteParticipant;
     }
 
@@ -42,8 +42,8 @@ public class VoteDecisionId implements Serializable {
             return false;
         }
         VoteDecisionId other = (VoteDecisionId) obj;
-        return Objects.equals(this.getAppointment().getId(), other.getAppointment().getId()) && Objects.equals(this.getAppointmentMember()
-            .getId(), other.getAppointmentMember().getId());
+        return Objects.equals(this.getVoteOption().getId(), other.getVoteOption().getId()) && Objects.equals(this.getVoteParticipant()
+            .getId(), other.getVoteParticipant().getId());
     }
 
     @Override
@@ -53,9 +53,9 @@ public class VoteDecisionId implements Serializable {
     
     @Override
     public String toString() {
-        return "AppointmentDecisionId{\n" +
-            "appointment=" + voteOption.getId() +
-            ",\nappointmentMember=" + voteParticipant.getId() +
+        return "VoteDecisionId{\n" +
+            "voteOption=" + voteOption.getId() +
+            ",\nvoteParticipant=" + voteParticipant.getId() +
             "\n}";
     }
 }

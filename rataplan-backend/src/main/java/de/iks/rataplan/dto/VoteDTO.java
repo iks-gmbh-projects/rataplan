@@ -197,7 +197,7 @@ public class VoteDTO implements Serializable {
             (participants != null && !participants.isEmpty())
         ) throw new MalformedException("Missing or invalid input fields");
         voteConfig.assertCreationValid();
-        options.forEach(a -> a.assertValid(voteConfig.getAppointmentConfig()));
+        options.forEach(a -> a.assertValid(voteConfig.getVoteOptionConfig()));
     }
     
     public void defaultNullValues() {

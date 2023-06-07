@@ -67,7 +67,7 @@ public class CreatorVoteDTOTest {
 		VoteOptionDTO[] dtoOptions = dtoVote.getOptions()
 				.toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
 
-		assertEquals(voteOptions[0].getAppointmentRequest().getId(), dtoOptions[0].getVoteId());
+		assertEquals(voteOptions[0].getVote().getId(), dtoOptions[0].getVoteId());
 		assertEquals(voteOptions[0].getStartDate(), dtoOptions[0].getStartDate());
 		assertEquals(voteOptions[0].getId(), dtoOptions[0].getId());
 		assertEquals(voteOptions[0].getDescription().getString(), dtoOptions[0].getDescription());
@@ -93,7 +93,7 @@ public class CreatorVoteDTOTest {
 		VoteOption[] voteOptions = vote.getAppointments()
 				.toArray(new VoteOption[vote.getAppointments().size()]);
 
-		assertEquals(dtoAppointments[0].getVoteId(), voteOptions[0].getAppointmentRequest().getId());
+		assertEquals(dtoAppointments[0].getVoteId(), voteOptions[0].getVote().getId());
 		assertEquals(dtoAppointments[0].getStartDate(), voteOptions[0].getStartDate());
 		assertEquals(dtoAppointments[0].getId(), voteOptions[0].getId());
 		assertEquals(dtoAppointments[0].getDescription(), voteOptions[0].getDescription().getString());
@@ -120,11 +120,11 @@ public class CreatorVoteDTOTest {
 		VoteDecision decision21 = new VoteDecision(Decision.ACCEPT, voteOption2, member1);
 		VoteDecision decision22 = new VoteDecision(Decision.DECLINE, voteOption2, member2);
 
-		member1.getAppointmentDecisions().add(decision11);
-		member1.getAppointmentDecisions().add(decision21);
+		member1.getVoteDecisions().add(decision11);
+		member1.getVoteDecisions().add(decision21);
 
-		member2.getAppointmentDecisions().add(decision12);
-		member2.getAppointmentDecisions().add(decision22);
+		member2.getVoteDecisions().add(decision12);
+		member2.getVoteDecisions().add(decision22);
 
 		vote.getAppointments().add(voteOption1);
 		vote.getAppointments().add(voteOption2);
@@ -142,7 +142,7 @@ public class CreatorVoteDTOTest {
 				.toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
 
 		for (int i = 0; i < memberList.length; i++) {
-			assertEquals(memberList[i].getAppointmentDecisions().size(),
+			assertEquals(memberList[i].getVoteDecisions().size(),
 					participantDTOList[i].getDecisions().size());
 		}
 	}
@@ -193,7 +193,7 @@ public class CreatorVoteDTOTest {
 
 		for (int i = 0; i < participantDTOList.length; i++) {
 			assertEquals(participantDTOList[i].getDecisions().size(),
-					memberList[i].getAppointmentDecisions().size());
+					memberList[i].getVoteDecisions().size());
 		}
 	}
 }

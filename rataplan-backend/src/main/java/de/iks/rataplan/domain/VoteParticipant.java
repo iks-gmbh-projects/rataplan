@@ -96,34 +96,34 @@ public class VoteParticipant implements Serializable {
 	}
 
     @ManyToOne
-    @JoinColumn(name = "appointmentRequestId", nullable = false)
-    public Vote getAppointmentRequest() {
+    @JoinColumn(name = "voteId", nullable = false)
+    public Vote getVote() {
         return vote;
     }
 
-    public void setAppointmentRequest(Vote vote) {
+    public void setVote(Vote vote) {
         this.vote = vote;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentDecisionId.appointmentMember", cascade = CascadeType.ALL)
-    public List<VoteDecision> getAppointmentDecisions() {
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "voteDecisionId.voteParticipant", cascade = CascadeType.ALL)
+    public List<VoteDecision> getVoteDecisions() {
         return voteDecisions;
     }
 
-    public void setAppointmentDecisions(List<VoteDecision> decisionList) {
+    public void setVoteDecisions(List<VoteDecision> decisionList) {
         this.voteDecisions = decisionList;
     }
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentMember [id=");
+		builder.append("VoteParticipant [id=");
 		builder.append(id);
 		builder.append(", name=");
 		builder.append(name);
-		builder.append(", appointmentRequest=");
+		builder.append(", vote=");
 		builder.append(vote.getId());
-		builder.append(", appointmentDecisions=");
+		builder.append(", voteDecisions=");
 		builder.append(voteDecisions);
 		builder.append("]");
 		return builder.toString();

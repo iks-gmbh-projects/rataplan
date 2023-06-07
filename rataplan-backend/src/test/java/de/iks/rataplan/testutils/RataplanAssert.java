@@ -20,9 +20,9 @@ public class RataplanAssert {
 	 * @param dtoDecision
 	 */
 	public static void assertVoteDecision(VoteDecision decision, VoteDecisionDTO dtoDecision) {
-		assertEquals("VoteDecision.Option.Id", decision.getAppointment().getId(),
+		assertEquals("VoteDecision.Option.Id", decision.getVoteOption().getId(),
 				dtoDecision.getOptionId());
-		assertEquals("VoteDecision.participant.Id", decision.getAppointmentMember().getId(),
+		assertEquals("VoteDecision.participant.Id", decision.getVoteParticipant().getId(),
 				dtoDecision.getParticipantId());
 		assertEquals("VoteDecision.Decision", decision.getDecision().getValue(), dtoDecision.getDecision());
 		assertEquals("VoteDecision.Participants", decision.getParticipants(), dtoDecision.getParticipants());
@@ -35,9 +35,9 @@ public class RataplanAssert {
 	 */
 	public static void assertVoteDecisionDTO(VoteDecisionDTO dtoDecision, VoteDecision decision) {
 		assertEquals("VoteDecisionDTO.Option.Id", dtoDecision.getOptionId(),
-				decision.getAppointment().getId());
+				decision.getVoteOption().getId());
 		assertEquals("VoteDecisionDTO.participant.Id", dtoDecision.getParticipantId(),
-				decision.getAppointmentMember().getId());
+				decision.getVoteParticipant().getId());
 		assertEquals("VoteDecisionDTO.Decision", dtoDecision.getDecision(), decision.getDecision().getValue());
 		assertEquals("VoteDecisionDTO.Participants", dtoDecision.getParticipants(), decision.getParticipants());
 	}
@@ -53,8 +53,8 @@ public class RataplanAssert {
 		assertEquals("Vote.deadline", request.getDeadline(), dtoRequest.getDeadline());
 		assertEquals("Vote.organizerMail", request.getOrganizerMail().getString(), dtoRequest.getOrganizerMail());
 		assertEquals("Vote.id", request.getId(), dtoRequest.getId());
-		assertEquals("Vote.config.appointmentType", request.getAppointmentRequestConfig().getAppointmentConfig(),
-				dtoRequest.getAppointmentRequestConfig().getAppointmentConfig());
+		assertEquals("Vote.config.appointmentType", request.getAppointmentRequestConfig().getVoteOptionConfig(),
+				dtoRequest.getAppointmentRequestConfig().getVoteOptionConfig());
 		assertEquals("Vote.config.decisionType", request.getAppointmentRequestConfig().getDecisionType(),
 				dtoRequest.getAppointmentRequestConfig().getDecisionType());
 		assertEquals("Vote.options.size", request.getAppointments().size(),
@@ -74,8 +74,8 @@ public class RataplanAssert {
 		assertEquals("VoteDTO.deadline", dtoRequest.getDeadline(), request.getDeadline());
 		assertEquals("VoteDTO.organizerMail", dtoRequest.getOrganizerMail(), request.getOrganizerMail().getString());
 		assertEquals("VoteDTO.id", dtoRequest.getId(), request.getId());
-		assertEquals("VoteDTO.config.appointmentType", dtoRequest.getAppointmentRequestConfig().getAppointmentConfig(),
-				request.getAppointmentRequestConfig().getAppointmentConfig());
+		assertEquals("VoteDTO.config.appointmentType", dtoRequest.getAppointmentRequestConfig().getVoteOptionConfig(),
+				request.getAppointmentRequestConfig().getVoteOptionConfig());
 		assertEquals("VoteDTO.config.decisionType", dtoRequest.getAppointmentRequestConfig().getDecisionType(),
 				request.getAppointmentRequestConfig().getDecisionType());
 		if(dtoRequest.getOptions() == null) assertNull("VoteDTO.appointments", request.getAppointments());
@@ -96,7 +96,7 @@ public class RataplanAssert {
 		assertEquals("VoteOption.StartDate", voteOption.getStartDate(), dtoAppointment.getStartDate());
 		assertEquals("VoteOption.EndDate", voteOption.getEndDate(), dtoAppointment.getEndDate());
 		assertEquals("VoteOption.Location", voteOption.getDescription().getString(), dtoAppointment.getDescription());
-		assertEquals("VoteOption.Vote.Id", voteOption.getAppointmentRequest().getId(),
+		assertEquals("VoteOption.Vote.Id", voteOption.getVote().getId(),
 				dtoAppointment.getVoteId());
 	}
 
@@ -111,7 +111,7 @@ public class RataplanAssert {
 		assertEquals("VoteOption.EndDate", voteOption.getEndDate(), dtoAppointment.getEndDate());
 		assertEquals("VoteOption.Location", dtoAppointment.getDescription(), voteOption.getDescription().getString());
 		assertEquals("VoteOptionDTO.VoteId", dtoAppointment.getVoteId(),
-				voteOption.getAppointmentRequest().getId());
+				voteOption.getVote().getId());
 	}
 
 	/**
@@ -122,9 +122,9 @@ public class RataplanAssert {
 	public static void assertVoteParticipant(VoteParticipant member, VoteParticipantDTO dtoMember) {
 		assertEquals("VoteParticipant.Id", member.getId(), dtoMember.getId());
 		assertEquals("VoteParticipant.Name", member.getName().getString(), dtoMember.getName());
-		assertEquals("VoteParticipant.Vote.Id", member.getAppointmentRequest().getId(),
+		assertEquals("VoteParticipant.Vote.Id", member.getVote().getId(),
 				dtoMember.getVoteId());
-		assertEquals("VoteParticipant.decisions.size", member.getAppointmentDecisions().size(),
+		assertEquals("VoteParticipant.decisions.size", member.getVoteDecisions().size(),
 				dtoMember.getDecisions().size());
 	}
 
@@ -137,8 +137,8 @@ public class RataplanAssert {
 		assertEquals("VoteParticipantDTO.Id", dtoMember.getId(), member.getId());
 		assertEquals("VoteParticipantDTO.Name", dtoMember.getName(), member.getName().getString());
 		assertEquals("VoteParticipantDTO.VoteId", dtoMember.getVoteId(),
-				member.getAppointmentRequest().getId());
+				member.getVote().getId());
 		assertEquals("VoteParticipantDTO.decisions.size", dtoMember.getDecisions().size(),
-				member.getAppointmentDecisions().size());
+				member.getVoteDecisions().size());
 	}
 }

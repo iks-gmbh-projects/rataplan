@@ -21,8 +21,8 @@ public class DecisionConverter {
 		@Override
 		protected VoteDecisionDTO convert(VoteDecision voteDecision) {
 			VoteDecisionDTO dtoDecision = new VoteDecisionDTO();
-			dtoDecision.setOptionId(voteDecision.getAppointment().getId());
-			dtoDecision.setParticipantId(voteDecision.getAppointmentMember().getId());
+			dtoDecision.setOptionId(voteDecision.getVoteOption().getId());
+			dtoDecision.setParticipantId(voteDecision.getVoteParticipant().getId());
 			
 			if (voteDecision.getDecision() != null) {
 				dtoDecision.setDecision(voteDecision.getDecision().getValue());
@@ -39,7 +39,7 @@ public class DecisionConverter {
 		protected VoteDecision convert(VoteDecisionDTO dtoDecision) {
 			VoteDecision decision = new VoteDecision();
 			VoteOption voteOption = appointmentRepository.findOne(dtoDecision.getOptionId());
-			decision.setAppointment(voteOption);
+			decision.setVoteOption(voteOption);
 			
 			if (dtoDecision.getDecision() != null) {
 				decision.setDecision(Decision.getDecisionById(dtoDecision.getDecision()));				

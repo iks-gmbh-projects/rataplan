@@ -60,16 +60,16 @@ public class VoteOptionMemberServiceTest {
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
-		decision.setAppointment(vote.getAppointmentById(1));
+		decision.setVoteOption(vote.getAppointmentById(1));
 		decision.setDecision(Decision.ACCEPT);
 
 		VoteDecision decision2 = new VoteDecision();
-		decision2.setAppointment(vote.getAppointmentById(2));
+		decision2.setVoteOption(vote.getAppointmentById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
-		member.getAppointmentDecisions().add(decision);
-		member.getAppointmentDecisions().add(decision2);
-		member.setAppointmentRequest(vote);
+		member.getVoteDecisions().add(decision);
+		member.getVoteDecisions().add(decision2);
+		member.setVote(vote);
 
 		appointmentMemberService.createAppointmentMember(vote, member);
 	}
@@ -83,22 +83,22 @@ public class VoteOptionMemberServiceTest {
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
-		decision.setAppointment(vote.getAppointmentById(1));
+		decision.setVoteOption(vote.getAppointmentById(1));
 		decision.setDecision(Decision.ACCEPT);
 
 		VoteDecision decision2 = new VoteDecision();
-		decision2.setAppointment(vote.getAppointmentById(2));
+		decision2.setVoteOption(vote.getAppointmentById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
 		VoteDecision decision3 = new VoteDecision();
-		decision3.setAppointment(vote.getAppointmentById(2));
+		decision3.setVoteOption(vote.getAppointmentById(2));
 		decision3.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
-		member.getAppointmentDecisions().add(decision);
-		member.getAppointmentDecisions().add(decision2);
+		member.getVoteDecisions().add(decision);
+		member.getVoteDecisions().add(decision2);
 		// this decision should not exist
-		member.getAppointmentDecisions().add(decision3);
-		member.setAppointmentRequest(vote);
+		member.getVoteDecisions().add(decision3);
+		member.setVote(vote);
 
 		appointmentMemberService.createAppointmentMember(vote, member);
 	}
@@ -112,16 +112,16 @@ public class VoteOptionMemberServiceTest {
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
-		decision.setAppointment(vote.getAppointmentById(1));
+		decision.setVoteOption(vote.getAppointmentById(1));
 		decision.setDecision(Decision.ACCEPT);
 
 		VoteDecision decision2 = new VoteDecision();
-		decision2.setAppointment(vote.getAppointmentById(2));
+		decision2.setVoteOption(vote.getAppointmentById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
-		member.getAppointmentDecisions().add(decision);
-		member.getAppointmentDecisions().add(decision2);
-		member.setAppointmentRequest(vote);
+		member.getVoteDecisions().add(decision);
+		member.getVoteDecisions().add(decision2);
+		member.setVote(vote);
 
 		appointmentMemberService.createAppointmentMember(vote, member);
 	}
@@ -160,8 +160,8 @@ public class VoteOptionMemberServiceTest {
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
 				vote.getAppointments().get(1), newVoteParticipant
 		);
-		newVoteParticipant.getAppointmentDecisions().add(decision1);
-		newVoteParticipant.getAppointmentDecisions().add(decision2);
+		newVoteParticipant.getVoteDecisions().add(decision1);
+		newVoteParticipant.getVoteDecisions().add(decision2);
 
 		newVoteParticipant = appointmentMemberService.updateAppointmentMember(vote, dbVoteParticipant,
 			newVoteParticipant
@@ -182,10 +182,10 @@ public class VoteOptionMemberServiceTest {
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
 				vote.getAppointments().get(1), newVoteParticipant
 		);
-		newVoteParticipant.getAppointmentDecisions().add(decision1);
-		newVoteParticipant.getAppointmentDecisions().add(decision2);
+		newVoteParticipant.getVoteDecisions().add(decision1);
+		newVoteParticipant.getVoteDecisions().add(decision2);
 		// this decision should not exist
-		newVoteParticipant.getAppointmentDecisions().add(decision2);
+		newVoteParticipant.getVoteDecisions().add(decision2);
 
 		newVoteParticipant = appointmentMemberService.updateAppointmentMember(vote, dbVoteParticipant,
 			newVoteParticipant
@@ -207,10 +207,10 @@ public class VoteOptionMemberServiceTest {
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
 				vote.getAppointments().get(1), newVoteParticipant
 		);
-		newVoteParticipant.getAppointmentDecisions().add(decision1);
-		newVoteParticipant.getAppointmentDecisions().add(decision2);
+		newVoteParticipant.getVoteDecisions().add(decision1);
+		newVoteParticipant.getVoteDecisions().add(decision2);
 		// this decision should not exist
-		newVoteParticipant.getAppointmentDecisions().add(decision2);
+		newVoteParticipant.getVoteDecisions().add(decision2);
 
 		newVoteParticipant = appointmentMemberService.updateAppointmentMember(vote, dbVoteParticipant,
 			newVoteParticipant

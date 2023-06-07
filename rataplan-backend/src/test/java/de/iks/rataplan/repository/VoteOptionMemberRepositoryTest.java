@@ -64,23 +64,23 @@ public class VoteOptionMemberRepositoryTest {
 
 		VoteDecision decision = new VoteDecision();
 		decision.setDecision(Decision.ACCEPT);
-		decision.setAppointment(vote.getAppointments().get(0));
-		decision.setAppointmentMember(voteParticipant);
+		decision.setVoteOption(vote.getAppointments().get(0));
+		decision.setVoteParticipant(voteParticipant);
 		decisions.add(decision);
 
 		VoteDecision decision2 = new VoteDecision();
 		decision2.setDecision(Decision.ACCEPT);
-		decision2.setAppointment(vote.getAppointments().get(1));
-		decision2.setAppointmentMember(voteParticipant);
+		decision2.setVoteOption(vote.getAppointments().get(1));
+		decision2.setVoteParticipant(voteParticipant);
 		decisions.add(decision2);
 
 		voteParticipant.setName(new EncryptedString("Hans", false));
-		voteParticipant.setAppointmentDecisions(decisions);
-		voteParticipant.setAppointmentRequest(vote);
+		voteParticipant.setVoteDecisions(decisions);
+		voteParticipant.setVote(vote);
 		vote.getAppointmentMembers().add(voteParticipant);
 
-		for (VoteDecision voteDecision : voteParticipant.getAppointmentDecisions()) {
-			voteDecision.setAppointmentMember(voteParticipant);
+		for (VoteDecision voteDecision : voteParticipant.getVoteDecisions()) {
+			voteDecision.setVoteParticipant(voteParticipant);
 		}
 
 		appointmentMemberRepository.saveAndFlush(voteParticipant);
@@ -99,24 +99,24 @@ public class VoteOptionMemberRepositoryTest {
 
 		VoteDecision decision = new VoteDecision();
 		decision.setParticipants(5);
-		decision.setAppointment(vote.getAppointments().get(0));
-		decision.setAppointmentMember(voteParticipant);
+		decision.setVoteOption(vote.getAppointments().get(0));
+		decision.setVoteParticipant(voteParticipant);
 
 		VoteDecision decision2 = new VoteDecision();
 		decision2.setParticipants(5);
-		decision2.setAppointment(vote.getAppointments().get(1));
-		decision2.setAppointmentMember(voteParticipant);
+		decision2.setVoteOption(vote.getAppointments().get(1));
+		decision2.setVoteParticipant(voteParticipant);
 
 		decisions.add(decision);
 		decisions.add(decision2);
 
 		voteParticipant.setName(new EncryptedString("Hans", false));
-		voteParticipant.setAppointmentDecisions(decisions);
-		voteParticipant.setAppointmentRequest(vote);
+		voteParticipant.setVoteDecisions(decisions);
+		voteParticipant.setVote(vote);
 		vote.getAppointmentMembers().add(voteParticipant);
 
-		for (VoteDecision voteDecision : voteParticipant.getAppointmentDecisions()) {
-			voteDecision.setAppointmentMember(voteParticipant);
+		for (VoteDecision voteDecision : voteParticipant.getVoteDecisions()) {
+			voteDecision.setVoteParticipant(voteParticipant);
 		}
 
 		appointmentMemberRepository.saveAndFlush(voteParticipant);
@@ -153,9 +153,9 @@ public class VoteOptionMemberRepositoryTest {
 
 		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
 		voteParticipant.setName(new EncryptedString("Fritz", false));
-		voteParticipant.setAppointmentRequest(vote);
+		voteParticipant.setVote(vote);
 
-		List<VoteDecision> decisions = voteParticipant.getAppointmentDecisions();
+		List<VoteDecision> decisions = voteParticipant.getVoteDecisions();
 		decisions.get(0).setDecision(Decision.DECLINE);
 		decisions.get(1).setDecision(Decision.DECLINE);
 
@@ -171,9 +171,9 @@ public class VoteOptionMemberRepositoryTest {
 
 		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
 		voteParticipant.setName(new EncryptedString("Fritz", false));
-		voteParticipant.setAppointmentRequest(vote);
+		voteParticipant.setVote(vote);
 
-		List<VoteDecision> decicions = voteParticipant.getAppointmentDecisions();
+		List<VoteDecision> decicions = voteParticipant.getVoteDecisions();
 		decicions.get(0).setParticipants(1);
 		decicions.get(1).setParticipants(0);
 

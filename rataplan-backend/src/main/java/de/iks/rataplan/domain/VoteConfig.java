@@ -78,11 +78,11 @@ public class VoteConfig {
 	}
 	
 	@Embedded
-	public VoteOptionConfig getAppointmentConfig() {
+	public VoteOptionConfig getVoteOptionConfig() {
 		return voteOptionConfig;
 	}
 
-	public void setAppointmentConfig(VoteOptionConfig voteOptionConfig) {
+	public void setVoteOptionConfig(VoteOptionConfig voteOptionConfig) {
 		this.voteOptionConfig = voteOptionConfig;
 	}
 	

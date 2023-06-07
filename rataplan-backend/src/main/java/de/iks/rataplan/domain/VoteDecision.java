@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "voteDecision")
 @AssociationOverrides({
-    @AssociationOverride(name = "voteDecisionId.vote",
-        joinColumns = @JoinColumn(name = "appointmentId")),
+    @AssociationOverride(name = "voteDecisionId.voteOption",
+        joinColumns = @JoinColumn(name = "voteOptionId")),
     @AssociationOverride(name = "voteDecisionId.voteParticipant",
         joinColumns = @JoinColumn(name = "voteParticipantId")) })
 public class VoteDecision implements Serializable {
@@ -33,20 +33,20 @@ public class VoteDecision implements Serializable {
 
     public VoteDecision(Decision decision, VoteOption voteOption, VoteParticipant voteParticipant) {
     	this.decision = decision;
-        this.voteDecisionId.setAppointment(voteOption);
-        this.voteDecisionId.setAppointmentMember(voteParticipant);
+        this.voteDecisionId.setVoteOption(voteOption);
+        this.voteDecisionId.setVoteParticipant(voteParticipant);
     }
     
     public VoteDecision(Decision decsion, VoteOption voteOption) {
     	this.decision = decsion;
-    	this.voteDecisionId.setAppointment(voteOption);
+    	this.voteDecisionId.setVoteOption(voteOption);
     }
     
     public VoteDecision(Integer participants, VoteOption voteOption, VoteParticipant voteParticipant) {
     	this.decision = null;
         this.participants = participants;
-        this.voteDecisionId.setAppointment(voteOption);
-        this.voteDecisionId.setAppointmentMember(voteParticipant);
+        this.voteDecisionId.setVoteOption(voteOption);
+        this.voteDecisionId.setVoteParticipant(voteParticipant);
     }
 
     public VoteDecision() {
@@ -78,30 +78,30 @@ public class VoteDecision implements Serializable {
     }
 
     @EmbeddedId
-    public VoteDecisionId getAppointmentDecisionId() {
+    public VoteDecisionId getVoteDecisionId() {
         return this.voteDecisionId;
     }
 
-    public void setAppointmentDecisionId(VoteDecisionId voteDecisionId) {
+    public void setVoteDecisionId(VoteDecisionId voteDecisionId) {
         this.voteDecisionId = voteDecisionId;
     }
 
     @Transient
-    public VoteOption getAppointment() {
-        return this.getAppointmentDecisionId().getAppointment();
+    public VoteOption getVoteOption() {
+        return this.getVoteDecisionId().getVoteOption();
     }
 
-    public void setAppointment(VoteOption voteOption) {
-        this.getAppointmentDecisionId().setAppointment(voteOption);
+    public void setVoteOption(VoteOption voteOption) {
+        this.getVoteDecisionId().setVoteOption(voteOption);
     }
 
     @Transient
-    public VoteParticipant getAppointmentMember() {
-        return this.getAppointmentDecisionId().getAppointmentMember();
+    public VoteParticipant getVoteParticipant() {
+        return this.getVoteDecisionId().getVoteParticipant();
     }
 
-    public void setAppointmentMember(VoteParticipant voteParticipant) {
-        this.getAppointmentDecisionId().setAppointmentMember(voteParticipant);
+    public void setVoteParticipant(VoteParticipant voteParticipant) {
+        this.getVoteDecisionId().setVoteParticipant(voteParticipant);
     }
 
     @Column(name = "participants")

@@ -47,13 +47,13 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
         }
 
 		for (VoteOption voteOption : vote.getAppointments()) {
-			voteOption.setAppointmentRequest(vote);
+			voteOption.setVote(vote);
 		}
 
 		vote.setId(null);
 		for (VoteOption voteOption : vote.getAppointments()) {
-			if (!voteOption.validateAppointmentConfig(
-					vote.getAppointmentRequestConfig().getAppointmentConfig())) {
+			if (!voteOption.validateVoteOptionConfig(
+					vote.getAppointmentRequestConfig().getVoteOptionConfig())) {
 				throw new MalformedException("Can not create AppointmentRequest with different AppointmentTypes.");
 			}
 			voteOption.setId(null);
@@ -152,7 +152,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 						dbVote.getAppointmentMembers().clear();
 					} else if(newConfig.getDecisionType() == DecisionType.DEFAULT) {
 						dbVote.getAppointmentMembers().stream()
-							.map(VoteParticipant::getAppointmentDecisions)
+							.map(VoteParticipant::getVoteDecisions)
 							.flatMap(List::stream)
 							.filter(d -> d.getDecision() == Decision.ACCEPT_IF_NECESSARY)
 							.forEach(d -> d.setDecision(Decision.NO_ANSWER));
@@ -160,8 +160,8 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 					dbConfig.setDecisionType(newConfig.getDecisionType());
 				}
 			}
-			if(newConfig.getAppointmentConfig() != null && !dbConfig.getAppointmentConfig().equals(newConfig.getAppointmentConfig())) {
-				dbConfig.setAppointmentConfig(newConfig.getAppointmentConfig());
+			if(newConfig.getVoteOptionConfig() != null && !dbConfig.getVoteOptionConfig().equals(newConfig.getVoteOptionConfig())) {
+				dbConfig.setVoteOptionConfig(newConfig.getVoteOptionConfig());
 				dbVote.getAppointments().clear();
 				dbVote.getAppointmentMembers().clear();
 			}
@@ -200,12 +200,12 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 	private void addAppointments(Vote oldRequest, List<VoteOption> newVoteOptions) {
 		for (VoteOption voteOption : newVoteOptions) {
 			if (!voteOption
-					.validateAppointmentConfig(oldRequest.getAppointmentRequestConfig().getAppointmentConfig())) {
+					.validateVoteOptionConfig(oldRequest.getAppointmentRequestConfig().getVoteOptionConfig())) {
 				throw new MalformedException("AppointmentType does not fit the AppointmentRequest.");
 			}
 
 			if (voteOption.getId() == null || !appointmentRepository.exists(voteOption.getId())) {
-				voteOption.setAppointmentRequest(oldRequest);
+				voteOption.setVote(oldRequest);
 				voteOption = appointmentRepository.saveAndFlush(voteOption);
 
 				for(VoteParticipant member: oldRequest.getAppointmentMembers()) {

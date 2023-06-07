@@ -19,7 +19,7 @@ public interface AppointmentRequestRepository extends JpaRepository<Vote, Intege
 
 	Vote findByEditToken(String editToken);
 	
-	@Query(value = "SELECT * FROM appointmentRequest" +
+	@Query(value = "SELECT * FROM vote" +
 		" WHERE title NOT LIKE 'ENC\\_\\_##\\_\\_%'" +
 		" OR description NOT LIKE 'ENC\\_\\_##\\_\\_%'" +
 		" OR (organizername IS NOT NULL AND organizername NOT LIKE 'ENC\\_\\_##\\_\\_%')" +
