@@ -60,7 +60,7 @@ const routes: Routes = [
         data: { isPreview: true },
         resolve: { appointmentRequest: AppointmentRequestPreviewResolver },
         component: AppointmentComponent,
-        canActivate: [AppointmentRequestAuthGuard]
+        canActivate: [AppointmentRequestAuthGuard],
       },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
@@ -71,7 +71,7 @@ const routes: Routes = [
     path: 'vote/:id',
     data: { isPreview: false },
     resolve: { appointmentRequest: AppointmentRequestResolver },
-    component: AppointmentComponent
+    component: AppointmentComponent,
   },
   {
     path: 'vote/edit/:id', component: AppointmentRequestFormComponent,
@@ -86,18 +86,18 @@ const routes: Routes = [
         path: 'preview',
         data: { isPreview: true },
         resolve: { appointmentRequest: AppointmentRequestPreviewResolver },
-        component: AppointmentComponent
+        component: AppointmentComponent,
       },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
   },
-
+  { path: 'appointmentrequest/:id', redirectTo: '/vote/:id' },
   { path: 'terms-and-conditions', component: ConditionsComponent },
   { path: 'imprint', component: ImprintComponent },
   { path: 'privacy', component: PrivacyComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'login', component: LoginComponent, canActivate: [AuthGuardService], },
+  { path: 'login', component: LoginComponent, canActivate: [AuthGuardService] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'view-profile', component: ViewProfileComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'edit-profile', component: EditProfileComponent, canActivate: [ProfilePasswordAuthService] },
@@ -109,7 +109,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {
 }
