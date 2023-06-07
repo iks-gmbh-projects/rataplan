@@ -24,81 +24,81 @@ import de.iks.rataplan.testutils.RataplanAssert;
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, TestConfig.class })
-public class AppointmentRequestDTOTest {
+public class CreatorVoteDTOTest {
 
 	@Autowired
 	private ModelMapper mapper;
 
 	@Test
-	public void mapToDTO_PlainAppointmentRequest_mapped() {
+	public void mapToDTO_PlainVote_mapped() {
 		
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 
-		AppointmentRequestDTO dtoRequest = mapper.map(appointmentRequest, AppointmentRequestDTO.class);
+		CreatorVoteDTO dtoVote = mapper.map(appointmentRequest, CreatorVoteDTO.class);
 
-		RataplanAssert.assertAppointmentRequest(appointmentRequest, dtoRequest);
+		RataplanAssert.assertVote(appointmentRequest, dtoVote);
 	}
 
 	@Test
-	public void mapToDomain_PlainAppointmentRequestDTO_mapped() {
+	public void mapToDomain_PlainVoteDTO_mapped() {
 		
-		AppointmentRequestDTO dtoRequest = new AppointmentRequestDTO("Title", "Description", new Date(1234567890L),
+		CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title", "Description", new Date(1234567890L),
 				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
 
-		AppointmentRequest appointmentRequest = mapper.map(dtoRequest, AppointmentRequest.class);
+		AppointmentRequest appointmentRequest = mapper.map(dtoVote, AppointmentRequest.class);
 
-		RataplanAssert.assertAppointmentRequestDTO(dtoRequest, appointmentRequest);
+		RataplanAssert.assertVoteDTO(dtoVote, appointmentRequest);
 	}
 
 	@Test
-	public void mapToDTO_AppointmentRequestWithAppointment_mapped() {
+	public void mapToDTO_VoteWithOption_mapped() {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 		Appointment appointment = new Appointment(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
 		appointmentRequest.getAppointments().add(appointment);
 
-		AppointmentRequestDTO dtoRequest = mapper.map(appointmentRequest, AppointmentRequestDTO.class);
+		CreatorVoteDTO dtoVote = mapper.map(appointmentRequest, CreatorVoteDTO.class);
 
-		RataplanAssert.assertAppointmentRequest(appointmentRequest, dtoRequest);
+		RataplanAssert.assertVote(appointmentRequest, dtoVote);
 
 		Appointment[] appointments = appointmentRequest.getAppointments()
 				.toArray(new Appointment[appointmentRequest.getAppointments().size()]);
-		VoteOptionDTO[] dtoAppointments = dtoRequest.getOptions()
-				.toArray(new VoteOptionDTO[dtoRequest.getOptions().size()]);
+		VoteOptionDTO[] dtoOptions = dtoVote.getOptions()
+				.toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
 
-		assertEquals(appointments[0].getAppointmentRequest().getId(), dtoAppointments[0].getRequestId());
-		assertEquals(appointments[0].getStartDate(), dtoAppointments[0].getStartDate());
-		assertEquals(appointments[0].getId(), dtoAppointments[0].getId());
-		assertEquals(appointments[0].getDescription().getString(), dtoAppointments[0].getDescription());
+		assertEquals(appointments[0].getAppointmentRequest().getId(), dtoOptions[0].getVoteId());
+		assertEquals(appointments[0].getStartDate(), dtoOptions[0].getStartDate());
+		assertEquals(appointments[0].getId(), dtoOptions[0].getId());
+		assertEquals(appointments[0].getDescription().getString(), dtoOptions[0].getDescription());
 	}
 
 	@Test
-	public void mapToDomain_AppointmentRequestDTOWithAppointment_mapped() {
+	public void mapToDomain_VoteDTOWithOption_mapped() {
 		AppointmentConfig config = new AppointmentConfig(true, false, true, true, true, true);
 		
-		AppointmentRequestDTO dtoRequest = new AppointmentRequestDTO("Title", "Description", new Date(1234567890L),
+		CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title", "Description", new Date(1234567890L),
 				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(config, DecisionType.EXTENDED));
-		dtoRequest.setId(1);
-		VoteOptionDTO dtoAppointment = new VoteOptionDTO(new Timestamp(123123123L), "iks Hilden");
-		dtoAppointment.setRequestId(dtoRequest.getId());
-		dtoRequest.setOptions(Collections.singletonList(dtoAppointment));
+		dtoVote.setId(1);
+		VoteOptionDTO dtoOption = new VoteOptionDTO(new Timestamp(123123123L), "iks Hilden");
+		dtoOption.setVoteId(dtoVote.getId());
+		dtoVote.setOptions(Collections.singletonList(dtoOption));
 
-		AppointmentRequest appointmentRequest = mapper.map(dtoRequest, AppointmentRequest.class);
+		AppointmentRequest appointmentRequest = mapper.map(dtoVote, AppointmentRequest.class);
 
-		RataplanAssert.assertAppointmentRequestDTO(dtoRequest, appointmentRequest);
+		RataplanAssert.assertVoteDTO(dtoVote, appointmentRequest);
 		
-		VoteOptionDTO[] dtoAppointments = dtoRequest.getOptions()
-				.toArray(new VoteOptionDTO[dtoRequest.getOptions().size()]);
+		VoteOptionDTO[] dtoAppointments = dtoVote.getOptions()
+				.toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
 		Appointment[] appointments = appointmentRequest.getAppointments()
 				.toArray(new Appointment[appointmentRequest.getAppointments().size()]);
 
-		assertEquals(dtoAppointments[0].getRequestId(), appointments[0].getAppointmentRequest().getId());
+		assertEquals(dtoAppointments[0].getVoteId(), appointments[0].getAppointmentRequest().getId());
 		assertEquals(dtoAppointments[0].getStartDate(), appointments[0].getStartDate());
 		assertEquals(dtoAppointments[0].getId(), appointments[0].getId());
 		assertEquals(dtoAppointments[0].getDescription(), appointments[0].getDescription().getString());
 	}
 
 	@Test
-	public void mapToDTO_AppointmentRequestFull_mapped() {
+	public void mapToDTO_VoteFull_mapped() {
 		AppointmentRequest appointmentRequest = new AppointmentRequest(new EncryptedString("Title", false),
 				new EncryptedString("Description", false), new Date(123456789L),
 				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
@@ -126,14 +126,14 @@ public class AppointmentRequestDTOTest {
 		appointmentRequest.getAppointmentMembers().add(member1);
 		appointmentRequest.getAppointmentMembers().add(member2);
 
-		AppointmentRequestDTO dtoRequest = mapper.map(appointmentRequest, AppointmentRequestDTO.class);
+		CreatorVoteDTO dtoVote = mapper.map(appointmentRequest, CreatorVoteDTO.class);
 
-		RataplanAssert.assertAppointmentRequest(appointmentRequest, dtoRequest);
+		RataplanAssert.assertVote(appointmentRequest, dtoVote);
 
 		AppointmentMember[] memberList = appointmentRequest.getAppointmentMembers()
 				.toArray(new AppointmentMember[appointmentRequest.getAppointmentMembers().size()]);
-		VoteParticipantDTO[] participantDTOList = dtoRequest.getParticipants()
-				.toArray(new VoteParticipantDTO[dtoRequest.getParticipants().size()]);
+		VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
+				.toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
 
 		for (int i = 0; i < memberList.length; i++) {
 			assertEquals(memberList[i].getAppointmentDecisions().size(),
@@ -142,46 +142,46 @@ public class AppointmentRequestDTOTest {
 	}
 
 	@Test
-	public void mapToDomain_AppointmentRequestDTOFull_mapped() {
-		AppointmentRequestDTO dtoRequest = new AppointmentRequestDTO("Title", "Description", new Date(123456789L),
+	public void mapToDomain_VoteDTOFull_mapped() {
+		CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title", "Description", new Date(123456789L),
 				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, true, true, false, false), DecisionType.NUMBER));
-		dtoRequest.setId(1);
+		dtoVote.setId(1);
 		
-		VoteOptionDTO appointment1 = new VoteOptionDTO(new Timestamp(123123123L), "iks Hilden");
-		appointment1.setId(1);
+		VoteOptionDTO option1 = new VoteOptionDTO(new Timestamp(123123123L), "iks Hilden");
+		option1.setId(1);
 		
-		VoteOptionDTO appointment2 = new VoteOptionDTO(new Timestamp(321321321L), "Berufsschule D�sseldorf");
-		appointment2.setId(2);
+		VoteOptionDTO option2 = new VoteOptionDTO(new Timestamp(321321321L), "Berufsschule D�sseldorf");
+		option2.setId(2);
 
 		VoteParticipantDTO participant1 = new VoteParticipantDTO("Ingo");
 		VoteParticipantDTO participant2 = new VoteParticipantDTO("Fabian");
 
-		VoteDecisionDTO decision11 = new VoteDecisionDTO(appointment1.getId(), participant1.getId(), 1, null);
-		VoteDecisionDTO decision12 = new VoteDecisionDTO(appointment1.getId(), participant2.getId(), 2, null);
-		VoteDecisionDTO decision21 = new VoteDecisionDTO(appointment2.getId(), participant1.getId(), 3, null);
-		VoteDecisionDTO decision22 = new VoteDecisionDTO(appointment2.getId(), participant2.getId(), 0, null);
+		VoteDecisionDTO decision11 = new VoteDecisionDTO(option1.getId(), participant1.getId(), 1, null);
+		VoteDecisionDTO decision12 = new VoteDecisionDTO(option1.getId(), participant2.getId(), 2, null);
+		VoteDecisionDTO decision21 = new VoteDecisionDTO(option2.getId(), participant1.getId(), 3, null);
+		VoteDecisionDTO decision22 = new VoteDecisionDTO(option2.getId(), participant2.getId(), 0, null);
 
-		appointment2.setRequestId(dtoRequest.getId());
-		appointment1.setRequestId(dtoRequest.getId());
+		option2.setVoteId(dtoVote.getId());
+		option1.setVoteId(dtoVote.getId());
 
-		participant1.setAppointmentRequestId(dtoRequest.getId());
+		participant1.setVoteId(dtoVote.getId());
 		participant1.getDecisions().add(decision11);
 		participant1.getDecisions().add(decision21);
 
-		participant2.setAppointmentRequestId(dtoRequest.getId());
+		participant2.setVoteId(dtoVote.getId());
 		participant2.getDecisions().add(decision12);
 		participant2.getDecisions().add(decision22);
 
-		dtoRequest.setOptions(Arrays.asList(appointment1, appointment2));
+		dtoVote.setOptions(Arrays.asList(option1, option2));
 
-		dtoRequest.setParticipants(Arrays.asList(participant1, participant2));
+		dtoVote.setParticipants(Arrays.asList(participant1, participant2));
 
-		AppointmentRequest appointmentRequest = mapper.map(dtoRequest, AppointmentRequest.class);
+		AppointmentRequest appointmentRequest = mapper.map(dtoVote, AppointmentRequest.class);
 
-		RataplanAssert.assertAppointmentRequestDTO(dtoRequest, appointmentRequest);
+		RataplanAssert.assertVoteDTO(dtoVote, appointmentRequest);
 
-		VoteParticipantDTO[] participantDTOList = dtoRequest.getParticipants()
-				.toArray(new VoteParticipantDTO[dtoRequest.getParticipants().size()]);
+		VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
+				.toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
 		AppointmentMember[] memberList = appointmentRequest.getAppointmentMembers()
 				.toArray(new AppointmentMember[appointmentRequest.getAppointmentMembers().size()]);
 

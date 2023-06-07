@@ -140,7 +140,7 @@ public class AppointmentMemberControllerService {
 
 	private VoteParticipantDTO createValidDTOParticipant(AppointmentRequest appointmentRequest,
 			VoteParticipantDTO voteParticipantDTO, AuthUser user) {
-		voteParticipantDTO.setAppointmentRequestId(appointmentRequest.getId());
+		voteParticipantDTO.setVoteId(appointmentRequest.getId());
 		if (user == null) {
 			voteParticipantDTO.setUserId(null);
 		} else {

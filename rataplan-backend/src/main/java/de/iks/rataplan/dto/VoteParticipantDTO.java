@@ -12,7 +12,7 @@ public class VoteParticipantDTO implements Serializable {
 
     private Integer id;
     private Integer userId;
-    private Integer appointmentRequestId;
+    private Integer voteId;
     private String name;
     private List<VoteDecisionDTO> decisions = new ArrayList<>();
 
@@ -40,12 +40,12 @@ public class VoteParticipantDTO implements Serializable {
         this.userId = userId;
     }
 
-    public Integer getAppointmentRequestId() {
-        return appointmentRequestId;
+    public Integer getVoteId() {
+        return voteId;
     }
 
-    public void setAppointmentRequestId(Integer appointmentRequestId) {
-        this.appointmentRequestId = appointmentRequestId;
+    public void setVoteId(Integer voteId) {
+        this.voteId = voteId;
     }
 
     public String getName() {
@@ -74,7 +74,7 @@ public class VoteParticipantDTO implements Serializable {
 	}
     
     public void assertAddValid() {
-        if(appointmentRequestId == null ||
+        if(voteId == null ||
             name == null || name.trim().isEmpty() ||
             decisions == null || decisions.isEmpty()
         ) throw new MalformedException("Missing or invalid fields");

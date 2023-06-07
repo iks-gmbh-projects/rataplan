@@ -6,16 +6,16 @@ import java.util.List;
 
 import de.iks.rataplan.domain.AppointmentRequestConfig;
 
-public class AppointmentRequestDTO extends VoteDTO implements Serializable {
+public class CreatorVoteDTO extends VoteDTO implements Serializable {
 
     private static final long serialVersionUID = 8169186536220940206L;
 
     private String editToken;
     
-    public AppointmentRequestDTO() {
+    public CreatorVoteDTO() {
     }
     
-    public AppointmentRequestDTO(
+    public CreatorVoteDTO(
         Integer id,
         String title,
         String description,
@@ -27,7 +27,7 @@ public class AppointmentRequestDTO extends VoteDTO implements Serializable {
         super(id, title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
     }
     
-    public AppointmentRequestDTO(
+    public CreatorVoteDTO(
         String title,
         String description,
         Date deadline,
@@ -39,7 +39,7 @@ public class AppointmentRequestDTO extends VoteDTO implements Serializable {
         super(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig, consigneeList);
     }
     
-    public AppointmentRequestDTO(
+    public CreatorVoteDTO(
         String title,
         String description,
         Date deadline,

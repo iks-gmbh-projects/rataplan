@@ -9,15 +9,15 @@ public class VoteDecisionDTO implements Serializable {
     private static final long serialVersionUID = -1914437763717575725L;
     
     private Integer optionId;
-    private Integer appointmentMemberId;
+    private Integer participantId;
     private Integer decision;
     private Integer participants = null;
 
-    public VoteDecisionDTO(Integer optionId, Integer appointmentMemberId, Integer decision, Integer participants) {
+    public VoteDecisionDTO(Integer optionId, Integer participantId, Integer decision, Integer participants) {
         this.decision = decision;
         this.participants = participants;
         this.optionId = optionId;
-        this.appointmentMemberId = appointmentMemberId;
+        this.participantId = participantId;
     }
     
 //    public AppointmentDecisionDTO(Integer appointmentId, Integer appointmentMemberId, Integer participants) {
@@ -38,12 +38,12 @@ public class VoteDecisionDTO implements Serializable {
         this.optionId = optionId;
     }
 
-    public Integer getAppointmentMemberId() {
-        return appointmentMemberId;
+    public Integer getParticipantId() {
+        return participantId;
     }
 
-    public void setAppointmentMemberId(Integer appointmentMemberId) {
-        this.appointmentMemberId = appointmentMemberId;
+    public void setParticipantId(Integer participantId) {
+        this.participantId = participantId;
     }
 
     public Integer getDecision() {
@@ -68,7 +68,7 @@ public class VoteDecisionDTO implements Serializable {
 		builder.append("AppointmentDecisionDTO [appointmentId=");
 		builder.append(optionId);
 		builder.append(", appointmentMemberId=");
-		builder.append(appointmentMemberId);
+		builder.append(participantId);
 		builder.append(", decision=");
 		builder.append(decision);
 		builder.append(", participants=");

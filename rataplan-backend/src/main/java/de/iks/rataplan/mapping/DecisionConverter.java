@@ -22,7 +22,7 @@ public class DecisionConverter {
 		protected VoteDecisionDTO convert(AppointmentDecision appointmentDecision) {
 			VoteDecisionDTO dtoDecision = new VoteDecisionDTO();
 			dtoDecision.setOptionId(appointmentDecision.getAppointment().getId());
-			dtoDecision.setAppointmentMemberId(appointmentDecision.getAppointmentMember().getId());
+			dtoDecision.setParticipantId(appointmentDecision.getAppointmentMember().getId());
 			
 			if (appointmentDecision.getDecision() != null) {
 				dtoDecision.setDecision(appointmentDecision.getDecision().getValue());

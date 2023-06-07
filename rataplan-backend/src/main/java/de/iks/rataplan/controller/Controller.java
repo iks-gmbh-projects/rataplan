@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import de.iks.rataplan.dto.VoteParticipantDTO;
-import de.iks.rataplan.dto.AppointmentRequestDTO;
+import de.iks.rataplan.dto.CreatorVoteDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
@@ -42,7 +42,7 @@ public class Controller {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AppointmentRequestDTO.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = VoteDTO.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
@@ -74,37 +74,37 @@ public class Controller {
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @GetMapping(value = "/appointmentRequests/edit/{editToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AppointmentRequestDTO> getAppointmentRequestByIdForEdit(@PathVariable String editToken,
+    public ResponseEntity<CreatorVoteDTO> getVoteByEditToken(@PathVariable String editToken,
                                                                                   @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
-        AppointmentRequestDTO appointmentRequestDTO = appointmentRequestControllerService
-                .getAppointmentRequestByEditToken(editToken, jwtToken);
-        return new ResponseEntity<>(appointmentRequestDTO, HttpStatus.OK);
+        CreatorVoteDTO creatorVoteDTO = appointmentRequestControllerService
+                .getVoteByEditToken(editToken, jwtToken);
+        return new ResponseEntity<>(creatorVoteDTO, HttpStatus.OK);
     }
     
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AppointmentRequestDTO.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = CreatorVoteDTO.class),
         @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @RequestMapping(value = "/appointmentRequests/edit/{editToken}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AppointmentRequestDTO> editAppointmentRequest(
+    public ResponseEntity<CreatorVoteDTO> editVote(
         @PathVariable String editToken,
-        @RequestBody AppointmentRequestDTO appointmentRequestDTO,
+        @RequestBody CreatorVoteDTO creatorVoteDTO,
         @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
         
-        AppointmentRequestDTO createdAppointmentRequestDTO = appointmentRequestControllerService
-            .updateAppointmentRequest(editToken, appointmentRequestDTO, jwtToken);
-        return new ResponseEntity<>(createdAppointmentRequestDTO, HttpStatus.OK);
+        CreatorVoteDTO createdCreatorVoteDTO = appointmentRequestControllerService
+            .updateVote(editToken, creatorVoteDTO, jwtToken);
+        return new ResponseEntity<>(createdCreatorVoteDTO, HttpStatus.OK);
     }
 
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentRequestDTO.class),
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = CreatorVoteDTO.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @PostMapping(value = "/appointmentRequests", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AppointmentRequestDTO> createAppointmentRequest(
-            @RequestBody AppointmentRequestDTO appointmentRequestDTO,
+    public ResponseEntity<CreatorVoteDTO> createVote(
+            @RequestBody CreatorVoteDTO creatorVoteDTO,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
-        appointmentRequestDTO.assertCreationValid();
-        AppointmentRequestDTO createdAppointmentRequestDTO = appointmentRequestControllerService
-                .createAppointmentRequest(appointmentRequestDTO, jwtToken);
-        return new ResponseEntity<>(createdAppointmentRequestDTO, HttpStatus.CREATED);
+        creatorVoteDTO.assertCreationValid();
+        CreatorVoteDTO createdCreatorVoteDTO = appointmentRequestControllerService
+                .createVote(creatorVoteDTO, jwtToken);
+        return new ResponseEntity<>(createdCreatorVoteDTO, HttpStatus.CREATED);
     }
 
 //    @ApiResponses(value = {@ApiResponse(code = 202, message = "ACCEPTED", response = AppointmentRequestDTO.class),
@@ -150,7 +150,7 @@ public class Controller {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = AppointmentRequestDTO.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = VoteParticipantDTO.class),
             @ApiResponse(code = 400, message = "AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.", response = MalformedException.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
@@ -169,10 +169,10 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @GetMapping(value = "/users/appointmentRequests/creations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<List<AppointmentRequestDTO>> getAppointmentRequestsCreatedByUser(
+    public ResponseEntity<List<CreatorVoteDTO>> getVotesCreatedByUser(
             @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
 
-        List<AppointmentRequestDTO> appointmentRequestsDTO = appointmentRequestControllerService.getAppointmentRequestsCreatedByUser(jwtToken);
+        List<CreatorVoteDTO> appointmentRequestsDTO = appointmentRequestControllerService.getVotesCreatedByUser(jwtToken);
         return new ResponseEntity<>(appointmentRequestsDTO, HttpStatus.OK);
     }
 

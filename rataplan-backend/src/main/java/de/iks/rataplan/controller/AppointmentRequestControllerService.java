@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.dto.AppointmentRequestDTO;
+import de.iks.rataplan.dto.CreatorVoteDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.service.AppointmentRequestService;
 
@@ -46,8 +46,8 @@ public class AppointmentRequestControllerService {
 //		return modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
 //	}
 
-    public AppointmentRequestDTO createAppointmentRequest(AppointmentRequestDTO appointmentRequestDTO, String jwtToken) {
-		appointmentRequestDTO.defaultNullValues();
+    public CreatorVoteDTO createVote(CreatorVoteDTO creatorVoteDTO, String jwtToken) {
+		creatorVoteDTO.defaultNullValues();
         //BackendUser backendUser = null;
 		AuthUser authUser = null;
 
@@ -55,19 +55,19 @@ public class AppointmentRequestControllerService {
             //backendUser = authorizationControllerService.getBackendUser(jwtToken);
 			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
 			authUser = authServiceResponse.getBody();
-            appointmentRequestDTO.setUserId(authUser.getId());
+            creatorVoteDTO.setUserId(authUser.getId());
         }
 
-        AppointmentRequest appointmentRequest = modelMapper.map(appointmentRequestDTO, AppointmentRequest.class);
+        AppointmentRequest appointmentRequest = modelMapper.map(creatorVoteDTO, AppointmentRequest.class);
 		if(authUser != null) appointmentRequest.setAccessList(Collections.singletonList(
 			new BackendUserAccess(null, authUser.getId(), true, false)
 		));
         appointmentRequestService.createAppointmentRequest(appointmentRequest);
 
-		return modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
+		return modelMapper.map(appointmentRequest, CreatorVoteDTO.class);
 	}
 
-	public AppointmentRequestDTO updateAppointmentRequest(String editToken, AppointmentRequestDTO appointmentRequestDTO, String jwtToken) {
+	public CreatorVoteDTO updateVote(String editToken, CreatorVoteDTO creatorVoteDTO, String jwtToken) {
 		final Integer backendUserId;
 		if(jwtToken == null) backendUserId = null;
 		else backendUserId = authService.getUserData(jwtToken).getBody().getId();
@@ -84,14 +84,14 @@ public class AppointmentRequestControllerService {
 			) throw new ForbiddenException();
 		}
 
-		AppointmentRequest newAppointmentRequest = modelMapper.map(appointmentRequestDTO, AppointmentRequest.class);
-		if(appointmentRequestDTO.getOptions() == null) newAppointmentRequest.setAppointments(null);
+		AppointmentRequest newAppointmentRequest = modelMapper.map(creatorVoteDTO, AppointmentRequest.class);
+		if(creatorVoteDTO.getOptions() == null) newAppointmentRequest.setAppointments(null);
 		newAppointmentRequest = appointmentRequestService.updateAppointmentRequest(dbAppointmentRequest, newAppointmentRequest);
 
-		return modelMapper.map(newAppointmentRequest, AppointmentRequestDTO.class);
+		return modelMapper.map(newAppointmentRequest, CreatorVoteDTO.class);
 	}
 
-	public List<AppointmentRequestDTO> getAppointmentRequestsCreatedByUser(String jwtToken) {
+	public List<CreatorVoteDTO> getVotesCreatedByUser(String jwtToken) {
 		if (jwtToken == null) {
 			throw new ForbiddenException();
 		}
@@ -100,10 +100,10 @@ public class AppointmentRequestControllerService {
 		AuthUser authUser = authServiceResponse.getBody();
 		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
-		List<AppointmentRequest> appointmentRequests = appointmentRequestService
+		List<AppointmentRequest> votes = appointmentRequestService
 				.getAppointmentRequestsForUser(authUser.getId());
 
-		return modelMapper.map(appointmentRequests, new TypeToken<List<AppointmentRequestDTO>>() {}.getType());
+		return modelMapper.map(votes, new TypeToken<List<CreatorVoteDTO>>() {}.getType());
 	}
 
 	public List<VoteDTO> getVotesWhereUserParticipates(String jwtToken) {
@@ -128,7 +128,7 @@ public class AppointmentRequestControllerService {
 		return modelMapper.map(appointmentRequest, VoteDTO.class);
     }
 
-	public AppointmentRequestDTO getAppointmentRequestByEditToken(String editToken, String jwtToken) {
+	public CreatorVoteDTO getVoteByEditToken(String editToken, String jwtToken) {
 		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByEditToken(editToken);
 		
 		if(appointmentRequest == null) return null;
@@ -145,6 +145,6 @@ public class AppointmentRequestControllerService {
 			throw new RequiresAuthorizationException();
 		}
 		
-		return modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
+		return modelMapper.map(appointmentRequest, CreatorVoteDTO.class);
 	}
 }

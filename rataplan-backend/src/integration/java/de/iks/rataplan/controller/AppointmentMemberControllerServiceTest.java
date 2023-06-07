@@ -167,7 +167,7 @@ public class AppointmentMemberControllerServiceTest {
 
     private VoteParticipantDTO createSimpleVoteParticipant() {
 		VoteParticipantDTO voteParticipantDTO = new VoteParticipantDTO();
-		voteParticipantDTO.setAppointmentRequestId(1);
+		voteParticipantDTO.setVoteId(1);
 		voteParticipantDTO.setName("IKS");
 
 		List<VoteDecisionDTO> decisions = new ArrayList<>();

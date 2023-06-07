@@ -11,16 +11,16 @@ public class VoteOptionDTO implements Serializable {
     private static final long serialVersionUID = 1461651856713616814L;
 
     private Integer id;
-    private Integer requestId;
+    private Integer voteId;
     private Timestamp startDate;
     private Timestamp endDate;
     private String description;
 	private String url;
 
-    public VoteOptionDTO(Integer id, Integer requestId, Timestamp startDate, Timestamp endDate, String description,
+    public VoteOptionDTO(Integer id, Integer voteId, Timestamp startDate, Timestamp endDate, String description,
 			String url) {
 		this.id = id;
-		this.requestId = requestId;
+		this.voteId = voteId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.description = description;
@@ -48,12 +48,12 @@ public class VoteOptionDTO implements Serializable {
         this.id = id;
     }
 
-    public Integer getRequestId() {
-        return requestId;
+    public Integer getVoteId() {
+        return voteId;
     }
 
-    public void setRequestId(Integer requestId) {
-        this.requestId = requestId;
+    public void setVoteId(Integer voteId) {
+        this.voteId = voteId;
     }
 
     public String getDescription() {
