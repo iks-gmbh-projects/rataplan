@@ -11,7 +11,7 @@ public class VoteDecisionId implements Serializable {
 
     private static final long serialVersionUID = -4669513612428408356L;
 
-    private Appointment appointment;
+    private VoteOption voteOption;
     private AppointmentMember appointmentMember;
 
     public VoteDecisionId() {
@@ -19,12 +19,12 @@ public class VoteDecisionId implements Serializable {
     }
 
     @ManyToOne
-    public Appointment getAppointment() {
-        return appointment;
+    public VoteOption getAppointment() {
+        return voteOption;
     }
 
-    public void setAppointment(Appointment appointment) {
-        this.appointment = appointment;
+    public void setAppointment(VoteOption voteOption) {
+        this.voteOption = voteOption;
     }
 
     @ManyToOne
@@ -48,13 +48,13 @@ public class VoteDecisionId implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(appointment, appointmentMember);
+        return Objects.hash(voteOption, appointmentMember);
     }
     
     @Override
     public String toString() {
         return "AppointmentDecisionId{\n" +
-            "appointment=" + appointment.getId() +
+            "appointment=" + voteOption.getId() +
             ",\nappointmentMember=" + appointmentMember.getId() +
             "\n}";
     }

@@ -49,7 +49,7 @@ import de.iks.rataplan.exceptions.ResourceNotFoundException;
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class AppointmentRequestServiceTest {
+public class VoteOptionRequestServiceTest {
 
 	private static final String FILE_PATH = PATH + SERVICE + APPOINTMENTREQUESTS;
 
@@ -69,7 +69,7 @@ public class AppointmentRequestServiceTest {
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void createAppointmentRequestShouldFailHasNoAppointments() throws Exception {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
-		appointmentRequest.setAppointments(new ArrayList<Appointment>());
+		appointmentRequest.setAppointments(new ArrayList<VoteOption>());
 
 		appointmentRequestService.createAppointmentRequest(appointmentRequest);
 	}
@@ -95,11 +95,11 @@ public class AppointmentRequestServiceTest {
 	public void createAppointmentRequestShouldFailWrongAppointmentConfig() throws Exception {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 
-		Appointment appointment = new Appointment(new EncryptedString("iks Hilden", false), appointmentRequest);
-		appointment.setUrl(new EncryptedString("thiswontwork.com", false));
+		VoteOption voteOption = new VoteOption(new EncryptedString("iks Hilden", false), appointmentRequest);
+		voteOption.setUrl(new EncryptedString("thiswontwork.com", false));
 
 		appointmentRequest
-				.setAppointments(appointmentList(appointment, new Appointment(new EncryptedString("homeoffice", false), appointmentRequest)));
+				.setAppointments(appointmentList(voteOption, new VoteOption(new EncryptedString("homeoffice", false), appointmentRequest)));
 
 		appointmentRequestService.createAppointmentRequest(appointmentRequest);
 	}
@@ -177,16 +177,16 @@ public class AppointmentRequestServiceTest {
 
 		appointmentRequest.setAppointmentMembers(appointmentMembers);
 
-		Appointment appointment1 = new Appointment(new EncryptedString("universe", false), appointmentRequest);
-		appointment1.setAppointmentRequest(appointmentRequest);
+		VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), appointmentRequest);
+		voteOption1.setAppointmentRequest(appointmentRequest);
 
-		Appointment appointment2 = new Appointment(new EncryptedString("earth", false), appointmentRequest);
-		appointment2.setAppointmentRequest(appointmentRequest);
+		VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), appointmentRequest);
+		voteOption2.setAppointmentRequest(appointmentRequest);
 
-		Appointment appointment3 = new Appointment(new EncryptedString("spaceship", false), appointmentRequest);
-		appointment3.setAppointmentRequest(appointmentRequest);
+		VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), appointmentRequest);
+		voteOption3.setAppointmentRequest(appointmentRequest);
 
-		appointmentRequest.setAppointments(appointmentList(appointment1, appointment2, appointment3));
+		appointmentRequest.setAppointments(appointmentList(voteOption1, voteOption2, voteOption3));
 
 		appointmentRequestService.updateAppointmentRequest(oldAppointmentRequest, appointmentRequest);
 	}
@@ -198,7 +198,7 @@ public class AppointmentRequestServiceTest {
 		AppointmentRequest oldAppointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
 		
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
-		appointmentRequest.setAppointments(new ArrayList<Appointment>());
+		appointmentRequest.setAppointments(new ArrayList<VoteOption>());
 
 		// has no appointments
 		appointmentRequestService.updateAppointmentRequest(oldAppointmentRequest, appointmentRequest);

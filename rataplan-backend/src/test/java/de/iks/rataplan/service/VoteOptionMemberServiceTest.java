@@ -40,7 +40,7 @@ import de.iks.rataplan.repository.AppointmentRequestRepository;
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class AppointmentMemberServiceTest {
+public class VoteOptionMemberServiceTest {
 
 	private static final String FILE_PATH = PATH + SERVICE + APPOINTMENTMEMBERS;
 

@@ -70,8 +70,8 @@ public final class TestConstants {
 				new Date(DATE_2050_10_10), new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
 				new AppointmentRequestConfig(new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
 
-		appointmentRequest.setAppointments(appointmentList(new Appointment(new EncryptedString("iks Hilden", false), appointmentRequest),
-				new Appointment(new EncryptedString("homeoffice", false), appointmentRequest)));
+		appointmentRequest.setAppointments(appointmentList(new VoteOption(new EncryptedString("iks Hilden", false), appointmentRequest),
+				new VoteOption(new EncryptedString("homeoffice", false), appointmentRequest)));
 		return appointmentRequest;
 	}
 }

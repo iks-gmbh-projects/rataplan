@@ -53,22 +53,22 @@ public class CreatorVoteDTOTest {
 	@Test
 	public void mapToDTO_VoteWithOption_mapped() {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
-		Appointment appointment = new Appointment(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
-		appointmentRequest.getAppointments().add(appointment);
+		VoteOption voteOption = new VoteOption(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
+		appointmentRequest.getAppointments().add(voteOption);
 
 		CreatorVoteDTO dtoVote = mapper.map(appointmentRequest, CreatorVoteDTO.class);
 
 		RataplanAssert.assertVote(appointmentRequest, dtoVote);
 
-		Appointment[] appointments = appointmentRequest.getAppointments()
-				.toArray(new Appointment[appointmentRequest.getAppointments().size()]);
+		VoteOption[] voteOptions = appointmentRequest.getAppointments()
+				.toArray(new VoteOption[appointmentRequest.getAppointments().size()]);
 		VoteOptionDTO[] dtoOptions = dtoVote.getOptions()
 				.toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
 
-		assertEquals(appointments[0].getAppointmentRequest().getId(), dtoOptions[0].getVoteId());
-		assertEquals(appointments[0].getStartDate(), dtoOptions[0].getStartDate());
-		assertEquals(appointments[0].getId(), dtoOptions[0].getId());
-		assertEquals(appointments[0].getDescription().getString(), dtoOptions[0].getDescription());
+		assertEquals(voteOptions[0].getAppointmentRequest().getId(), dtoOptions[0].getVoteId());
+		assertEquals(voteOptions[0].getStartDate(), dtoOptions[0].getStartDate());
+		assertEquals(voteOptions[0].getId(), dtoOptions[0].getId());
+		assertEquals(voteOptions[0].getDescription().getString(), dtoOptions[0].getDescription());
 	}
 
 	@Test
@@ -88,13 +88,13 @@ public class CreatorVoteDTOTest {
 		
 		VoteOptionDTO[] dtoAppointments = dtoVote.getOptions()
 				.toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
-		Appointment[] appointments = appointmentRequest.getAppointments()
-				.toArray(new Appointment[appointmentRequest.getAppointments().size()]);
+		VoteOption[] voteOptions = appointmentRequest.getAppointments()
+				.toArray(new VoteOption[appointmentRequest.getAppointments().size()]);
 
-		assertEquals(dtoAppointments[0].getVoteId(), appointments[0].getAppointmentRequest().getId());
-		assertEquals(dtoAppointments[0].getStartDate(), appointments[0].getStartDate());
-		assertEquals(dtoAppointments[0].getId(), appointments[0].getId());
-		assertEquals(dtoAppointments[0].getDescription(), appointments[0].getDescription().getString());
+		assertEquals(dtoAppointments[0].getVoteId(), voteOptions[0].getAppointmentRequest().getId());
+		assertEquals(dtoAppointments[0].getStartDate(), voteOptions[0].getStartDate());
+		assertEquals(dtoAppointments[0].getId(), voteOptions[0].getId());
+		assertEquals(dtoAppointments[0].getDescription(), voteOptions[0].getDescription().getString());
 	}
 
 	@Test
@@ -103,16 +103,16 @@ public class CreatorVoteDTOTest {
 				new EncryptedString("Description", false), new Date(123456789L),
 				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
 				new AppointmentRequestConfig(new AppointmentConfig(true, false, true, false, false, false), DecisionType.EXTENDED));
-		Appointment appointment1 = new Appointment(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
-		Appointment appointment2 = new Appointment(new Timestamp(321321321L), new EncryptedString("Berufsschule D�sseldorf", false), appointmentRequest);
+		VoteOption voteOption1 = new VoteOption(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
+		VoteOption voteOption2 = new VoteOption(new Timestamp(321321321L), new EncryptedString("Berufsschule D�sseldorf", false), appointmentRequest);
 
 		AppointmentMember member1 = new AppointmentMember(new EncryptedString("Ingo", false), appointmentRequest);
 		AppointmentMember member2 = new AppointmentMember(new EncryptedString("Fabian", false), appointmentRequest);
 
-		VoteDecision decision11 = new VoteDecision(Decision.NO_ANSWER, appointment1, member1);
-		VoteDecision decision12 = new VoteDecision(Decision.ACCEPT_IF_NECESSARY, appointment1, member2);
-		VoteDecision decision21 = new VoteDecision(Decision.ACCEPT, appointment2, member1);
-		VoteDecision decision22 = new VoteDecision(Decision.DECLINE, appointment2, member2);
+		VoteDecision decision11 = new VoteDecision(Decision.NO_ANSWER, voteOption1, member1);
+		VoteDecision decision12 = new VoteDecision(Decision.ACCEPT_IF_NECESSARY, voteOption1, member2);
+		VoteDecision decision21 = new VoteDecision(Decision.ACCEPT, voteOption2, member1);
+		VoteDecision decision22 = new VoteDecision(Decision.DECLINE, voteOption2, member2);
 
 		member1.getAppointmentDecisions().add(decision11);
 		member1.getAppointmentDecisions().add(decision21);
@@ -120,8 +120,8 @@ public class CreatorVoteDTOTest {
 		member2.getAppointmentDecisions().add(decision12);
 		member2.getAppointmentDecisions().add(decision22);
 
-		appointmentRequest.getAppointments().add(appointment1);
-		appointmentRequest.getAppointments().add(appointment2);
+		appointmentRequest.getAppointments().add(voteOption1);
+		appointmentRequest.getAppointments().add(voteOption2);
 
 		appointmentRequest.getAppointmentMembers().add(member1);
 		appointmentRequest.getAppointmentMembers().add(member2);

@@ -42,12 +42,12 @@ public class AppointmentRequest implements Serializable {
 	private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
 
 	private List<String> consigneeList = new ArrayList<>();
-	private List<Appointment> appointments = new ArrayList<>();
+	private List<VoteOption> voteOptions = new ArrayList<>();
 	private List<AppointmentMember> appointmentMembers = new ArrayList<>();
 	private List<BackendUserAccess> accessList = new ArrayList<>();
 
 	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
-							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<Appointment> appointments,
+							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<VoteOption> voteOptions,
 			List<AppointmentMember> appointmentMembers, boolean isNotified
 	) {
 		this.title = title;
@@ -55,7 +55,7 @@ public class AppointmentRequest implements Serializable {
 		this.deadline = deadline;
 		this.organizerName = organizerName;
 		this.organizerMail = organizerMail;
-		this.appointments = appointments;
+		this.voteOptions = voteOptions;
 		this.appointmentMembers = appointmentMembers;
 		this.appointmentRequestConfig = appointmentRequestConfig;
 		this.isNotified = isNotified;
@@ -169,12 +169,12 @@ public class AppointmentRequest implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequest", cascade = CascadeType.ALL)
-	public List<Appointment> getAppointments() {
-		return appointments;
+	public List<VoteOption> getAppointments() {
+		return voteOptions;
 	}
 
-	public void setAppointments(List<Appointment> appointments) {
-		this.appointments = appointments;
+	public void setAppointments(List<VoteOption> voteOptions) {
+		this.voteOptions = voteOptions;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequest", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -232,10 +232,10 @@ public class AppointmentRequest implements Serializable {
 		return null;
 	}
 	
-	public Appointment getAppointmentById(long id) {
-		for (Appointment appointment : this.getAppointments()) {
-			if (appointment.getId() != null && id == appointment.getId()) {
-				return appointment;
+	public VoteOption getAppointmentById(long id) {
+		for (VoteOption voteOption : this.getAppointments()) {
+			if (voteOption.getId() != null && id == voteOption.getId()) {
+				return voteOption;
 			}
 		}
 		return null;
@@ -268,19 +268,19 @@ public class AppointmentRequest implements Serializable {
      */
 	public boolean validateDecisionsForAppointmentMember(AppointmentMember appointmentMember) {
 		List<Integer> appointmentIdList = new ArrayList<>(); 
-		if (this.appointments.size() != appointmentMember.getAppointmentDecisions().size()) {
+		if (this.voteOptions.size() != appointmentMember.getAppointmentDecisions().size()) {
 			return false;
 		}
 		
-		for (Appointment appointment : this.getAppointments()) {
+		for (VoteOption voteOption : this.getAppointments()) {
 			for (VoteDecision decision : appointmentMember.getAppointmentDecisions()) {
 				this.decisionTypeVerification(decision);
 				
 				if (decision.getAppointment() == null) {
 					return false;
-				} else if (Objects.equals(appointment.getId(), decision.getAppointment().getId())
-						&& !appointmentIdList.contains(appointment.getId())) {
-					appointmentIdList.add(appointment.getId());
+				} else if (Objects.equals(voteOption.getId(), decision.getAppointment().getId())
+						&& !appointmentIdList.contains(voteOption.getId())) {
+					appointmentIdList.add(voteOption.getId());
 				}
 			}
 		}
@@ -329,7 +329,7 @@ public class AppointmentRequest implements Serializable {
 		builder.append(",\nappointmentRequestConfig=\n");
 		builder.append(appointmentRequestConfig);
 		builder.append(",\nappointments=\n");
-		builder.append(appointments);
+		builder.append(voteOptions);
 		builder.append(",\nappointmentMembers=\n");
 		builder.append(appointmentMembers);
 		builder.append("\n]");

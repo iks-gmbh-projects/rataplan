@@ -31,21 +31,21 @@ public class VoteDecision implements Serializable {
     private Decision decision = null;
     private Integer participants = null;
 
-    public VoteDecision(Decision decision, Appointment appointment, AppointmentMember appointmentMember) {
+    public VoteDecision(Decision decision, VoteOption voteOption, AppointmentMember appointmentMember) {
     	this.decision = decision;
-        this.voteDecisionId.setAppointment(appointment);
+        this.voteDecisionId.setAppointment(voteOption);
         this.voteDecisionId.setAppointmentMember(appointmentMember);
     }
     
-    public VoteDecision(Decision decsion, Appointment appointment) {
+    public VoteDecision(Decision decsion, VoteOption voteOption) {
     	this.decision = decsion;
-    	this.voteDecisionId.setAppointment(appointment);
+    	this.voteDecisionId.setAppointment(voteOption);
     }
     
-    public VoteDecision(Integer participants, Appointment appointment, AppointmentMember appointmentMember) {
+    public VoteDecision(Integer participants, VoteOption voteOption, AppointmentMember appointmentMember) {
     	this.decision = null;
         this.participants = participants;
-        this.voteDecisionId.setAppointment(appointment);
+        this.voteDecisionId.setAppointment(voteOption);
         this.voteDecisionId.setAppointmentMember(appointmentMember);
     }
 
@@ -87,12 +87,12 @@ public class VoteDecision implements Serializable {
     }
 
     @Transient
-    public Appointment getAppointment() {
+    public VoteOption getAppointment() {
         return this.getAppointmentDecisionId().getAppointment();
     }
 
-    public void setAppointment(Appointment appointment) {
-        this.getAppointmentDecisionId().setAppointment(appointment);
+    public void setAppointment(VoteOption voteOption) {
+        this.getAppointmentDecisionId().setAppointment(voteOption);
     }
 
     @Transient

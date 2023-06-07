@@ -36,7 +36,7 @@ import de.iks.rataplan.config.TestConfig;
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class AppointmentRequestRepositoryTest {
+public class VoteOptionRequestRepositoryTest {
 
 	private static final String FILE_PATH = PATH + REPOSITORY + APPOINTMENTREQUESTS;
 
@@ -64,13 +64,13 @@ public class AppointmentRequestRepositoryTest {
 				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false), new AppointmentRequestConfig(
 						new AppointmentConfig(true, true, true, true, true, true), DecisionType.EXTENDED));
 
-		Appointment appointment = new Appointment(new EncryptedString("Let's Do Something", false), appointmentRequest);
-		appointment.setDescription(new EncryptedString("Let's Do Something", false));
-		appointment.setUrl(new EncryptedString("www.maybe.here", false));
-		appointment.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
-		appointment.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
+		VoteOption voteOption = new VoteOption(new EncryptedString("Let's Do Something", false), appointmentRequest);
+		voteOption.setDescription(new EncryptedString("Let's Do Something", false));
+		voteOption.setUrl(new EncryptedString("www.maybe.here", false));
+		voteOption.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
+		voteOption.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
 
-		appointmentRequest.setAppointments(appointmentList(appointment));
+		appointmentRequest.setAppointments(appointmentList(voteOption));
 
 		appointmentRequestRepository.saveAndFlush(appointmentRequest);
 	}

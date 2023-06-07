@@ -14,8 +14,8 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "appointment")
-public class Appointment implements Serializable {
+@Table(name = "voteOption")
+public class VoteOption implements Serializable {
 
     private static final long serialVersionUID = 1722350279433794595L;
 
@@ -36,22 +36,22 @@ public class Appointment implements Serializable {
     private AppointmentRequest appointmentRequest;
     private List<VoteDecision> voteDecisions = new ArrayList<>();
 
-    public Appointment(Timestamp startDate, EncryptedString description, AppointmentRequest appointmentRequest) {
+    public VoteOption(Timestamp startDate, EncryptedString description, AppointmentRequest appointmentRequest) {
         this.startDate = startDate;
         this.description = description;
         this.appointmentRequest = appointmentRequest;
     }
 
-    public Appointment(EncryptedString description, AppointmentRequest appointmentRequest) {
+    public VoteOption(EncryptedString description, AppointmentRequest appointmentRequest) {
         this.description = description;
         this.appointmentRequest = appointmentRequest;
     }
 
-    public Appointment(AppointmentRequest appointmentRequest) {
+    public VoteOption(AppointmentRequest appointmentRequest) {
         this.appointmentRequest = appointmentRequest;
     }
 
-    public Appointment() {
+    public VoteOption() {
         // required for Hibernate
     }
     

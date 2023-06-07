@@ -46,17 +46,17 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
             throw new MalformedException("Can not create AppointmentRequest without appointments!");
         }
 
-		for (Appointment appointment : appointmentRequest.getAppointments()) {
-			appointment.setAppointmentRequest(appointmentRequest);
+		for (VoteOption voteOption : appointmentRequest.getAppointments()) {
+			voteOption.setAppointmentRequest(appointmentRequest);
 		}
 
 		appointmentRequest.setId(null);
-		for (Appointment appointment : appointmentRequest.getAppointments()) {
-			if (!appointment.validateAppointmentConfig(
+		for (VoteOption voteOption : appointmentRequest.getAppointments()) {
+			if (!voteOption.validateAppointmentConfig(
 					appointmentRequest.getAppointmentRequestConfig().getAppointmentConfig())) {
 				throw new MalformedException("Can not create AppointmentRequest with different AppointmentTypes.");
 			}
-			appointment.setId(null);
+			voteOption.setId(null);
 		}
 
 		appointmentRequest.setParticipationToken(tokenGeneratorService.generateToken(8));
@@ -184,30 +184,30 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 		return ret;
 	}
 
-	private void removeAppointments(AppointmentRequest newRequest, List<Appointment> oldAppointments) {
-		List<Appointment> toRemove = oldAppointments.stream()
+	private void removeAppointments(AppointmentRequest newRequest, List<VoteOption> oldVoteOptions) {
+		List<VoteOption> toRemove = oldVoteOptions.stream()
 				.filter(appointment -> newRequest.getAppointmentById(appointment.getId()) == null)
 				.collect(Collectors.toList());
 
-		for (Appointment appointment : toRemove) {
-			oldAppointments.remove(appointment);
-			this.appointmentRepository.delete(appointment);
+		for (VoteOption voteOption : toRemove) {
+			oldVoteOptions.remove(voteOption);
+			this.appointmentRepository.delete(voteOption);
 		}
 	}
 
-	private void addAppointments(AppointmentRequest oldRequest, List<Appointment> newAppointments) {
-		for (Appointment appointment : newAppointments) {
-			if (!appointment
+	private void addAppointments(AppointmentRequest oldRequest, List<VoteOption> newVoteOptions) {
+		for (VoteOption voteOption : newVoteOptions) {
+			if (!voteOption
 					.validateAppointmentConfig(oldRequest.getAppointmentRequestConfig().getAppointmentConfig())) {
 				throw new MalformedException("AppointmentType does not fit the AppointmentRequest.");
 			}
 
-			if (appointment.getId() == null || !appointmentRepository.exists(appointment.getId())) {
-				appointment.setAppointmentRequest(oldRequest);
-				appointment = appointmentRepository.saveAndFlush(appointment);
+			if (voteOption.getId() == null || !appointmentRepository.exists(voteOption.getId())) {
+				voteOption.setAppointmentRequest(oldRequest);
+				voteOption = appointmentRepository.saveAndFlush(voteOption);
 
 				for(AppointmentMember member: oldRequest.getAppointmentMembers()) {
-					appointmentDecisionRepository.save(new VoteDecision(Decision.NO_ANSWER, appointment, member));
+					appointmentDecisionRepository.save(new VoteDecision(Decision.NO_ANSWER, voteOption, member));
 				}
 				appointmentDecisionRepository.flush();
 			}

@@ -37,13 +37,13 @@ public class VoteDecisionDTOTest {
 
     @Test
     public void mapToDTO_AppointmentDecision_mapped() {
-        Appointment appointment = new Appointment(new Timestamp(123123L), new EncryptedString("iks Hilden", false), null);
-        appointment.setId(1);
+        VoteOption voteOption = new VoteOption(new Timestamp(123123L), new EncryptedString("iks Hilden", false), null);
+        voteOption.setId(1);
 
         AppointmentMember member = new AppointmentMember(new EncryptedString("Hans", false), null);
         member.setId(1);
 
-        VoteDecision decision = new VoteDecision(Decision.ACCEPT, appointment, member);
+        VoteDecision decision = new VoteDecision(Decision.ACCEPT, voteOption, member);
         VoteDecisionDTO decisionDTO = mapper.map(decision, VoteDecisionDTO.class);
 
         RataplanAssert.assertVoteDecision(decision, decisionDTO);

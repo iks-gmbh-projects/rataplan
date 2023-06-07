@@ -5,7 +5,7 @@ import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import de.iks.rataplan.domain.Appointment;
+import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.domain.Decision;
 import de.iks.rataplan.dto.VoteDecisionDTO;
 import de.iks.rataplan.repository.AppointmentRepository;
@@ -38,8 +38,8 @@ public class DecisionConverter {
 		@Override
 		protected VoteDecision convert(VoteDecisionDTO dtoDecision) {
 			VoteDecision decision = new VoteDecision();
-			Appointment appointment = appointmentRepository.findOne(dtoDecision.getOptionId());
-			decision.setAppointment(appointment);
+			VoteOption voteOption = appointmentRepository.findOne(dtoDecision.getOptionId());
+			decision.setAppointment(voteOption);
 			
 			if (dtoDecision.getDecision() != null) {
 				decision.setDecision(Decision.getDecisionById(dtoDecision.getDecision()));				

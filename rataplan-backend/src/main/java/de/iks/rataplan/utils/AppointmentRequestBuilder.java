@@ -3,7 +3,7 @@ package de.iks.rataplan.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.iks.rataplan.domain.Appointment;
+import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.domain.AppointmentMember;
 
 public class AppointmentRequestBuilder {
@@ -12,12 +12,12 @@ public class AppointmentRequestBuilder {
 		// nothing to do here
 	}
 
-	public static List<Appointment> appointmentList(Appointment... appointments) {
-		List<Appointment> appointmentList = new ArrayList<>();
-		for (Appointment appointment : appointments) {
-			appointmentList.add(appointment);
+	public static List<VoteOption> appointmentList(VoteOption... voteOptions) {
+		List<VoteOption> voteOptionList = new ArrayList<>();
+		for (VoteOption voteOption : voteOptions) {
+			voteOptionList.add(voteOption);
 		}
-		return appointmentList;
+		return voteOptionList;
 	}
 
 	public static List<AppointmentMember> memberList(AppointmentMember... appointmentMembers) {

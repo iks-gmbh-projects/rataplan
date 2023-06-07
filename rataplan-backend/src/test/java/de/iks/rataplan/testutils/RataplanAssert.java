@@ -3,7 +3,7 @@ package de.iks.rataplan.testutils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import de.iks.rataplan.domain.Appointment;
+import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.domain.VoteDecision;
 import de.iks.rataplan.domain.AppointmentMember;
 import de.iks.rataplan.domain.AppointmentRequest;
@@ -88,30 +88,30 @@ public class RataplanAssert {
 
 	/**
 	 * 
-	 * @param appointment
+	 * @param voteOption
 	 * @param dtoAppointment
 	 */
-	public static void assertVoteOption(Appointment appointment, VoteOptionDTO dtoAppointment) {
-		assertEquals("VoteOption.Id", appointment.getId(), dtoAppointment.getId());
-		assertEquals("VoteOption.StartDate", appointment.getStartDate(), dtoAppointment.getStartDate());
-		assertEquals("VoteOption.EndDate", appointment.getEndDate(), dtoAppointment.getEndDate());
-		assertEquals("VoteOption.Location", appointment.getDescription().getString(), dtoAppointment.getDescription());
-		assertEquals("VoteOption.Vote.Id", appointment.getAppointmentRequest().getId(),
+	public static void assertVoteOption(VoteOption voteOption, VoteOptionDTO dtoAppointment) {
+		assertEquals("VoteOption.Id", voteOption.getId(), dtoAppointment.getId());
+		assertEquals("VoteOption.StartDate", voteOption.getStartDate(), dtoAppointment.getStartDate());
+		assertEquals("VoteOption.EndDate", voteOption.getEndDate(), dtoAppointment.getEndDate());
+		assertEquals("VoteOption.Location", voteOption.getDescription().getString(), dtoAppointment.getDescription());
+		assertEquals("VoteOption.Vote.Id", voteOption.getAppointmentRequest().getId(),
 				dtoAppointment.getVoteId());
 	}
 
 	/**
 	 * 
 	 * @param dtoAppointment
-	 * @param appointment
+	 * @param voteOption
 	 */
-	public static void assertVoteOptionDTO(VoteOptionDTO dtoAppointment, Appointment appointment) {
-		assertEquals("VoteOptionDTO.Id", dtoAppointment.getId(), appointment.getId());
-		assertEquals("VoteOption.StartDate", appointment.getStartDate(), dtoAppointment.getStartDate());
-		assertEquals("VoteOption.EndDate", appointment.getEndDate(), dtoAppointment.getEndDate());
-		assertEquals("VoteOption.Location", dtoAppointment.getDescription(), appointment.getDescription().getString());
+	public static void assertVoteOptionDTO(VoteOptionDTO dtoAppointment, VoteOption voteOption) {
+		assertEquals("VoteOptionDTO.Id", dtoAppointment.getId(), voteOption.getId());
+		assertEquals("VoteOption.StartDate", voteOption.getStartDate(), dtoAppointment.getStartDate());
+		assertEquals("VoteOption.EndDate", voteOption.getEndDate(), dtoAppointment.getEndDate());
+		assertEquals("VoteOption.Location", dtoAppointment.getDescription(), voteOption.getDescription().getString());
 		assertEquals("VoteOptionDTO.VoteId", dtoAppointment.getVoteId(),
-				appointment.getAppointmentRequest().getId());
+				voteOption.getAppointmentRequest().getId());
 	}
 
 	/**

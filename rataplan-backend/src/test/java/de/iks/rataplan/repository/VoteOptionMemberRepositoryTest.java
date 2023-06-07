@@ -41,7 +41,7 @@ import de.iks.rataplan.config.TestConfig;
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class AppointmentMemberRepositoryTest {
+public class VoteOptionMemberRepositoryTest {
 
 	private static final String FILE_PATH = PATH + REPOSITORY + APPOINTMENTMEMBERS;
 
