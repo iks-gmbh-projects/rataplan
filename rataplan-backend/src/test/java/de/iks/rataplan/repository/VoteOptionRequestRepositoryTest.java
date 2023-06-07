@@ -41,7 +41,7 @@ public class VoteOptionRequestRepositoryTest {
 	private static final String FILE_PATH = PATH + REPOSITORY + APPOINTMENTREQUESTS;
 
 	@Autowired
-	private AppointmentRequestRepository appointmentRequestRepository;
+	private VoteRepository voteRepository;
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
@@ -51,7 +51,7 @@ public class VoteOptionRequestRepositoryTest {
 
 		Vote vote = createSimpleAppointmentRequest();
 
-		appointmentRequestRepository.saveAndFlush(vote);
+		voteRepository.saveAndFlush(vote);
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class VoteOptionRequestRepositoryTest {
 
 		vote.setOptions(appointmentList(voteOption));
 
-		appointmentRequestRepository.saveAndFlush(vote);
+		voteRepository.saveAndFlush(vote);
 	}
 
 	@Test
@@ -85,14 +85,14 @@ public class VoteOptionRequestRepositoryTest {
 
 		vote.setUserId(1);
 
-		appointmentRequestRepository.saveAndFlush(vote);
+		voteRepository.saveAndFlush(vote);
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/simple" + FILE_INITIAL)
 	public void getAppointmentRequestById() throws Exception {
 
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 
 		assertEquals(1, vote.getAppointmentRequestConfig().getId().intValue());
 		assertEquals(DecisionType.DEFAULT, vote.getAppointmentRequestConfig().getDecisionType());
@@ -116,7 +116,7 @@ public class VoteOptionRequestRepositoryTest {
 	@DatabaseSetup(FILE_PATH + GET + "/simpleThreeRequests" + FILE_INITIAL)
 	public void getAllAppointmentRequests() throws Exception {
 
-		List<Vote> votes = appointmentRequestRepository.findAll();
+		List<Vote> votes = voteRepository.findAll();
 
 		assertEquals(3, votes.size());
 		assertEquals("Coding Dojo 1", votes.get(0).getTitle().getString());
@@ -128,7 +128,7 @@ public class VoteOptionRequestRepositoryTest {
 	@DatabaseSetup(FILE_PATH + GET + "/simpleThreeRequests" + FILE_INITIAL)
 	public void getAllAppointmentRequestsByUserId() throws Exception {
 
-		List<Vote> votes = appointmentRequestRepository.findAllByUserId(1);
+		List<Vote> votes = voteRepository.findAllByUserId(1);
 
 		assertEquals(2, votes.size());
 		assertEquals("Coding Dojo 1", votes.get(0).getTitle().getString());
@@ -139,7 +139,7 @@ public class VoteOptionRequestRepositoryTest {
 	@DatabaseSetup(FILE_PATH + GET + "/backendUserWithoutRequests" + FILE_INITIAL)
 	public void getAllAppointmentRequestsByUserIdNoAppointmentRequests() throws Exception {
 
-		List<Vote> votes = appointmentRequestRepository.findAllByUserId(1);
+		List<Vote> votes = voteRepository.findAllByUserId(1);
 
 		assertEquals(0, votes.size());
 	}
@@ -148,23 +148,23 @@ public class VoteOptionRequestRepositoryTest {
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentRequest() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 
 		vote.setTitle(new EncryptedString("IKS-Thementag", false));
 
-		appointmentRequestRepository.saveAndFlush(vote);
+		voteRepository.saveAndFlush(vote);
 	}
 
 	@Test(expected = DataIntegrityViolationException.class)
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentRequestShouldFailNoDeadline() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 
 		vote.setTitle(new EncryptedString("IKS-Thementag", false));
 		vote.setDeadline(null);
 
-		appointmentRequestRepository.saveAndFlush(vote);
+		voteRepository.saveAndFlush(vote);
 	}
 
 }

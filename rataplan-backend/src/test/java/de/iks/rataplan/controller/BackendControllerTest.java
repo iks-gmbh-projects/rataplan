@@ -7,7 +7,7 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
 import de.iks.rataplan.repository.VoteParticipantRepository;
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.VoteRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class BackendControllerTest {
     private VoteParticipantRepository rawRepository1;
     
     @Autowired
-    private AppointmentRequestRepository rawRepository2;
+    private VoteRepository rawRepository2;
     
     @Test
     @DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)

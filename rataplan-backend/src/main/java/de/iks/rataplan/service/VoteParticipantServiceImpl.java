@@ -14,14 +14,14 @@ import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.repository.VoteParticipantRepository;
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.VoteRepository;
 
 @Service
 @Transactional
 public class VoteParticipantServiceImpl implements VoteParticipantService {
 
     @Autowired
-    private AppointmentRequestRepository appointmentRequestRepository;
+    private VoteRepository voteRepository;
 
     @Autowired
     private VoteParticipantRepository voteParticipantRepository;
@@ -55,7 +55,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
         this.validateExpirationDate(vote);
         
         vote.getParticipants().remove(voteParticipant);
-        appointmentRequestRepository.saveAndFlush(vote);
+        voteRepository.saveAndFlush(vote);
     }
 
     @Override

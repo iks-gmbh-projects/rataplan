@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.VoteRepository;
 
 @Component
 public class SchedulerService {
 
     @Autowired
-    private AppointmentRequestRepository appointmentRequestRepository;
+    private VoteRepository voteRepository;
 
     @Autowired
     private MailService mailService;
@@ -25,12 +25,12 @@ public class SchedulerService {
 //	@Scheduled(fixedRate = 10000)		// Alle 10 Sekunden
     public void reportCurrentTime() {
 
-        List<Vote> requests = appointmentRequestRepository.findByDeadlineBeforeAndNotifiedFalse(new Date(Calendar.getInstance().getTimeInMillis()));
+        List<Vote> requests = voteRepository.findByDeadlineBeforeAndNotifiedFalse(new Date(Calendar.getInstance().getTimeInMillis()));
 
         for (Vote request : requests) {
 
             request.setNotified(true);
-            appointmentRequestRepository.saveAndFlush(request);
+            voteRepository.saveAndFlush(request);
 
             if (request.getOrganizerMail() != null) {
                 mailService.sendMailForVoteExpired(request);

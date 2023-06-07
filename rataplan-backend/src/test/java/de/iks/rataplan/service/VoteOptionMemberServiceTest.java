@@ -32,7 +32,7 @@ import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.VoteRepository;
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -48,13 +48,13 @@ public class VoteOptionMemberServiceTest {
 	private VoteParticipantService voteParticipantService;
 
 	@Autowired
-	private AppointmentRequestRepository appointmentRequestRepository;
+	private VoteRepository voteRepository;
 
 	@Test
 	@DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void addAppointmentMember() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant member = new VoteParticipant();
 		member.setName(new EncryptedString("Max", false));
@@ -77,7 +77,7 @@ public class VoteOptionMemberServiceTest {
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
 	public void addAppointmentMemberShouldFailTooManyAppointments() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant member = new VoteParticipant();
 		member.setName(new EncryptedString("Max", false));
@@ -106,7 +106,7 @@ public class VoteOptionMemberServiceTest {
 	@Test(expected = ForbiddenException.class)
 	@DatabaseSetup(FILE_PATH + CREATE + EXPIRED + FILE_INITIAL)
 	public void addAppointmentMemberShouldFailRequestIsExpired() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant member = new VoteParticipant();
 		member.setName(new EncryptedString("Max", false));
@@ -130,7 +130,7 @@ public class VoteOptionMemberServiceTest {
 	@DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void deleteAppointmentMember() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant voteParticipant = vote.getParticipantById(2);
 
@@ -140,7 +140,7 @@ public class VoteOptionMemberServiceTest {
 	@Test(expected = ForbiddenException.class)
 	@DatabaseSetup(FILE_PATH + DELETE + EXPIRED + FILE_INITIAL)
 	public void deleteAppointmentMemberShouldFailRequestIsExpired() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant voteParticipant = vote.getParticipantById(2);
 		voteParticipantService.deleteParticipant(vote, voteParticipant);
@@ -150,7 +150,7 @@ public class VoteOptionMemberServiceTest {
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentMember() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 		VoteParticipant dbVoteParticipant = vote.getParticipantById(1);
 		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
 
@@ -172,7 +172,7 @@ public class VoteOptionMemberServiceTest {
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentMemberShouldFailTooManyDecisions() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 		VoteParticipant dbVoteParticipant = vote.getParticipantById(1);
 		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
 
@@ -197,7 +197,7 @@ public class VoteOptionMemberServiceTest {
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + EXPIRED
 			+ FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentMemberShouldFailIsExpired() throws Exception {
-		Vote vote = appointmentRequestRepository.findOne(1);
+		Vote vote = voteRepository.findOne(1);
 		VoteParticipant dbVoteParticipant = vote.getParticipantById(1);
 		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
 

@@ -8,7 +8,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-public interface AppointmentRequestRepository extends JpaRepository<Vote, Integer> {
+public interface VoteRepository extends JpaRepository<Vote, Integer> {
 	List<Vote> findAllByUserId(Integer userId);
 	
 	List<Vote> findDistinctByParticipants_UserIdIn(Integer userId);

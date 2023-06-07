@@ -5,7 +5,7 @@ import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.VoteDecisionRepository;
 import de.iks.rataplan.repository.VoteOptionRepository;
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.VoteRepository;
 import de.iks.rataplan.repository.BackendUserAccessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class VoteServiceImpl implements VoteService {
 	private VoteDecisionRepository voteDecisionRepository;
 	
 	@Autowired
-	private AppointmentRequestRepository appointmentRequestRepository;
+	private VoteRepository voteRepository;
 
 	@Autowired
 	private VoteOptionRepository voteOptionRepository;
@@ -62,7 +62,7 @@ public class VoteServiceImpl implements VoteService {
 		vote.setParticipationToken(tokenGeneratorService.generateToken(8));
 		vote.setEditToken(tokenGeneratorService.generateToken(10));
 
-        Vote createdVote = appointmentRequestRepository.saveAndFlush(vote);
+        Vote createdVote = voteRepository.saveAndFlush(vote);
 
 		if (createdVote.getOrganizerMail() != null) {
 			mailService.sendMailForVoteCreation(createdVote);
@@ -76,12 +76,12 @@ public class VoteServiceImpl implements VoteService {
 
 	@Override
 	public List<Vote> getVotes() {
-		return appointmentRequestRepository.findAll();
+		return voteRepository.findAll();
 	}
 
 	@Override
 	public Vote getVoteById(Integer requestId) {
-		Vote vote = appointmentRequestRepository.findOne(requestId);
+		Vote vote = voteRepository.findOne(requestId);
 		if (vote == null) {
 			throw new ResourceNotFoundException("Could not find AppointmentRequest with id: " + requestId);
 		}
@@ -90,7 +90,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public Vote getVoteByParticipationToken(String participationToken) {
-        Vote vote = appointmentRequestRepository.findByParticipationToken(participationToken);
+        Vote vote = voteRepository.findByParticipationToken(participationToken);
         if (vote != null) {
             return vote;
         }
@@ -111,7 +111,7 @@ public class VoteServiceImpl implements VoteService {
 
 	@Override
 	public Vote getVoteByEditToken(String editToken) {
-		Vote vote = appointmentRequestRepository.findByEditToken(editToken);
+		Vote vote = voteRepository.findByEditToken(editToken);
 		if (vote != null) {
 			return vote;
 		}
@@ -120,12 +120,12 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public List<Vote> getVotesForUser(Integer userId) {
-        return appointmentRequestRepository.findAllByUserId(userId);
+        return voteRepository.findAllByUserId(userId);
     }
 
 	@Override
 	public List<Vote> getVotesWhereUserParticipates(Integer userId) {
-		return appointmentRequestRepository.findDistinctByParticipants_UserIdIn(userId);
+		return voteRepository.findDistinctByParticipants_UserIdIn(userId);
 	}
 
 	@Override
@@ -174,14 +174,14 @@ public class VoteServiceImpl implements VoteService {
 		if(newVote.getOptions() != null && newVote.getOptions() != dbVote.getOptions()) {
 			if(newVote.getOptions().isEmpty()) throw new MalformedException("Must have at least 1 Appointment");
 			
-			appointmentRequestRepository.saveAndFlush(dbVote);
+			voteRepository.saveAndFlush(dbVote);
 			
 			removeAppointments(newVote, dbVote.getOptions());
 			
 			addAppointments(dbVote, newVote.getOptions());
-			ret = appointmentRequestRepository.findOne(dbVote.getId());
+			ret = voteRepository.findOne(dbVote.getId());
 		} else {
-			ret = appointmentRequestRepository.saveAndFlush(dbVote);
+			ret = voteRepository.saveAndFlush(dbVote);
 		}
 		return ret;
 	}
@@ -218,7 +218,7 @@ public class VoteServiceImpl implements VoteService {
 	
 	@Override
 	public void deleteVote(Vote request) {
-		appointmentRequestRepository.delete(request);
+		voteRepository.delete(request);
 	}
 	
 	@Override
@@ -228,7 +228,7 @@ public class VoteServiceImpl implements VoteService {
 			.peek(r -> r.setUserId(null))
 			.peek(r -> r.setOrganizerName(null))
 			.peek(r -> r.setOrganizerMail(null))
-			.forEach(appointmentRequestRepository::save);
+			.forEach(voteRepository::save);
 		backendUserAccessRepository.deleteByUserId(userId);
 	}
 }

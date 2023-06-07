@@ -1,7 +1,7 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.Vote;
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.Random;
 public class TokenGeneratorService {
 
     @Autowired
-    private AppointmentRequestRepository appointmentRequestRepository;
+    private VoteRepository voteRepository;
 
     private final Random random = new Random();
 
@@ -35,9 +35,9 @@ public class TokenGeneratorService {
     public boolean isTokenUnique(String token, int length) {
         Vote vote;
         if (length == 8) {
-            vote = appointmentRequestRepository.findByParticipationToken(token);
+            vote = voteRepository.findByParticipationToken(token);
         } else if (length == 10) {
-            vote = appointmentRequestRepository.findByEditToken(token);
+            vote = voteRepository.findByEditToken(token);
         } else {
             throw new Error("appointmentRequest token does not fit the form");
         }

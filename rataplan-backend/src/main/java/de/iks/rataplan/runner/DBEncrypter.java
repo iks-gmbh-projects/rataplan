@@ -3,7 +3,7 @@ package de.iks.rataplan.runner;
 import de.iks.rataplan.domain.EncryptedString;
 import de.iks.rataplan.repository.VoteParticipantRepository;
 import de.iks.rataplan.repository.VoteOptionRepository;
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.VoteRepository;
 import de.iks.rataplan.service.CryptoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -18,21 +18,21 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @Transactional
 public class DBEncrypter implements ApplicationRunner {
-    private final AppointmentRequestRepository appointmentRequestRepository;
+    private final VoteRepository voteRepository;
     private final VoteOptionRepository voteOptionRepository;
     private final VoteParticipantRepository voteParticipantRepository;
     private final CryptoService cryptoService;
 
     @Override
     public void run(ApplicationArguments args) {
-        appointmentRequestRepository.findUnencrypted()
+        voteRepository.findUnencrypted()
             .peek(appointmentRequest -> {
                 ensureEncrypted(appointmentRequest::getTitle, appointmentRequest::setTitle);
                 ensureEncrypted(appointmentRequest::getDescription, appointmentRequest::setDescription);
                 ensureEncrypted(appointmentRequest::getOrganizerName, appointmentRequest::setOrganizerName);
                 ensureEncrypted(appointmentRequest::getOrganizerMail, appointmentRequest::setOrganizerMail);
             })
-            .forEach(appointmentRequestRepository::save);
+            .forEach(voteRepository::save);
         voteOptionRepository.findUnencrypted()
             .peek(appointment -> {
                 ensureEncrypted(appointment::getDescription, appointment::setDescription);
@@ -42,7 +42,7 @@ public class DBEncrypter implements ApplicationRunner {
         voteParticipantRepository.findUnencrypted()
             .peek(appointmentMember -> ensureEncrypted(appointmentMember::getName, appointmentMember::setName))
             .forEach(voteParticipantRepository::save);
-        appointmentRequestRepository.flush();
+        voteRepository.flush();
         voteOptionRepository.flush();
         voteParticipantRepository.flush();
     }

@@ -5,7 +5,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
 import de.iks.rataplan.domain.Vote;
-import de.iks.rataplan.repository.AppointmentRequestRepository;
+import de.iks.rataplan.repository.VoteRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class TokenGeneratorServiceTest {
     private TokenGeneratorService tokenGeneratorService;
 
     @Autowired
-    private AppointmentRequestRepository appointmentRequestRepository;
+    private VoteRepository voteRepository;
 
     @Test
     public void checkValidFormParticipationToken() throws Exception {
@@ -56,9 +56,9 @@ public class TokenGeneratorServiceTest {
 
         String token = tokenGeneratorService.generateToken(8);
         vote.setParticipationToken(token);
-        appointmentRequestRepository.saveAndFlush(vote);
+        voteRepository.saveAndFlush(vote);
 
-        Vote createdVote = appointmentRequestRepository.findByParticipationToken(token);
+        Vote createdVote = voteRepository.findByParticipationToken(token);
         assertNotNull(createdVote.getParticipationToken());
     }
 
@@ -69,9 +69,9 @@ public class TokenGeneratorServiceTest {
 
         String token = tokenGeneratorService.generateToken(10);
         vote.setEditToken(token);
-        appointmentRequestRepository.saveAndFlush(vote);
+        voteRepository.saveAndFlush(vote);
 
-        Vote createdVote = appointmentRequestRepository.findByEditToken(token);
+        Vote createdVote = voteRepository.findByEditToken(token);
         assertNotNull(createdVote.getEditToken());
     }
 
