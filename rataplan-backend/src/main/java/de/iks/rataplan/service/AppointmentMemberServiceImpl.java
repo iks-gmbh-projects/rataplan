@@ -5,10 +5,10 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import de.iks.rataplan.domain.VoteDecision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.iks.rataplan.domain.AppointmentDecision;
 import de.iks.rataplan.domain.AppointmentMember;
 import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.exceptions.ForbiddenException;
@@ -38,7 +38,7 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
             appointmentMember.setAppointmentRequest(appointmentRequest);
             appointmentRequest.getAppointmentMembers().add(appointmentMember);
 
-            for (AppointmentDecision decision : appointmentMember.getAppointmentDecisions()) {
+            for (VoteDecision decision : appointmentMember.getAppointmentDecisions()) {
                 decision.setAppointmentMember(appointmentMember);
             }
 
@@ -90,13 +90,13 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
      * @param oldDecisions
      * @param newDecisions
      */
-    private void updateAppointmentDecisionsForMember(List<AppointmentDecision> oldDecisions,
-            List<AppointmentDecision> newDecisions) {
-        for (AppointmentDecision appointmentDecision : oldDecisions) {
-            for (AppointmentDecision newdecision : newDecisions) {
-                if (Objects.equals(appointmentDecision.getAppointment().getId(), newdecision.getAppointment().getId())) {
-                    appointmentDecision.setDecision(newdecision.getDecision());
-                    appointmentDecision.setParticipants(newdecision.getParticipants());
+    private void updateAppointmentDecisionsForMember(List<VoteDecision> oldDecisions,
+            List<VoteDecision> newDecisions) {
+        for (VoteDecision voteDecision : oldDecisions) {
+            for (VoteDecision newdecision : newDecisions) {
+                if (Objects.equals(voteDecision.getAppointment().getId(), newdecision.getAppointment().getId())) {
+                    voteDecision.setDecision(newdecision.getDecision());
+                    voteDecision.setParticipants(newdecision.getParticipants());
                 }
             }
         }

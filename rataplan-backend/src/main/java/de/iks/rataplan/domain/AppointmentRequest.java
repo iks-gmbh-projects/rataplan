@@ -273,7 +273,7 @@ public class AppointmentRequest implements Serializable {
 		}
 		
 		for (Appointment appointment : this.getAppointments()) {
-			for (AppointmentDecision decision : appointmentMember.getAppointmentDecisions()) {
+			for (VoteDecision decision : appointmentMember.getAppointmentDecisions()) {
 				this.decisionTypeVerification(decision);
 				
 				if (decision.getAppointment() == null) {
@@ -291,7 +291,7 @@ public class AppointmentRequest implements Serializable {
 	 * checks if the given AppointmentDecision fits the DecisionType in this AppointmentRequest
 	 * @param decision
 	 */
-    private void decisionTypeVerification(AppointmentDecision decision) {
+    private void decisionTypeVerification(VoteDecision decision) {
     	switch (this.appointmentRequestConfig.getDecisionType()) {
     	case EXTENDED:
     		if (decision.getParticipants() != null) {

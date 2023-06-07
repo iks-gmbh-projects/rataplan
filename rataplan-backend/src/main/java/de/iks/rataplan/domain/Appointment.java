@@ -34,7 +34,7 @@ public class Appointment implements Serializable {
     private EncryptedString url;
     
     private AppointmentRequest appointmentRequest;
-    private List<AppointmentDecision> appointmentDecisions = new ArrayList<>();
+    private List<VoteDecision> voteDecisions = new ArrayList<>();
 
     public Appointment(Timestamp startDate, EncryptedString description, AppointmentRequest appointmentRequest) {
         this.startDate = startDate;
@@ -139,12 +139,12 @@ public class Appointment implements Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentDecisionId.appointment", cascade = CascadeType.ALL)
-    public List<AppointmentDecision> getAppointmentDecisions() {
-        return appointmentDecisions;
+    public List<VoteDecision> getAppointmentDecisions() {
+        return voteDecisions;
     }
 
-    public void setAppointmentDecisions(List<AppointmentDecision> decisionList) {
-        this.appointmentDecisions = decisionList;
+    public void setAppointmentDecisions(List<VoteDecision> decisionList) {
+        this.voteDecisions = decisionList;
     }
 	
 	public boolean validateAppointmentConfig(AppointmentConfig config) {
@@ -174,7 +174,7 @@ public class Appointment implements Serializable {
 		builder.append(", appointmentRequest=");
 		builder.append(appointmentRequest.getId());
 		builder.append(", appointmentDecisions=");
-		builder.append(appointmentDecisions);
+		builder.append(voteDecisions);
 		builder.append("]");
 		return builder.toString();
 	}

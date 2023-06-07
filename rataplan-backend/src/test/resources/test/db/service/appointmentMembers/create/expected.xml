@@ -8,8 +8,8 @@
   
   <appointmentMember name="RAW__##__Max" appointmentRequestId="1" />
   
-  <appointmentDecision decision="1" appointmentId="1"/>
-  <appointmentDecision decision="2" appointmentId="2"/>
+  <voteDecision decision="1" appointmentId="1"/>
+  <voteDecision decision="2" appointmentId="2"/>
   
   <backendUserAccess />
 </dataset>

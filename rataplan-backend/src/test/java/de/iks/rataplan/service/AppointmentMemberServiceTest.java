@@ -59,11 +59,11 @@ public class AppointmentMemberServiceTest {
 		AppointmentMember member = new AppointmentMember();
 		member.setName(new EncryptedString("Max", false));
 
-		AppointmentDecision decision = new AppointmentDecision();
+		VoteDecision decision = new VoteDecision();
 		decision.setAppointment(appointmentRequest.getAppointmentById(1));
 		decision.setDecision(Decision.ACCEPT);
 
-		AppointmentDecision decision2 = new AppointmentDecision();
+		VoteDecision decision2 = new VoteDecision();
 		decision2.setAppointment(appointmentRequest.getAppointmentById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
@@ -82,15 +82,15 @@ public class AppointmentMemberServiceTest {
 		AppointmentMember member = new AppointmentMember();
 		member.setName(new EncryptedString("Max", false));
 
-		AppointmentDecision decision = new AppointmentDecision();
+		VoteDecision decision = new VoteDecision();
 		decision.setAppointment(appointmentRequest.getAppointmentById(1));
 		decision.setDecision(Decision.ACCEPT);
 
-		AppointmentDecision decision2 = new AppointmentDecision();
+		VoteDecision decision2 = new VoteDecision();
 		decision2.setAppointment(appointmentRequest.getAppointmentById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
-		AppointmentDecision decision3 = new AppointmentDecision();
+		VoteDecision decision3 = new VoteDecision();
 		decision3.setAppointment(appointmentRequest.getAppointmentById(2));
 		decision3.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
@@ -111,11 +111,11 @@ public class AppointmentMemberServiceTest {
 		AppointmentMember member = new AppointmentMember();
 		member.setName(new EncryptedString("Max", false));
 
-		AppointmentDecision decision = new AppointmentDecision();
+		VoteDecision decision = new VoteDecision();
 		decision.setAppointment(appointmentRequest.getAppointmentById(1));
 		decision.setDecision(Decision.ACCEPT);
 
-		AppointmentDecision decision2 = new AppointmentDecision();
+		VoteDecision decision2 = new VoteDecision();
 		decision2.setAppointment(appointmentRequest.getAppointmentById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
@@ -154,9 +154,9 @@ public class AppointmentMemberServiceTest {
 		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
 		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
-		AppointmentDecision decision1 = new AppointmentDecision(Decision.NO_ANSWER,
+		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
 				appointmentRequest.getAppointments().get(0), newAppointmentMember);
-		AppointmentDecision decision2 = new AppointmentDecision(Decision.DECLINE,
+		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
 				appointmentRequest.getAppointments().get(1), newAppointmentMember);
 		newAppointmentMember.getAppointmentDecisions().add(decision1);
 		newAppointmentMember.getAppointmentDecisions().add(decision2);
@@ -173,9 +173,9 @@ public class AppointmentMemberServiceTest {
 		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
 		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
-		AppointmentDecision decision1 = new AppointmentDecision(Decision.NO_ANSWER,
+		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
 				appointmentRequest.getAppointments().get(0), newAppointmentMember);
-		AppointmentDecision decision2 = new AppointmentDecision(Decision.DECLINE,
+		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
 				appointmentRequest.getAppointments().get(1), newAppointmentMember);
 		newAppointmentMember.getAppointmentDecisions().add(decision1);
 		newAppointmentMember.getAppointmentDecisions().add(decision2);
@@ -195,9 +195,9 @@ public class AppointmentMemberServiceTest {
 		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
 		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
-		AppointmentDecision decision1 = new AppointmentDecision(Decision.NO_ANSWER,
+		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
 				appointmentRequest.getAppointments().get(0), newAppointmentMember);
-		AppointmentDecision decision2 = new AppointmentDecision(Decision.DECLINE,
+		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
 				appointmentRequest.getAppointments().get(1), newAppointmentMember);
 		newAppointmentMember.getAppointmentDecisions().add(decision1);
 		newAppointmentMember.getAppointmentDecisions().add(decision2);

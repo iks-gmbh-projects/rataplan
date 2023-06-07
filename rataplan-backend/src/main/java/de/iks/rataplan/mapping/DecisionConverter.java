@@ -1,11 +1,11 @@
 package de.iks.rataplan.mapping;
 
+import de.iks.rataplan.domain.VoteDecision;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import de.iks.rataplan.domain.Appointment;
-import de.iks.rataplan.domain.AppointmentDecision;
 import de.iks.rataplan.domain.Decision;
 import de.iks.rataplan.dto.VoteDecisionDTO;
 import de.iks.rataplan.repository.AppointmentRepository;
@@ -16,28 +16,28 @@ public class DecisionConverter {
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 
-	public Converter<AppointmentDecision, VoteDecisionDTO> toDTO = new AbstractConverter<AppointmentDecision, VoteDecisionDTO>() {
+	public Converter<VoteDecision, VoteDecisionDTO> toDTO = new AbstractConverter<VoteDecision, VoteDecisionDTO>() {
 
 		@Override
-		protected VoteDecisionDTO convert(AppointmentDecision appointmentDecision) {
+		protected VoteDecisionDTO convert(VoteDecision voteDecision) {
 			VoteDecisionDTO dtoDecision = new VoteDecisionDTO();
-			dtoDecision.setOptionId(appointmentDecision.getAppointment().getId());
-			dtoDecision.setParticipantId(appointmentDecision.getAppointmentMember().getId());
+			dtoDecision.setOptionId(voteDecision.getAppointment().getId());
+			dtoDecision.setParticipantId(voteDecision.getAppointmentMember().getId());
 			
-			if (appointmentDecision.getDecision() != null) {
-				dtoDecision.setDecision(appointmentDecision.getDecision().getValue());
-			} else if (appointmentDecision.getParticipants() != null) {
-				dtoDecision.setParticipants(appointmentDecision.getParticipants());			
+			if (voteDecision.getDecision() != null) {
+				dtoDecision.setDecision(voteDecision.getDecision().getValue());
+			} else if (voteDecision.getParticipants() != null) {
+				dtoDecision.setParticipants(voteDecision.getParticipants());
 			}
 			return dtoDecision;
 		}
 	};
 
-	public Converter<VoteDecisionDTO, AppointmentDecision> toDAO = new AbstractConverter<VoteDecisionDTO, AppointmentDecision>() {
+	public Converter<VoteDecisionDTO, VoteDecision> toDAO = new AbstractConverter<VoteDecisionDTO, VoteDecision>() {
 
 		@Override
-		protected AppointmentDecision convert(VoteDecisionDTO dtoDecision) {
-			AppointmentDecision decision = new AppointmentDecision();
+		protected VoteDecision convert(VoteDecisionDTO dtoDecision) {
+			VoteDecision decision = new VoteDecision();
 			Appointment appointment = appointmentRepository.findOne(dtoDecision.getOptionId());
 			decision.setAppointment(appointment);
 			

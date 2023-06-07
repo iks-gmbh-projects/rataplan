@@ -9,13 +9,13 @@ import java.time.Instant;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "appointmentDecision")
+@Table(name = "voteDecision")
 @AssociationOverrides({
-    @AssociationOverride(name = "appointmentDecisionId.appointment",
+    @AssociationOverride(name = "voteDecisionId.vote",
         joinColumns = @JoinColumn(name = "appointmentId")),
-    @AssociationOverride(name = "appointmentDecisionId.appointmentMember",
-        joinColumns = @JoinColumn(name = "appointmentMemberId")) })
-public class AppointmentDecision implements Serializable {
+    @AssociationOverride(name = "voteDecisionId.voteParticipant",
+        joinColumns = @JoinColumn(name = "voteParticipantId")) })
+public class VoteDecision implements Serializable {
 
     private static final long serialVersionUID = 6111550357472865287L;
     
@@ -31,25 +31,25 @@ public class AppointmentDecision implements Serializable {
     private Decision decision = null;
     private Integer participants = null;
 
-    public AppointmentDecision(Decision decision, Appointment appointment, AppointmentMember appointmentMember) {
+    public VoteDecision(Decision decision, Appointment appointment, AppointmentMember appointmentMember) {
     	this.decision = decision;
         this.voteDecisionId.setAppointment(appointment);
         this.voteDecisionId.setAppointmentMember(appointmentMember);
     }
     
-    public AppointmentDecision(Decision decsion, Appointment appointment) {
+    public VoteDecision(Decision decsion, Appointment appointment) {
     	this.decision = decsion;
     	this.voteDecisionId.setAppointment(appointment);
     }
     
-    public AppointmentDecision(Integer participants, Appointment appointment, AppointmentMember appointmentMember) {
+    public VoteDecision(Integer participants, Appointment appointment, AppointmentMember appointmentMember) {
     	this.decision = null;
         this.participants = participants;
         this.voteDecisionId.setAppointment(appointment);
         this.voteDecisionId.setAppointmentMember(appointmentMember);
     }
 
-    public AppointmentDecision() {
+    public VoteDecision() {
         //required for Hibernate
     }
     

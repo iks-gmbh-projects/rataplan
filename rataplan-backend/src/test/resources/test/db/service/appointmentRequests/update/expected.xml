@@ -9,7 +9,7 @@
 
   <appointmentMember id="1" name="RubberBandMan" appointmentRequestId="1" />
 
-  <appointmentDecision decision="0" appointmentMemberId="1" />
-  <appointmentDecision decision="0" appointmentMemberId="1" />
-  <appointmentDecision decision="0" appointmentMemberId="1" />
+  <voteDecision decision="0" appointmentMemberId="1" />
+  <voteDecision decision="0" appointmentMemberId="1" />
+  <voteDecision decision="0" appointmentMemberId="1" />
 </dataset>

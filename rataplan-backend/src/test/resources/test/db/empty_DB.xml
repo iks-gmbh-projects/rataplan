@@ -7,7 +7,7 @@
   
   <appointment />
 
-  <appointmentDecision />
+  <voteDecision />
   
   <backendUserAccess />
 

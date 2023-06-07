@@ -60,15 +60,15 @@ public class AppointmentMemberRepositoryTest {
 
 		AppointmentMember appointmentMember = new AppointmentMember();
 
-		List<AppointmentDecision> decisions = new ArrayList<AppointmentDecision>();
+		List<VoteDecision> decisions = new ArrayList<VoteDecision>();
 
-		AppointmentDecision decision = new AppointmentDecision();
+		VoteDecision decision = new VoteDecision();
 		decision.setDecision(Decision.ACCEPT);
 		decision.setAppointment(appointmentRequest.getAppointments().get(0));
 		decision.setAppointmentMember(appointmentMember);
 		decisions.add(decision);
 
-		AppointmentDecision decision2 = new AppointmentDecision();
+		VoteDecision decision2 = new VoteDecision();
 		decision2.setDecision(Decision.ACCEPT);
 		decision2.setAppointment(appointmentRequest.getAppointments().get(1));
 		decision2.setAppointmentMember(appointmentMember);
@@ -79,8 +79,8 @@ public class AppointmentMemberRepositoryTest {
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 		appointmentRequest.getAppointmentMembers().add(appointmentMember);
 
-		for (AppointmentDecision appointmentDecision : appointmentMember.getAppointmentDecisions()) {
-			appointmentDecision.setAppointmentMember(appointmentMember);
+		for (VoteDecision voteDecision : appointmentMember.getAppointmentDecisions()) {
+			voteDecision.setAppointmentMember(appointmentMember);
 		}
 
 		appointmentMemberRepository.saveAndFlush(appointmentMember);
@@ -95,14 +95,14 @@ public class AppointmentMemberRepositoryTest {
 
 		AppointmentMember appointmentMember = new AppointmentMember();
 
-		List<AppointmentDecision> decisions = new ArrayList<AppointmentDecision>();
+		List<VoteDecision> decisions = new ArrayList<VoteDecision>();
 
-		AppointmentDecision decision = new AppointmentDecision();
+		VoteDecision decision = new VoteDecision();
 		decision.setParticipants(5);
 		decision.setAppointment(appointmentRequest.getAppointments().get(0));
 		decision.setAppointmentMember(appointmentMember);
 
-		AppointmentDecision decision2 = new AppointmentDecision();
+		VoteDecision decision2 = new VoteDecision();
 		decision2.setParticipants(5);
 		decision2.setAppointment(appointmentRequest.getAppointments().get(1));
 		decision2.setAppointmentMember(appointmentMember);
@@ -115,8 +115,8 @@ public class AppointmentMemberRepositoryTest {
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 		appointmentRequest.getAppointmentMembers().add(appointmentMember);
 
-		for (AppointmentDecision appointmentDecision : appointmentMember.getAppointmentDecisions()) {
-			appointmentDecision.setAppointmentMember(appointmentMember);
+		for (VoteDecision voteDecision : appointmentMember.getAppointmentDecisions()) {
+			voteDecision.setAppointmentMember(appointmentMember);
 		}
 
 		appointmentMemberRepository.saveAndFlush(appointmentMember);
@@ -155,7 +155,7 @@ public class AppointmentMemberRepositoryTest {
 		appointmentMember.setName(new EncryptedString("Fritz", false));
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 
-		List<AppointmentDecision> decisions = appointmentMember.getAppointmentDecisions();
+		List<VoteDecision> decisions = appointmentMember.getAppointmentDecisions();
 		decisions.get(0).setDecision(Decision.DECLINE);
 		decisions.get(1).setDecision(Decision.DECLINE);
 
@@ -173,7 +173,7 @@ public class AppointmentMemberRepositoryTest {
 		appointmentMember.setName(new EncryptedString("Fritz", false));
 		appointmentMember.setAppointmentRequest(appointmentRequest);
 
-		List<AppointmentDecision> decicions = appointmentMember.getAppointmentDecisions();
+		List<VoteDecision> decicions = appointmentMember.getAppointmentDecisions();
 		decicions.get(0).setParticipants(1);
 		decicions.get(1).setParticipants(0);
 

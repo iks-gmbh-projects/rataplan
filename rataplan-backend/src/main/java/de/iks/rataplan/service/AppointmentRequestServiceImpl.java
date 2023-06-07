@@ -207,7 +207,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 				appointment = appointmentRepository.saveAndFlush(appointment);
 
 				for(AppointmentMember member: oldRequest.getAppointmentMembers()) {
-					appointmentDecisionRepository.save(new AppointmentDecision(Decision.NO_ANSWER, appointment, member));
+					appointmentDecisionRepository.save(new VoteDecision(Decision.NO_ANSWER, appointment, member));
 				}
 				appointmentDecisionRepository.flush();
 			}

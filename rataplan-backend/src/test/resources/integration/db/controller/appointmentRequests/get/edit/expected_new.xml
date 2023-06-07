@@ -12,8 +12,8 @@
 
   <appointmentMember id="1" appointmentRequestId="1" name="iks" />
   
-  <appointmentDecision id="1" appointmentId="1" appointmentMemberId="1" decision="1" />
-  <appointmentDecision id="2" appointmentId="2" appointmentMemberId="1" decision="3" />
+  <voteDecision id="1" appointmentId="1" appointmentMemberId="1" decision="1" />
+  <voteDecision id="2" appointmentId="2" appointmentMemberId="1" decision="3" />
   
   <backendUserAccess appointmentRequestId="1" isEdit="false" isInvited="false" userId="1" />
   <backendUserAccess appointmentRequestId="1" isEdit="true" isInvited="false" userId="2" />

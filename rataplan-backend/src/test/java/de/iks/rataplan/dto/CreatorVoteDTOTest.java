@@ -109,10 +109,10 @@ public class CreatorVoteDTOTest {
 		AppointmentMember member1 = new AppointmentMember(new EncryptedString("Ingo", false), appointmentRequest);
 		AppointmentMember member2 = new AppointmentMember(new EncryptedString("Fabian", false), appointmentRequest);
 
-		AppointmentDecision decision11 = new AppointmentDecision(Decision.NO_ANSWER, appointment1, member1);
-		AppointmentDecision decision12 = new AppointmentDecision(Decision.ACCEPT_IF_NECESSARY, appointment1, member2);
-		AppointmentDecision decision21 = new AppointmentDecision(Decision.ACCEPT, appointment2, member1);
-		AppointmentDecision decision22 = new AppointmentDecision(Decision.DECLINE, appointment2, member2);
+		VoteDecision decision11 = new VoteDecision(Decision.NO_ANSWER, appointment1, member1);
+		VoteDecision decision12 = new VoteDecision(Decision.ACCEPT_IF_NECESSARY, appointment1, member2);
+		VoteDecision decision21 = new VoteDecision(Decision.ACCEPT, appointment2, member1);
+		VoteDecision decision22 = new VoteDecision(Decision.DECLINE, appointment2, member2);
 
 		member1.getAppointmentDecisions().add(decision11);
 		member1.getAppointmentDecisions().add(decision21);

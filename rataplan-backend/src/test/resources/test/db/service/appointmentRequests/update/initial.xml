@@ -8,8 +8,8 @@
 
   <appointmentMember id="1" name="RubberBandMan" appointmentRequestId="1" />
 
-  <appointmentDecision decision="0" appointmentId="1" appointmentMemberId="1"/>
-  <appointmentDecision decision="3" appointmentId="2" appointmentMemberId="1"/>
+  <voteDecision decision="0" appointmentId="1" appointmentMemberId="1"/>
+  <voteDecision decision="3" appointmentId="2" appointmentMemberId="1"/>
   
   <backendUserAccess />
 </dataset>

@@ -9,10 +9,10 @@
   <appointmentMember id="1" appointmentRequestId="1" name="IKS" />
   <appointmentMember id="2" appointmentRequestId="1" name="IKS-GMBH" />
 
-  <appointmentDecision id="1" appointmentMemberId="1" appointmentId="1" decision="0" />
-  <appointmentDecision id="2" appointmentMemberId="1" appointmentId="2" decision="1" />
-  <appointmentDecision id="3" appointmentMemberId="2" appointmentId="1" decision="3" />
-  <appointmentDecision id="4" appointmentMemberId="2" appointmentId="2" decision="3" />
+  <voteDecision id="1" appointmentMemberId="1" appointmentId="1" decision="0" />
+  <voteDecision id="2" appointmentMemberId="1" appointmentId="2" decision="1" />
+  <voteDecision id="3" appointmentMemberId="2" appointmentId="1" decision="3" />
+  <voteDecision id="4" appointmentMemberId="2" appointmentId="2" decision="3" />
   
   <backendUserAccess />
 </dataset>

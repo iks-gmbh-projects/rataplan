@@ -7,7 +7,7 @@
 
   <appointmentMember />
 
-  <appointmentDecision />
+  <voteDecision />
   
   <backendUserAccess />
 </dataset>

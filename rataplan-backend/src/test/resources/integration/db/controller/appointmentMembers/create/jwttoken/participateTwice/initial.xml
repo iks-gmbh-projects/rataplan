@@ -8,8 +8,8 @@
 
   <appointmentMember id="1" appointmentRequestId="1" name="ENC__##__IKS_1" userId="1" />
 
-  <appointmentDecision appointmentMemberId="1" appointmentId="1" decision="0" />
-  <appointmentDecision appointmentMemberId="1" appointmentId="2" decision="1" />
+  <voteDecision appointmentMemberId="1" appointmentId="1" decision="0" />
+  <voteDecision appointmentMemberId="1" appointmentId="2" decision="1" />
 
   <backendUserAccess appointmentRequestId="1" userId="1" isEdit="false" isInvited="false" />
 </dataset>

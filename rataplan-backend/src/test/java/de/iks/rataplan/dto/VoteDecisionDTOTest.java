@@ -43,7 +43,7 @@ public class VoteDecisionDTOTest {
         AppointmentMember member = new AppointmentMember(new EncryptedString("Hans", false), null);
         member.setId(1);
 
-        AppointmentDecision decision = new AppointmentDecision(Decision.ACCEPT, appointment, member);
+        VoteDecision decision = new VoteDecision(Decision.ACCEPT, appointment, member);
         VoteDecisionDTO decisionDTO = mapper.map(decision, VoteDecisionDTO.class);
 
         RataplanAssert.assertVoteDecision(decision, decisionDTO);
@@ -53,7 +53,7 @@ public class VoteDecisionDTOTest {
     public void mapToDomain_AppointmentDecision_mapped() {
     	VoteDecisionDTO decisionDTO = new VoteDecisionDTO(1, 1, 1, null);
         
-        AppointmentDecision decision = mapper.map(decisionDTO, AppointmentDecision.class);
+        VoteDecision decision = mapper.map(decisionDTO, VoteDecision.class);
         assertEquals(decisionDTO.getDecision(), decision.getDecision().getValue());
     }
 }
