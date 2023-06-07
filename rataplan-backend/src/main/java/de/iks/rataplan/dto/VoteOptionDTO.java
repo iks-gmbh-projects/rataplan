@@ -6,7 +6,7 @@ import de.iks.rataplan.exceptions.MalformedException;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class AppointmentDTO implements Serializable {
+public class VoteOptionDTO implements Serializable {
 
     private static final long serialVersionUID = 1461651856713616814L;
 
@@ -17,7 +17,7 @@ public class AppointmentDTO implements Serializable {
     private String description;
 	private String url;
 
-    public AppointmentDTO(Integer id, Integer requestId, Timestamp startDate, Timestamp endDate, String description,
+    public VoteOptionDTO(Integer id, Integer requestId, Timestamp startDate, Timestamp endDate, String description,
 			String url) {
 		this.id = id;
 		this.requestId = requestId;
@@ -27,16 +27,16 @@ public class AppointmentDTO implements Serializable {
 		this.url = url;
 	}
 	
-    public AppointmentDTO(Timestamp startDate, String description) {
+    public VoteOptionDTO(Timestamp startDate, String description) {
         this.startDate = startDate;
         this.description = description;
     }
     
-	public AppointmentDTO(String description) {
+	public VoteOptionDTO(String description) {
 		this.description = description;
     }
     
-	public AppointmentDTO() {
+	public VoteOptionDTO() {
         //Nothing to do here
     }
 

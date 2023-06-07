@@ -62,8 +62,8 @@ public class AppointmentRequestDTOTest {
 
 		Appointment[] appointments = appointmentRequest.getAppointments()
 				.toArray(new Appointment[appointmentRequest.getAppointments().size()]);
-		AppointmentDTO[] dtoAppointments = dtoRequest.getAppointments()
-				.toArray(new AppointmentDTO[dtoRequest.getAppointments().size()]);
+		VoteOptionDTO[] dtoAppointments = dtoRequest.getOptions()
+				.toArray(new VoteOptionDTO[dtoRequest.getOptions().size()]);
 
 		assertEquals(appointments[0].getAppointmentRequest().getId(), dtoAppointments[0].getRequestId());
 		assertEquals(appointments[0].getStartDate(), dtoAppointments[0].getStartDate());
@@ -78,16 +78,16 @@ public class AppointmentRequestDTOTest {
 		AppointmentRequestDTO dtoRequest = new AppointmentRequestDTO("Title", "Description", new Date(1234567890L),
 				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(config, DecisionType.EXTENDED));
 		dtoRequest.setId(1);
-		AppointmentDTO dtoAppointment = new AppointmentDTO(new Timestamp(123123123L), "iks Hilden");
+		VoteOptionDTO dtoAppointment = new VoteOptionDTO(new Timestamp(123123123L), "iks Hilden");
 		dtoAppointment.setRequestId(dtoRequest.getId());
-		dtoRequest.setAppointments(Collections.singletonList(dtoAppointment));
+		dtoRequest.setOptions(Collections.singletonList(dtoAppointment));
 
 		AppointmentRequest appointmentRequest = mapper.map(dtoRequest, AppointmentRequest.class);
 
 		RataplanAssert.assertAppointmentRequestDTO(dtoRequest, appointmentRequest);
 		
-		AppointmentDTO[] dtoAppointments = dtoRequest.getAppointments()
-				.toArray(new AppointmentDTO[dtoRequest.getAppointments().size()]);
+		VoteOptionDTO[] dtoAppointments = dtoRequest.getOptions()
+				.toArray(new VoteOptionDTO[dtoRequest.getOptions().size()]);
 		Appointment[] appointments = appointmentRequest.getAppointments()
 				.toArray(new Appointment[appointmentRequest.getAppointments().size()]);
 
@@ -147,10 +147,10 @@ public class AppointmentRequestDTOTest {
 				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, true, true, false, false), DecisionType.NUMBER));
 		dtoRequest.setId(1);
 		
-		AppointmentDTO appointment1 = new AppointmentDTO(new Timestamp(123123123L), "iks Hilden");
+		VoteOptionDTO appointment1 = new VoteOptionDTO(new Timestamp(123123123L), "iks Hilden");
 		appointment1.setId(1);
 		
-		AppointmentDTO appointment2 = new AppointmentDTO(new Timestamp(321321321L), "Berufsschule D�sseldorf");
+		VoteOptionDTO appointment2 = new VoteOptionDTO(new Timestamp(321321321L), "Berufsschule D�sseldorf");
 		appointment2.setId(2);
 
 		AppointmentMemberDTO member1 = new AppointmentMemberDTO("Ingo");
@@ -172,7 +172,7 @@ public class AppointmentRequestDTOTest {
 		member2.getAppointmentDecisions().add(decision12);
 		member2.getAppointmentDecisions().add(decision22);
 
-		dtoRequest.setAppointments(Arrays.asList(appointment1, appointment2));
+		dtoRequest.setOptions(Arrays.asList(appointment1, appointment2));
 
 		dtoRequest.setAppointmentMembers(Arrays.asList(member1, member2));
 

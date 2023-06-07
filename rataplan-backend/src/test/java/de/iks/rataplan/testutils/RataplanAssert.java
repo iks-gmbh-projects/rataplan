@@ -7,12 +7,10 @@ import de.iks.rataplan.domain.Appointment;
 import de.iks.rataplan.domain.AppointmentDecision;
 import de.iks.rataplan.domain.AppointmentMember;
 import de.iks.rataplan.domain.AppointmentRequest;
-import de.iks.rataplan.dto.AppointmentDTO;
+import de.iks.rataplan.dto.VoteOptionDTO;
 import de.iks.rataplan.dto.AppointmentDecisionDTO;
 import de.iks.rataplan.dto.AppointmentMemberDTO;
 import de.iks.rataplan.dto.AppointmentRequestDTO;
-import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
-import de.iks.rataplan.service.MockCryptoService;
 
 public class RataplanAssert {
 
@@ -22,8 +20,8 @@ public class RataplanAssert {
 	 * @param dtoDecision
 	 */
 	public static void assertAppointmentDecision(AppointmentDecision decision, AppointmentDecisionDTO dtoDecision) {
-		assertEquals("AppointmentDecision.Appointment.Id", decision.getAppointment().getId(),
-				dtoDecision.getAppointmentId());
+		assertEquals("AppointmentDecision.Option.Id", decision.getAppointment().getId(),
+				dtoDecision.getOptionId());
 		assertEquals("AppointmentDecision.AppointmentMember.Id", decision.getAppointmentMember().getId(),
 				dtoDecision.getAppointmentMemberId());
 		assertEquals("AppointmentDecision.Decision", decision.getDecision().getValue(), dtoDecision.getDecision());
@@ -36,7 +34,7 @@ public class RataplanAssert {
 	 * @param decision
 	 */
 	public static void assertAppointmentDecisionDTO(AppointmentDecisionDTO dtoDecision, AppointmentDecision decision) {
-		assertEquals("AppointmentDecisionDTO.Appointment.Id", dtoDecision.getAppointmentId(),
+		assertEquals("AppointmentDecisionDTO.Option.Id", dtoDecision.getOptionId(),
 				decision.getAppointment().getId());
 		assertEquals("AppointmentDecisionDTO.AppointmentMember.Id", dtoDecision.getAppointmentMemberId(),
 				decision.getAppointmentMember().getId());
@@ -59,8 +57,8 @@ public class RataplanAssert {
 				dtoRequest.getAppointmentRequestConfig().getAppointmentConfig());
 		assertEquals("AppointmentRequest.config.decisionType", request.getAppointmentRequestConfig().getDecisionType(),
 				dtoRequest.getAppointmentRequestConfig().getDecisionType());
-		assertEquals("AppointmentRequest.appointments.size", request.getAppointments().size(),
-				dtoRequest.getAppointments().size());
+		assertEquals("AppointmentRequest.options.size", request.getAppointments().size(),
+				dtoRequest.getOptions().size());
 		assertEquals("AppointmentRequest.appointmentMembers.size", request.getAppointmentMembers().size(),
 				dtoRequest.getAppointmentMembers().size());
 	}
@@ -80,8 +78,8 @@ public class RataplanAssert {
 				request.getAppointmentRequestConfig().getAppointmentConfig());
 		assertEquals("AppointmentRequestDTO.config.decisionType", dtoRequest.getAppointmentRequestConfig().getDecisionType(),
 				request.getAppointmentRequestConfig().getDecisionType());
-		if(dtoRequest.getAppointments() == null) assertNull("AppointmentRequestDTO.appointments", request.getAppointments());
-		else assertEquals("AppointmentRequestDTO.appointments.size", dtoRequest.getAppointments().size(),
+		if(dtoRequest.getOptions() == null) assertNull("AppointmentRequestDTO.appointments", request.getAppointments());
+		else assertEquals("AppointmentRequestDTO.options.size", dtoRequest.getOptions().size(),
 				request.getAppointments().size());
 		if(dtoRequest.getAppointmentMembers() == null) assertNull("AppointmentRequestDTO.appointmentMembers", request.getAppointmentMembers());
 		else assertEquals("AppointmentRequestDTO.appointmentMembers.size", dtoRequest.getAppointmentMembers().size(),
@@ -93,12 +91,12 @@ public class RataplanAssert {
 	 * @param appointment
 	 * @param dtoAppointment
 	 */
-	public static void assertAppointment(Appointment appointment, AppointmentDTO dtoAppointment) {
-		assertEquals("Appointment.Id", appointment.getId(), dtoAppointment.getId());
-		assertEquals("Appointment.StartDate", appointment.getStartDate(), dtoAppointment.getStartDate());
-		assertEquals("Appointment.EndDate", appointment.getEndDate(), dtoAppointment.getEndDate());
-		assertEquals("Appointment.Location", appointment.getDescription().getString(), dtoAppointment.getDescription());
-		assertEquals("Appointment.AppointmentRequest.Id", appointment.getAppointmentRequest().getId(),
+	public static void assertVoteOption(Appointment appointment, VoteOptionDTO dtoAppointment) {
+		assertEquals("VoteOption.Id", appointment.getId(), dtoAppointment.getId());
+		assertEquals("VoteOption.StartDate", appointment.getStartDate(), dtoAppointment.getStartDate());
+		assertEquals("VoteOption.EndDate", appointment.getEndDate(), dtoAppointment.getEndDate());
+		assertEquals("VoteOption.Location", appointment.getDescription().getString(), dtoAppointment.getDescription());
+		assertEquals("VoteOption.AppointmentRequest.Id", appointment.getAppointmentRequest().getId(),
 				dtoAppointment.getRequestId());
 	}
 
@@ -107,12 +105,12 @@ public class RataplanAssert {
 	 * @param dtoAppointment
 	 * @param appointment
 	 */
-	public static void assertAppointmentDTO(AppointmentDTO dtoAppointment, Appointment appointment) {
-		assertEquals("AppointmentDTO.Id", dtoAppointment.getId(), appointment.getId());
-		assertEquals("Appointment.StartDate", appointment.getStartDate(), dtoAppointment.getStartDate());
-		assertEquals("Appointment.EndDate", appointment.getEndDate(), dtoAppointment.getEndDate());
-		assertEquals("AppointmentDTO.Location", dtoAppointment.getDescription(), appointment.getDescription().getString());
-		assertEquals("AppointmentDTO.AppointmentRequestId", dtoAppointment.getRequestId(),
+	public static void assertVoteOptionDTO(VoteOptionDTO dtoAppointment, Appointment appointment) {
+		assertEquals("VoteOptionDTO.Id", dtoAppointment.getId(), appointment.getId());
+		assertEquals("VoteOption.StartDate", appointment.getStartDate(), dtoAppointment.getStartDate());
+		assertEquals("VoteOption.EndDate", appointment.getEndDate(), dtoAppointment.getEndDate());
+		assertEquals("VoteOption.Location", dtoAppointment.getDescription(), appointment.getDescription().getString());
+		assertEquals("VoteOptionDTO.AppointmentRequestId", dtoAppointment.getRequestId(),
 				appointment.getAppointmentRequest().getId());
 	}
 

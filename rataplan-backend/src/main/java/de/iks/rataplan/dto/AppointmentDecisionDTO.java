@@ -8,15 +8,15 @@ public class AppointmentDecisionDTO implements Serializable {
 
     private static final long serialVersionUID = -1914437763717575725L;
     
-    private Integer appointmentId;
+    private Integer optionId;
     private Integer appointmentMemberId;
     private Integer decision;
     private Integer participants = null;
 
-    public AppointmentDecisionDTO(Integer appointmentId, Integer appointmentMemberId, Integer decision, Integer participants) {
+    public AppointmentDecisionDTO(Integer optionId, Integer appointmentMemberId, Integer decision, Integer participants) {
         this.decision = decision;
         this.participants = participants;
-        this.appointmentId = appointmentId;
+        this.optionId = optionId;
         this.appointmentMemberId = appointmentMemberId;
     }
     
@@ -30,12 +30,12 @@ public class AppointmentDecisionDTO implements Serializable {
         //Nothing to do here
     }
 
-    public Integer getAppointmentId() {
-        return appointmentId;
+    public Integer getOptionId() {
+        return optionId;
     }
 
-    public void setAppointmentId(Integer appointmentId) {
-        this.appointmentId = appointmentId;
+    public void setOptionId(Integer optionId) {
+        this.optionId = optionId;
     }
 
     public Integer getAppointmentMemberId() {
@@ -66,7 +66,7 @@ public class AppointmentDecisionDTO implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AppointmentDecisionDTO [appointmentId=");
-		builder.append(appointmentId);
+		builder.append(optionId);
 		builder.append(", appointmentMemberId=");
 		builder.append(appointmentMemberId);
 		builder.append(", decision=");
@@ -78,6 +78,6 @@ public class AppointmentDecisionDTO implements Serializable {
 	}
     
     public void assertAddValid() {
-        if(appointmentId == null || (decision == null && participants == null)) throw new MalformedException("Missing fields");
+        if(optionId == null || (decision == null && participants == null)) throw new MalformedException("Missing fields");
     }
 }

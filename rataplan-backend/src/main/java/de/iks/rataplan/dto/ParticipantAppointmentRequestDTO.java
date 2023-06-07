@@ -20,9 +20,29 @@ public class ParticipantAppointmentRequestDTO implements Serializable {
     private String participationToken;
     private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
     private List<String> consigneeList;
-    private List<AppointmentDTO> appointments;
+    private List<VoteOptionDTO> options;
     private List<AppointmentMemberDTO> appointmentMembers;
 
+    public ParticipantAppointmentRequestDTO() {}
+    
+    public ParticipantAppointmentRequestDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+        this(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
+        this.id = id;
+    }
+    
+    public ParticipantAppointmentRequestDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<String> consigneeList) {
+        this(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
+        this.consigneeList = consigneeList;
+    }
+    
+    public ParticipantAppointmentRequestDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+        this.title = title;
+        this.description = description;
+        this.deadline = deadline;
+        this.organizerName = organizerName;
+        this.organizerMail = organizerMail;
+        this.appointmentRequestConfig = appointmentRequestConfig;
+    }
 
     public Integer getId() {
         return id;
@@ -112,12 +132,12 @@ public class ParticipantAppointmentRequestDTO implements Serializable {
         this.consigneeList = consigneeList;
     }
 
-    public List<AppointmentDTO> getAppointments() {
-        return appointments;
+    public List<VoteOptionDTO> getOptions() {
+        return options;
     }
 
-    public void setAppointments(List<AppointmentDTO> appointments) {
-        this.appointments = appointments;
+    public void setOptions(List<VoteOptionDTO> options) {
+        this.options = options;
     }
 
     public List<AppointmentMemberDTO> getAppointmentMembers() {
