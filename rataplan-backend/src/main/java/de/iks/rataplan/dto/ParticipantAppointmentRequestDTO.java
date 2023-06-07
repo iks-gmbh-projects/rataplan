@@ -1,8 +1,11 @@
 package de.iks.rataplan.dto;
 
 import de.iks.rataplan.domain.AppointmentRequestConfig;
+import de.iks.rataplan.exceptions.MalformedException;
+
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,7 +24,7 @@ public class ParticipantAppointmentRequestDTO implements Serializable {
     private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
     private List<String> consigneeList;
     private List<VoteOptionDTO> options;
-    private List<AppointmentMemberDTO> appointmentMembers;
+    private List<VoteParticipantDTO> participants;
 
     public ParticipantAppointmentRequestDTO() {}
     
@@ -140,11 +143,66 @@ public class ParticipantAppointmentRequestDTO implements Serializable {
         this.options = options;
     }
 
-    public List<AppointmentMemberDTO> getAppointmentMembers() {
-        return appointmentMembers;
+    public List<VoteParticipantDTO> getParticipants() {
+        return participants;
     }
 
-    public void setAppointmentMembers(List<AppointmentMemberDTO> appointmentMembers) {
-        this.appointmentMembers = appointmentMembers;
+    public void setParticipants(List<VoteParticipantDTO> participants) {
+        this.participants = participants;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("AppointmentRequestDTO [id=");
+        builder.append(id);
+        builder.append(", title=");
+        builder.append(title);
+        builder.append(", description=");
+        builder.append(description);
+        builder.append(", organizerName=");
+        builder.append(organizerName);
+        builder.append(", organizerMail=");
+        builder.append(organizerMail);
+        builder.append(", deadline=");
+        builder.append(deadline);
+        builder.append(", appointmentRequestConfig=");
+        builder.append(appointmentRequestConfig);
+        builder.append(", options=");
+        builder.append(options);
+        builder.append(", participants=");
+        builder.append(participants);
+        builder.append("]");
+        return builder.toString();
+    }
+    
+    private static boolean nonNullAndBlank(String s) {
+        return s != null && s.trim().isEmpty();
+    }
+    
+    private static boolean nullOrBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+    
+    public void assertCreationValid() {
+        if(id != null ||
+            nullOrBlank(title) ||
+            nonNullAndBlank(description) ||
+            nonNullAndBlank(organizerName) ||
+            nonNullAndBlank(organizerMail) ||
+            deadline == null ||
+            appointmentRequestConfig == null ||
+            options == null ||
+            options.isEmpty() ||
+            (participants != null && !participants.isEmpty())
+        ) throw new MalformedException("Missing or invalid input fields");
+        appointmentRequestConfig.assertCreationValid();
+        options.forEach(a -> a.assertValid(appointmentRequestConfig.getAppointmentConfig()));
+    }
+    
+    public void defaultNullValues() {
+        if(this.consigneeList == null) this.consigneeList = new ArrayList<>();
+        if(this.options == null) this.options = new ArrayList<>();
+        if(this.participants == null) this.participants = new ArrayList<>();
     }
 }

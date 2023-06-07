@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppointmentMemberDTO implements Serializable {
+public class VoteParticipantDTO implements Serializable {
 
     private static final long serialVersionUID = 359333166152845707L;
 
@@ -16,11 +16,11 @@ public class AppointmentMemberDTO implements Serializable {
     private String name;
     private List<VoteDecisionDTO> decisions = new ArrayList<>();
 
-    public AppointmentMemberDTO(String name) {
+    public VoteParticipantDTO(String name) {
         this.name = name;
     }
 
-    public AppointmentMemberDTO() {
+    public VoteParticipantDTO() {
         //Nothing to do here
     }
 

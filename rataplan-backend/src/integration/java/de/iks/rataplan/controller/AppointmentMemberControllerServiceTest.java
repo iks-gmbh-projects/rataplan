@@ -10,7 +10,7 @@ import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.IntegrationConfig;
 import de.iks.rataplan.domain.AuthUser;
 import de.iks.rataplan.dto.VoteDecisionDTO;
-import de.iks.rataplan.dto.AppointmentMemberDTO;
+import de.iks.rataplan.dto.VoteParticipantDTO;
 import de.iks.rataplan.utils.CookieBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,11 +88,11 @@ public class AppointmentMemberControllerServiceTest {
     @DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + CREATE
             + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-    public void addAppointmentMember() throws Exception {
+    public void addVoteParticipant() throws Exception {
 
-        AppointmentMemberDTO appointmentMemberDTO = createSimpleAppointmentMember();
+        VoteParticipantDTO voteParticipantDTO = createSimpleVoteParticipant();
 
-        String json = gson.toJson(appointmentMemberDTO);
+        String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(VERSION + APPOINTMENTREQUESTS + "/1" + APPOINTMENTMEMBERS);
@@ -107,12 +107,12 @@ public class AppointmentMemberControllerServiceTest {
     @DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + CREATE
             + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-    public void addAppointmentMemberWithUserId() throws Exception {
+    public void addVoteParticipantWithUserId() throws Exception {
 
-        AppointmentMemberDTO appointmentMemberDTO = createSimpleAppointmentMember();
-        appointmentMemberDTO.setUserId(1);
+        VoteParticipantDTO voteParticipantDTO = createSimpleVoteParticipant();
+        voteParticipantDTO.setUserId(1);
 
-        String json = gson.toJson(appointmentMemberDTO);
+        String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(VERSION + APPOINTMENTREQUESTS + "/1" + APPOINTMENTMEMBERS);
@@ -127,13 +127,13 @@ public class AppointmentMemberControllerServiceTest {
     @DatabaseSetup(FILE_PATH + CREATE + JWTTOKEN + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + CREATE + JWTTOKEN
             + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-    public void addAppointmentMemberWithJwtToken() throws Exception {
+    public void addVoteParticipantWithJwtToken() throws Exception {
 		this.setMockRestServiceServer(AUTHUSER_1);
 
-		AppointmentMemberDTO appointmentMemberDTO = createSimpleAppointmentMember();
-		appointmentMemberDTO.setName(AUTHUSER_1.getUsername());
+		VoteParticipantDTO voteParticipantDTO = createSimpleVoteParticipant();
+		voteParticipantDTO.setName(AUTHUSER_1.getUsername());
 
-		String json = gson.toJson(appointmentMemberDTO);
+		String json = gson.toJson(voteParticipantDTO);
 
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(VERSION + APPOINTMENTREQUESTS + "/1" + APPOINTMENTMEMBERS);
@@ -147,13 +147,13 @@ public class AppointmentMemberControllerServiceTest {
 
     @Test
     @DatabaseSetup(FILE_PATH + CREATE + JWTTOKEN + PARTICIPATE_TWICE + FILE_INITIAL)
-    public void addAppointmentMemberWithJwtTokenTwice() throws Exception {
+    public void addVoteParticipantWithJwtTokenTwice() throws Exception {
         this.setMockRestServiceServer(AUTHUSER_1);
 
-        AppointmentMemberDTO appointmentMemberDTO = createSimpleAppointmentMember();
-        appointmentMemberDTO.setName(AUTHUSER_1.getUsername());
+        VoteParticipantDTO voteParticipantDTO = createSimpleVoteParticipant();
+        voteParticipantDTO.setName(AUTHUSER_1.getUsername());
 
-        String json = gson.toJson(appointmentMemberDTO);
+        String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(VERSION + APPOINTMENTREQUESTS + "/1" + APPOINTMENTMEMBERS);
@@ -165,18 +165,18 @@ public class AppointmentMemberControllerServiceTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
-    private AppointmentMemberDTO createSimpleAppointmentMember() {
-		AppointmentMemberDTO appointmentMemberDTO = new AppointmentMemberDTO();
-		appointmentMemberDTO.setAppointmentRequestId(1);
-		appointmentMemberDTO.setName("IKS");
+    private VoteParticipantDTO createSimpleVoteParticipant() {
+		VoteParticipantDTO voteParticipantDTO = new VoteParticipantDTO();
+		voteParticipantDTO.setAppointmentRequestId(1);
+		voteParticipantDTO.setName("IKS");
 
 		List<VoteDecisionDTO> decisions = new ArrayList<>();
 
 		decisions.add(new VoteDecisionDTO(1, 1, 0, null));
 		decisions.add(new VoteDecisionDTO(2, 1, 1, null));
 
-		appointmentMemberDTO.setDecisions(decisions);
-		return appointmentMemberDTO;
+		voteParticipantDTO.setDecisions(decisions);
+		return voteParticipantDTO;
 	}
 
     private void setMockRestServiceServer(AuthUser authUser) {

@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import de.iks.rataplan.dto.AppointmentMemberDTO;
+import de.iks.rataplan.dto.VoteParticipantDTO;
 import de.iks.rataplan.dto.AppointmentRequestDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
@@ -124,18 +124,18 @@ public class Controller {
 //        return new ResponseEntity<>(updatedAppointmentRequestDTO, HttpStatus.ACCEPTED);
 //    }
 
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = AppointmentMemberDTO.class),
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = VoteParticipantDTO.class),
             @ApiResponse(code = 400, message = "AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.", response = MalformedException.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @PostMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AppointmentMemberDTO> addAppointmentMember(@PathVariable String participationToken,
-                                                                     @RequestBody AppointmentMemberDTO appointmentMemberDTO,
+    public ResponseEntity<VoteParticipantDTO> addVoteParticipant(@PathVariable String participationToken,
+                                                                     @RequestBody VoteParticipantDTO voteParticipantDTO,
                                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
-        AppointmentMemberDTO addedAppointmentMemberDTO = appointmentMemberControllerService
-                .createAppointmentMember(appointmentMemberDTO, participationToken, jwtToken);
-        return new ResponseEntity<>(addedAppointmentMemberDTO, HttpStatus.CREATED);
+        VoteParticipantDTO addedVoteParticipantDTO = appointmentMemberControllerService
+                .createParticipant(voteParticipantDTO, participationToken, jwtToken);
+        return new ResponseEntity<>(addedVoteParticipantDTO, HttpStatus.CREATED);
     }
 
     @ApiResponses(value = {@ApiResponse(code = 204, message = "NO_CONTENT"),
@@ -146,7 +146,7 @@ public class Controller {
     public ResponseEntity<?> deleteAppointmentMember(@PathVariable String participationToken, @PathVariable Integer memberId,
                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
-        appointmentMemberControllerService.deleteAppointmentMember(participationToken, memberId, jwtToken);
+        appointmentMemberControllerService.deleteParticipant(participationToken, memberId, jwtToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -156,12 +156,13 @@ public class Controller {
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @PutMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AppointmentMemberDTO> updateAppointmentMember(@PathVariable String participationToken,
-                                                                        @PathVariable Integer memberId, @RequestBody AppointmentMemberDTO appointmentMemberDTO,
+    public ResponseEntity<VoteParticipantDTO> updateVoteParticipant(@PathVariable String participationToken,
+                                                                        @PathVariable Integer memberId, @RequestBody VoteParticipantDTO voteParticipantDTO,
                                                                         @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
-        appointmentMemberDTO.assertUpdateValid();
-        AppointmentMemberDTO updatedAppointmentMemberDTO = appointmentMemberControllerService.updateAppointmentMember(participationToken, memberId, appointmentMemberDTO, jwtToken);
-        return new ResponseEntity<>(updatedAppointmentMemberDTO, HttpStatus.OK);
+        voteParticipantDTO.assertUpdateValid();
+        VoteParticipantDTO updatedVoteParticipantDTO = appointmentMemberControllerService.updateParticipant(participationToken, memberId,
+            voteParticipantDTO, jwtToken);
+        return new ResponseEntity<>(updatedVoteParticipantDTO, HttpStatus.OK);
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),

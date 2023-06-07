@@ -132,12 +132,12 @@ public class AppointmentRequestDTOTest {
 
 		AppointmentMember[] memberList = appointmentRequest.getAppointmentMembers()
 				.toArray(new AppointmentMember[appointmentRequest.getAppointmentMembers().size()]);
-		AppointmentMemberDTO[] memberDTOList = dtoRequest.getAppointmentMembers()
-				.toArray(new AppointmentMemberDTO[dtoRequest.getAppointmentMembers().size()]);
+		VoteParticipantDTO[] participantDTOList = dtoRequest.getParticipants()
+				.toArray(new VoteParticipantDTO[dtoRequest.getParticipants().size()]);
 
 		for (int i = 0; i < memberList.length; i++) {
 			assertEquals(memberList[i].getAppointmentDecisions().size(),
-					memberDTOList[i].getDecisions().size());
+					participantDTOList[i].getDecisions().size());
 		}
 	}
 
@@ -153,40 +153,40 @@ public class AppointmentRequestDTOTest {
 		VoteOptionDTO appointment2 = new VoteOptionDTO(new Timestamp(321321321L), "Berufsschule D�sseldorf");
 		appointment2.setId(2);
 
-		AppointmentMemberDTO member1 = new AppointmentMemberDTO("Ingo");
-		AppointmentMemberDTO member2 = new AppointmentMemberDTO("Fabian");
+		VoteParticipantDTO participant1 = new VoteParticipantDTO("Ingo");
+		VoteParticipantDTO participant2 = new VoteParticipantDTO("Fabian");
 
-		VoteDecisionDTO decision11 = new VoteDecisionDTO(appointment1.getId(), member1.getId(), 1, null);
-		VoteDecisionDTO decision12 = new VoteDecisionDTO(appointment1.getId(), member2.getId(), 2, null);
-		VoteDecisionDTO decision21 = new VoteDecisionDTO(appointment2.getId(), member1.getId(), 3, null);
-		VoteDecisionDTO decision22 = new VoteDecisionDTO(appointment2.getId(), member2.getId(), 0, null);
+		VoteDecisionDTO decision11 = new VoteDecisionDTO(appointment1.getId(), participant1.getId(), 1, null);
+		VoteDecisionDTO decision12 = new VoteDecisionDTO(appointment1.getId(), participant2.getId(), 2, null);
+		VoteDecisionDTO decision21 = new VoteDecisionDTO(appointment2.getId(), participant1.getId(), 3, null);
+		VoteDecisionDTO decision22 = new VoteDecisionDTO(appointment2.getId(), participant2.getId(), 0, null);
 
 		appointment2.setRequestId(dtoRequest.getId());
 		appointment1.setRequestId(dtoRequest.getId());
 
-		member1.setAppointmentRequestId(dtoRequest.getId());
-		member1.getDecisions().add(decision11);
-		member1.getDecisions().add(decision21);
+		participant1.setAppointmentRequestId(dtoRequest.getId());
+		participant1.getDecisions().add(decision11);
+		participant1.getDecisions().add(decision21);
 
-		member2.setAppointmentRequestId(dtoRequest.getId());
-		member2.getDecisions().add(decision12);
-		member2.getDecisions().add(decision22);
+		participant2.setAppointmentRequestId(dtoRequest.getId());
+		participant2.getDecisions().add(decision12);
+		participant2.getDecisions().add(decision22);
 
 		dtoRequest.setOptions(Arrays.asList(appointment1, appointment2));
 
-		dtoRequest.setAppointmentMembers(Arrays.asList(member1, member2));
+		dtoRequest.setParticipants(Arrays.asList(participant1, participant2));
 
 		AppointmentRequest appointmentRequest = mapper.map(dtoRequest, AppointmentRequest.class);
 
 		RataplanAssert.assertAppointmentRequestDTO(dtoRequest, appointmentRequest);
 
-		AppointmentMemberDTO[] memberDTOList = dtoRequest.getAppointmentMembers()
-				.toArray(new AppointmentMemberDTO[dtoRequest.getAppointmentMembers().size()]);
+		VoteParticipantDTO[] participantDTOList = dtoRequest.getParticipants()
+				.toArray(new VoteParticipantDTO[dtoRequest.getParticipants().size()]);
 		AppointmentMember[] memberList = appointmentRequest.getAppointmentMembers()
 				.toArray(new AppointmentMember[appointmentRequest.getAppointmentMembers().size()]);
 
-		for (int i = 0; i < memberDTOList.length; i++) {
-			assertEquals(memberDTOList[i].getDecisions().size(),
+		for (int i = 0; i < participantDTOList.length; i++) {
+			assertEquals(participantDTOList[i].getDecisions().size(),
 					memberList[i].getAppointmentDecisions().size());
 		}
 	}
