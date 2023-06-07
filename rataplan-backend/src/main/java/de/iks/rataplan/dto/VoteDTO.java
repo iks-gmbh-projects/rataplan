@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ParticipantAppointmentRequestDTO implements Serializable {
+public class VoteDTO implements Serializable {
 
     private static final long serialVersionUID = 8169186536220940206L;
     private Integer id;
@@ -26,19 +26,19 @@ public class ParticipantAppointmentRequestDTO implements Serializable {
     private List<VoteOptionDTO> options;
     private List<VoteParticipantDTO> participants;
 
-    public ParticipantAppointmentRequestDTO() {}
+    public VoteDTO() {}
     
-    public ParticipantAppointmentRequestDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+    public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
         this(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
         this.id = id;
     }
     
-    public ParticipantAppointmentRequestDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<String> consigneeList) {
+    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<String> consigneeList) {
         this(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
         this.consigneeList = consigneeList;
     }
     
-    public ParticipantAppointmentRequestDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
         this.title = title;
         this.description = description;
         this.deadline = deadline;

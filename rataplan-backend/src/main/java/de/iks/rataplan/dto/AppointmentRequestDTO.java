@@ -6,7 +6,7 @@ import java.util.List;
 
 import de.iks.rataplan.domain.AppointmentRequestConfig;
 
-public class AppointmentRequestDTO extends ParticipantAppointmentRequestDTO implements Serializable {
+public class AppointmentRequestDTO extends VoteDTO implements Serializable {
 
     private static final long serialVersionUID = 8169186536220940206L;
 

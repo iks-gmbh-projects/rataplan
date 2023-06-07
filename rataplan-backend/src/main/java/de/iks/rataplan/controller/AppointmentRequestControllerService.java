@@ -1,16 +1,16 @@
 package de.iks.rataplan.controller;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.dto.ParticipantAppointmentRequestDTO;
+import de.iks.rataplan.dto.VoteDTO;
 import de.iks.rataplan.restservice.AuthService;
 import de.iks.rataplan.domain.BackendUserAccess;
 import de.iks.rataplan.exceptions.RequiresAuthorizationException;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -85,7 +85,7 @@ public class AppointmentRequestControllerService {
 		}
 
 		AppointmentRequest newAppointmentRequest = modelMapper.map(appointmentRequestDTO, AppointmentRequest.class);
-		if(appointmentRequestDTO.getAppointments() == null) newAppointmentRequest.setAppointments(null);
+		if(appointmentRequestDTO.getOptions() == null) newAppointmentRequest.setAppointments(null);
 		newAppointmentRequest = appointmentRequestService.updateAppointmentRequest(dbAppointmentRequest, newAppointmentRequest);
 
 		return modelMapper.map(newAppointmentRequest, AppointmentRequestDTO.class);
@@ -103,16 +103,10 @@ public class AppointmentRequestControllerService {
 		List<AppointmentRequest> appointmentRequests = appointmentRequestService
 				.getAppointmentRequestsForUser(authUser.getId());
 
-		List<AppointmentRequestDTO> appointmentRequestsDTO = new ArrayList<>();
-
-		for (AppointmentRequest appointmentRequest : appointmentRequests) {
-			appointmentRequestsDTO.add(modelMapper.map(appointmentRequest, AppointmentRequestDTO.class));
-		}
-
-		return appointmentRequestsDTO;
+		return modelMapper.map(appointmentRequests, new TypeToken<List<AppointmentRequestDTO>>() {}.getType());
 	}
 
-	public List<ParticipantAppointmentRequestDTO> getAppointmentRequestsWhereUserParticipates(String jwtToken) {
+	public List<VoteDTO> getVotesWhereUserParticipates(String jwtToken) {
 		if (jwtToken == null) {
 			throw new ForbiddenException();
 		}
@@ -122,22 +116,16 @@ public class AppointmentRequestControllerService {
 		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
 		AuthUser authUser = authServiceResponse.getBody();
 
-		List<AppointmentRequest> appointmentRequests = appointmentRequestService
+		List<AppointmentRequest> votes = appointmentRequestService
 				.getAppointmentRequestsWhereUserTakesPartIn(authUser.getId());
 
-		List<ParticipantAppointmentRequestDTO> appointmentRequestsDTO = new ArrayList<>();
-
-        for (AppointmentRequest appointmentRequest : appointmentRequests) {
-            appointmentRequestsDTO.add(modelMapper.map(appointmentRequest, ParticipantAppointmentRequestDTO.class));
-        }
-
-        return appointmentRequestsDTO;
+        return modelMapper.map(votes, new TypeToken<List<VoteDTO>>() {}.getType());
     }
 
-    public ParticipantAppointmentRequestDTO getAppointmentRequestByParticipationToken(String participationToken) {
+    public VoteDTO getVoteByParticipationToken(String participationToken) {
         AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
 	
-		return modelMapper.map(appointmentRequest, ParticipantAppointmentRequestDTO.class);
+		return modelMapper.map(appointmentRequest, VoteDTO.class);
     }
 
 	public AppointmentRequestDTO getAppointmentRequestByEditToken(String editToken, String jwtToken) {
