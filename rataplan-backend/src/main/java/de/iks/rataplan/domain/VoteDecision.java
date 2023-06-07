@@ -125,7 +125,7 @@ public class VoteDecision implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentDecision [appointmentDecisionId=");
+		builder.append("VoteDecision [voteDecisionId=");
 		builder.append(voteDecisionId);
 		builder.append(", decision=");
 		builder.append(decision);

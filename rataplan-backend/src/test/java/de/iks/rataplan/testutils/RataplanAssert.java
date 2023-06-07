@@ -53,7 +53,7 @@ public class RataplanAssert {
 		assertEquals("Vote.deadline", request.getDeadline(), dtoRequest.getDeadline());
 		assertEquals("Vote.organizerMail", request.getOrganizerMail().getString(), dtoRequest.getOrganizerMail());
 		assertEquals("Vote.id", request.getId(), dtoRequest.getId());
-		assertEquals("Vote.config.appointmentType", request.getVoteConfig().getVoteOptionConfig(),
+		assertEquals("Vote.config.voteOptionConfig", request.getVoteConfig().getVoteOptionConfig(),
 				dtoRequest.getVoteConfig().getVoteOptionConfig());
 		assertEquals("Vote.config.decisionType", request.getVoteConfig().getDecisionType(),
 				dtoRequest.getVoteConfig().getDecisionType());
@@ -74,11 +74,11 @@ public class RataplanAssert {
 		assertEquals("VoteDTO.deadline", dtoRequest.getDeadline(), request.getDeadline());
 		assertEquals("VoteDTO.organizerMail", dtoRequest.getOrganizerMail(), request.getOrganizerMail().getString());
 		assertEquals("VoteDTO.id", dtoRequest.getId(), request.getId());
-		assertEquals("VoteDTO.config.appointmentType", dtoRequest.getVoteConfig().getVoteOptionConfig(),
+		assertEquals("VoteDTO.config.voteOptionConfig", dtoRequest.getVoteConfig().getVoteOptionConfig(),
 				request.getVoteConfig().getVoteOptionConfig());
 		assertEquals("VoteDTO.config.decisionType", dtoRequest.getVoteConfig().getDecisionType(),
 				request.getVoteConfig().getDecisionType());
-		if(dtoRequest.getOptions() == null) assertNull("VoteDTO.appointments", request.getOptions());
+		if(dtoRequest.getOptions() == null) assertNull("VoteDTO.options", request.getOptions());
 		else assertEquals("VoteDTO.options.size", dtoRequest.getOptions().size(),
 				request.getOptions().size());
 		if(dtoRequest.getParticipants() == null) assertNull("VoteDTO.participants", request.getParticipants());

@@ -44,8 +44,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
 
             return voteParticipantRepository.saveAndFlush(voteParticipant);
         } else {
-            throw new MalformedException(
-                    "AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.");
+            throw new MalformedException("VoteDecisions don't fit the DecisionType in the Vote.");
         }
     }
 
@@ -67,8 +66,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
         this.validateExpirationDate(vote);
 
         if (!vote.validateDecisionsForParticipant(newVoteParticipant)) {
-        	throw new MalformedException(
-        			"AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.");
+        	throw new MalformedException("VoteDecisions don't fit the DecisionType in the Vote.");
         }
 
         dbVoteParticipant.setName(newVoteParticipant.getName());
@@ -87,7 +85,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     
     /**
      * updates the oldDecisions decisions to the new ones based on the
-     * appointmentId's
+     * voteOptionId's
      *
      * @param oldDecisions
      * @param newDecisions
@@ -106,7 +104,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     
     private void validateExpirationDate(Vote vote) {
     	if (vote.isNotified()) {
-			throw new ForbiddenException("Appointmentrequest ist expired!");
+			throw new ForbiddenException("Vote is expired!");
 		}
     }
 }

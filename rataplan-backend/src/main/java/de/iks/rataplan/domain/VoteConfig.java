@@ -98,7 +98,7 @@ public class VoteConfig {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentRequestConfig [appointmentType=");
+		builder.append("VoteConfig [voteOptionConfig=");
 		builder.append(voteOptionConfig);
 		builder.append(", decisionType=");
 		builder.append(decisionType);

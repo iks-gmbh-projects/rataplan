@@ -41,9 +41,9 @@ public class VoteServiceImpl implements VoteService {
     @Override
     public Vote createVote(Vote vote) {
         if (!vote.getParticipants().isEmpty()) {
-            throw new MalformedException("Can not create AppointmentRequest with members!");
+            throw new MalformedException("Can not create Vote with participants!");
         } else if (vote.getOptions().isEmpty()) {
-            throw new MalformedException("Can not create AppointmentRequest without appointments!");
+            throw new MalformedException("Can not create Vote without options!");
         }
 
 		for (VoteOption voteOption : vote.getOptions()) {
@@ -54,7 +54,7 @@ public class VoteServiceImpl implements VoteService {
 		for (VoteOption voteOption : vote.getOptions()) {
 			if (!voteOption.validateVoteOptionConfig(
 					vote.getVoteConfig().getVoteOptionConfig())) {
-				throw new MalformedException("Can not create AppointmentRequest with different AppointmentTypes.");
+				throw new MalformedException("Can not create Vote with mismatching configurations.");
 			}
 			voteOption.setId(null);
 		}
@@ -83,7 +83,7 @@ public class VoteServiceImpl implements VoteService {
 	public Vote getVoteById(Integer requestId) {
 		Vote vote = voteRepository.findOne(requestId);
 		if (vote == null) {
-			throw new ResourceNotFoundException("Could not find AppointmentRequest with id: " + requestId);
+			throw new ResourceNotFoundException("Could not find Vote with id: " + requestId);
 		}
 		return vote;
 	}
@@ -99,14 +99,14 @@ public class VoteServiceImpl implements VoteService {
         try {
             requestId = Integer.parseInt(participationToken);
         } catch (NumberFormatException e) {
-            throw new ResourceNotFoundException("AppointmentRequest by Token does not exist");
+            throw new ResourceNotFoundException("Vote by Token does not exist");
         }
 
         Vote voteById = getVoteById(requestId);
         if (voteById.getParticipationToken() == null) {
             return voteById;
         }
-        throw new ResourceNotFoundException("Could not find AppointmentRequest with participationToken: " + participationToken);
+        throw new ResourceNotFoundException("Could not find Vote with participationToken: " + participationToken);
     }
 
 	@Override
@@ -115,7 +115,7 @@ public class VoteServiceImpl implements VoteService {
 		if (vote != null) {
 			return vote;
 		}
-		throw new ResourceNotFoundException("Could not find AppointmentRequest with editToken: " + editToken);
+		throw new ResourceNotFoundException("Could not find Vote with editToken: " + editToken);
 	}
 
     @Override
@@ -172,7 +172,7 @@ public class VoteServiceImpl implements VoteService {
 		Vote ret;
 		
 		if(newVote.getOptions() != null && newVote.getOptions() != dbVote.getOptions()) {
-			if(newVote.getOptions().isEmpty()) throw new MalformedException("Must have at least 1 Appointment");
+			if(newVote.getOptions().isEmpty()) throw new MalformedException("Must have at least 1 VoteOption");
 			
 			voteRepository.saveAndFlush(dbVote);
 			
@@ -201,7 +201,7 @@ public class VoteServiceImpl implements VoteService {
 		for (VoteOption voteOption : newVoteOptions) {
 			if (!voteOption
 					.validateVoteOptionConfig(oldRequest.getVoteConfig().getVoteOptionConfig())) {
-				throw new MalformedException("AppointmentType does not fit the AppointmentRequest.");
+				throw new MalformedException("Option does not fit the VoteConfig.");
 			}
 
 			if (voteOption.getId() == null || !voteOptionRepository.exists(voteOption.getId())) {

@@ -67,7 +67,7 @@ public class VoteParticipantDTO implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentMemberDTO [appointmentDecisions=");
+		builder.append("VoteParticipantDTO [decisions=");
 		builder.append(decisions);
 		builder.append("]");
 		return builder.toString();

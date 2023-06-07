@@ -17,18 +17,18 @@ public class LogMailServiceImpl implements MailService {
     
     @Override
     public void sendMailForVoteCreation(Vote vote) {
-        log.info("Appointment request created link: {}", baseUrl + "/appointmentrequest/" + vote.getId());
-        log.info("Appointment request created admin link: {}", baseUrl + "/appointmentrequest/" + vote.getId() + "/edit");
+        log.info("Vote created link: {}", baseUrl + "/vote/" + vote.getId());
+        log.info("Vote created admin link: {}", baseUrl + "/vote/" + vote.getId() + "/edit");
     }
     
     @Override
     public void sendMailForVoteExpired(Vote vote) {
-        log.info("Appointment request expired link: {}", baseUrl + "/appointmentrequest/" + vote.getId());
+        log.info("Vote expired link: {}", baseUrl + "/vote/" + vote.getId());
     }
     
     @Override
     public void sendMailForVoteInvitations(Vote vote) {
-        log.info("Appointment request invitation link: {}", baseUrl + "/appointmentrequest/" + vote.getId());
+        log.info("Vote invitation link: {}", baseUrl + "/vote/" + vote.getId());
     }
     
     @Override

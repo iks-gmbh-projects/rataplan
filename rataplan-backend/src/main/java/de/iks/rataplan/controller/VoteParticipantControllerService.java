@@ -54,11 +54,9 @@ public class VoteParticipantControllerService {
 			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
 			authUser = authServiceResponse.getBody();
 			if (isUserParticipantInVote(vote, authUser)) {
-				throw new RataplanException("User already participated in this appointmentRequest");
+				throw new RataplanException("User already participated in this vote");
 			}
-			//backendUser = backendUserService.getBackendUserByAuthUserId(authUser.getId());
 		}
-//				authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		
 		this.createValidDTOParticipant(vote, voteParticipantDTO, authUser);
 		voteParticipantDTO.assertAddValid();
@@ -121,7 +119,7 @@ public class VoteParticipantControllerService {
 	private void validateAccessToParticipant(VoteParticipant voteParticipant, AuthUser authUser) {
 
 		if (voteParticipant == null) {
-			throw new ResourceNotFoundException("Appointmentmember does not exist!");
+			throw new ResourceNotFoundException("Participant does not exist!");
 		}
 		
 		if (voteParticipant.getUserId() == null || (authUser != null && Objects.equals(

@@ -44,7 +44,7 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = VoteDTO.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
-            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
+            @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @GetMapping(value = "/votes/{participationToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VoteDTO> getVoteByParticipationToken(@PathVariable String participationToken,
@@ -55,23 +55,9 @@ public class Controller {
         return new ResponseEntity<>(voteDTO, HttpStatus.OK);
     }
 
-//    @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),
-//            @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
-//            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
-//            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-//    @RequestMapping(value = "/appointmentRequests/{requestId}/edit", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    public ResponseEntity<AppointmentRequestDTO> getAppointmentRequestByIdForEdit(@PathVariable Integer requestId,
-//                                                                                  @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken,
-//                                                                                  @RequestHeader(value = ACCESS_TOKEN, required = false) String accessToken) {
-//
-//        AppointmentRequestDTO appointmentRequestDTO = appointmentRequestControllerService
-//                .getAppointmentRequestById(true, requestId, jwtToken, accessToken);
-//        return new ResponseEntity<>(appointmentRequestDTO, HttpStatus.OK);
-//    }
-
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
-            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
+            @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @GetMapping(value = "/votes/edit/{editToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<CreatorVoteDTO> getVoteByEditToken(@PathVariable String editToken,
@@ -107,27 +93,10 @@ public class Controller {
         return new ResponseEntity<>(createdCreatorVoteDTO, HttpStatus.CREATED);
     }
 
-//    @ApiResponses(value = {@ApiResponse(code = 202, message = "ACCEPTED", response = AppointmentRequestDTO.class),
-//            @ApiResponse(code = 400, message = "There are no Appointments in this AppointmentRequest.", response = MalformedException.class),
-//            @ApiResponse(code = 400, message = "AppointmentType does not fit the AppointmentRequest.", response = MalformedException.class),
-//            @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
-//            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
-//            @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-//    @RequestMapping(value = "/appointmentRequests/{requestId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    public ResponseEntity<AppointmentRequestDTO> updateAppointmentRequest(@PathVariable Integer requestId,
-//                                                                          @RequestBody AppointmentRequestDTO appointmentRequestDTO,
-//                                                                          @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken,
-//                                                                          @RequestHeader(value = ACCESS_TOKEN, required = false) String accessToken) {
-//
-//        AppointmentRequestDTO updatedAppointmentRequestDTO = appointmentRequestControllerService
-//                .updateAppointmentRequest(appointmentRequestDTO, requestId, jwtToken, accessToken);
-//        return new ResponseEntity<>(updatedAppointmentRequestDTO, HttpStatus.ACCEPTED);
-//    }
-
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = VoteParticipantDTO.class),
-            @ApiResponse(code = 400, message = "AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.", response = MalformedException.class),
+            @ApiResponse(code = 400, message = "VoteDecisions don't fit the DecisionType in the Vote.", response = MalformedException.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
-            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
+            @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @PostMapping(value = "/votes/{participationToken}/participants", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VoteParticipantDTO> addVoteParticipant(@PathVariable String participationToken,
@@ -140,7 +109,7 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 204, message = "NO_CONTENT"),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
-            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
+            @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @DeleteMapping(value = "/votes/{participationToken}/participants/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> deleteVoteParticipant(@PathVariable String participationToken, @PathVariable Integer memberId,
@@ -151,9 +120,9 @@ public class Controller {
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = VoteParticipantDTO.class),
-            @ApiResponse(code = 400, message = "AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.", response = MalformedException.class),
+            @ApiResponse(code = 400, message = "VoteDecisions don't fit the DecisionType in the Vote.", response = MalformedException.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
-            @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
+            @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @PutMapping(value = "/votes/{participationToken}/participants/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VoteParticipantDTO> updateVoteParticipant(@PathVariable String participationToken,

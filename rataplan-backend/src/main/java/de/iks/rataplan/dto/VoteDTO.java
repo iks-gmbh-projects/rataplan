@@ -154,7 +154,7 @@ public class VoteDTO implements Serializable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("AppointmentRequestDTO [id=");
+        builder.append("VoteDTO [id=");
         builder.append(id);
         builder.append(", title=");
         builder.append(title);
@@ -166,7 +166,7 @@ public class VoteDTO implements Serializable {
         builder.append(organizerMail);
         builder.append(", deadline=");
         builder.append(deadline);
-        builder.append(", appointmentRequestConfig=");
+        builder.append(", voteConfig=");
         builder.append(voteConfig);
         builder.append(", options=");
         builder.append(options);

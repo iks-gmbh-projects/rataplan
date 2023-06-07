@@ -62,9 +62,9 @@ public class VoteOptionConfig {
 	}
 	
 	public void assertValid() {
-		if(!startDate && (startTime || endDate)) throw new MalformedException("Invalid appointment config");
-		if(!startTime && endTime) throw new MalformedException("Invalid appointment config");
+		if(!startDate && (startTime || endDate)) throw new MalformedException("Invalid vote config [missing startDate]");
+		if(!startTime && endTime) throw new MalformedException("Invalid vote config [missing startTime]");
 		if(startDate || description || url) return;
-		throw new MalformedException("Invalid appointment config");
+		throw new MalformedException("Invalid vote config");
 	}
 }

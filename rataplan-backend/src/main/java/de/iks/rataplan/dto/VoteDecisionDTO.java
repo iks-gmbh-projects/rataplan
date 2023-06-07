@@ -20,12 +20,6 @@ public class VoteDecisionDTO implements Serializable {
         this.participantId = participantId;
     }
     
-//    public AppointmentDecisionDTO(Integer appointmentId, Integer appointmentMemberId, Integer participants) {
-//        this.appointmentId = appointmentId;
-//        this.appointmentMemberId = appointmentMemberId;
-//        this.participants = participants;
-//    }
-
     public VoteDecisionDTO() {
         //Nothing to do here
     }
@@ -65,9 +59,9 @@ public class VoteDecisionDTO implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentDecisionDTO [appointmentId=");
+		builder.append("VoteDecisionDTO [optionId=");
 		builder.append(optionId);
-		builder.append(", appointmentMemberId=");
+		builder.append(", participantId=");
 		builder.append(participantId);
 		builder.append(", decision=");
 		builder.append(decision);

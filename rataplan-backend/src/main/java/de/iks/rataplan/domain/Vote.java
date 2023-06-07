@@ -261,8 +261,8 @@ public class Vote implements Serializable {
 	}
 
 	/**
-     * checks if the AppointmentDecisions have the same size and appointmentId's
-     * than the corresponding Appointments in this AppointmentRequest
+     * checks if the VoteDecisions have the same size and voteOptionId's
+     * than the corresponding VoteOptions in this Vote
      *
      * @param voteParticipant
      * @return
@@ -289,7 +289,7 @@ public class Vote implements Serializable {
 	}
 	
 	/**
-	 * checks if the given AppointmentDecision fits the DecisionType in this AppointmentRequest
+	 * checks if the given VoteDecision fits the DecisionType in this Vote
 	 * @param decision
 	 */
     private void decisionTypeVerification(VoteDecision decision) {
@@ -315,7 +315,7 @@ public class Vote implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AppointmentRequest [\nid=");
+		builder.append("Vote [\nid=");
 		builder.append(id);
 		builder.append(",\ntitle=");
 		builder.append(title);
@@ -327,11 +327,11 @@ public class Vote implements Serializable {
 		builder.append(organizerName);
 		builder.append(",\norganizerMail=");
 		builder.append(organizerMail);
-		builder.append(",\nappointmentRequestConfig=\n");
+		builder.append(",\nvoteConfig=\n");
 		builder.append(voteConfig);
-		builder.append(",\nappointments=\n");
+		builder.append(",\noptions=\n");
 		builder.append(options);
-		builder.append(",\nappointmentMembers=\n");
+		builder.append(",\nparticipants=\n");
 		builder.append(participants);
 		builder.append("\n]");
 		return builder.toString();

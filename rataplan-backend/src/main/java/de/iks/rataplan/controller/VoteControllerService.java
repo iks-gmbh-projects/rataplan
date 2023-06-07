@@ -27,25 +27,11 @@ public class VoteControllerService {
 	private VoteService voteService;
 
 	@Autowired
-	private AuthorizationControllerService authorizationControllerService;
-
-/*	@Autowired
-	private BackendUserService backendUserService;*/
-
-	@Autowired
 	private AuthService authService;
 
 	@Autowired
 	private ModelMapper modelMapper;
-
-
-//	public AppointmentRequestDTO getAppointmentRequestById(boolean isEdit, Integer requestId, String jwtToken, String accessToken) {
-//
-//		AppointmentRequest appointmentRequest = authorizationControllerService.getAppointmentRequestIfAuthorized(isEdit, requestId, jwtToken, accessToken, null);
-//
-//		return modelMapper.map(appointmentRequest, AppointmentRequestDTO.class);
-//	}
-
+	
     public CreatorVoteDTO createVote(CreatorVoteDTO creatorVoteDTO, String jwtToken) {
 		creatorVoteDTO.defaultNullValues();
         //BackendUser backendUser = null;

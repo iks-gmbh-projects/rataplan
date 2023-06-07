@@ -39,7 +39,7 @@ public class TokenGeneratorService {
         } else if (length == 10) {
             vote = voteRepository.findByEditToken(token);
         } else {
-            throw new Error("appointmentRequest token does not fit the form");
+            throw new Error("vote token does not fit the form");
         }
         return vote == null;
     }

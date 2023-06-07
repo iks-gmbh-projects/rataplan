@@ -93,8 +93,8 @@ public class AppConfig {
 	/**
 	 * ModelMapper for mapping between DAO and DTO beans
 	 *
-	 * toDAO and toDTO converters are just for mapping the AppointmentDecisions.
-	 * The toDAO converter accesses the database to get the appointments
+	 * toDAO and toDTO converters are just for mapping the VoteDecisions.
+	 * The toDAO converter accesses the database to get the options
 	 * according to the id's. Keep this in mind when writing tests!
 	 *
 	 * @return ModelMapper instance

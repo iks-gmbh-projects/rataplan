@@ -202,7 +202,7 @@ public class VoteOptionRequestServiceTest {
 		Vote vote = createSimpleVote();
 		vote.setOptions(new ArrayList<>());
 
-		// has no appointments
+		// has no options
 		voteService.updateVote(oldVote, vote);
 	}
 
