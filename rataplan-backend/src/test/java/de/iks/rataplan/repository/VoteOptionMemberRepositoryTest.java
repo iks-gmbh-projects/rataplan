@@ -127,7 +127,7 @@ public class VoteOptionMemberRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void deleteAppointmentMember() throws Exception {
 		Vote vote = appointmentRequestRepository.findOne(1);
-		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
+		VoteParticipant voteParticipant = vote.getParticipantById(1);
 		vote.getParticipants().remove(voteParticipant);
 
 		appointmentRequestRepository.saveAndFlush(vote);
@@ -138,7 +138,7 @@ public class VoteOptionMemberRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + DELETE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void deleteAppointmentMemberShouldFail() throws Exception {
 		Vote vote = appointmentRequestRepository.findOne(1);
-		VoteParticipant voteParticipant = vote.getAppointmentMemberById(3);
+		VoteParticipant voteParticipant = vote.getParticipantById(3);
 		vote.getParticipants().remove(voteParticipant);
 
 		appointmentRequestRepository.saveAndFlush(vote);
@@ -151,7 +151,7 @@ public class VoteOptionMemberRepositoryTest {
 	public void updateAppointmentMemberNameAndDecision() throws Exception {
 		Vote vote = appointmentRequestRepository.findOne(1);
 
-		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
+		VoteParticipant voteParticipant = vote.getParticipantById(1);
 		voteParticipant.setName(new EncryptedString("Fritz", false));
 		voteParticipant.setVote(vote);
 
@@ -169,7 +169,7 @@ public class VoteOptionMemberRepositoryTest {
 	public void updateAppointmentMemberNameAndParticipants() throws Exception {
 		Vote vote = appointmentRequestRepository.findOne(1);
 
-		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
+		VoteParticipant voteParticipant = vote.getParticipantById(1);
 		voteParticipant.setName(new EncryptedString("Fritz", false));
 		voteParticipant.setVote(vote);
 

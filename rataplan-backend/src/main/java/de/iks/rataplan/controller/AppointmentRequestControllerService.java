@@ -62,7 +62,7 @@ public class AppointmentRequestControllerService {
 		if(authUser != null) vote.setAccessList(Collections.singletonList(
 			new BackendUserAccess(null, authUser.getId(), true, false)
 		));
-        voteService.createAppointmentRequest(vote);
+        voteService.createVote(vote);
 
 		return modelMapper.map(vote, CreatorVoteDTO.class);
 	}
@@ -72,7 +72,7 @@ public class AppointmentRequestControllerService {
 		if(jwtToken == null) backendUserId = null;
 		else backendUserId = authService.getUserData(jwtToken).getBody().getId();
 
-		Vote dbVote = voteService.getAppointmentRequestByEditToken(editToken);
+		Vote dbVote = voteService.getVoteByEditToken(editToken);
 		if(dbVote.getUserId() != null) {
 			if (backendUserId == null) throw new RequiresAuthorizationException();
 			if (!dbVote.getUserId().equals(backendUserId) &&
@@ -86,7 +86,7 @@ public class AppointmentRequestControllerService {
 
 		Vote newVote = modelMapper.map(creatorVoteDTO, Vote.class);
 		if(creatorVoteDTO.getOptions() == null) newVote.setOptions(null);
-		newVote = voteService.updateAppointmentRequest(dbVote, newVote);
+		newVote = voteService.updateVote(dbVote, newVote);
 
 		return modelMapper.map(newVote, CreatorVoteDTO.class);
 	}
@@ -101,7 +101,7 @@ public class AppointmentRequestControllerService {
 		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
 		List<Vote> votes = voteService
-				.getAppointmentRequestsForUser(authUser.getId());
+				.getVotesForUser(authUser.getId());
 
 		return modelMapper.map(votes, new TypeToken<List<CreatorVoteDTO>>() {}.getType());
 	}
@@ -117,19 +117,19 @@ public class AppointmentRequestControllerService {
 		AuthUser authUser = authServiceResponse.getBody();
 
 		List<Vote> votes = voteService
-				.getAppointmentRequestsWhereUserTakesPartIn(authUser.getId());
+				.getVotesWhereUserParticipates(authUser.getId());
 
         return modelMapper.map(votes, new TypeToken<List<VoteDTO>>() {}.getType());
     }
 
     public VoteDTO getVoteByParticipationToken(String participationToken) {
-        Vote vote = voteService.getAppointmentRequestByParticipationToken(participationToken);
+        Vote vote = voteService.getVoteByParticipationToken(participationToken);
 	
 		return modelMapper.map(vote, VoteDTO.class);
     }
 
 	public CreatorVoteDTO getVoteByEditToken(String editToken, String jwtToken) {
-		Vote vote = voteService.getAppointmentRequestByEditToken(editToken);
+		Vote vote = voteService.getVoteByEditToken(editToken);
 		
 		if(vote == null) return null;
 		if(jwtToken != null && vote.getUserId() != null) {

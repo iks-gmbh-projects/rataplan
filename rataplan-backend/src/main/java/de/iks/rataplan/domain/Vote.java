@@ -224,7 +224,7 @@ public class Vote implements Serializable {
 		this.editToken = editToken;
 	}
 
-	public VoteParticipant getAppointmentMemberById(long id) {
+	public VoteParticipant getParticipantById(long id) {
 		for (VoteParticipant member : this.getParticipants()) {
 			if (id == member.getId()) {
 				return member;

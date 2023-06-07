@@ -27,7 +27,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     private AppointmentMemberRepository appointmentMemberRepository;
 
     @Override
-    public VoteParticipant createAppointmentMember(Vote vote, VoteParticipant voteParticipant) {
+    public VoteParticipant createParticipant(Vote vote, VoteParticipant voteParticipant) {
         
         this.validateExpirationDate(vote);
 		
@@ -50,7 +50,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     }
 
 	@Override
-    public void deleteAppointmentMember(Vote vote, VoteParticipant voteParticipant) {
+    public void deleteParticipant(Vote vote, VoteParticipant voteParticipant) {
 
         this.validateExpirationDate(vote);
         
@@ -59,7 +59,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     }
 
     @Override
-    public VoteParticipant updateAppointmentMember(
+    public VoteParticipant updateParticipant(
         Vote vote, VoteParticipant dbVoteParticipant,
             VoteParticipant newVoteParticipant
     ) {
@@ -78,7 +78,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     }
     
     @Override
-    public void anonymizeAppointmentMember(int id) {
+    public void anonymizeParticipant(int id) {
         VoteParticipant member = appointmentMemberRepository.findOne(id);
         member.setName(null);
         member.setUserId(null);

@@ -5,15 +5,15 @@ import java.util.List;
 import de.iks.rataplan.domain.Vote;
 
 public interface VoteService {
-    public List<Vote> getAppointmentRequests();
-    public List<Vote> getAppointmentRequestsForUser(Integer userId);
-    public Vote getAppointmentRequestById(Integer requestId);
-    public Vote getAppointmentRequestByParticipationToken(String participationToken);
-    public Vote getAppointmentRequestByEditToken(String editToken);
-    public Vote createAppointmentRequest(Vote vote);
-    public Vote updateAppointmentRequest(Vote dbVote, Vote newVote);
-    public List<Vote> getAppointmentRequestsWhereUserTakesPartIn(Integer userId);
-    public void deleteAppointmentRequest(Vote request);
-    public void anonymizeAppointmentRequests(Integer userId);
+    public List<Vote> getVotes();
+    public List<Vote> getVotesForUser(Integer userId);
+    public Vote getVoteById(Integer requestId);
+    public Vote getVoteByParticipationToken(String participationToken);
+    public Vote getVoteByEditToken(String editToken);
+    public Vote createVote(Vote vote);
+    public Vote updateVote(Vote dbVote, Vote newVote);
+    public List<Vote> getVotesWhereUserParticipates(Integer userId);
+    public void deleteVote(Vote request);
+    public void anonymizeVotes(Integer userId);
 }
 

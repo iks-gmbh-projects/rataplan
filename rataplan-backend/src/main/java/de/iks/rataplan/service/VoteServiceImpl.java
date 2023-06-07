@@ -39,7 +39,7 @@ public class VoteServiceImpl implements VoteService {
     private TokenGeneratorService tokenGeneratorService;
 
     @Override
-    public Vote createAppointmentRequest(Vote vote) {
+    public Vote createVote(Vote vote) {
         if (!vote.getParticipants().isEmpty()) {
             throw new MalformedException("Can not create AppointmentRequest with members!");
         } else if (vote.getOptions().isEmpty()) {
@@ -75,12 +75,12 @@ public class VoteServiceImpl implements VoteService {
 	}
 
 	@Override
-	public List<Vote> getAppointmentRequests() {
+	public List<Vote> getVotes() {
 		return appointmentRequestRepository.findAll();
 	}
 
 	@Override
-	public Vote getAppointmentRequestById(Integer requestId) {
+	public Vote getVoteById(Integer requestId) {
 		Vote vote = appointmentRequestRepository.findOne(requestId);
 		if (vote == null) {
 			throw new ResourceNotFoundException("Could not find AppointmentRequest with id: " + requestId);
@@ -89,7 +89,7 @@ public class VoteServiceImpl implements VoteService {
 	}
 
     @Override
-    public Vote getAppointmentRequestByParticipationToken(String participationToken) {
+    public Vote getVoteByParticipationToken(String participationToken) {
         Vote vote = appointmentRequestRepository.findByParticipationToken(participationToken);
         if (vote != null) {
             return vote;
@@ -102,7 +102,7 @@ public class VoteServiceImpl implements VoteService {
             throw new ResourceNotFoundException("AppointmentRequest by Token does not exist");
         }
 
-        Vote appointmentRequestbyId = getAppointmentRequestById(requestId);
+        Vote appointmentRequestbyId = getVoteById(requestId);
         if (appointmentRequestbyId.getParticipationToken() == null) {
             return appointmentRequestbyId;
         }
@@ -110,7 +110,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
 	@Override
-	public Vote getAppointmentRequestByEditToken(String editToken) {
+	public Vote getVoteByEditToken(String editToken) {
 		Vote vote = appointmentRequestRepository.findByEditToken(editToken);
 		if (vote != null) {
 			return vote;
@@ -119,17 +119,17 @@ public class VoteServiceImpl implements VoteService {
 	}
 
     @Override
-    public List<Vote> getAppointmentRequestsForUser(Integer userId) {
+    public List<Vote> getVotesForUser(Integer userId) {
         return appointmentRequestRepository.findAllByUserId(userId);
     }
 
 	@Override
-	public List<Vote> getAppointmentRequestsWhereUserTakesPartIn(Integer userId) {
+	public List<Vote> getVotesWhereUserParticipates(Integer userId) {
 		return appointmentRequestRepository.findDistinctByParticipants_UserIdIn(userId);
 	}
 
 	@Override
-	public Vote updateAppointmentRequest(
+	public Vote updateVote(
 		Vote dbVote,
 			Vote newVote
 	) {
@@ -217,13 +217,13 @@ public class VoteServiceImpl implements VoteService {
 	}
 	
 	@Override
-	public void deleteAppointmentRequest(Vote request) {
+	public void deleteVote(Vote request) {
 		appointmentRequestRepository.delete(request);
 	}
 	
 	@Override
-	public void anonymizeAppointmentRequests(Integer userId) {
-		getAppointmentRequestsForUser(userId)
+	public void anonymizeVotes(Integer userId) {
+		getVotesForUser(userId)
 			.stream()
 			.peek(r -> r.setUserId(null))
 			.peek(r -> r.setOrganizerName(null))

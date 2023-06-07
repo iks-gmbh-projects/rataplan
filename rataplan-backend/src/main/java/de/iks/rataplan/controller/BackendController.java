@@ -30,29 +30,29 @@ public class BackendController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteData(@PathVariable int userId, @RequestBody(required = false) String secret) {
         //TODO validate secret
-        voteService.getAppointmentRequestsWhereUserTakesPartIn(userId)
+        voteService.getVotesWhereUserParticipates(userId)
             .stream()
             .map(Vote::getParticipants)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)
-            .forEach(voteParticipantService::anonymizeAppointmentMember);
-        voteService.getAppointmentRequestsForUser(userId)
-            .forEach(voteService::deleteAppointmentRequest);
+            .forEach(voteParticipantService::anonymizeParticipant);
+        voteService.getVotesForUser(userId)
+            .forEach(voteService::deleteVote);
         return ResponseEntity.ok(userId);
     }
     
     @PostMapping("/{userId}/anonymize")
     public ResponseEntity<?> anonymizeData(@PathVariable int userId, @RequestBody(required = false) String secret) {
         //TODO validate secret
-        voteService.getAppointmentRequestsWhereUserTakesPartIn(userId)
+        voteService.getVotesWhereUserParticipates(userId)
             .stream()
             .map(Vote::getParticipants)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)
-            .forEach(voteParticipantService::anonymizeAppointmentMember);
-        voteService.anonymizeAppointmentRequests(userId);
+            .forEach(voteParticipantService::anonymizeParticipant);
+        voteService.anonymizeVotes(userId);
         return ResponseEntity.ok(userId);
     }
 }

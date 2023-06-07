@@ -62,7 +62,7 @@ public class VoteOptionRequestServiceTest {
 	public void createAppointmentRequest() throws Exception {
 		Vote vote = createSimpleAppointmentRequest();
 
-		voteService.createAppointmentRequest(vote);
+		voteService.createVote(vote);
 	}
 
 	@Test(expected = MalformedException.class)
@@ -71,7 +71,7 @@ public class VoteOptionRequestServiceTest {
 		Vote vote = createSimpleAppointmentRequest();
 		vote.setOptions(new ArrayList<VoteOption>());
 
-		voteService.createAppointmentRequest(vote);
+		voteService.createVote(vote);
 	}
 
 	@Test(expected = MalformedException.class)
@@ -87,7 +87,7 @@ public class VoteOptionRequestServiceTest {
 
 		vote.setParticipants(voteParticipants);
 
-		voteService.createAppointmentRequest(vote);
+		voteService.createVote(vote);
 	}
 
 	@Test(expected = MalformedException.class)
@@ -103,27 +103,27 @@ public class VoteOptionRequestServiceTest {
 					vote
 				)));
 
-		voteService.createAppointmentRequest(vote);
+		voteService.createVote(vote);
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAllAppointmentRequests() throws Exception {
-		List<Vote> votes = voteService.getAppointmentRequests();
+		List<Vote> votes = voteService.getVotes();
 		assertEquals(4, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void getAppointmentRequestsNoneAvailable() throws Exception {
-		List<Vote> votes = voteService.getAppointmentRequests();
+		List<Vote> votes = voteService.getVotes();
 		assertEquals(0, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAppointmentRequestById() throws Exception {
-		Vote vote = voteService.getAppointmentRequestById(1);
+		Vote vote = voteService.getVoteById(1);
 		assertEquals(vote.getTitle().getString(), "Coding Dojo");
 		assertEquals(vote.getOptions().size(), 2);
 		assertEquals(vote.getParticipants().size(), 0);
@@ -132,21 +132,21 @@ public class VoteOptionRequestServiceTest {
 	@Test(expected = ResourceNotFoundException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void getAppointmentRequestByIdShouldFailDoesNotExist() throws Exception {
-		voteService.getAppointmentRequestById(1);
+		voteService.getVoteById(1);
 
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAppointmentRequestsByUser() throws Exception {
-		List<Vote> votes = voteService.getAppointmentRequestsForUser(1);
+		List<Vote> votes = voteService.getVotesForUser(1);
 		assertEquals(2, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAppointmentRequestsByUserNoneAvailable() throws Exception {
-		List<Vote> votes = voteService.getAppointmentRequestsForUser(2);
+		List<Vote> votes = voteService.getVotesForUser(2);
 		assertEquals(0, votes.size());
 	}
 
@@ -155,7 +155,7 @@ public class VoteOptionRequestServiceTest {
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentRequest() throws Exception {
 		
-		Vote oldVote = voteService.getAppointmentRequestById(1);
+		Vote oldVote = voteService.getVoteById(1);
 		
 		VoteConfig voteConfig = new VoteConfig(
 				new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
@@ -190,20 +190,20 @@ public class VoteOptionRequestServiceTest {
 
 		vote.setOptions(appointmentList(voteOption1, voteOption2, voteOption3));
 
-		voteService.updateAppointmentRequest(oldVote, vote);
+		voteService.updateVote(oldVote, vote);
 	}
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	public void updateAppointmentRequestShouldFailNoAppointment() throws Exception {
 		
-		Vote oldVote = voteService.getAppointmentRequestById(1);
+		Vote oldVote = voteService.getVoteById(1);
 		
 		Vote vote = createSimpleAppointmentRequest();
 		vote.setOptions(new ArrayList<VoteOption>());
 
 		// has no appointments
-		voteService.updateAppointmentRequest(oldVote, vote);
+		voteService.updateVote(oldVote, vote);
 	}
 
 	@Test
@@ -212,12 +212,12 @@ public class VoteOptionRequestServiceTest {
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentRequestNewExpiredDate() throws Exception {
 		
-		Vote oldVote = voteService.getAppointmentRequestById(1);
+		Vote oldVote = voteService.getVoteById(1);
 		
-		Vote vote = voteService.getAppointmentRequestById(1);
+		Vote vote = voteService.getVoteById(1);
 
 		vote.setDeadline(new Date(DATE_2050_10_10));
-		voteService.updateAppointmentRequest(oldVote, vote);
+		voteService.updateVote(oldVote, vote);
 	}
 
 }
