@@ -89,28 +89,28 @@ public class RataplanAssert {
 	/**
 	 * 
 	 * @param voteOption
-	 * @param dtoAppointment
+	 * @param dtoVoteOption
 	 */
-	public static void assertVoteOption(VoteOption voteOption, VoteOptionDTO dtoAppointment) {
-		assertEquals("VoteOption.Id", voteOption.getId(), dtoAppointment.getId());
-		assertEquals("VoteOption.StartDate", voteOption.getStartDate(), dtoAppointment.getStartDate());
-		assertEquals("VoteOption.EndDate", voteOption.getEndDate(), dtoAppointment.getEndDate());
-		assertEquals("VoteOption.Location", voteOption.getDescription().getString(), dtoAppointment.getDescription());
+	public static void assertVoteOption(VoteOption voteOption, VoteOptionDTO dtoVoteOption) {
+		assertEquals("VoteOption.Id", voteOption.getId(), dtoVoteOption.getId());
+		assertEquals("VoteOption.StartDate", voteOption.getStartDate(), dtoVoteOption.getStartDate());
+		assertEquals("VoteOption.EndDate", voteOption.getEndDate(), dtoVoteOption.getEndDate());
+		assertEquals("VoteOption.Location", voteOption.getDescription().getString(), dtoVoteOption.getDescription());
 		assertEquals("VoteOption.Vote.Id", voteOption.getVote().getId(),
-				dtoAppointment.getVoteId());
+				dtoVoteOption.getVoteId());
 	}
 
 	/**
 	 * 
-	 * @param dtoAppointment
+	 * @param dtoVoteOption
 	 * @param voteOption
 	 */
-	public static void assertVoteOptionDTO(VoteOptionDTO dtoAppointment, VoteOption voteOption) {
-		assertEquals("VoteOptionDTO.Id", dtoAppointment.getId(), voteOption.getId());
-		assertEquals("VoteOption.StartDate", voteOption.getStartDate(), dtoAppointment.getStartDate());
-		assertEquals("VoteOption.EndDate", voteOption.getEndDate(), dtoAppointment.getEndDate());
-		assertEquals("VoteOption.Location", dtoAppointment.getDescription(), voteOption.getDescription().getString());
-		assertEquals("VoteOptionDTO.VoteId", dtoAppointment.getVoteId(),
+	public static void assertVoteOptionDTO(VoteOptionDTO dtoVoteOption, VoteOption voteOption) {
+		assertEquals("VoteOptionDTO.Id", dtoVoteOption.getId(), voteOption.getId());
+		assertEquals("VoteOption.StartDate", voteOption.getStartDate(), dtoVoteOption.getStartDate());
+		assertEquals("VoteOption.EndDate", voteOption.getEndDate(), dtoVoteOption.getEndDate());
+		assertEquals("VoteOption.Location", dtoVoteOption.getDescription(), voteOption.getDescription().getString());
+		assertEquals("VoteOptionDTO.VoteId", dtoVoteOption.getVoteId(),
 				voteOption.getVote().getId());
 	}
 

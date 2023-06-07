@@ -59,7 +59,7 @@ public class VoteOptionRequestServiceTest {
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void createAppointmentRequest() throws Exception {
+	public void createVote() throws Exception {
 		Vote vote = createSimpleVote();
 
 		voteService.createVote(vote);
@@ -67,16 +67,16 @@ public class VoteOptionRequestServiceTest {
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void createAppointmentRequestShouldFailHasNoAppointments() throws Exception {
+	public void createVoteShouldFailHasNoOptions() throws Exception {
 		Vote vote = createSimpleVote();
-		vote.setOptions(new ArrayList<VoteOption>());
+		vote.setOptions(new ArrayList<>());
 
 		voteService.createVote(vote);
 	}
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void createAppointmentRequestShouldFailHasMember() throws Exception {
+	public void createVoteShouldFailHasMember() throws Exception {
 		Vote vote = createSimpleVote();
 
 		List<VoteParticipant> voteParticipants = vote.getParticipants();
@@ -92,7 +92,7 @@ public class VoteOptionRequestServiceTest {
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void createAppointmentRequestShouldFailWrongAppointmentConfig() throws Exception {
+	public void createVoteShouldFailWrongVoteOptionConfig() throws Exception {
 		Vote vote = createSimpleVote();
 
 		VoteOption voteOption = new VoteOption(new EncryptedString("iks Hilden", false), vote);
@@ -108,21 +108,21 @@ public class VoteOptionRequestServiceTest {
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
-	public void getAllAppointmentRequests() throws Exception {
+	public void getAllVotes() throws Exception {
 		List<Vote> votes = voteService.getVotes();
 		assertEquals(4, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void getAppointmentRequestsNoneAvailable() throws Exception {
+	public void getVotesNoneAvailable() throws Exception {
 		List<Vote> votes = voteService.getVotes();
 		assertEquals(0, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
-	public void getAppointmentRequestById() throws Exception {
+	public void getVoteById() throws Exception {
 		Vote vote = voteService.getVoteById(1);
 		assertEquals(vote.getTitle().getString(), "Coding Dojo");
 		assertEquals(vote.getOptions().size(), 2);
@@ -131,21 +131,21 @@ public class VoteOptionRequestServiceTest {
 
 	@Test(expected = ResourceNotFoundException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void getAppointmentRequestByIdShouldFailDoesNotExist() throws Exception {
+	public void getVoteByIdShouldFailDoesNotExist() throws Exception {
 		voteService.getVoteById(1);
 
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
-	public void getAppointmentRequestsByUser() throws Exception {
+	public void getVotesByUser() throws Exception {
 		List<Vote> votes = voteService.getVotesForUser(1);
 		assertEquals(2, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
-	public void getAppointmentRequestsByUserNoneAvailable() throws Exception {
+	public void getVotesByUserNoneAvailable() throws Exception {
 		List<Vote> votes = voteService.getVotesForUser(2);
 		assertEquals(0, votes.size());
 	}
@@ -153,7 +153,7 @@ public class VoteOptionRequestServiceTest {
 	@Test
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void updateAppointmentRequest() throws Exception {
+	public void updateVote() throws Exception {
 		
 		Vote oldVote = voteService.getVoteById(1);
 		
@@ -195,12 +195,12 @@ public class VoteOptionRequestServiceTest {
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
-	public void updateAppointmentRequestShouldFailNoAppointment() throws Exception {
+	public void updateVoteShouldFailNoOptions() throws Exception {
 		
 		Vote oldVote = voteService.getVoteById(1);
 		
 		Vote vote = createSimpleVote();
-		vote.setOptions(new ArrayList<VoteOption>());
+		vote.setOptions(new ArrayList<>());
 
 		// has no appointments
 		voteService.updateVote(oldVote, vote);
@@ -210,7 +210,7 @@ public class VoteOptionRequestServiceTest {
 	@DatabaseSetup(FILE_PATH + UPDATE + EXPIRED + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + EXPIRED
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void updateAppointmentRequestNewExpiredDate() throws Exception {
+	public void updateVoteNewExpiredDate() throws Exception {
 		
 		Vote oldVote = voteService.getVoteById(1);
 		
