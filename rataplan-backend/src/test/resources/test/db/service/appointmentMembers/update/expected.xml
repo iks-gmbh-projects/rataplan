@@ -6,7 +6,7 @@
   <voteOption id="1" description="at home" startDate="2050-11-11 08:00:00" appointmentRequestId="1"/>
   <voteOption id="2" description="in the gym" startDate="2050-12-12 08:00:00" appointmentRequestId="1"/>
 
-  <appointmentMember id="1" name="RAW__##__RubberBandMan" appointmentRequestId="1" />
+  <voteParticipant id="1" name="RAW__##__RubberBandMan" appointmentRequestId="1" />
 
   <voteDecision decision="0" appointmentId="1" appointmentMemberId="1"/>
   <voteDecision decision="3" appointmentId="2" appointmentMemberId="1"/>

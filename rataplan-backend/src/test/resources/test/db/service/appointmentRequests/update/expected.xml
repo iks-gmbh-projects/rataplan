@@ -7,7 +7,7 @@
   <voteOption appointmentrequestid="1" description="RAW__##__earth" />
   <voteOption appointmentrequestid="1" description="RAW__##__spaceship" />
 
-  <appointmentMember id="1" name="RubberBandMan" appointmentRequestId="1" />
+  <voteParticipant id="1" name="RubberBandMan" appointmentRequestId="1" />
 
   <voteDecision decision="0" appointmentMemberId="1" />
   <voteDecision decision="0" appointmentMemberId="1" />

@@ -40,7 +40,7 @@ public class VoteDecisionDTOTest {
         VoteOption voteOption = new VoteOption(new Timestamp(123123L), new EncryptedString("iks Hilden", false), null);
         voteOption.setId(1);
 
-        AppointmentMember member = new AppointmentMember(new EncryptedString("Hans", false), null);
+        VoteParticipant member = new VoteParticipant(new EncryptedString("Hans", false), null);
         member.setId(1);
 
         VoteDecision decision = new VoteDecision(Decision.ACCEPT, voteOption, member);

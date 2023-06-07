@@ -43,12 +43,12 @@ public class AppointmentRequest implements Serializable {
 
 	private List<String> consigneeList = new ArrayList<>();
 	private List<VoteOption> voteOptions = new ArrayList<>();
-	private List<AppointmentMember> appointmentMembers = new ArrayList<>();
+	private List<VoteParticipant> voteParticipants = new ArrayList<>();
 	private List<BackendUserAccess> accessList = new ArrayList<>();
 
 	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
 							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<VoteOption> voteOptions,
-			List<AppointmentMember> appointmentMembers, boolean isNotified
+			List<VoteParticipant> voteParticipants, boolean isNotified
 	) {
 		this.title = title;
 		this.description = description;
@@ -56,7 +56,7 @@ public class AppointmentRequest implements Serializable {
 		this.organizerName = organizerName;
 		this.organizerMail = organizerMail;
 		this.voteOptions = voteOptions;
-		this.appointmentMembers = appointmentMembers;
+		this.voteParticipants = voteParticipants;
 		this.appointmentRequestConfig = appointmentRequestConfig;
 		this.isNotified = isNotified;
 	}
@@ -178,12 +178,12 @@ public class AppointmentRequest implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentRequest", orphanRemoval = true, cascade = CascadeType.ALL)
-	public List<AppointmentMember> getAppointmentMembers() {
-		return appointmentMembers;
+	public List<VoteParticipant> getAppointmentMembers() {
+		return voteParticipants;
 	}
 
-	public void setAppointmentMembers(List<AppointmentMember> appointmentMembers) {
-		this.appointmentMembers = appointmentMembers;
+	public void setAppointmentMembers(List<VoteParticipant> voteParticipants) {
+		this.voteParticipants = voteParticipants;
 	}
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -223,8 +223,8 @@ public class AppointmentRequest implements Serializable {
 		this.editToken = editToken;
 	}
 
-	public AppointmentMember getAppointmentMemberById(long id) {
-		for (AppointmentMember member : this.getAppointmentMembers()) {
+	public VoteParticipant getAppointmentMemberById(long id) {
+		for (VoteParticipant member : this.getAppointmentMembers()) {
 			if (id == member.getId()) {
 				return member;
 			}
@@ -263,17 +263,17 @@ public class AppointmentRequest implements Serializable {
      * checks if the AppointmentDecisions have the same size and appointmentId's
      * than the corresponding Appointments in this AppointmentRequest
      *
-     * @param appointmentMember
+     * @param voteParticipant
      * @return
      */
-	public boolean validateDecisionsForAppointmentMember(AppointmentMember appointmentMember) {
+	public boolean validateDecisionsForAppointmentMember(VoteParticipant voteParticipant) {
 		List<Integer> appointmentIdList = new ArrayList<>(); 
-		if (this.voteOptions.size() != appointmentMember.getAppointmentDecisions().size()) {
+		if (this.voteOptions.size() != voteParticipant.getAppointmentDecisions().size()) {
 			return false;
 		}
 		
 		for (VoteOption voteOption : this.getAppointments()) {
-			for (VoteDecision decision : appointmentMember.getAppointmentDecisions()) {
+			for (VoteDecision decision : voteParticipant.getAppointmentDecisions()) {
 				this.decisionTypeVerification(decision);
 				
 				if (decision.getAppointment() == null) {
@@ -331,7 +331,7 @@ public class AppointmentRequest implements Serializable {
 		builder.append(",\nappointments=\n");
 		builder.append(voteOptions);
 		builder.append(",\nappointmentMembers=\n");
-		builder.append(appointmentMembers);
+		builder.append(voteParticipants);
 		builder.append("\n]");
 		return builder.toString();
 	}

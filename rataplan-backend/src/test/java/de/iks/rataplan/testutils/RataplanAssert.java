@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.domain.VoteDecision;
-import de.iks.rataplan.domain.AppointmentMember;
+import de.iks.rataplan.domain.VoteParticipant;
 import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.dto.VoteOptionDTO;
 import de.iks.rataplan.dto.VoteDecisionDTO;
@@ -119,7 +119,7 @@ public class RataplanAssert {
 	 * @param member
 	 * @param dtoMember
 	 */
-	public static void assertVoteParticipant(AppointmentMember member, VoteParticipantDTO dtoMember) {
+	public static void assertVoteParticipant(VoteParticipant member, VoteParticipantDTO dtoMember) {
 		assertEquals("VoteParticipant.Id", member.getId(), dtoMember.getId());
 		assertEquals("VoteParticipant.Name", member.getName().getString(), dtoMember.getName());
 		assertEquals("VoteParticipant.Vote.Id", member.getAppointmentRequest().getId(),
@@ -133,7 +133,7 @@ public class RataplanAssert {
 	 * @param dtoMember
 	 * @param member
 	 */
-	public static void assertVoteParticipantDTO(VoteParticipantDTO dtoMember, AppointmentMember member) {
+	public static void assertVoteParticipantDTO(VoteParticipantDTO dtoMember, VoteParticipant member) {
 		assertEquals("VoteParticipantDTO.Id", dtoMember.getId(), member.getId());
 		assertEquals("VoteParticipantDTO.Name", dtoMember.getName(), member.getName().getString());
 		assertEquals("VoteParticipantDTO.VoteId", dtoMember.getVoteId(),

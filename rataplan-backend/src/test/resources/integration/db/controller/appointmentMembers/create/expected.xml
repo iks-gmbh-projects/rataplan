@@ -6,7 +6,7 @@
   <voteOption id="1" appointmentRequestId="1" description="ENC__##__iks Hilden" />
   <voteOption id="2" appointmentRequestId="1" description="ENC__##__homeoffice" />
 
-  <appointmentMember appointmentRequestId="1" name="ENC__##__IKS" />
+  <voteParticipant appointmentRequestId="1" name="ENC__##__IKS" />
 
   <voteDecision appointmentId="1" decision="0" />
   <voteDecision appointmentId="2" decision="1" />

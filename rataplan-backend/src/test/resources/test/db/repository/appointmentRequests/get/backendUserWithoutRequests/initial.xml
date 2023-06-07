@@ -5,7 +5,7 @@
   
   <voteOption />
   
-  <appointmentMember />
+  <voteParticipant />
   
   <voteDecision />
   

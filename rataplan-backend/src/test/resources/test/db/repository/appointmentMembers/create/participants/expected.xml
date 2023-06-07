@@ -6,7 +6,7 @@
   <voteOption id="1" description="iks Hilden" appointmentRequestId="1" />
   <voteOption id="2" description="homeoffice" appointmentRequestId="1" />
 
-  <appointmentMember appointmentRequestId="1" name="RAW__##__Hans" />
+  <voteParticipant appointmentRequestId="1" name="RAW__##__Hans" />
   
   <voteDecision participants="5" />
   <voteDecision participants="5" />

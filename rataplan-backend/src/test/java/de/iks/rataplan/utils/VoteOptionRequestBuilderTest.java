@@ -110,41 +110,41 @@ public class VoteOptionRequestBuilderTest {
 	@Test
 	public void testMemberListWithNewMembers() {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
-		List<AppointmentMember> appointmentMembers = AppointmentRequestBuilder.memberList(
-				new AppointmentMember(new EncryptedString("Fritz", false), appointmentRequest),
-				new AppointmentMember(new EncryptedString("Hans", false), appointmentRequest),
-				new AppointmentMember(new EncryptedString("Peter", false), appointmentRequest)
+		List<VoteParticipant> voteParticipants = AppointmentRequestBuilder.memberList(
+				new VoteParticipant(new EncryptedString("Fritz", false), appointmentRequest),
+				new VoteParticipant(new EncryptedString("Hans", false), appointmentRequest),
+				new VoteParticipant(new EncryptedString("Peter", false), appointmentRequest)
 				);
 		
-		for (AppointmentMember appointmentMember : appointmentMembers) {
-			assertEquals(appointmentRequest, appointmentMember.getAppointmentRequest());
+		for (VoteParticipant voteParticipant : voteParticipants) {
+			assertEquals(appointmentRequest, voteParticipant.getAppointmentRequest());
 		}
 		
-		assertEquals("Fritz", appointmentMembers.get(0).getName().getString());
-		assertEquals("Hans", appointmentMembers.get(1).getName().getString());
-		assertEquals("Peter", appointmentMembers.get(2).getName().getString());
+		assertEquals("Fritz", voteParticipants.get(0).getName().getString());
+		assertEquals("Hans", voteParticipants.get(1).getName().getString());
+		assertEquals("Peter", voteParticipants.get(2).getName().getString());
 	}
 	
 	@Test
 	public void testMemberListWithExistingMembers() {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 		
-		AppointmentMember appointmentMember0 = new AppointmentMember(new EncryptedString("Fritz", false), appointmentRequest);
-		AppointmentMember appointmentMember1 = new AppointmentMember(new EncryptedString("Hans",false), appointmentRequest);
-		AppointmentMember appointmentMember2 = new AppointmentMember(new EncryptedString("Peter", false), appointmentRequest);
-		List<AppointmentMember> appointmentMembers = AppointmentRequestBuilder.memberList(
-				appointmentMember0,
-				appointmentMember1,
-				appointmentMember2
+		VoteParticipant voteParticipant0 = new VoteParticipant(new EncryptedString("Fritz", false), appointmentRequest);
+		VoteParticipant voteParticipant1 = new VoteParticipant(new EncryptedString("Hans",false), appointmentRequest);
+		VoteParticipant voteParticipant2 = new VoteParticipant(new EncryptedString("Peter", false), appointmentRequest);
+		List<VoteParticipant> voteParticipants = AppointmentRequestBuilder.memberList(
+			voteParticipant0,
+			voteParticipant1,
+			voteParticipant2
 				);
 		
-		for (AppointmentMember appointmentMember : appointmentMembers) {
-			assertEquals(appointmentRequest, appointmentMember.getAppointmentRequest());
+		for (VoteParticipant voteParticipant : voteParticipants) {
+			assertEquals(appointmentRequest, voteParticipant.getAppointmentRequest());
 		}
 		
-		assertEquals(appointmentMember0, appointmentMembers.get(0));
-		assertEquals(appointmentMember1, appointmentMembers.get(1));
-		assertEquals(appointmentMember2, appointmentMembers.get(2));
+		assertEquals(voteParticipant0, voteParticipants.get(0));
+		assertEquals(voteParticipant1, voteParticipants.get(1));
+		assertEquals(voteParticipant2, voteParticipants.get(2));
 	}
 	
 	private AppointmentRequest createComplicatedAppointmentRequest() {

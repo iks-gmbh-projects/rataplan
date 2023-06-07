@@ -6,7 +6,7 @@
   <voteOption description="RAW__##__iks Hilden" />
   <voteOption description="RAW__##__homeoffice" />
 
-  <appointmentMember />
+  <voteParticipant />
   
   <voteDecision />
   

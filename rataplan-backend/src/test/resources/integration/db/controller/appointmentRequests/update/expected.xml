@@ -5,7 +5,7 @@
 
   <voteOption appointmentRequestId="1" description="iks Hilden" />
 
-  <appointmentMember />
+  <voteParticipant />
 
   <voteDecision />
   

@@ -106,8 +106,8 @@ public class CreatorVoteDTOTest {
 		VoteOption voteOption1 = new VoteOption(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
 		VoteOption voteOption2 = new VoteOption(new Timestamp(321321321L), new EncryptedString("Berufsschule D�sseldorf", false), appointmentRequest);
 
-		AppointmentMember member1 = new AppointmentMember(new EncryptedString("Ingo", false), appointmentRequest);
-		AppointmentMember member2 = new AppointmentMember(new EncryptedString("Fabian", false), appointmentRequest);
+		VoteParticipant member1 = new VoteParticipant(new EncryptedString("Ingo", false), appointmentRequest);
+		VoteParticipant member2 = new VoteParticipant(new EncryptedString("Fabian", false), appointmentRequest);
 
 		VoteDecision decision11 = new VoteDecision(Decision.NO_ANSWER, voteOption1, member1);
 		VoteDecision decision12 = new VoteDecision(Decision.ACCEPT_IF_NECESSARY, voteOption1, member2);
@@ -130,8 +130,8 @@ public class CreatorVoteDTOTest {
 
 		RataplanAssert.assertVote(appointmentRequest, dtoVote);
 
-		AppointmentMember[] memberList = appointmentRequest.getAppointmentMembers()
-				.toArray(new AppointmentMember[appointmentRequest.getAppointmentMembers().size()]);
+		VoteParticipant[] memberList = appointmentRequest.getAppointmentMembers()
+				.toArray(new VoteParticipant[appointmentRequest.getAppointmentMembers().size()]);
 		VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
 				.toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
 
@@ -182,8 +182,8 @@ public class CreatorVoteDTOTest {
 
 		VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
 				.toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
-		AppointmentMember[] memberList = appointmentRequest.getAppointmentMembers()
-				.toArray(new AppointmentMember[appointmentRequest.getAppointmentMembers().size()]);
+		VoteParticipant[] memberList = appointmentRequest.getAppointmentMembers()
+				.toArray(new VoteParticipant[appointmentRequest.getAppointmentMembers().size()]);
 
 		for (int i = 0; i < participantDTOList.length; i++) {
 			assertEquals(participantDTOList[i].getDecisions().size(),

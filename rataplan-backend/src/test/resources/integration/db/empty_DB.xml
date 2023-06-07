@@ -3,7 +3,7 @@
 
   <appointmentRequest />
 
-  <appointmentMember />
+  <voteParticipant />
   
   <voteOption />
 

@@ -79,13 +79,13 @@ public class VoteOptionRequestServiceTest {
 	public void createAppointmentRequestShouldFailHasMember() throws Exception {
 		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
 
-		List<AppointmentMember> appointmentMembers = appointmentRequest.getAppointmentMembers();
+		List<VoteParticipant> voteParticipants = appointmentRequest.getAppointmentMembers();
 
-		AppointmentMember appointmentMember = new AppointmentMember();
-		appointmentMember.setName(new EncryptedString("Fritz macht den Fehler", false));
-		appointmentMembers.add(appointmentMember);
+		VoteParticipant voteParticipant = new VoteParticipant();
+		voteParticipant.setName(new EncryptedString("Fritz macht den Fehler", false));
+		voteParticipants.add(voteParticipant);
 
-		appointmentRequest.setAppointmentMembers(appointmentMembers);
+		appointmentRequest.setAppointmentMembers(voteParticipants);
 
 		appointmentRequestService.createAppointmentRequest(appointmentRequest);
 	}
@@ -167,15 +167,15 @@ public class VoteOptionRequestServiceTest {
 		appointmentRequest.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
 		appointmentRequest.setAppointmentRequestConfig(appointmentRequestConfig);
 
-		AppointmentMember appointmentMember = new AppointmentMember();
-		appointmentMember.setId(1);
-		appointmentMember.setName(new EncryptedString("RubberBandMan", false));
-		appointmentMember.setAppointmentRequest(appointmentRequest);
+		VoteParticipant voteParticipant = new VoteParticipant();
+		voteParticipant.setId(1);
+		voteParticipant.setName(new EncryptedString("RubberBandMan", false));
+		voteParticipant.setAppointmentRequest(appointmentRequest);
 
-		List<AppointmentMember> appointmentMembers = new ArrayList<AppointmentMember>();
-		appointmentMembers.add(appointmentMember);
+		List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
+		voteParticipants.add(voteParticipant);
 
-		appointmentRequest.setAppointmentMembers(appointmentMembers);
+		appointmentRequest.setAppointmentMembers(voteParticipants);
 
 		VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), appointmentRequest);
 		voteOption1.setAppointmentRequest(appointmentRequest);

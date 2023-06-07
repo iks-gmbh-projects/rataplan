@@ -1,6 +1,6 @@
 package de.iks.rataplan.controller;
 
-import de.iks.rataplan.domain.AppointmentMember;
+import de.iks.rataplan.domain.VoteParticipant;
 import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.service.AppointmentMemberService;
 import de.iks.rataplan.service.AppointmentRequestService;
@@ -35,7 +35,7 @@ public class BackendController {
             .map(AppointmentRequest::getAppointmentMembers)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
-            .mapToInt(AppointmentMember::getId)
+            .mapToInt(VoteParticipant::getId)
             .forEach(appointmentMemberService::anonymizeAppointmentMember);
         appointmentRequestService.getAppointmentRequestsForUser(userId)
             .forEach(appointmentRequestService::deleteAppointmentRequest);
@@ -50,7 +50,7 @@ public class BackendController {
             .map(AppointmentRequest::getAppointmentMembers)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
-            .mapToInt(AppointmentMember::getId)
+            .mapToInt(VoteParticipant::getId)
             .forEach(appointmentMemberService::anonymizeAppointmentMember);
         appointmentRequestService.anonymizeAppointmentRequests(userId);
         return ResponseEntity.ok(userId);

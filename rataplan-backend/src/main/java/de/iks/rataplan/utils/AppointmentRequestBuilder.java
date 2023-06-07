@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.iks.rataplan.domain.VoteOption;
-import de.iks.rataplan.domain.AppointmentMember;
+import de.iks.rataplan.domain.VoteParticipant;
 
 public class AppointmentRequestBuilder {
 
@@ -20,11 +20,11 @@ public class AppointmentRequestBuilder {
 		return voteOptionList;
 	}
 
-	public static List<AppointmentMember> memberList(AppointmentMember... appointmentMembers) {
-		List<AppointmentMember> appointmentMemberList = new ArrayList<>();
-		for (AppointmentMember appointmentMember : appointmentMembers) {
-			appointmentMemberList.add(appointmentMember);
+	public static List<VoteParticipant> memberList(VoteParticipant... voteParticipants) {
+		List<VoteParticipant> voteParticipantList = new ArrayList<>();
+		for (VoteParticipant voteParticipant : voteParticipants) {
+			voteParticipantList.add(voteParticipant);
 		}
-		return appointmentMemberList;
+		return voteParticipantList;
 	}
 }

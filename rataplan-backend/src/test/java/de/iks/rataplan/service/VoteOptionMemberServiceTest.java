@@ -56,7 +56,7 @@ public class VoteOptionMemberServiceTest {
 	public void addAppointmentMember() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
-		AppointmentMember member = new AppointmentMember();
+		VoteParticipant member = new VoteParticipant();
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
@@ -79,7 +79,7 @@ public class VoteOptionMemberServiceTest {
 	public void addAppointmentMemberShouldFailTooManyAppointments() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
-		AppointmentMember member = new AppointmentMember();
+		VoteParticipant member = new VoteParticipant();
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
@@ -108,7 +108,7 @@ public class VoteOptionMemberServiceTest {
 	public void addAppointmentMemberShouldFailRequestIsExpired() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
-		AppointmentMember member = new AppointmentMember();
+		VoteParticipant member = new VoteParticipant();
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
@@ -132,9 +132,9 @@ public class VoteOptionMemberServiceTest {
 	public void deleteAppointmentMember() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
-		AppointmentMember appointmentMember = appointmentRequest.getAppointmentMemberById(2);
+		VoteParticipant voteParticipant = appointmentRequest.getAppointmentMemberById(2);
 
-		appointmentMemberService.deleteAppointmentMember(appointmentRequest, appointmentMember);
+		appointmentMemberService.deleteAppointmentMember(appointmentRequest, voteParticipant);
 	}
 
 	@Test(expected = ForbiddenException.class)
@@ -142,8 +142,8 @@ public class VoteOptionMemberServiceTest {
 	public void deleteAppointmentMemberShouldFailRequestIsExpired() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
 
-		AppointmentMember appointmentMember = appointmentRequest.getAppointmentMemberById(2);
-		appointmentMemberService.deleteAppointmentMember(appointmentRequest, appointmentMember);
+		VoteParticipant voteParticipant = appointmentRequest.getAppointmentMemberById(2);
+		appointmentMemberService.deleteAppointmentMember(appointmentRequest, voteParticipant);
 	}
 
 	@Test
@@ -151,18 +151,21 @@ public class VoteOptionMemberServiceTest {
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentMember() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
-		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
-		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
+		VoteParticipant dbVoteParticipant = appointmentRequest.getAppointmentMemberById(1);
+		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
 		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
-				appointmentRequest.getAppointments().get(0), newAppointmentMember);
+				appointmentRequest.getAppointments().get(0), newVoteParticipant
+		);
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
-				appointmentRequest.getAppointments().get(1), newAppointmentMember);
-		newAppointmentMember.getAppointmentDecisions().add(decision1);
-		newAppointmentMember.getAppointmentDecisions().add(decision2);
+				appointmentRequest.getAppointments().get(1), newVoteParticipant
+		);
+		newVoteParticipant.getAppointmentDecisions().add(decision1);
+		newVoteParticipant.getAppointmentDecisions().add(decision2);
 
-		newAppointmentMember = appointmentMemberService.updateAppointmentMember(appointmentRequest, dbAppointmentMember,
-				newAppointmentMember);
+		newVoteParticipant = appointmentMemberService.updateAppointmentMember(appointmentRequest, dbVoteParticipant,
+			newVoteParticipant
+		);
 	}
 
 	@Test(expected = MalformedException.class)
@@ -170,20 +173,23 @@ public class VoteOptionMemberServiceTest {
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentMemberShouldFailTooManyDecisions() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
-		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
-		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
+		VoteParticipant dbVoteParticipant = appointmentRequest.getAppointmentMemberById(1);
+		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
 		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
-				appointmentRequest.getAppointments().get(0), newAppointmentMember);
+				appointmentRequest.getAppointments().get(0), newVoteParticipant
+		);
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
-				appointmentRequest.getAppointments().get(1), newAppointmentMember);
-		newAppointmentMember.getAppointmentDecisions().add(decision1);
-		newAppointmentMember.getAppointmentDecisions().add(decision2);
+				appointmentRequest.getAppointments().get(1), newVoteParticipant
+		);
+		newVoteParticipant.getAppointmentDecisions().add(decision1);
+		newVoteParticipant.getAppointmentDecisions().add(decision2);
 		// this decision should not exist
-		newAppointmentMember.getAppointmentDecisions().add(decision2);
+		newVoteParticipant.getAppointmentDecisions().add(decision2);
 
-		newAppointmentMember = appointmentMemberService.updateAppointmentMember(appointmentRequest, dbAppointmentMember,
-				newAppointmentMember);
+		newVoteParticipant = appointmentMemberService.updateAppointmentMember(appointmentRequest, dbVoteParticipant,
+			newVoteParticipant
+		);
 	}
 
 	@Test(expected = ForbiddenException.class)
@@ -192,20 +198,23 @@ public class VoteOptionMemberServiceTest {
 			+ FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentMemberShouldFailIsExpired() throws Exception {
 		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
-		AppointmentMember dbAppointmentMember = appointmentRequest.getAppointmentMemberById(1);
-		AppointmentMember newAppointmentMember = new AppointmentMember(new EncryptedString("RubberBandMan", false), appointmentRequest);
+		VoteParticipant dbVoteParticipant = appointmentRequest.getAppointmentMemberById(1);
+		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), appointmentRequest);
 
 		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
-				appointmentRequest.getAppointments().get(0), newAppointmentMember);
+				appointmentRequest.getAppointments().get(0), newVoteParticipant
+		);
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
-				appointmentRequest.getAppointments().get(1), newAppointmentMember);
-		newAppointmentMember.getAppointmentDecisions().add(decision1);
-		newAppointmentMember.getAppointmentDecisions().add(decision2);
+				appointmentRequest.getAppointments().get(1), newVoteParticipant
+		);
+		newVoteParticipant.getAppointmentDecisions().add(decision1);
+		newVoteParticipant.getAppointmentDecisions().add(decision2);
 		// this decision should not exist
-		newAppointmentMember.getAppointmentDecisions().add(decision2);
+		newVoteParticipant.getAppointmentDecisions().add(decision2);
 
-		newAppointmentMember = appointmentMemberService.updateAppointmentMember(appointmentRequest, dbAppointmentMember,
-				newAppointmentMember);
+		newVoteParticipant = appointmentMemberService.updateAppointmentMember(appointmentRequest, dbVoteParticipant,
+			newVoteParticipant
+		);
 	}
 
 }

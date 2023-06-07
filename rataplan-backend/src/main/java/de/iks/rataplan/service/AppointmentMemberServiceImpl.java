@@ -6,10 +6,10 @@ import java.util.Objects;
 import javax.transaction.Transactional;
 
 import de.iks.rataplan.domain.VoteDecision;
+import de.iks.rataplan.domain.VoteParticipant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.iks.rataplan.domain.AppointmentMember;
 import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
@@ -27,22 +27,22 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
     private AppointmentMemberRepository appointmentMemberRepository;
 
     @Override
-    public AppointmentMember createAppointmentMember(AppointmentRequest appointmentRequest, AppointmentMember appointmentMember) {
+    public VoteParticipant createAppointmentMember(AppointmentRequest appointmentRequest, VoteParticipant voteParticipant) {
         
         this.validateExpirationDate(appointmentRequest);
 		
-        appointmentMember.setId(null);
+        voteParticipant.setId(null);
 
-        if (appointmentRequest.validateDecisionsForAppointmentMember(appointmentMember)) {
+        if (appointmentRequest.validateDecisionsForAppointmentMember(voteParticipant)) {
         	
-            appointmentMember.setAppointmentRequest(appointmentRequest);
-            appointmentRequest.getAppointmentMembers().add(appointmentMember);
+            voteParticipant.setAppointmentRequest(appointmentRequest);
+            appointmentRequest.getAppointmentMembers().add(voteParticipant);
 
-            for (VoteDecision decision : appointmentMember.getAppointmentDecisions()) {
-                decision.setAppointmentMember(appointmentMember);
+            for (VoteDecision decision : voteParticipant.getAppointmentDecisions()) {
+                decision.setAppointmentMember(voteParticipant);
             }
 
-            return appointmentMemberRepository.saveAndFlush(appointmentMember);
+            return appointmentMemberRepository.saveAndFlush(voteParticipant);
         } else {
             throw new MalformedException(
                     "AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.");
@@ -50,34 +50,35 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
     }
 
 	@Override
-    public void deleteAppointmentMember(AppointmentRequest appointmentRequest, AppointmentMember appointmentMember) {
+    public void deleteAppointmentMember(AppointmentRequest appointmentRequest, VoteParticipant voteParticipant) {
 
         this.validateExpirationDate(appointmentRequest);
         
-        appointmentRequest.getAppointmentMembers().remove(appointmentMember);
+        appointmentRequest.getAppointmentMembers().remove(voteParticipant);
         appointmentRequestRepository.saveAndFlush(appointmentRequest);
     }
 
     @Override
-    public AppointmentMember updateAppointmentMember(AppointmentRequest appointmentRequest, AppointmentMember dbAppointmentMember,
-            AppointmentMember newAppointmentMember) {
+    public VoteParticipant updateAppointmentMember(AppointmentRequest appointmentRequest, VoteParticipant dbVoteParticipant,
+            VoteParticipant newVoteParticipant
+    ) {
         
         this.validateExpirationDate(appointmentRequest);
 
-        if (!appointmentRequest.validateDecisionsForAppointmentMember(newAppointmentMember)) {
+        if (!appointmentRequest.validateDecisionsForAppointmentMember(newVoteParticipant)) {
         	throw new MalformedException(
         			"AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.");
         }
 
-        dbAppointmentMember.setName(newAppointmentMember.getName());
-        dbAppointmentMember.setAppointmentRequest(appointmentRequest);
-        this.updateAppointmentDecisionsForMember(dbAppointmentMember.getAppointmentDecisions(), newAppointmentMember.getAppointmentDecisions());
-        return appointmentMemberRepository.saveAndFlush(dbAppointmentMember);
+        dbVoteParticipant.setName(newVoteParticipant.getName());
+        dbVoteParticipant.setAppointmentRequest(appointmentRequest);
+        this.updateAppointmentDecisionsForMember(dbVoteParticipant.getAppointmentDecisions(), newVoteParticipant.getAppointmentDecisions());
+        return appointmentMemberRepository.saveAndFlush(dbVoteParticipant);
     }
     
     @Override
     public void anonymizeAppointmentMember(int id) {
-        AppointmentMember member = appointmentMemberRepository.findOne(id);
+        VoteParticipant member = appointmentMemberRepository.findOne(id);
         member.setName(null);
         member.setUserId(null);
         appointmentMemberRepository.saveAndFlush(member);

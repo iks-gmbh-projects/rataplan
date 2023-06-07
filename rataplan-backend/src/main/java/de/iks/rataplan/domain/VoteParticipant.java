@@ -13,8 +13,8 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "appointmentMember")
-public class AppointmentMember implements Serializable {
+@Table(name = "voteParticipant")
+public class VoteParticipant implements Serializable {
 
     private static final long serialVersionUID = 7136999956850896370L;
     
@@ -32,12 +32,12 @@ public class AppointmentMember implements Serializable {
     private AppointmentRequest appointmentRequest;
     private List<VoteDecision> voteDecisions = new ArrayList<>();
 
-    public AppointmentMember(EncryptedString name, AppointmentRequest appointmentRequest) {
+    public VoteParticipant(EncryptedString name, AppointmentRequest appointmentRequest) {
         this.name = name;
         this.appointmentRequest = appointmentRequest;
     }
 
-    public AppointmentMember() {
+    public VoteParticipant() {
         //required for Hibernate
     }
 

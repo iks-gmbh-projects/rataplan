@@ -150,7 +150,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 						dbAppointmentRequest.getAppointmentMembers().clear();
 					} else if(newConfig.getDecisionType() == DecisionType.DEFAULT) {
 						dbAppointmentRequest.getAppointmentMembers().stream()
-							.map(AppointmentMember::getAppointmentDecisions)
+							.map(VoteParticipant::getAppointmentDecisions)
 							.flatMap(List::stream)
 							.filter(d -> d.getDecision() == Decision.ACCEPT_IF_NECESSARY)
 							.forEach(d -> d.setDecision(Decision.NO_ANSWER));
@@ -206,7 +206,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 				voteOption.setAppointmentRequest(oldRequest);
 				voteOption = appointmentRepository.saveAndFlush(voteOption);
 
-				for(AppointmentMember member: oldRequest.getAppointmentMembers()) {
+				for(VoteParticipant member: oldRequest.getAppointmentMembers()) {
 					appointmentDecisionRepository.save(new VoteDecision(Decision.NO_ANSWER, voteOption, member));
 				}
 				appointmentDecisionRepository.flush();

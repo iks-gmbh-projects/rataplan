@@ -5,7 +5,7 @@
 
   <voteOption description="RAW__##__Let's Do Something" url="RAW__##__www.maybe.here" startDate="2050-11-11 11:11:00" endDate="2050-12-12 12:12:00" />
 
-  <appointmentMember />
+  <voteParticipant />
   
   <voteDecision />
   

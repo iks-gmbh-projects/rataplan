@@ -6,7 +6,7 @@
   <voteOption description="iks Hilden" />
   <voteOption description="Solingen" />
   
-  <appointmentMember />
+  <voteParticipant />
 
   <voteDecision />
   
