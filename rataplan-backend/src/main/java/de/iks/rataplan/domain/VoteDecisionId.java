@@ -7,14 +7,14 @@ import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class AppointmentDecisionId implements Serializable {
+public class VoteDecisionId implements Serializable {
 
     private static final long serialVersionUID = -4669513612428408356L;
 
     private Appointment appointment;
     private AppointmentMember appointmentMember;
 
-    public AppointmentDecisionId() {
+    public VoteDecisionId() {
         // nothign to do
     }
 
@@ -41,7 +41,7 @@ public class AppointmentDecisionId implements Serializable {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        AppointmentDecisionId other = (AppointmentDecisionId) obj;
+        VoteDecisionId other = (VoteDecisionId) obj;
         return Objects.equals(this.getAppointment().getId(), other.getAppointment().getId()) && Objects.equals(this.getAppointmentMember()
             .getId(), other.getAppointmentMember().getId());
     }

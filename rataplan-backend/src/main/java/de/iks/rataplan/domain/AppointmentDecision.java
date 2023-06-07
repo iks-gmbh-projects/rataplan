@@ -27,26 +27,26 @@ public class AppointmentDecision implements Serializable {
     @Version
     private Integer version;
     
-    private AppointmentDecisionId appointmentDecisionId = new AppointmentDecisionId();
+    private VoteDecisionId voteDecisionId = new VoteDecisionId();
     private Decision decision = null;
     private Integer participants = null;
 
     public AppointmentDecision(Decision decision, Appointment appointment, AppointmentMember appointmentMember) {
     	this.decision = decision;
-        this.appointmentDecisionId.setAppointment(appointment);
-        this.appointmentDecisionId.setAppointmentMember(appointmentMember);
+        this.voteDecisionId.setAppointment(appointment);
+        this.voteDecisionId.setAppointmentMember(appointmentMember);
     }
     
     public AppointmentDecision(Decision decsion, Appointment appointment) {
     	this.decision = decsion;
-    	this.appointmentDecisionId.setAppointment(appointment);
+    	this.voteDecisionId.setAppointment(appointment);
     }
     
     public AppointmentDecision(Integer participants, Appointment appointment, AppointmentMember appointmentMember) {
     	this.decision = null;
         this.participants = participants;
-        this.appointmentDecisionId.setAppointment(appointment);
-        this.appointmentDecisionId.setAppointmentMember(appointmentMember);
+        this.voteDecisionId.setAppointment(appointment);
+        this.voteDecisionId.setAppointmentMember(appointmentMember);
     }
 
     public AppointmentDecision() {
@@ -78,12 +78,12 @@ public class AppointmentDecision implements Serializable {
     }
 
     @EmbeddedId
-    public AppointmentDecisionId getAppointmentDecisionId() {
-        return this.appointmentDecisionId;
+    public VoteDecisionId getAppointmentDecisionId() {
+        return this.voteDecisionId;
     }
 
-    public void setAppointmentDecisionId(AppointmentDecisionId appointmentDecisionId) {
-        this.appointmentDecisionId = appointmentDecisionId;
+    public void setAppointmentDecisionId(VoteDecisionId voteDecisionId) {
+        this.voteDecisionId = voteDecisionId;
     }
 
     @Transient
@@ -126,7 +126,7 @@ public class AppointmentDecision implements Serializable {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AppointmentDecision [appointmentDecisionId=");
-		builder.append(appointmentDecisionId);
+		builder.append(voteDecisionId);
 		builder.append(", decision=");
 		builder.append(decision);
 		builder.append(", participants=");
