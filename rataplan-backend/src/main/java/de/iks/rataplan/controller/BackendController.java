@@ -32,7 +32,7 @@ public class BackendController {
         //TODO validate secret
         appointmentRequestService.getAppointmentRequestsWhereUserTakesPartIn(userId)
             .stream()
-            .map(Vote::getAppointmentMembers)
+            .map(Vote::getParticipants)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)
@@ -47,7 +47,7 @@ public class BackendController {
         //TODO validate secret
         appointmentRequestService.getAppointmentRequestsWhereUserTakesPartIn(userId)
             .stream()
-            .map(Vote::getAppointmentMembers)
+            .map(Vote::getParticipants)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)

@@ -85,7 +85,7 @@ public class AppointmentRequestControllerService {
 		}
 
 		Vote newVote = modelMapper.map(creatorVoteDTO, Vote.class);
-		if(creatorVoteDTO.getOptions() == null) newVote.setAppointments(null);
+		if(creatorVoteDTO.getOptions() == null) newVote.setOptions(null);
 		newVote = appointmentRequestService.updateAppointmentRequest(dbVote, newVote);
 
 		return modelMapper.map(newVote, CreatorVoteDTO.class);

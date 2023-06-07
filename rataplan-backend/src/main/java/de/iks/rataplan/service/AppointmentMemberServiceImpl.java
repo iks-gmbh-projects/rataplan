@@ -36,7 +36,7 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
         if (vote.validateDecisionsForAppointmentMember(voteParticipant)) {
         	
             voteParticipant.setVote(vote);
-            vote.getAppointmentMembers().add(voteParticipant);
+            vote.getParticipants().add(voteParticipant);
 
             for (VoteDecision decision : voteParticipant.getVoteDecisions()) {
                 decision.setVoteParticipant(voteParticipant);
@@ -54,7 +54,7 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
 
         this.validateExpirationDate(vote);
         
-        vote.getAppointmentMembers().remove(voteParticipant);
+        vote.getParticipants().remove(voteParticipant);
         appointmentRequestRepository.saveAndFlush(vote);
     }
 

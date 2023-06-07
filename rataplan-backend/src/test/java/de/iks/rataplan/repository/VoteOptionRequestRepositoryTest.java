@@ -70,7 +70,7 @@ public class VoteOptionRequestRepositoryTest {
 		voteOption.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
 		voteOption.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
 
-		vote.setAppointments(appointmentList(voteOption));
+		vote.setOptions(appointmentList(voteOption));
 
 		appointmentRequestRepository.saveAndFlush(vote);
 	}
@@ -109,7 +109,7 @@ public class VoteOptionRequestRepositoryTest {
 		assertEquals(IKS_MAIL, vote.getOrganizerMail().getString());
 		assertEquals(false, vote.isNotified());
 
-		assertEquals(2, vote.getAppointments().size());
+		assertEquals(2, vote.getOptions().size());
 	}
 
 	@Test

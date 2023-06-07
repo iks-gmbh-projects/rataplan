@@ -64,20 +64,20 @@ public class VoteOptionMemberRepositoryTest {
 
 		VoteDecision decision = new VoteDecision();
 		decision.setDecision(Decision.ACCEPT);
-		decision.setVoteOption(vote.getAppointments().get(0));
+		decision.setVoteOption(vote.getOptions().get(0));
 		decision.setVoteParticipant(voteParticipant);
 		decisions.add(decision);
 
 		VoteDecision decision2 = new VoteDecision();
 		decision2.setDecision(Decision.ACCEPT);
-		decision2.setVoteOption(vote.getAppointments().get(1));
+		decision2.setVoteOption(vote.getOptions().get(1));
 		decision2.setVoteParticipant(voteParticipant);
 		decisions.add(decision2);
 
 		voteParticipant.setName(new EncryptedString("Hans", false));
 		voteParticipant.setVoteDecisions(decisions);
 		voteParticipant.setVote(vote);
-		vote.getAppointmentMembers().add(voteParticipant);
+		vote.getParticipants().add(voteParticipant);
 
 		for (VoteDecision voteDecision : voteParticipant.getVoteDecisions()) {
 			voteDecision.setVoteParticipant(voteParticipant);
@@ -99,12 +99,12 @@ public class VoteOptionMemberRepositoryTest {
 
 		VoteDecision decision = new VoteDecision();
 		decision.setParticipants(5);
-		decision.setVoteOption(vote.getAppointments().get(0));
+		decision.setVoteOption(vote.getOptions().get(0));
 		decision.setVoteParticipant(voteParticipant);
 
 		VoteDecision decision2 = new VoteDecision();
 		decision2.setParticipants(5);
-		decision2.setVoteOption(vote.getAppointments().get(1));
+		decision2.setVoteOption(vote.getOptions().get(1));
 		decision2.setVoteParticipant(voteParticipant);
 
 		decisions.add(decision);
@@ -113,7 +113,7 @@ public class VoteOptionMemberRepositoryTest {
 		voteParticipant.setName(new EncryptedString("Hans", false));
 		voteParticipant.setVoteDecisions(decisions);
 		voteParticipant.setVote(vote);
-		vote.getAppointmentMembers().add(voteParticipant);
+		vote.getParticipants().add(voteParticipant);
 
 		for (VoteDecision voteDecision : voteParticipant.getVoteDecisions()) {
 			voteDecision.setVoteParticipant(voteParticipant);
@@ -128,7 +128,7 @@ public class VoteOptionMemberRepositoryTest {
 	public void deleteAppointmentMember() throws Exception {
 		Vote vote = appointmentRequestRepository.findOne(1);
 		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
-		vote.getAppointmentMembers().remove(voteParticipant);
+		vote.getParticipants().remove(voteParticipant);
 
 		appointmentRequestRepository.saveAndFlush(vote);
 	}
@@ -139,7 +139,7 @@ public class VoteOptionMemberRepositoryTest {
 	public void deleteAppointmentMemberShouldFail() throws Exception {
 		Vote vote = appointmentRequestRepository.findOne(1);
 		VoteParticipant voteParticipant = vote.getAppointmentMemberById(3);
-		vote.getAppointmentMembers().remove(voteParticipant);
+		vote.getParticipants().remove(voteParticipant);
 
 		appointmentRequestRepository.saveAndFlush(vote);
 	}

@@ -42,21 +42,21 @@ public class Vote implements Serializable {
 	private VoteConfig voteConfig = new VoteConfig();
 
 	private List<String> consigneeList = new ArrayList<>();
-	private List<VoteOption> voteOptions = new ArrayList<>();
-	private List<VoteParticipant> voteParticipants = new ArrayList<>();
+	private List<VoteOption> options = new ArrayList<>();
+	private List<VoteParticipant> participants = new ArrayList<>();
 	private List<BackendUserAccess> accessList = new ArrayList<>();
 
 	public Vote(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
-							  EncryptedString organizerMail, VoteConfig voteConfig, List<VoteOption> voteOptions,
-			List<VoteParticipant> voteParticipants, boolean isNotified
+							  EncryptedString organizerMail, VoteConfig voteConfig, List<VoteOption> options,
+			List<VoteParticipant> participants, boolean isNotified
 	) {
 		this.title = title;
 		this.description = description;
 		this.deadline = deadline;
 		this.organizerName = organizerName;
 		this.organizerMail = organizerMail;
-		this.voteOptions = voteOptions;
-		this.voteParticipants = voteParticipants;
+		this.options = options;
+		this.participants = participants;
 		this.voteConfig = voteConfig;
 		this.isNotified = isNotified;
 	}
@@ -170,21 +170,21 @@ public class Vote implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vote", cascade = CascadeType.ALL)
-	public List<VoteOption> getAppointments() {
-		return voteOptions;
+	public List<VoteOption> getOptions() {
+		return options;
 	}
 
-	public void setAppointments(List<VoteOption> voteOptions) {
-		this.voteOptions = voteOptions;
+	public void setOptions(List<VoteOption> voteOptions) {
+		this.options = voteOptions;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vote", orphanRemoval = true, cascade = CascadeType.ALL)
-	public List<VoteParticipant> getAppointmentMembers() {
-		return voteParticipants;
+	public List<VoteParticipant> getParticipants() {
+		return participants;
 	}
 
-	public void setAppointmentMembers(List<VoteParticipant> voteParticipants) {
-		this.voteParticipants = voteParticipants;
+	public void setParticipants(List<VoteParticipant> voteParticipants) {
+		this.participants = voteParticipants;
 	}
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -225,7 +225,7 @@ public class Vote implements Serializable {
 	}
 
 	public VoteParticipant getAppointmentMemberById(long id) {
-		for (VoteParticipant member : this.getAppointmentMembers()) {
+		for (VoteParticipant member : this.getParticipants()) {
 			if (id == member.getId()) {
 				return member;
 			}
@@ -234,7 +234,7 @@ public class Vote implements Serializable {
 	}
 	
 	public VoteOption getAppointmentById(long id) {
-		for (VoteOption voteOption : this.getAppointments()) {
+		for (VoteOption voteOption : this.getOptions()) {
 			if (voteOption.getId() != null && id == voteOption.getId()) {
 				return voteOption;
 			}
@@ -269,11 +269,11 @@ public class Vote implements Serializable {
      */
 	public boolean validateDecisionsForAppointmentMember(VoteParticipant voteParticipant) {
 		List<Integer> appointmentIdList = new ArrayList<>(); 
-		if (this.voteOptions.size() != voteParticipant.getVoteDecisions().size()) {
+		if (this.options.size() != voteParticipant.getVoteDecisions().size()) {
 			return false;
 		}
 		
-		for (VoteOption voteOption : this.getAppointments()) {
+		for (VoteOption voteOption : this.getOptions()) {
 			for (VoteDecision decision : voteParticipant.getVoteDecisions()) {
 				this.decisionTypeVerification(decision);
 				
@@ -285,7 +285,7 @@ public class Vote implements Serializable {
 				}
 			}
 		}
-		return appointmentIdList.size() == this.getAppointments().size();
+		return appointmentIdList.size() == this.getOptions().size();
 	}
 	
 	/**
@@ -330,9 +330,9 @@ public class Vote implements Serializable {
 		builder.append(",\nappointmentRequestConfig=\n");
 		builder.append(voteConfig);
 		builder.append(",\nappointments=\n");
-		builder.append(voteOptions);
+		builder.append(options);
 		builder.append(",\nappointmentMembers=\n");
-		builder.append(voteParticipants);
+		builder.append(participants);
 		builder.append("\n]");
 		return builder.toString();
 	}

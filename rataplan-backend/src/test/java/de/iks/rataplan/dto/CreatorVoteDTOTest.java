@@ -56,14 +56,14 @@ public class CreatorVoteDTOTest {
 		VoteOption voteOption = new VoteOption(new Timestamp(123123123L), new EncryptedString("iks Hilden", false),
 			vote
 		);
-		vote.getAppointments().add(voteOption);
+		vote.getOptions().add(voteOption);
 
 		CreatorVoteDTO dtoVote = mapper.map(vote, CreatorVoteDTO.class);
 
 		RataplanAssert.assertVote(vote, dtoVote);
 
-		VoteOption[] voteOptions = vote.getAppointments()
-				.toArray(new VoteOption[vote.getAppointments().size()]);
+		VoteOption[] voteOptions = vote.getOptions()
+				.toArray(new VoteOption[vote.getOptions().size()]);
 		VoteOptionDTO[] dtoOptions = dtoVote.getOptions()
 				.toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
 
@@ -90,8 +90,8 @@ public class CreatorVoteDTOTest {
 		
 		VoteOptionDTO[] dtoAppointments = dtoVote.getOptions()
 				.toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
-		VoteOption[] voteOptions = vote.getAppointments()
-				.toArray(new VoteOption[vote.getAppointments().size()]);
+		VoteOption[] voteOptions = vote.getOptions()
+				.toArray(new VoteOption[vote.getOptions().size()]);
 
 		assertEquals(dtoAppointments[0].getVoteId(), voteOptions[0].getVote().getId());
 		assertEquals(dtoAppointments[0].getStartDate(), voteOptions[0].getStartDate());
@@ -126,18 +126,18 @@ public class CreatorVoteDTOTest {
 		member2.getVoteDecisions().add(decision12);
 		member2.getVoteDecisions().add(decision22);
 
-		vote.getAppointments().add(voteOption1);
-		vote.getAppointments().add(voteOption2);
+		vote.getOptions().add(voteOption1);
+		vote.getOptions().add(voteOption2);
 
-		vote.getAppointmentMembers().add(member1);
-		vote.getAppointmentMembers().add(member2);
+		vote.getParticipants().add(member1);
+		vote.getParticipants().add(member2);
 
 		CreatorVoteDTO dtoVote = mapper.map(vote, CreatorVoteDTO.class);
 
 		RataplanAssert.assertVote(vote, dtoVote);
 
-		VoteParticipant[] memberList = vote.getAppointmentMembers()
-				.toArray(new VoteParticipant[vote.getAppointmentMembers().size()]);
+		VoteParticipant[] memberList = vote.getParticipants()
+				.toArray(new VoteParticipant[vote.getParticipants().size()]);
 		VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
 				.toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
 
@@ -188,8 +188,8 @@ public class CreatorVoteDTOTest {
 
 		VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
 				.toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
-		VoteParticipant[] memberList = vote.getAppointmentMembers()
-				.toArray(new VoteParticipant[vote.getAppointmentMembers().size()]);
+		VoteParticipant[] memberList = vote.getParticipants()
+				.toArray(new VoteParticipant[vote.getParticipants().size()]);
 
 		for (int i = 0; i < participantDTOList.length; i++) {
 			assertEquals(participantDTOList[i].getDecisions().size(),

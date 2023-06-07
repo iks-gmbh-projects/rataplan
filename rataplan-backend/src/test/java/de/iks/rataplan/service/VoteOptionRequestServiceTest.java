@@ -69,7 +69,7 @@ public class VoteOptionRequestServiceTest {
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void createAppointmentRequestShouldFailHasNoAppointments() throws Exception {
 		Vote vote = createSimpleAppointmentRequest();
-		vote.setAppointments(new ArrayList<VoteOption>());
+		vote.setOptions(new ArrayList<VoteOption>());
 
 		appointmentRequestService.createAppointmentRequest(vote);
 	}
@@ -79,13 +79,13 @@ public class VoteOptionRequestServiceTest {
 	public void createAppointmentRequestShouldFailHasMember() throws Exception {
 		Vote vote = createSimpleAppointmentRequest();
 
-		List<VoteParticipant> voteParticipants = vote.getAppointmentMembers();
+		List<VoteParticipant> voteParticipants = vote.getParticipants();
 
 		VoteParticipant voteParticipant = new VoteParticipant();
 		voteParticipant.setName(new EncryptedString("Fritz macht den Fehler", false));
 		voteParticipants.add(voteParticipant);
 
-		vote.setAppointmentMembers(voteParticipants);
+		vote.setParticipants(voteParticipants);
 
 		appointmentRequestService.createAppointmentRequest(vote);
 	}
@@ -99,7 +99,7 @@ public class VoteOptionRequestServiceTest {
 		voteOption.setUrl(new EncryptedString("thiswontwork.com", false));
 
 		vote
-				.setAppointments(appointmentList(voteOption, new VoteOption(new EncryptedString("homeoffice", false),
+				.setOptions(appointmentList(voteOption, new VoteOption(new EncryptedString("homeoffice", false),
 					vote
 				)));
 
@@ -125,8 +125,8 @@ public class VoteOptionRequestServiceTest {
 	public void getAppointmentRequestById() throws Exception {
 		Vote vote = appointmentRequestService.getAppointmentRequestById(1);
 		assertEquals(vote.getTitle().getString(), "Coding Dojo");
-		assertEquals(vote.getAppointments().size(), 2);
-		assertEquals(vote.getAppointmentMembers().size(), 0);
+		assertEquals(vote.getOptions().size(), 2);
+		assertEquals(vote.getParticipants().size(), 0);
 	}
 
 	@Test(expected = ResourceNotFoundException.class)
@@ -177,7 +177,7 @@ public class VoteOptionRequestServiceTest {
 		List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
 		voteParticipants.add(voteParticipant);
 
-		vote.setAppointmentMembers(voteParticipants);
+		vote.setParticipants(voteParticipants);
 
 		VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote);
 		voteOption1.setVote(vote);
@@ -188,7 +188,7 @@ public class VoteOptionRequestServiceTest {
 		VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), vote);
 		voteOption3.setVote(vote);
 
-		vote.setAppointments(appointmentList(voteOption1, voteOption2, voteOption3));
+		vote.setOptions(appointmentList(voteOption1, voteOption2, voteOption3));
 
 		appointmentRequestService.updateAppointmentRequest(oldVote, vote);
 	}
@@ -200,7 +200,7 @@ public class VoteOptionRequestServiceTest {
 		Vote oldVote = appointmentRequestService.getAppointmentRequestById(1);
 		
 		Vote vote = createSimpleAppointmentRequest();
-		vote.setAppointments(new ArrayList<VoteOption>());
+		vote.setOptions(new ArrayList<VoteOption>());
 
 		// has no appointments
 		appointmentRequestService.updateAppointmentRequest(oldVote, vote);

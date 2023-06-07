@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public interface AppointmentRequestRepository extends JpaRepository<Vote, Integer> {
 	List<Vote> findAllByUserId(Integer userId);
 	
-	List<Vote> findDistinctByAppointmentMembers_UserIdIn(Integer userId);
+	List<Vote> findDistinctByParticipants_UserIdIn(Integer userId);
 	
 	List<Vote> findByDeadlineBeforeAndNotifiedFalse(Date deadline);// find by deadline == xx and organizermail not null
 

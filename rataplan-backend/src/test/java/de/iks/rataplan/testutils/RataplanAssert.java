@@ -57,9 +57,9 @@ public class RataplanAssert {
 				dtoRequest.getAppointmentRequestConfig().getVoteOptionConfig());
 		assertEquals("Vote.config.decisionType", request.getAppointmentRequestConfig().getDecisionType(),
 				dtoRequest.getAppointmentRequestConfig().getDecisionType());
-		assertEquals("Vote.options.size", request.getAppointments().size(),
+		assertEquals("Vote.options.size", request.getOptions().size(),
 				dtoRequest.getOptions().size());
-		assertEquals("Vote.participants.size", request.getAppointmentMembers().size(),
+		assertEquals("Vote.participants.size", request.getParticipants().size(),
 				dtoRequest.getParticipants().size());
 	}
 
@@ -78,12 +78,12 @@ public class RataplanAssert {
 				request.getAppointmentRequestConfig().getVoteOptionConfig());
 		assertEquals("VoteDTO.config.decisionType", dtoRequest.getAppointmentRequestConfig().getDecisionType(),
 				request.getAppointmentRequestConfig().getDecisionType());
-		if(dtoRequest.getOptions() == null) assertNull("VoteDTO.appointments", request.getAppointments());
+		if(dtoRequest.getOptions() == null) assertNull("VoteDTO.appointments", request.getOptions());
 		else assertEquals("VoteDTO.options.size", dtoRequest.getOptions().size(),
-				request.getAppointments().size());
-		if(dtoRequest.getParticipants() == null) assertNull("VoteDTO.participants", request.getAppointmentMembers());
+				request.getOptions().size());
+		if(dtoRequest.getParticipants() == null) assertNull("VoteDTO.participants", request.getParticipants());
 		else assertEquals("VoteDTO.participants.size", dtoRequest.getParticipants().size(),
-				request.getAppointmentMembers().size());
+				request.getParticipants().size());
 	}
 
 	/**

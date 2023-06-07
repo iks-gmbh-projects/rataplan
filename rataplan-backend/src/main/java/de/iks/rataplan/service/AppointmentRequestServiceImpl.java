@@ -40,18 +40,18 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 
     @Override
     public Vote createAppointmentRequest(Vote vote) {
-        if (!vote.getAppointmentMembers().isEmpty()) {
+        if (!vote.getParticipants().isEmpty()) {
             throw new MalformedException("Can not create AppointmentRequest with members!");
-        } else if (vote.getAppointments().isEmpty()) {
+        } else if (vote.getOptions().isEmpty()) {
             throw new MalformedException("Can not create AppointmentRequest without appointments!");
         }
 
-		for (VoteOption voteOption : vote.getAppointments()) {
+		for (VoteOption voteOption : vote.getOptions()) {
 			voteOption.setVote(vote);
 		}
 
 		vote.setId(null);
-		for (VoteOption voteOption : vote.getAppointments()) {
+		for (VoteOption voteOption : vote.getOptions()) {
 			if (!voteOption.validateVoteOptionConfig(
 					vote.getAppointmentRequestConfig().getVoteOptionConfig())) {
 				throw new MalformedException("Can not create AppointmentRequest with different AppointmentTypes.");
@@ -125,7 +125,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 
 	@Override
 	public List<Vote> getAppointmentRequestsWhereUserTakesPartIn(Integer userId) {
-		return appointmentRequestRepository.findDistinctByAppointmentMembers_UserIdIn(userId);
+		return appointmentRequestRepository.findDistinctByParticipants_UserIdIn(userId);
 	}
 
 	@Override
@@ -149,9 +149,9 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			if(newConfig.getDecisionType() != null) {
 				if(dbConfig.getDecisionType() != newConfig.getDecisionType()) {
 					if(dbConfig.getDecisionType() == DecisionType.NUMBER || newConfig.getDecisionType() == DecisionType.NUMBER) {
-						dbVote.getAppointmentMembers().clear();
+						dbVote.getParticipants().clear();
 					} else if(newConfig.getDecisionType() == DecisionType.DEFAULT) {
-						dbVote.getAppointmentMembers().stream()
+						dbVote.getParticipants().stream()
 							.map(VoteParticipant::getVoteDecisions)
 							.flatMap(List::stream)
 							.filter(d -> d.getDecision() == Decision.ACCEPT_IF_NECESSARY)
@@ -162,8 +162,8 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 			}
 			if(newConfig.getVoteOptionConfig() != null && !dbConfig.getVoteOptionConfig().equals(newConfig.getVoteOptionConfig())) {
 				dbConfig.setVoteOptionConfig(newConfig.getVoteOptionConfig());
-				dbVote.getAppointments().clear();
-				dbVote.getAppointmentMembers().clear();
+				dbVote.getOptions().clear();
+				dbVote.getParticipants().clear();
 			}
 		}
 		dbVote.setOrganizerName(newVote.getOrganizerName());
@@ -171,14 +171,14 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 		
 		Vote ret;
 		
-		if(newVote.getAppointments() != null && newVote.getAppointments() != dbVote.getAppointments()) {
-			if(newVote.getAppointments().isEmpty()) throw new MalformedException("Must have at least 1 Appointment");
+		if(newVote.getOptions() != null && newVote.getOptions() != dbVote.getOptions()) {
+			if(newVote.getOptions().isEmpty()) throw new MalformedException("Must have at least 1 Appointment");
 			
 			appointmentRequestRepository.saveAndFlush(dbVote);
 			
-			removeAppointments(newVote, dbVote.getAppointments());
+			removeAppointments(newVote, dbVote.getOptions());
 			
-			addAppointments(dbVote, newVote.getAppointments());
+			addAppointments(dbVote, newVote.getOptions());
 			ret = appointmentRequestRepository.findOne(dbVote.getId());
 		} else {
 			ret = appointmentRequestRepository.saveAndFlush(dbVote);
@@ -208,7 +208,7 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 				voteOption.setVote(oldRequest);
 				voteOption = appointmentRepository.saveAndFlush(voteOption);
 
-				for(VoteParticipant member: oldRequest.getAppointmentMembers()) {
+				for(VoteParticipant member: oldRequest.getParticipants()) {
 					appointmentDecisionRepository.save(new VoteDecision(Decision.NO_ANSWER, voteOption, member));
 				}
 				appointmentDecisionRepository.flush();

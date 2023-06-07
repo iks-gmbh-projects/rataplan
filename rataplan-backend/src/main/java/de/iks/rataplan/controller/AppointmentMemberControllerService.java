@@ -134,7 +134,7 @@ public class AppointmentMemberControllerService {
 	}
 	
 	private boolean isUserParticipantInAppointmentRequest(Vote vote, AuthUser authUser) {
-		for (VoteParticipant voteParticipant : vote.getAppointmentMembers()) {
+		for (VoteParticipant voteParticipant : vote.getParticipants()) {
 			if (voteParticipant.getUserId() != null && voteParticipant.getUserId().equals(authUser.getId())) {
 				return true;
 			}

@@ -70,7 +70,7 @@ public final class TestConstants {
 				new Date(DATE_2050_10_10), new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
 				new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
 
-		vote.setAppointments(appointmentList(new VoteOption(new EncryptedString("iks Hilden", false), vote),
+		vote.setOptions(appointmentList(new VoteOption(new EncryptedString("iks Hilden", false), vote),
 				new VoteOption(new EncryptedString("homeoffice", false), vote)));
 		return vote;
 	}

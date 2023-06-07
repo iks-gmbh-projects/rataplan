@@ -155,10 +155,10 @@ public class VoteOptionMemberServiceTest {
 		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
 
 		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
-				vote.getAppointments().get(0), newVoteParticipant
+				vote.getOptions().get(0), newVoteParticipant
 		);
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
-				vote.getAppointments().get(1), newVoteParticipant
+				vote.getOptions().get(1), newVoteParticipant
 		);
 		newVoteParticipant.getVoteDecisions().add(decision1);
 		newVoteParticipant.getVoteDecisions().add(decision2);
@@ -177,10 +177,10 @@ public class VoteOptionMemberServiceTest {
 		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
 
 		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
-				vote.getAppointments().get(0), newVoteParticipant
+				vote.getOptions().get(0), newVoteParticipant
 		);
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
-				vote.getAppointments().get(1), newVoteParticipant
+				vote.getOptions().get(1), newVoteParticipant
 		);
 		newVoteParticipant.getVoteDecisions().add(decision1);
 		newVoteParticipant.getVoteDecisions().add(decision2);
@@ -202,10 +202,10 @@ public class VoteOptionMemberServiceTest {
 		VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
 
 		VoteDecision decision1 = new VoteDecision(Decision.NO_ANSWER,
-				vote.getAppointments().get(0), newVoteParticipant
+				vote.getOptions().get(0), newVoteParticipant
 		);
 		VoteDecision decision2 = new VoteDecision(Decision.DECLINE,
-				vote.getAppointments().get(1), newVoteParticipant
+				vote.getOptions().get(1), newVoteParticipant
 		);
 		newVoteParticipant.getVoteDecisions().add(decision1);
 		newVoteParticipant.getVoteDecisions().add(decision2);
