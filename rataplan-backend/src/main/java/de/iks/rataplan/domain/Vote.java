@@ -189,11 +189,11 @@ public class Vote implements Serializable {
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "voteConfigId")
-	public VoteConfig getAppointmentRequestConfig() {
+	public VoteConfig getVoteConfig() {
 		return voteConfig;
 	}
 	
-	public void setAppointmentRequestConfig(VoteConfig voteConfig) {
+	public void setVoteConfig(VoteConfig voteConfig) {
 		this.voteConfig = voteConfig;
 	}
 
@@ -233,7 +233,7 @@ public class Vote implements Serializable {
 		return null;
 	}
 	
-	public VoteOption getAppointmentById(long id) {
+	public VoteOption getOptionById(long id) {
 		for (VoteOption voteOption : this.getOptions()) {
 			if (voteOption.getId() != null && id == voteOption.getId()) {
 				return voteOption;
@@ -267,8 +267,8 @@ public class Vote implements Serializable {
      * @param voteParticipant
      * @return
      */
-	public boolean validateDecisionsForAppointmentMember(VoteParticipant voteParticipant) {
-		List<Integer> appointmentIdList = new ArrayList<>(); 
+	public boolean validateDecisionsForParticipant(VoteParticipant voteParticipant) {
+		List<Integer> optionIdList = new ArrayList<>();
 		if (this.options.size() != voteParticipant.getVoteDecisions().size()) {
 			return false;
 		}
@@ -280,12 +280,12 @@ public class Vote implements Serializable {
 				if (decision.getVoteOption() == null) {
 					return false;
 				} else if (Objects.equals(voteOption.getId(), decision.getVoteOption().getId())
-						&& !appointmentIdList.contains(voteOption.getId())) {
-					appointmentIdList.add(voteOption.getId());
+						&& !optionIdList.contains(voteOption.getId())) {
+					optionIdList.add(voteOption.getId());
 				}
 			}
 		}
-		return appointmentIdList.size() == this.getOptions().size();
+		return optionIdList.size() == this.getOptions().size();
 	}
 	
 	/**

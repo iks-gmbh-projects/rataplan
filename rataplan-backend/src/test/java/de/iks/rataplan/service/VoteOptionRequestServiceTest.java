@@ -167,7 +167,7 @@ public class VoteOptionRequestServiceTest {
 		vote.setDeadline(new Date(DATE_2050_10_10));
 		vote.setDescription(new EncryptedString("Fun with code", false));
 		vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
-		vote.setAppointmentRequestConfig(voteConfig);
+		vote.setVoteConfig(voteConfig);
 
 		VoteParticipant voteParticipant = new VoteParticipant();
 		voteParticipant.setId(1);

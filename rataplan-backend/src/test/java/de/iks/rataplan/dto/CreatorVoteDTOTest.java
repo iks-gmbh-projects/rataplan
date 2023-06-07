@@ -88,15 +88,15 @@ public class CreatorVoteDTOTest {
 
 		RataplanAssert.assertVoteDTO(dtoVote, vote);
 		
-		VoteOptionDTO[] dtoAppointments = dtoVote.getOptions()
+		VoteOptionDTO[] dtoOptions = dtoVote.getOptions()
 				.toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
 		VoteOption[] voteOptions = vote.getOptions()
 				.toArray(new VoteOption[vote.getOptions().size()]);
 
-		assertEquals(dtoAppointments[0].getVoteId(), voteOptions[0].getVote().getId());
-		assertEquals(dtoAppointments[0].getStartDate(), voteOptions[0].getStartDate());
-		assertEquals(dtoAppointments[0].getId(), voteOptions[0].getId());
-		assertEquals(dtoAppointments[0].getDescription(), voteOptions[0].getDescription().getString());
+		assertEquals(dtoOptions[0].getVoteId(), voteOptions[0].getVote().getId());
+		assertEquals(dtoOptions[0].getStartDate(), voteOptions[0].getStartDate());
+		assertEquals(dtoOptions[0].getId(), voteOptions[0].getId());
+		assertEquals(dtoOptions[0].getDescription(), voteOptions[0].getDescription().getString());
 	}
 
 	@Test

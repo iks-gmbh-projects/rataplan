@@ -21,7 +21,7 @@ import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.service.VoteService;
 
 @Service
-public class AppointmentRequestControllerService {
+public class VoteControllerService {
 
 	@Autowired
 	private VoteService voteService;

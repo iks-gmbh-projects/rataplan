@@ -20,7 +20,7 @@ import de.iks.rataplan.service.VoteParticipantService;
 import java.util.Objects;
 
 @Service
-public class AppointmentMemberControllerService {
+public class VoteParticipantControllerService {
 
 	@Autowired
 	private VoteService voteService;

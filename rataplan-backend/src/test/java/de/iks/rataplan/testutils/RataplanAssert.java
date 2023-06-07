@@ -53,10 +53,10 @@ public class RataplanAssert {
 		assertEquals("Vote.deadline", request.getDeadline(), dtoRequest.getDeadline());
 		assertEquals("Vote.organizerMail", request.getOrganizerMail().getString(), dtoRequest.getOrganizerMail());
 		assertEquals("Vote.id", request.getId(), dtoRequest.getId());
-		assertEquals("Vote.config.appointmentType", request.getAppointmentRequestConfig().getVoteOptionConfig(),
-				dtoRequest.getAppointmentRequestConfig().getVoteOptionConfig());
-		assertEquals("Vote.config.decisionType", request.getAppointmentRequestConfig().getDecisionType(),
-				dtoRequest.getAppointmentRequestConfig().getDecisionType());
+		assertEquals("Vote.config.appointmentType", request.getVoteConfig().getVoteOptionConfig(),
+				dtoRequest.getVoteConfig().getVoteOptionConfig());
+		assertEquals("Vote.config.decisionType", request.getVoteConfig().getDecisionType(),
+				dtoRequest.getVoteConfig().getDecisionType());
 		assertEquals("Vote.options.size", request.getOptions().size(),
 				dtoRequest.getOptions().size());
 		assertEquals("Vote.participants.size", request.getParticipants().size(),
@@ -74,10 +74,10 @@ public class RataplanAssert {
 		assertEquals("VoteDTO.deadline", dtoRequest.getDeadline(), request.getDeadline());
 		assertEquals("VoteDTO.organizerMail", dtoRequest.getOrganizerMail(), request.getOrganizerMail().getString());
 		assertEquals("VoteDTO.id", dtoRequest.getId(), request.getId());
-		assertEquals("VoteDTO.config.appointmentType", dtoRequest.getAppointmentRequestConfig().getVoteOptionConfig(),
-				request.getAppointmentRequestConfig().getVoteOptionConfig());
-		assertEquals("VoteDTO.config.decisionType", dtoRequest.getAppointmentRequestConfig().getDecisionType(),
-				request.getAppointmentRequestConfig().getDecisionType());
+		assertEquals("VoteDTO.config.appointmentType", dtoRequest.getVoteConfig().getVoteOptionConfig(),
+				request.getVoteConfig().getVoteOptionConfig());
+		assertEquals("VoteDTO.config.decisionType", dtoRequest.getVoteConfig().getDecisionType(),
+				request.getVoteConfig().getDecisionType());
 		if(dtoRequest.getOptions() == null) assertNull("VoteDTO.appointments", request.getOptions());
 		else assertEquals("VoteDTO.options.size", dtoRequest.getOptions().size(),
 				request.getOptions().size());

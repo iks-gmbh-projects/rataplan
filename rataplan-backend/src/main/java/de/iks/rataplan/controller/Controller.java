@@ -27,10 +27,10 @@ public class Controller {
     private static final String ACCESS_TOKEN = "accesstoken";
 
     @Autowired
-    private AppointmentRequestControllerService appointmentRequestControllerService;
+    private VoteControllerService voteControllerService;
 
     @Autowired
-    private AppointmentMemberControllerService appointmentMemberControllerService;
+    private VoteParticipantControllerService voteParticipantControllerService;
 
     @Autowired
     private GeneralControllerService generalControllerService;
@@ -50,7 +50,7 @@ public class Controller {
     public ResponseEntity<VoteDTO> getVoteByParticipationToken(@PathVariable String participationToken,
                                                                            @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
-        VoteDTO voteDTO = appointmentRequestControllerService
+        VoteDTO voteDTO = voteControllerService
                 .getVoteByParticipationToken(participationToken);
         return new ResponseEntity<>(voteDTO, HttpStatus.OK);
     }
@@ -77,7 +77,7 @@ public class Controller {
     public ResponseEntity<CreatorVoteDTO> getVoteByEditToken(@PathVariable String editToken,
                                                                                   @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
-        CreatorVoteDTO creatorVoteDTO = appointmentRequestControllerService
+        CreatorVoteDTO creatorVoteDTO = voteControllerService
                 .getVoteByEditToken(editToken, jwtToken);
         return new ResponseEntity<>(creatorVoteDTO, HttpStatus.OK);
     }
@@ -90,7 +90,7 @@ public class Controller {
         @RequestBody CreatorVoteDTO creatorVoteDTO,
         @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
         
-        CreatorVoteDTO createdCreatorVoteDTO = appointmentRequestControllerService
+        CreatorVoteDTO createdCreatorVoteDTO = voteControllerService
             .updateVote(editToken, creatorVoteDTO, jwtToken);
         return new ResponseEntity<>(createdCreatorVoteDTO, HttpStatus.OK);
     }
@@ -102,7 +102,7 @@ public class Controller {
             @RequestBody CreatorVoteDTO creatorVoteDTO,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
         creatorVoteDTO.assertCreationValid();
-        CreatorVoteDTO createdCreatorVoteDTO = appointmentRequestControllerService
+        CreatorVoteDTO createdCreatorVoteDTO = voteControllerService
                 .createVote(creatorVoteDTO, jwtToken);
         return new ResponseEntity<>(createdCreatorVoteDTO, HttpStatus.CREATED);
     }
@@ -133,7 +133,7 @@ public class Controller {
     public ResponseEntity<VoteParticipantDTO> addVoteParticipant(@PathVariable String participationToken,
                                                                      @RequestBody VoteParticipantDTO voteParticipantDTO,
                                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
-        VoteParticipantDTO addedVoteParticipantDTO = appointmentMemberControllerService
+        VoteParticipantDTO addedVoteParticipantDTO = voteParticipantControllerService
                 .createParticipant(voteParticipantDTO, participationToken, jwtToken);
         return new ResponseEntity<>(addedVoteParticipantDTO, HttpStatus.CREATED);
     }
@@ -143,10 +143,10 @@ public class Controller {
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
     @DeleteMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> deleteAppointmentMember(@PathVariable String participationToken, @PathVariable Integer memberId,
+    public ResponseEntity<?> deleteVoteParticipant(@PathVariable String participationToken, @PathVariable Integer memberId,
                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
-        appointmentMemberControllerService.deleteParticipant(participationToken, memberId, jwtToken);
+        voteParticipantControllerService.deleteParticipant(participationToken, memberId, jwtToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -160,7 +160,7 @@ public class Controller {
                                                                         @PathVariable Integer memberId, @RequestBody VoteParticipantDTO voteParticipantDTO,
                                                                         @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
         voteParticipantDTO.assertUpdateValid();
-        VoteParticipantDTO updatedVoteParticipantDTO = appointmentMemberControllerService.updateParticipant(participationToken, memberId,
+        VoteParticipantDTO updatedVoteParticipantDTO = voteParticipantControllerService.updateParticipant(participationToken, memberId,
             voteParticipantDTO, jwtToken);
         return new ResponseEntity<>(updatedVoteParticipantDTO, HttpStatus.OK);
     }
@@ -172,8 +172,8 @@ public class Controller {
     public ResponseEntity<List<CreatorVoteDTO>> getVotesCreatedByUser(
             @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
 
-        List<CreatorVoteDTO> appointmentRequestsDTO = appointmentRequestControllerService.getVotesCreatedByUser(jwtToken);
-        return new ResponseEntity<>(appointmentRequestsDTO, HttpStatus.OK);
+        List<CreatorVoteDTO> voteDTOs = voteControllerService.getVotesCreatedByUser(jwtToken);
+        return new ResponseEntity<>(voteDTOs, HttpStatus.OK);
     }
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),
@@ -183,7 +183,7 @@ public class Controller {
     public ResponseEntity<List<VoteDTO>> getVotesWhereUserParticipates(
             @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
 
-        List<VoteDTO> votesDTO = appointmentRequestControllerService.getVotesWhereUserParticipates(jwtToken);
+        List<VoteDTO> votesDTO = voteControllerService.getVotesWhereUserParticipates(jwtToken);
         return new ResponseEntity<>(votesDTO, HttpStatus.OK);
     }
 

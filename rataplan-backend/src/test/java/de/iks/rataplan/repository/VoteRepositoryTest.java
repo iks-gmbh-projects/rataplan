@@ -94,14 +94,14 @@ public class VoteRepositoryTest {
 
 		Vote vote = voteRepository.findOne(1);
 
-		assertEquals(1, vote.getAppointmentRequestConfig().getId().intValue());
-		assertEquals(DecisionType.DEFAULT, vote.getAppointmentRequestConfig().getDecisionType());
-		assertEquals(true, vote.getAppointmentRequestConfig().getVoteOptionConfig().isDescription());
-		assertEquals(false, vote.getAppointmentRequestConfig().getVoteOptionConfig().isStartDate());
-		assertEquals(false, vote.getAppointmentRequestConfig().getVoteOptionConfig().isStartTime());
-		assertEquals(false, vote.getAppointmentRequestConfig().getVoteOptionConfig().isEndDate());
-		assertEquals(false, vote.getAppointmentRequestConfig().getVoteOptionConfig().isEndTime());
-		assertEquals(false, vote.getAppointmentRequestConfig().getVoteOptionConfig().isUrl());
+		assertEquals(1, vote.getVoteConfig().getId().intValue());
+		assertEquals(DecisionType.DEFAULT, vote.getVoteConfig().getDecisionType());
+		assertEquals(true, vote.getVoteConfig().getVoteOptionConfig().isDescription());
+		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isStartDate());
+		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isStartTime());
+		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isEndDate());
+		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isEndTime());
+		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isUrl());
 
 		assertEquals(1, vote.getId().intValue());
 		assertEquals("Coding Dojo", vote.getTitle().getString());

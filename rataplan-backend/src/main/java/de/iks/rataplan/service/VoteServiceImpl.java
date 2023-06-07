@@ -53,7 +53,7 @@ public class VoteServiceImpl implements VoteService {
 		vote.setId(null);
 		for (VoteOption voteOption : vote.getOptions()) {
 			if (!voteOption.validateVoteOptionConfig(
-					vote.getAppointmentRequestConfig().getVoteOptionConfig())) {
+					vote.getVoteConfig().getVoteOptionConfig())) {
 				throw new MalformedException("Can not create AppointmentRequest with different AppointmentTypes.");
 			}
 			voteOption.setId(null);
@@ -102,9 +102,9 @@ public class VoteServiceImpl implements VoteService {
             throw new ResourceNotFoundException("AppointmentRequest by Token does not exist");
         }
 
-        Vote appointmentRequestbyId = getVoteById(requestId);
-        if (appointmentRequestbyId.getParticipationToken() == null) {
-            return appointmentRequestbyId;
+        Vote voteById = getVoteById(requestId);
+        if (voteById.getParticipationToken() == null) {
+            return voteById;
         }
         throw new ResourceNotFoundException("Could not find AppointmentRequest with participationToken: " + participationToken);
     }
@@ -143,9 +143,9 @@ public class VoteServiceImpl implements VoteService {
 
 		if(newVote.getTitle() != null) dbVote.setTitle(newVote.getTitle());
 		dbVote.setDescription(newVote.getDescription());
-		if(newVote.getAppointmentRequestConfig() != null) {
-			VoteConfig newConfig = newVote.getAppointmentRequestConfig();
-			VoteConfig dbConfig = dbVote.getAppointmentRequestConfig();
+		if(newVote.getVoteConfig() != null) {
+			VoteConfig newConfig = newVote.getVoteConfig();
+			VoteConfig dbConfig = dbVote.getVoteConfig();
 			if(newConfig.getDecisionType() != null) {
 				if(dbConfig.getDecisionType() != newConfig.getDecisionType()) {
 					if(dbConfig.getDecisionType() == DecisionType.NUMBER || newConfig.getDecisionType() == DecisionType.NUMBER) {
@@ -176,9 +176,9 @@ public class VoteServiceImpl implements VoteService {
 			
 			voteRepository.saveAndFlush(dbVote);
 			
-			removeAppointments(newVote, dbVote.getOptions());
+			removeOptions(newVote, dbVote.getOptions());
 			
-			addAppointments(dbVote, newVote.getOptions());
+			addOptions(dbVote, newVote.getOptions());
 			ret = voteRepository.findOne(dbVote.getId());
 		} else {
 			ret = voteRepository.saveAndFlush(dbVote);
@@ -186,9 +186,9 @@ public class VoteServiceImpl implements VoteService {
 		return ret;
 	}
 
-	private void removeAppointments(Vote newRequest, List<VoteOption> oldVoteOptions) {
+	private void removeOptions(Vote newRequest, List<VoteOption> oldVoteOptions) {
 		List<VoteOption> toRemove = oldVoteOptions.stream()
-				.filter(appointment -> newRequest.getAppointmentById(appointment.getId()) == null)
+				.filter(option -> newRequest.getOptionById(option.getId()) == null)
 				.collect(Collectors.toList());
 
 		for (VoteOption voteOption : toRemove) {
@@ -197,10 +197,10 @@ public class VoteServiceImpl implements VoteService {
 		}
 	}
 
-	private void addAppointments(Vote oldRequest, List<VoteOption> newVoteOptions) {
+	private void addOptions(Vote oldRequest, List<VoteOption> newVoteOptions) {
 		for (VoteOption voteOption : newVoteOptions) {
 			if (!voteOption
-					.validateVoteOptionConfig(oldRequest.getAppointmentRequestConfig().getVoteOptionConfig())) {
+					.validateVoteOptionConfig(oldRequest.getVoteConfig().getVoteOptionConfig())) {
 				throw new MalformedException("AppointmentType does not fit the AppointmentRequest.");
 			}
 

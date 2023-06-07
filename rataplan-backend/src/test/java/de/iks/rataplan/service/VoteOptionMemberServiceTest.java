@@ -60,11 +60,11 @@ public class VoteOptionMemberServiceTest {
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
-		decision.setVoteOption(vote.getAppointmentById(1));
+		decision.setVoteOption(vote.getOptionById(1));
 		decision.setDecision(Decision.ACCEPT);
 
 		VoteDecision decision2 = new VoteDecision();
-		decision2.setVoteOption(vote.getAppointmentById(2));
+		decision2.setVoteOption(vote.getOptionById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
 		member.getVoteDecisions().add(decision);
@@ -83,15 +83,15 @@ public class VoteOptionMemberServiceTest {
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
-		decision.setVoteOption(vote.getAppointmentById(1));
+		decision.setVoteOption(vote.getOptionById(1));
 		decision.setDecision(Decision.ACCEPT);
 
 		VoteDecision decision2 = new VoteDecision();
-		decision2.setVoteOption(vote.getAppointmentById(2));
+		decision2.setVoteOption(vote.getOptionById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
 		VoteDecision decision3 = new VoteDecision();
-		decision3.setVoteOption(vote.getAppointmentById(2));
+		decision3.setVoteOption(vote.getOptionById(2));
 		decision3.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
 		member.getVoteDecisions().add(decision);
@@ -112,11 +112,11 @@ public class VoteOptionMemberServiceTest {
 		member.setName(new EncryptedString("Max", false));
 
 		VoteDecision decision = new VoteDecision();
-		decision.setVoteOption(vote.getAppointmentById(1));
+		decision.setVoteOption(vote.getOptionById(1));
 		decision.setDecision(Decision.ACCEPT);
 
 		VoteDecision decision2 = new VoteDecision();
-		decision2.setVoteOption(vote.getAppointmentById(2));
+		decision2.setVoteOption(vote.getOptionById(2));
 		decision2.setDecision(Decision.ACCEPT_IF_NECESSARY);
 
 		member.getVoteDecisions().add(decision);

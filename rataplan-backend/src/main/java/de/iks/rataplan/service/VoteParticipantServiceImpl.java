@@ -33,7 +33,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
 		
         voteParticipant.setId(null);
 
-        if (vote.validateDecisionsForAppointmentMember(voteParticipant)) {
+        if (vote.validateDecisionsForParticipant(voteParticipant)) {
         	
             voteParticipant.setVote(vote);
             vote.getParticipants().add(voteParticipant);
@@ -66,14 +66,14 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
         
         this.validateExpirationDate(vote);
 
-        if (!vote.validateDecisionsForAppointmentMember(newVoteParticipant)) {
+        if (!vote.validateDecisionsForParticipant(newVoteParticipant)) {
         	throw new MalformedException(
         			"AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.");
         }
 
         dbVoteParticipant.setName(newVoteParticipant.getName());
         dbVoteParticipant.setVote(vote);
-        this.updateAppointmentDecisionsForMember(dbVoteParticipant.getVoteDecisions(), newVoteParticipant.getVoteDecisions());
+        this.updateDecisionsForParticipant(dbVoteParticipant.getVoteDecisions(), newVoteParticipant.getVoteDecisions());
         return voteParticipantRepository.saveAndFlush(dbVoteParticipant);
     }
     
@@ -92,7 +92,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
      * @param oldDecisions
      * @param newDecisions
      */
-    private void updateAppointmentDecisionsForMember(List<VoteDecision> oldDecisions,
+    private void updateDecisionsForParticipant(List<VoteDecision> oldDecisions,
             List<VoteDecision> newDecisions) {
         for (VoteDecision voteDecision : oldDecisions) {
             for (VoteDecision newdecision : newDecisions) {

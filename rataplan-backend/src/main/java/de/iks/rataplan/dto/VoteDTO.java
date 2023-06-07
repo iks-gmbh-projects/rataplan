@@ -119,11 +119,11 @@ public class VoteDTO implements Serializable {
         this.participationToken = participationToken;
     }
 
-    public VoteConfig getAppointmentRequestConfig() {
+    public VoteConfig getVoteConfig() {
         return voteConfig;
     }
 
-    public void setAppointmentRequestConfig(VoteConfig voteConfig) {
+    public void setVoteConfig(VoteConfig voteConfig) {
         this.voteConfig = voteConfig;
     }
 

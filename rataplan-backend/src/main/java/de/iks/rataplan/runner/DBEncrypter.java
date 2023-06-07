@@ -26,21 +26,21 @@ public class DBEncrypter implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         voteRepository.findUnencrypted()
-            .peek(appointmentRequest -> {
-                ensureEncrypted(appointmentRequest::getTitle, appointmentRequest::setTitle);
-                ensureEncrypted(appointmentRequest::getDescription, appointmentRequest::setDescription);
-                ensureEncrypted(appointmentRequest::getOrganizerName, appointmentRequest::setOrganizerName);
-                ensureEncrypted(appointmentRequest::getOrganizerMail, appointmentRequest::setOrganizerMail);
+            .peek(vote -> {
+                ensureEncrypted(vote::getTitle, vote::setTitle);
+                ensureEncrypted(vote::getDescription, vote::setDescription);
+                ensureEncrypted(vote::getOrganizerName, vote::setOrganizerName);
+                ensureEncrypted(vote::getOrganizerMail, vote::setOrganizerMail);
             })
             .forEach(voteRepository::save);
         voteOptionRepository.findUnencrypted()
-            .peek(appointment -> {
-                ensureEncrypted(appointment::getDescription, appointment::setDescription);
-                ensureEncrypted(appointment::getUrl, appointment::setUrl);
+            .peek(voteOption -> {
+                ensureEncrypted(voteOption::getDescription, voteOption::setDescription);
+                ensureEncrypted(voteOption::getUrl, voteOption::setUrl);
             })
             .forEach(voteOptionRepository::save);
         voteParticipantRepository.findUnencrypted()
-            .peek(appointmentMember -> ensureEncrypted(appointmentMember::getName, appointmentMember::setName))
+            .peek(voteParticipant -> ensureEncrypted(voteParticipant::getName, voteParticipant::setName))
             .forEach(voteParticipantRepository::save);
         voteRepository.flush();
         voteOptionRepository.flush();

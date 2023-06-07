@@ -36,7 +36,7 @@ public class VoteDecisionDTOTest {
     private ModelMapper mapper;
 
     @Test
-    public void mapToDTO_AppointmentDecision_mapped() {
+    public void mapToDTO_VoteDecision_mapped() {
         VoteOption voteOption = new VoteOption(new Timestamp(123123L), new EncryptedString("iks Hilden", false), null);
         voteOption.setId(1);
 
@@ -50,7 +50,7 @@ public class VoteDecisionDTOTest {
     }
 
     @Test
-    public void mapToDomain_AppointmentDecision_mapped() {
+    public void mapToDomain_VoteDecision_mapped() {
     	VoteDecisionDTO decisionDTO = new VoteDecisionDTO(1, 1, 1, null);
         
         VoteDecision decision = mapper.map(decisionDTO, VoteDecision.class);
