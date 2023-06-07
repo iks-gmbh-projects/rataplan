@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 
 import de.iks.rataplan.dto.CreatorVoteDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
-import de.iks.rataplan.service.AppointmentRequestService;
+import de.iks.rataplan.service.VoteService;
 
 @Service
 public class AppointmentRequestControllerService {
 
 	@Autowired
-	private AppointmentRequestService appointmentRequestService;
+	private VoteService voteService;
 
 	@Autowired
 	private AuthorizationControllerService authorizationControllerService;
@@ -62,7 +62,7 @@ public class AppointmentRequestControllerService {
 		if(authUser != null) vote.setAccessList(Collections.singletonList(
 			new BackendUserAccess(null, authUser.getId(), true, false)
 		));
-        appointmentRequestService.createAppointmentRequest(vote);
+        voteService.createAppointmentRequest(vote);
 
 		return modelMapper.map(vote, CreatorVoteDTO.class);
 	}
@@ -72,7 +72,7 @@ public class AppointmentRequestControllerService {
 		if(jwtToken == null) backendUserId = null;
 		else backendUserId = authService.getUserData(jwtToken).getBody().getId();
 
-		Vote dbVote = appointmentRequestService.getAppointmentRequestByEditToken(editToken);
+		Vote dbVote = voteService.getAppointmentRequestByEditToken(editToken);
 		if(dbVote.getUserId() != null) {
 			if (backendUserId == null) throw new RequiresAuthorizationException();
 			if (!dbVote.getUserId().equals(backendUserId) &&
@@ -86,7 +86,7 @@ public class AppointmentRequestControllerService {
 
 		Vote newVote = modelMapper.map(creatorVoteDTO, Vote.class);
 		if(creatorVoteDTO.getOptions() == null) newVote.setOptions(null);
-		newVote = appointmentRequestService.updateAppointmentRequest(dbVote, newVote);
+		newVote = voteService.updateAppointmentRequest(dbVote, newVote);
 
 		return modelMapper.map(newVote, CreatorVoteDTO.class);
 	}
@@ -100,7 +100,7 @@ public class AppointmentRequestControllerService {
 		AuthUser authUser = authServiceResponse.getBody();
 		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
-		List<Vote> votes = appointmentRequestService
+		List<Vote> votes = voteService
 				.getAppointmentRequestsForUser(authUser.getId());
 
 		return modelMapper.map(votes, new TypeToken<List<CreatorVoteDTO>>() {}.getType());
@@ -116,20 +116,20 @@ public class AppointmentRequestControllerService {
 		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
 		AuthUser authUser = authServiceResponse.getBody();
 
-		List<Vote> votes = appointmentRequestService
+		List<Vote> votes = voteService
 				.getAppointmentRequestsWhereUserTakesPartIn(authUser.getId());
 
         return modelMapper.map(votes, new TypeToken<List<VoteDTO>>() {}.getType());
     }
 
     public VoteDTO getVoteByParticipationToken(String participationToken) {
-        Vote vote = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+        Vote vote = voteService.getAppointmentRequestByParticipationToken(participationToken);
 	
 		return modelMapper.map(vote, VoteDTO.class);
     }
 
 	public CreatorVoteDTO getVoteByEditToken(String editToken, String jwtToken) {
-		Vote vote = appointmentRequestService.getAppointmentRequestByEditToken(editToken);
+		Vote vote = voteService.getAppointmentRequestByEditToken(editToken);
 		
 		if(vote == null) return null;
 		if(jwtToken != null && vote.getUserId() != null) {

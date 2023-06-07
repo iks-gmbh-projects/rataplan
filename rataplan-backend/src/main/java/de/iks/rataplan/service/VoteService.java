@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.iks.rataplan.domain.Vote;
 
-public interface AppointmentRequestService {
+public interface VoteService {
     public List<Vote> getAppointmentRequests();
     public List<Vote> getAppointmentRequestsForUser(Integer userId);
     public Vote getAppointmentRequestById(Integer requestId);

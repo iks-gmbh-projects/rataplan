@@ -3,7 +3,7 @@ package de.iks.rataplan.controller;
 import de.iks.rataplan.domain.VoteParticipant;
 import de.iks.rataplan.exceptions.RataplanException;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
-import de.iks.rataplan.service.AppointmentRequestService;
+import de.iks.rataplan.service.VoteService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import java.util.Objects;
 public class AppointmentMemberControllerService {
 
 	@Autowired
-	private AppointmentRequestService appointmentRequestService;
+	private VoteService voteService;
 
 	@Autowired
 	private AppointmentMemberService appointmentMemberService;
@@ -45,7 +45,7 @@ public class AppointmentMemberControllerService {
 
 	public VoteParticipantDTO createParticipant(VoteParticipantDTO voteParticipantDTO, String participationToken, String jwtToken) {
 
-		Vote vote = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+		Vote vote = voteService.getAppointmentRequestByParticipationToken(participationToken);
 
 		//BackendUser backendUser = null;
 		AuthUser authUser = null;
@@ -78,7 +78,7 @@ public class AppointmentMemberControllerService {
 			authUser = authServiceResponse.getBody();
 		}
 		
-		Vote vote = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+		Vote vote = voteService.getAppointmentRequestByParticipationToken(participationToken);
 		VoteParticipant voteParticipant = vote.getAppointmentMemberById(memberId);
 		
 		validateAccessToParticipant(voteParticipant, authUser);
@@ -95,7 +95,7 @@ public class AppointmentMemberControllerService {
 			authUser = authServiceResponse.getBody();
 		}
 		
-		Vote vote = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+		Vote vote = voteService.getAppointmentRequestByParticipationToken(participationToken);
 		VoteParticipant oldVoteParticipant = vote.getAppointmentMemberById(memberId);
 		
 		validateAccessToParticipant(oldVoteParticipant, authUser);

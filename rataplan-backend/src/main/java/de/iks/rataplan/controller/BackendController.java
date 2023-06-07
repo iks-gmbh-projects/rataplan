@@ -3,7 +3,7 @@ package de.iks.rataplan.controller;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteParticipant;
 import de.iks.rataplan.service.AppointmentMemberService;
-import de.iks.rataplan.service.AppointmentRequestService;
+import de.iks.rataplan.service.VoteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,42 +17,42 @@ import java.util.Objects;
 @RequestMapping("/backend")
 public class BackendController {
     private final AppointmentMemberService appointmentMemberService;
-    private final AppointmentRequestService appointmentRequestService;
+    private final VoteService voteService;
     
     public BackendController(
         AppointmentMemberService appointmentMemberService,
-        AppointmentRequestService appointmentRequestService
+        VoteService voteService
     ) {
         this.appointmentMemberService = appointmentMemberService;
-        this.appointmentRequestService = appointmentRequestService;
+        this.voteService = voteService;
     }
     
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteData(@PathVariable int userId, @RequestBody(required = false) String secret) {
         //TODO validate secret
-        appointmentRequestService.getAppointmentRequestsWhereUserTakesPartIn(userId)
+        voteService.getAppointmentRequestsWhereUserTakesPartIn(userId)
             .stream()
             .map(Vote::getParticipants)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)
             .forEach(appointmentMemberService::anonymizeAppointmentMember);
-        appointmentRequestService.getAppointmentRequestsForUser(userId)
-            .forEach(appointmentRequestService::deleteAppointmentRequest);
+        voteService.getAppointmentRequestsForUser(userId)
+            .forEach(voteService::deleteAppointmentRequest);
         return ResponseEntity.ok(userId);
     }
     
     @PostMapping("/{userId}/anonymize")
     public ResponseEntity<?> anonymizeData(@PathVariable int userId, @RequestBody(required = false) String secret) {
         //TODO validate secret
-        appointmentRequestService.getAppointmentRequestsWhereUserTakesPartIn(userId)
+        voteService.getAppointmentRequestsWhereUserTakesPartIn(userId)
             .stream()
             .map(Vote::getParticipants)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)
             .forEach(appointmentMemberService::anonymizeAppointmentMember);
-        appointmentRequestService.anonymizeAppointmentRequests(userId);
+        voteService.anonymizeAppointmentRequests(userId);
         return ResponseEntity.ok(userId);
     }
 }

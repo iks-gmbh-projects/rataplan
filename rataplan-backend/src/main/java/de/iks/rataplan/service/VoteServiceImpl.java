@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class AppointmentRequestServiceImpl implements AppointmentRequestService {
+public class VoteServiceImpl implements VoteService {
 
 	@Autowired
 	private AppointmentDecisionRepository appointmentDecisionRepository;
