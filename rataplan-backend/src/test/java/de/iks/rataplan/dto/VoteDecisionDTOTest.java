@@ -30,7 +30,7 @@ import de.iks.rataplan.testutils.RataplanAssert;
                           DirtiesContextTestExecutionListener.class,
                           TransactionalTestExecutionListener.class,
                           DbUnitTestExecutionListener.class })
-public class AppointmentDecisionDTOTest {
+public class VoteDecisionDTOTest {
 
     @Autowired
     private ModelMapper mapper;
@@ -44,14 +44,14 @@ public class AppointmentDecisionDTOTest {
         member.setId(1);
 
         AppointmentDecision decision = new AppointmentDecision(Decision.ACCEPT, appointment, member);
-        AppointmentDecisionDTO decisionDTO = mapper.map(decision, AppointmentDecisionDTO.class);
+        VoteDecisionDTO decisionDTO = mapper.map(decision, VoteDecisionDTO.class);
 
-        RataplanAssert.assertAppointmentDecision(decision, decisionDTO);
+        RataplanAssert.assertVoteDecision(decision, decisionDTO);
     }
 
     @Test
     public void mapToDomain_AppointmentDecision_mapped() {
-    	AppointmentDecisionDTO decisionDTO = new AppointmentDecisionDTO(1, 1, 1, null);
+    	VoteDecisionDTO decisionDTO = new VoteDecisionDTO(1, 1, 1, null);
         
         AppointmentDecision decision = mapper.map(decisionDTO, AppointmentDecision.class);
         assertEquals(decisionDTO.getDecision(), decision.getDecision().getValue());

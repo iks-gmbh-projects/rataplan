@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import de.iks.rataplan.domain.Appointment;
 import de.iks.rataplan.domain.AppointmentDecision;
 import de.iks.rataplan.domain.Decision;
-import de.iks.rataplan.dto.AppointmentDecisionDTO;
+import de.iks.rataplan.dto.VoteDecisionDTO;
 import de.iks.rataplan.repository.AppointmentRepository;
 
 @Component
@@ -16,11 +16,11 @@ public class DecisionConverter {
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 
-	public Converter<AppointmentDecision, AppointmentDecisionDTO> toDTO = new AbstractConverter<AppointmentDecision, AppointmentDecisionDTO>() {
+	public Converter<AppointmentDecision, VoteDecisionDTO> toDTO = new AbstractConverter<AppointmentDecision, VoteDecisionDTO>() {
 
 		@Override
-		protected AppointmentDecisionDTO convert(AppointmentDecision appointmentDecision) {
-			AppointmentDecisionDTO dtoDecision = new AppointmentDecisionDTO();
+		protected VoteDecisionDTO convert(AppointmentDecision appointmentDecision) {
+			VoteDecisionDTO dtoDecision = new VoteDecisionDTO();
 			dtoDecision.setOptionId(appointmentDecision.getAppointment().getId());
 			dtoDecision.setAppointmentMemberId(appointmentDecision.getAppointmentMember().getId());
 			
@@ -33,10 +33,10 @@ public class DecisionConverter {
 		}
 	};
 
-	public Converter<AppointmentDecisionDTO, AppointmentDecision> toDAO = new AbstractConverter<AppointmentDecisionDTO, AppointmentDecision>() {
+	public Converter<VoteDecisionDTO, AppointmentDecision> toDAO = new AbstractConverter<VoteDecisionDTO, AppointmentDecision>() {
 
 		@Override
-		protected AppointmentDecision convert(AppointmentDecisionDTO dtoDecision) {
+		protected AppointmentDecision convert(VoteDecisionDTO dtoDecision) {
 			AppointmentDecision decision = new AppointmentDecision();
 			Appointment appointment = appointmentRepository.findOne(dtoDecision.getOptionId());
 			decision.setAppointment(appointment);

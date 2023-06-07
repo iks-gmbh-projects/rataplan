@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.IntegrationConfig;
 import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.dto.AppointmentDecisionDTO;
+import de.iks.rataplan.dto.VoteDecisionDTO;
 import de.iks.rataplan.dto.AppointmentMemberDTO;
 import de.iks.rataplan.utils.CookieBuilder;
 import org.junit.Before;
@@ -170,12 +170,12 @@ public class AppointmentMemberControllerServiceTest {
 		appointmentMemberDTO.setAppointmentRequestId(1);
 		appointmentMemberDTO.setName("IKS");
 
-		List<AppointmentDecisionDTO> appointmentDecisions = new ArrayList<>();
+		List<VoteDecisionDTO> decisions = new ArrayList<>();
 
-		appointmentDecisions.add(new AppointmentDecisionDTO(1, 1, 0, null));
-		appointmentDecisions.add(new AppointmentDecisionDTO(2, 1, 1, null));
+		decisions.add(new VoteDecisionDTO(1, 1, 0, null));
+		decisions.add(new VoteDecisionDTO(2, 1, 1, null));
 
-		appointmentMemberDTO.setAppointmentDecisions(appointmentDecisions);
+		appointmentMemberDTO.setDecisions(decisions);
 		return appointmentMemberDTO;
 	}
 

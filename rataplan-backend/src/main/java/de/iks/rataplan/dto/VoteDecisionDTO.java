@@ -4,7 +4,7 @@ import de.iks.rataplan.exceptions.MalformedException;
 
 import java.io.Serializable;
 
-public class AppointmentDecisionDTO implements Serializable {
+public class VoteDecisionDTO implements Serializable {
 
     private static final long serialVersionUID = -1914437763717575725L;
     
@@ -13,7 +13,7 @@ public class AppointmentDecisionDTO implements Serializable {
     private Integer decision;
     private Integer participants = null;
 
-    public AppointmentDecisionDTO(Integer optionId, Integer appointmentMemberId, Integer decision, Integer participants) {
+    public VoteDecisionDTO(Integer optionId, Integer appointmentMemberId, Integer decision, Integer participants) {
         this.decision = decision;
         this.participants = participants;
         this.optionId = optionId;
@@ -26,7 +26,7 @@ public class AppointmentDecisionDTO implements Serializable {
 //        this.participants = participants;
 //    }
 
-    public AppointmentDecisionDTO() {
+    public VoteDecisionDTO() {
         //Nothing to do here
     }
 

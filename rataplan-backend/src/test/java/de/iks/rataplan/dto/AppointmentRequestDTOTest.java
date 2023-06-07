@@ -137,7 +137,7 @@ public class AppointmentRequestDTOTest {
 
 		for (int i = 0; i < memberList.length; i++) {
 			assertEquals(memberList[i].getAppointmentDecisions().size(),
-					memberDTOList[i].getAppointmentDecisions().size());
+					memberDTOList[i].getDecisions().size());
 		}
 	}
 
@@ -156,21 +156,21 @@ public class AppointmentRequestDTOTest {
 		AppointmentMemberDTO member1 = new AppointmentMemberDTO("Ingo");
 		AppointmentMemberDTO member2 = new AppointmentMemberDTO("Fabian");
 
-		AppointmentDecisionDTO decision11 = new AppointmentDecisionDTO(appointment1.getId(), member1.getId(), 1, null);
-		AppointmentDecisionDTO decision12 = new AppointmentDecisionDTO(appointment1.getId(), member2.getId(), 2, null);
-		AppointmentDecisionDTO decision21 = new AppointmentDecisionDTO(appointment2.getId(), member1.getId(), 3, null);
-		AppointmentDecisionDTO decision22 = new AppointmentDecisionDTO(appointment2.getId(), member2.getId(), 0, null);
+		VoteDecisionDTO decision11 = new VoteDecisionDTO(appointment1.getId(), member1.getId(), 1, null);
+		VoteDecisionDTO decision12 = new VoteDecisionDTO(appointment1.getId(), member2.getId(), 2, null);
+		VoteDecisionDTO decision21 = new VoteDecisionDTO(appointment2.getId(), member1.getId(), 3, null);
+		VoteDecisionDTO decision22 = new VoteDecisionDTO(appointment2.getId(), member2.getId(), 0, null);
 
 		appointment2.setRequestId(dtoRequest.getId());
 		appointment1.setRequestId(dtoRequest.getId());
 
 		member1.setAppointmentRequestId(dtoRequest.getId());
-		member1.getAppointmentDecisions().add(decision11);
-		member1.getAppointmentDecisions().add(decision21);
+		member1.getDecisions().add(decision11);
+		member1.getDecisions().add(decision21);
 
 		member2.setAppointmentRequestId(dtoRequest.getId());
-		member2.getAppointmentDecisions().add(decision12);
-		member2.getAppointmentDecisions().add(decision22);
+		member2.getDecisions().add(decision12);
+		member2.getDecisions().add(decision22);
 
 		dtoRequest.setOptions(Arrays.asList(appointment1, appointment2));
 
@@ -186,7 +186,7 @@ public class AppointmentRequestDTOTest {
 				.toArray(new AppointmentMember[appointmentRequest.getAppointmentMembers().size()]);
 
 		for (int i = 0; i < memberDTOList.length; i++) {
-			assertEquals(memberDTOList[i].getAppointmentDecisions().size(),
+			assertEquals(memberDTOList[i].getDecisions().size(),
 					memberList[i].getAppointmentDecisions().size());
 		}
 	}

@@ -14,7 +14,7 @@ public class AppointmentMemberDTO implements Serializable {
     private Integer userId;
     private Integer appointmentRequestId;
     private String name;
-    private List<AppointmentDecisionDTO> appointmentDecisions = new ArrayList<>();
+    private List<VoteDecisionDTO> decisions = new ArrayList<>();
 
     public AppointmentMemberDTO(String name) {
         this.name = name;
@@ -56,19 +56,19 @@ public class AppointmentMemberDTO implements Serializable {
         this.name = name;
     }
 
-    public List<AppointmentDecisionDTO> getAppointmentDecisions() {
-        return appointmentDecisions;
+    public List<VoteDecisionDTO> getDecisions() {
+        return decisions;
     }
 
-    public void setAppointmentDecisions(List<AppointmentDecisionDTO> appointmentDecisions) {
-        this.appointmentDecisions = appointmentDecisions;
+    public void setDecisions(List<VoteDecisionDTO> decisions) {
+        this.decisions = decisions;
     }
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AppointmentMemberDTO [appointmentDecisions=");
-		builder.append(appointmentDecisions);
+		builder.append(decisions);
 		builder.append("]");
 		return builder.toString();
 	}
@@ -76,14 +76,14 @@ public class AppointmentMemberDTO implements Serializable {
     public void assertAddValid() {
         if(appointmentRequestId == null ||
             name == null || name.trim().isEmpty() ||
-            appointmentDecisions == null || appointmentDecisions.isEmpty()
+            decisions == null || decisions.isEmpty()
         ) throw new MalformedException("Missing or invalid fields");
-        appointmentDecisions.forEach(AppointmentDecisionDTO::assertAddValid);
+        decisions.forEach(VoteDecisionDTO::assertAddValid);
     }
     public void assertUpdateValid() {
         if((name != null && name.trim().isEmpty()) ||
-            (appointmentDecisions != null && appointmentDecisions.isEmpty())
+            (decisions != null && decisions.isEmpty())
         ) throw new MalformedException("Missing or invalid fields");
-        if(appointmentDecisions != null) appointmentDecisions.forEach(AppointmentDecisionDTO::assertAddValid);
+        if(decisions != null) decisions.forEach(VoteDecisionDTO::assertAddValid);
     }
 }
