@@ -95,7 +95,7 @@ public class VoteOptionMemberControllerServiceTest {
         String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(VERSION + VOTES + "/1" + VOTE_PARTICIPANTS);
+                .post(VERSION + VOTES + "/1/participants");
         requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
         requestBuilder.content(json.getBytes());
 
@@ -115,7 +115,7 @@ public class VoteOptionMemberControllerServiceTest {
         String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(VERSION + VOTES + "/1" + VOTE_PARTICIPANTS);
+                .post(VERSION + VOTES + "/1/participants");
         requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
         requestBuilder.content(json.getBytes());
 
@@ -136,7 +136,7 @@ public class VoteOptionMemberControllerServiceTest {
 		String json = gson.toJson(voteParticipantDTO);
 
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-				.post(VERSION + VOTES + "/1" + VOTE_PARTICIPANTS);
+				.post(VERSION + VOTES + "/1/participants");
 		requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 		requestBuilder.content(json.getBytes());
 		requestBuilder.cookie(cookieBuilder.generateCookie(JWTTOKEN_VALUE, false));
@@ -156,7 +156,7 @@ public class VoteOptionMemberControllerServiceTest {
         String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(VERSION + VOTES + "/1" + VOTE_PARTICIPANTS);
+                .post(VERSION + VOTES + "/1/participants");
         requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
         requestBuilder.content(json.getBytes());
         requestBuilder.cookie(cookieBuilder.generateCookie(JWTTOKEN_VALUE, false));

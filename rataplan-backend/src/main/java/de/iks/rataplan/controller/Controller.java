@@ -46,7 +46,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @GetMapping(value = "/appointmentRequests/{participationToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/votes/{participationToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VoteDTO> getVoteByParticipationToken(@PathVariable String participationToken,
                                                                            @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
@@ -73,7 +73,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @GetMapping(value = "/appointmentRequests/edit/{editToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/votes/edit/{editToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<CreatorVoteDTO> getVoteByEditToken(@PathVariable String editToken,
                                                                                   @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
@@ -84,7 +84,7 @@ public class Controller {
     
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = CreatorVoteDTO.class),
         @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/appointmentRequests/edit/{editToken}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/votes/edit/{editToken}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<CreatorVoteDTO> editVote(
         @PathVariable String editToken,
         @RequestBody CreatorVoteDTO creatorVoteDTO,
@@ -97,7 +97,7 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = CreatorVoteDTO.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @PostMapping(value = "/appointmentRequests", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/votes", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<CreatorVoteDTO> createVote(
             @RequestBody CreatorVoteDTO creatorVoteDTO,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
@@ -129,7 +129,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @PostMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/votes/{participationToken}/participants", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VoteParticipantDTO> addVoteParticipant(@PathVariable String participationToken,
                                                                      @RequestBody VoteParticipantDTO voteParticipantDTO,
                                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
@@ -142,7 +142,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @DeleteMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "/votes/{participationToken}/participants/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> deleteVoteParticipant(@PathVariable String participationToken, @PathVariable Integer memberId,
                                                      @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
 
@@ -155,7 +155,7 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "AppointmentRequest not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @PutMapping(value = "/appointmentRequests/{participationToken}/appointmentMembers/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/votes/{participationToken}/participants/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<VoteParticipantDTO> updateVoteParticipant(@PathVariable String participationToken,
                                                                         @PathVariable Integer memberId, @RequestBody VoteParticipantDTO voteParticipantDTO,
                                                                         @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
@@ -168,7 +168,7 @@ public class Controller {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @GetMapping(value = "/users/appointmentRequests/creations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/users/votes/creations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<CreatorVoteDTO>> getVotesCreatedByUser(
             @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
 
@@ -179,7 +179,7 @@ public class Controller {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @GetMapping(value = "/users/appointmentRequests/participations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/users/votes/participations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<VoteDTO>> getVotesWhereUserParticipates(
             @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
 
