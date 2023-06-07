@@ -6,7 +6,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.repository.AppointmentMemberRepository;
+import de.iks.rataplan.repository.VoteParticipantRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,7 @@ public class BackendControllerTest {
     private BackendController backendController;
     
     @Autowired
-    private AppointmentMemberRepository rawRepository1;
+    private VoteParticipantRepository rawRepository1;
     
     @Autowired
     private AppointmentRequestRepository rawRepository2;

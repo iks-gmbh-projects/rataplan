@@ -1,7 +1,7 @@
 package de.iks.rataplan.runner;
 
 import de.iks.rataplan.domain.EncryptedString;
-import de.iks.rataplan.repository.AppointmentMemberRepository;
+import de.iks.rataplan.repository.VoteParticipantRepository;
 import de.iks.rataplan.repository.AppointmentRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 import de.iks.rataplan.service.CryptoService;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 public class DBEncrypter implements ApplicationRunner {
     private final AppointmentRequestRepository appointmentRequestRepository;
     private final AppointmentRepository appointmentRepository;
-    private final AppointmentMemberRepository appointmentMemberRepository;
+    private final VoteParticipantRepository voteParticipantRepository;
     private final CryptoService cryptoService;
 
     @Override
@@ -39,12 +39,12 @@ public class DBEncrypter implements ApplicationRunner {
                 ensureEncrypted(appointment::getUrl, appointment::setUrl);
             })
             .forEach(appointmentRepository::save);
-        appointmentMemberRepository.findUnencrypted()
+        voteParticipantRepository.findUnencrypted()
             .peek(appointmentMember -> ensureEncrypted(appointmentMember::getName, appointmentMember::setName))
-            .forEach(appointmentMemberRepository::save);
+            .forEach(voteParticipantRepository::save);
         appointmentRequestRepository.flush();
         appointmentRepository.flush();
-        appointmentMemberRepository.flush();
+        voteParticipantRepository.flush();
     }
 
     private boolean ensureEncrypted(Supplier<? extends EncryptedString> sup, Consumer<? super EncryptedString> con) {

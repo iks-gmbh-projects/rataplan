@@ -46,7 +46,7 @@ public class VoteOptionMemberRepositoryTest {
 	private static final String FILE_PATH = PATH + REPOSITORY + APPOINTMENTMEMBERS;
 
 	@Autowired
-	private AppointmentMemberRepository appointmentMemberRepository;
+	private VoteParticipantRepository voteParticipantRepository;
 
 	@Autowired
 	private AppointmentRequestRepository appointmentRequestRepository;
@@ -83,7 +83,7 @@ public class VoteOptionMemberRepositoryTest {
 			voteDecision.setVoteParticipant(voteParticipant);
 		}
 
-		appointmentMemberRepository.saveAndFlush(voteParticipant);
+		voteParticipantRepository.saveAndFlush(voteParticipant);
 	}
 
 	@Test
@@ -119,7 +119,7 @@ public class VoteOptionMemberRepositoryTest {
 			voteDecision.setVoteParticipant(voteParticipant);
 		}
 
-		appointmentMemberRepository.saveAndFlush(voteParticipant);
+		voteParticipantRepository.saveAndFlush(voteParticipant);
 	}
 
 	@Test
@@ -159,7 +159,7 @@ public class VoteOptionMemberRepositoryTest {
 		decisions.get(0).setDecision(Decision.DECLINE);
 		decisions.get(1).setDecision(Decision.DECLINE);
 
-		appointmentMemberRepository.saveAndFlush(voteParticipant);
+		voteParticipantRepository.saveAndFlush(voteParticipant);
 	}
 
 	@Test
@@ -177,6 +177,6 @@ public class VoteOptionMemberRepositoryTest {
 		decicions.get(0).setParticipants(1);
 		decicions.get(1).setParticipants(0);
 
-		appointmentMemberRepository.saveAndFlush(voteParticipant);
+		voteParticipantRepository.saveAndFlush(voteParticipant);
 	}
 }

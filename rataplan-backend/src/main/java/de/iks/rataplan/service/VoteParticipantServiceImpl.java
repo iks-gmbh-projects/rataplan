@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
-import de.iks.rataplan.repository.AppointmentMemberRepository;
+import de.iks.rataplan.repository.VoteParticipantRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 
 @Service
@@ -24,7 +24,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     private AppointmentRequestRepository appointmentRequestRepository;
 
     @Autowired
-    private AppointmentMemberRepository appointmentMemberRepository;
+    private VoteParticipantRepository voteParticipantRepository;
 
     @Override
     public VoteParticipant createParticipant(Vote vote, VoteParticipant voteParticipant) {
@@ -42,7 +42,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
                 decision.setVoteParticipant(voteParticipant);
             }
 
-            return appointmentMemberRepository.saveAndFlush(voteParticipant);
+            return voteParticipantRepository.saveAndFlush(voteParticipant);
         } else {
             throw new MalformedException(
                     "AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.");
@@ -74,15 +74,15 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
         dbVoteParticipant.setName(newVoteParticipant.getName());
         dbVoteParticipant.setVote(vote);
         this.updateAppointmentDecisionsForMember(dbVoteParticipant.getVoteDecisions(), newVoteParticipant.getVoteDecisions());
-        return appointmentMemberRepository.saveAndFlush(dbVoteParticipant);
+        return voteParticipantRepository.saveAndFlush(dbVoteParticipant);
     }
     
     @Override
     public void anonymizeParticipant(int id) {
-        VoteParticipant member = appointmentMemberRepository.findOne(id);
+        VoteParticipant member = voteParticipantRepository.findOne(id);
         member.setName(null);
         member.setUserId(null);
-        appointmentMemberRepository.saveAndFlush(member);
+        voteParticipantRepository.saveAndFlush(member);
     }
     
     /**
