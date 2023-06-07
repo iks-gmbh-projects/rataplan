@@ -3,7 +3,7 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.*;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
-import de.iks.rataplan.repository.AppointmentDecisionRepository;
+import de.iks.rataplan.repository.VoteDecisionRepository;
 import de.iks.rataplan.repository.AppointmentRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 import de.iks.rataplan.repository.BackendUserAccessRepository;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class VoteServiceImpl implements VoteService {
 
 	@Autowired
-	private AppointmentDecisionRepository appointmentDecisionRepository;
+	private VoteDecisionRepository voteDecisionRepository;
 	
 	@Autowired
 	private AppointmentRequestRepository appointmentRequestRepository;
@@ -209,9 +209,9 @@ public class VoteServiceImpl implements VoteService {
 				voteOption = appointmentRepository.saveAndFlush(voteOption);
 
 				for(VoteParticipant member: oldRequest.getParticipants()) {
-					appointmentDecisionRepository.save(new VoteDecision(Decision.NO_ANSWER, voteOption, member));
+					voteDecisionRepository.save(new VoteDecision(Decision.NO_ANSWER, voteOption, member));
 				}
-				appointmentDecisionRepository.flush();
+				voteDecisionRepository.flush();
 			}
 		}
 	}

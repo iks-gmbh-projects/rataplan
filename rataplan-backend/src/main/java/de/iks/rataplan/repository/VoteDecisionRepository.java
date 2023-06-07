@@ -4,5 +4,5 @@ import de.iks.rataplan.domain.VoteDecision;
 import de.iks.rataplan.domain.VoteDecisionId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AppointmentDecisionRepository extends JpaRepository<VoteDecision, VoteDecisionId> {
+public interface VoteDecisionRepository extends JpaRepository<VoteDecision, VoteDecisionId> {
 }
