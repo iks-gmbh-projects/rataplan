@@ -3,7 +3,7 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.VoteParticipant;
 import de.iks.rataplan.domain.Vote;
 
-public interface AppointmentMemberService {
+public interface VoteParticipantService {
 	public VoteParticipant createAppointmentMember(
 		Vote vote,
 			VoteParticipant voteParticipant

@@ -15,7 +15,7 @@ import de.iks.rataplan.dto.VoteParticipantDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.restservice.AuthService;
-import de.iks.rataplan.service.AppointmentMemberService;
+import de.iks.rataplan.service.VoteParticipantService;
 
 import java.util.Objects;
 
@@ -26,7 +26,7 @@ public class AppointmentMemberControllerService {
 	private VoteService voteService;
 
 	@Autowired
-	private AppointmentMemberService appointmentMemberService;
+	private VoteParticipantService voteParticipantService;
 
 	/*@Autowired
 	private AuthorizationControllerService authorizationControllerService;
@@ -64,7 +64,7 @@ public class AppointmentMemberControllerService {
 		voteParticipantDTO.assertAddValid();
 		
 		VoteParticipant voteParticipant = modelMapper.map(voteParticipantDTO, VoteParticipant.class);
-		voteParticipant = appointmentMemberService.createAppointmentMember(vote, voteParticipant);
+		voteParticipant = voteParticipantService.createAppointmentMember(vote, voteParticipant);
 
 		return modelMapper.map(voteParticipant, VoteParticipantDTO.class);
 	}
@@ -83,7 +83,7 @@ public class AppointmentMemberControllerService {
 		
 		validateAccessToParticipant(voteParticipant, authUser);
 		
-		appointmentMemberService.deleteAppointmentMember(vote, voteParticipant);
+		voteParticipantService.deleteAppointmentMember(vote, voteParticipant);
 	}
 	
 	public VoteParticipantDTO updateParticipant(String participationToken, Integer memberId, VoteParticipantDTO voteParticipantDTO, String jwtToken) {
@@ -109,7 +109,7 @@ public class AppointmentMemberControllerService {
 		if(authUser != null) voteParticipantDTO.setUserId(authUser.getId());
 
 		VoteParticipant voteParticipant = modelMapper.map(voteParticipantDTO, VoteParticipant.class);
-		voteParticipant = appointmentMemberService.updateAppointmentMember(
+		voteParticipant = voteParticipantService.updateAppointmentMember(
 			vote,
 			oldVoteParticipant,
 			voteParticipant

@@ -18,7 +18,7 @@ import de.iks.rataplan.repository.AppointmentRequestRepository;
 
 @Service
 @Transactional
-public class AppointmentMemberServiceImpl implements AppointmentMemberService {
+public class VoteParticipantServiceImpl implements VoteParticipantService {
 
     @Autowired
     private AppointmentRequestRepository appointmentRequestRepository;

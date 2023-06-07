@@ -2,7 +2,7 @@ package de.iks.rataplan.controller;
 
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteParticipant;
-import de.iks.rataplan.service.AppointmentMemberService;
+import de.iks.rataplan.service.VoteParticipantService;
 import de.iks.rataplan.service.VoteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +16,14 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/backend")
 public class BackendController {
-    private final AppointmentMemberService appointmentMemberService;
+    private final VoteParticipantService voteParticipantService;
     private final VoteService voteService;
     
     public BackendController(
-        AppointmentMemberService appointmentMemberService,
+        VoteParticipantService voteParticipantService,
         VoteService voteService
     ) {
-        this.appointmentMemberService = appointmentMemberService;
+        this.voteParticipantService = voteParticipantService;
         this.voteService = voteService;
     }
     
@@ -36,7 +36,7 @@ public class BackendController {
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)
-            .forEach(appointmentMemberService::anonymizeAppointmentMember);
+            .forEach(voteParticipantService::anonymizeAppointmentMember);
         voteService.getAppointmentRequestsForUser(userId)
             .forEach(voteService::deleteAppointmentRequest);
         return ResponseEntity.ok(userId);
@@ -51,7 +51,7 @@ public class BackendController {
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)
-            .forEach(appointmentMemberService::anonymizeAppointmentMember);
+            .forEach(voteParticipantService::anonymizeAppointmentMember);
         voteService.anonymizeAppointmentRequests(userId);
         return ResponseEntity.ok(userId);
     }

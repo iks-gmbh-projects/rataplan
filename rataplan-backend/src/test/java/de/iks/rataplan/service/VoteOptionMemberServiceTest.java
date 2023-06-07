@@ -45,7 +45,7 @@ public class VoteOptionMemberServiceTest {
 	private static final String FILE_PATH = PATH + SERVICE + APPOINTMENTMEMBERS;
 
 	@Autowired
-	private AppointmentMemberService appointmentMemberService;
+	private VoteParticipantService voteParticipantService;
 
 	@Autowired
 	private AppointmentRequestRepository appointmentRequestRepository;
@@ -71,7 +71,7 @@ public class VoteOptionMemberServiceTest {
 		member.getVoteDecisions().add(decision2);
 		member.setVote(vote);
 
-		appointmentMemberService.createAppointmentMember(vote, member);
+		voteParticipantService.createAppointmentMember(vote, member);
 	}
 
 	@Test(expected = MalformedException.class)
@@ -100,7 +100,7 @@ public class VoteOptionMemberServiceTest {
 		member.getVoteDecisions().add(decision3);
 		member.setVote(vote);
 
-		appointmentMemberService.createAppointmentMember(vote, member);
+		voteParticipantService.createAppointmentMember(vote, member);
 	}
 
 	@Test(expected = ForbiddenException.class)
@@ -123,7 +123,7 @@ public class VoteOptionMemberServiceTest {
 		member.getVoteDecisions().add(decision2);
 		member.setVote(vote);
 
-		appointmentMemberService.createAppointmentMember(vote, member);
+		voteParticipantService.createAppointmentMember(vote, member);
 	}
 
 	@Test
@@ -134,7 +134,7 @@ public class VoteOptionMemberServiceTest {
 
 		VoteParticipant voteParticipant = vote.getAppointmentMemberById(2);
 
-		appointmentMemberService.deleteAppointmentMember(vote, voteParticipant);
+		voteParticipantService.deleteAppointmentMember(vote, voteParticipant);
 	}
 
 	@Test(expected = ForbiddenException.class)
@@ -143,7 +143,7 @@ public class VoteOptionMemberServiceTest {
 		Vote vote = appointmentRequestRepository.findOne(1);
 
 		VoteParticipant voteParticipant = vote.getAppointmentMemberById(2);
-		appointmentMemberService.deleteAppointmentMember(vote, voteParticipant);
+		voteParticipantService.deleteAppointmentMember(vote, voteParticipant);
 	}
 
 	@Test
@@ -163,7 +163,7 @@ public class VoteOptionMemberServiceTest {
 		newVoteParticipant.getVoteDecisions().add(decision1);
 		newVoteParticipant.getVoteDecisions().add(decision2);
 
-		newVoteParticipant = appointmentMemberService.updateAppointmentMember(vote, dbVoteParticipant,
+		newVoteParticipant = voteParticipantService.updateAppointmentMember(vote, dbVoteParticipant,
 			newVoteParticipant
 		);
 	}
@@ -187,7 +187,7 @@ public class VoteOptionMemberServiceTest {
 		// this decision should not exist
 		newVoteParticipant.getVoteDecisions().add(decision2);
 
-		newVoteParticipant = appointmentMemberService.updateAppointmentMember(vote, dbVoteParticipant,
+		newVoteParticipant = voteParticipantService.updateAppointmentMember(vote, dbVoteParticipant,
 			newVoteParticipant
 		);
 	}
@@ -212,7 +212,7 @@ public class VoteOptionMemberServiceTest {
 		// this decision should not exist
 		newVoteParticipant.getVoteDecisions().add(decision2);
 
-		newVoteParticipant = appointmentMemberService.updateAppointmentMember(vote, dbVoteParticipant,
+		newVoteParticipant = voteParticipantService.updateAppointmentMember(vote, dbVoteParticipant,
 			newVoteParticipant
 		);
 	}
