@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
-import de.iks.rataplan.domain.AppointmentRequestConfig;
+import de.iks.rataplan.domain.VoteConfig;
 
 public class CreatorVoteDTO extends VoteDTO implements Serializable {
 
@@ -22,9 +22,9 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Date deadline,
         String organizerName,
         String organizerMail,
-        AppointmentRequestConfig appointmentRequestConfig
+        VoteConfig voteConfig
     ) {
-        super(id, title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
+        super(id, title, description, deadline, organizerName, organizerMail, voteConfig);
     }
     
     public CreatorVoteDTO(
@@ -33,10 +33,10 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Date deadline,
         String organizerName,
         String organizerMail,
-        AppointmentRequestConfig appointmentRequestConfig,
+        VoteConfig voteConfig,
         List<String> consigneeList
     ) {
-        super(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig, consigneeList);
+        super(title, description, deadline, organizerName, organizerMail, voteConfig, consigneeList);
     }
     
     public CreatorVoteDTO(
@@ -45,9 +45,9 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Date deadline,
         String organizerName,
         String organizerMail,
-        AppointmentRequestConfig appointmentRequestConfig
+        VoteConfig voteConfig
     ) {
-        super(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
+        super(title, description, deadline, organizerName, organizerMail, voteConfig);
     }
 
     public String getEditToken() {

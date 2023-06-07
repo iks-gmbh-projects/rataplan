@@ -10,8 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 
 @Entity
-@Table(name = "appointmentRequestConfig")
-public class AppointmentRequestConfig {
+@Table(name = "voteConfig")
+public class VoteConfig {
 	@CreationTimestamp
 	@Column(updatable = false)
 	@JsonIgnore
@@ -27,17 +27,17 @@ public class AppointmentRequestConfig {
 	private VoteOptionConfig voteOptionConfig;
 	private DecisionType decisionType = DecisionType.DEFAULT;
 
-	public AppointmentRequestConfig() {
+	public VoteConfig() {
 		//Nothing to do here
 	}
 
-	public AppointmentRequestConfig(Integer id, VoteOptionConfig voteOptionConfig, DecisionType decisionType) {
+	public VoteConfig(Integer id, VoteOptionConfig voteOptionConfig, DecisionType decisionType) {
 		this.id = id;
 		this.voteOptionConfig = voteOptionConfig;
 		this.decisionType = decisionType;
 	}
 
-	public AppointmentRequestConfig(VoteOptionConfig voteOptionConfig, DecisionType decisionType) {
+	public VoteConfig(VoteOptionConfig voteOptionConfig, DecisionType decisionType) {
 		this.voteOptionConfig = voteOptionConfig;
 		this.decisionType = decisionType;
 	}

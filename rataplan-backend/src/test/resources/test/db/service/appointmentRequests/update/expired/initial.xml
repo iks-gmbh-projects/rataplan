@@ -1,5 +1,5 @@
 <dataset>
-  <appointmentRequestConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
+  <voteConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
   
   <appointmentRequest id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2010-10-10" isNotified="false" appointmentRequestConfigid="1"/>
 

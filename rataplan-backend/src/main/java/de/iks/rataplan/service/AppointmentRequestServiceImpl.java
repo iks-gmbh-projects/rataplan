@@ -142,8 +142,8 @@ public class AppointmentRequestServiceImpl implements AppointmentRequestService 
 		if(newAppointmentRequest.getTitle() != null) dbAppointmentRequest.setTitle(newAppointmentRequest.getTitle());
 		dbAppointmentRequest.setDescription(newAppointmentRequest.getDescription());
 		if(newAppointmentRequest.getAppointmentRequestConfig() != null) {
-			AppointmentRequestConfig newConfig = newAppointmentRequest.getAppointmentRequestConfig();
-			AppointmentRequestConfig dbConfig = dbAppointmentRequest.getAppointmentRequestConfig();
+			VoteConfig newConfig = newAppointmentRequest.getAppointmentRequestConfig();
+			VoteConfig dbConfig = dbAppointmentRequest.getAppointmentRequestConfig();
 			if(newConfig.getDecisionType() != null) {
 				if(dbConfig.getDecisionType() != newConfig.getDecisionType()) {
 					if(dbConfig.getDecisionType() == DecisionType.NUMBER || newConfig.getDecisionType() == DecisionType.NUMBER) {

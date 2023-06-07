@@ -155,9 +155,9 @@ public class VoteOptionRequestServiceTest {
 		
 		AppointmentRequest oldAppointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
 		
-		AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig(
+		VoteConfig voteConfig = new VoteConfig(
 				new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
-		appointmentRequestConfig.setId(1);
+		voteConfig.setId(1);
 
 		AppointmentRequest appointmentRequest = new AppointmentRequest();
 		appointmentRequest.setId(1);
@@ -165,7 +165,7 @@ public class VoteOptionRequestServiceTest {
 		appointmentRequest.setDeadline(new Date(DATE_2050_10_10));
 		appointmentRequest.setDescription(new EncryptedString("Fun with code", false));
 		appointmentRequest.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
-		appointmentRequest.setAppointmentRequestConfig(appointmentRequestConfig);
+		appointmentRequest.setAppointmentRequestConfig(voteConfig);
 
 		VoteParticipant voteParticipant = new VoteParticipant();
 		voteParticipant.setId(1);

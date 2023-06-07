@@ -1,6 +1,6 @@
 package de.iks.rataplan.dto;
 
-import de.iks.rataplan.domain.AppointmentRequestConfig;
+import de.iks.rataplan.domain.VoteConfig;
 import de.iks.rataplan.exceptions.MalformedException;
 
 import java.io.Serializable;
@@ -21,30 +21,30 @@ public class VoteDTO implements Serializable {
     private Integer userId;
     private boolean notified;
     private String participationToken;
-    private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
+    private VoteConfig voteConfig = new VoteConfig();
     private List<String> consigneeList;
     private List<VoteOptionDTO> options;
     private List<VoteParticipantDTO> participants;
 
     public VoteDTO() {}
     
-    public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
-        this(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
+    public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, VoteConfig voteConfig) {
+        this(title, description, deadline, organizerName, organizerMail, voteConfig);
         this.id = id;
     }
     
-    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<String> consigneeList) {
-        this(title, description, deadline, organizerName, organizerMail, appointmentRequestConfig);
+    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, VoteConfig voteConfig, List<String> consigneeList) {
+        this(title, description, deadline, organizerName, organizerMail, voteConfig);
         this.consigneeList = consigneeList;
     }
     
-    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, VoteConfig voteConfig) {
         this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.organizerName = organizerName;
         this.organizerMail = organizerMail;
-        this.appointmentRequestConfig = appointmentRequestConfig;
+        this.voteConfig = voteConfig;
     }
 
     public Integer getId() {
@@ -119,12 +119,12 @@ public class VoteDTO implements Serializable {
         this.participationToken = participationToken;
     }
 
-    public AppointmentRequestConfig getAppointmentRequestConfig() {
-        return appointmentRequestConfig;
+    public VoteConfig getAppointmentRequestConfig() {
+        return voteConfig;
     }
 
-    public void setAppointmentRequestConfig(AppointmentRequestConfig appointmentRequestConfig) {
-        this.appointmentRequestConfig = appointmentRequestConfig;
+    public void setAppointmentRequestConfig(VoteConfig voteConfig) {
+        this.voteConfig = voteConfig;
     }
 
     public List<String> getConsigneeList() {
@@ -167,7 +167,7 @@ public class VoteDTO implements Serializable {
         builder.append(", deadline=");
         builder.append(deadline);
         builder.append(", appointmentRequestConfig=");
-        builder.append(appointmentRequestConfig);
+        builder.append(voteConfig);
         builder.append(", options=");
         builder.append(options);
         builder.append(", participants=");
@@ -191,13 +191,13 @@ public class VoteDTO implements Serializable {
             nonNullAndBlank(organizerName) ||
             nonNullAndBlank(organizerMail) ||
             deadline == null ||
-            appointmentRequestConfig == null ||
+            voteConfig == null ||
             options == null ||
             options.isEmpty() ||
             (participants != null && !participants.isEmpty())
         ) throw new MalformedException("Missing or invalid input fields");
-        appointmentRequestConfig.assertCreationValid();
-        options.forEach(a -> a.assertValid(appointmentRequestConfig.getAppointmentConfig()));
+        voteConfig.assertCreationValid();
+        options.forEach(a -> a.assertValid(voteConfig.getAppointmentConfig()));
     }
     
     public void defaultNullValues() {

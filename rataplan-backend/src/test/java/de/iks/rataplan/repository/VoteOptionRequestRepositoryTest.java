@@ -61,7 +61,7 @@ public class VoteOptionRequestRepositoryTest {
 	public void createAppointmentRequestWithExtendedConfigAndOneAppointment() throws Exception {
 		AppointmentRequest appointmentRequest = new AppointmentRequest(new EncryptedString("Coding Dojo", false),
 				new EncryptedString("Fun with code", false), new Date(DATE_2050_10_10),
-				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false), new AppointmentRequestConfig(
+				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false), new VoteConfig(
 						new VoteOptionConfig(true, true, true, true, true, true), DecisionType.EXTENDED));
 
 		VoteOption voteOption = new VoteOption(new EncryptedString("Let's Do Something", false), appointmentRequest);

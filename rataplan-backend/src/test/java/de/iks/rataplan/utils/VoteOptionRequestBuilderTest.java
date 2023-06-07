@@ -151,7 +151,7 @@ public class VoteOptionRequestBuilderTest {
 		return new AppointmentRequest( new EncryptedString("Coding Dojo", false),
 				new EncryptedString("Fun with code", false), new Date(DATE_2050_10_10),
 				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
-				new AppointmentRequestConfig(new VoteOptionConfig(true, true, true, true, true, true), DecisionType.EXTENDED));
+				new VoteConfig(new VoteOptionConfig(true, true, true, true, true, true), DecisionType.EXTENDED));
 	}
 	
 }

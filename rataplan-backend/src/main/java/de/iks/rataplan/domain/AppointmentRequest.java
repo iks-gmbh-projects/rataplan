@@ -39,7 +39,7 @@ public class AppointmentRequest implements Serializable {
 	private String participationToken;
 	private String editToken;
 
-	private AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig();
+	private VoteConfig voteConfig = new VoteConfig();
 
 	private List<String> consigneeList = new ArrayList<>();
 	private List<VoteOption> voteOptions = new ArrayList<>();
@@ -47,7 +47,7 @@ public class AppointmentRequest implements Serializable {
 	private List<BackendUserAccess> accessList = new ArrayList<>();
 
 	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
-							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig, List<VoteOption> voteOptions,
+							  EncryptedString organizerMail, VoteConfig voteConfig, List<VoteOption> voteOptions,
 			List<VoteParticipant> voteParticipants, boolean isNotified
 	) {
 		this.title = title;
@@ -57,18 +57,19 @@ public class AppointmentRequest implements Serializable {
 		this.organizerMail = organizerMail;
 		this.voteOptions = voteOptions;
 		this.voteParticipants = voteParticipants;
-		this.appointmentRequestConfig = appointmentRequestConfig;
+		this.voteConfig = voteConfig;
 		this.isNotified = isNotified;
 	}
 
 	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
-							  EncryptedString organizerMail, AppointmentRequestConfig appointmentRequestConfig) {
+							  EncryptedString organizerMail, VoteConfig voteConfig
+	) {
 		this.title = title;
 		this.description = description;
 		this.deadline = deadline;
 		this.organizerName = organizerName;
 		this.organizerMail = organizerMail;
-		this.appointmentRequestConfig = appointmentRequestConfig;
+		this.voteConfig = voteConfig;
 	}
 
 	public AppointmentRequest() {
@@ -188,12 +189,12 @@ public class AppointmentRequest implements Serializable {
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "appointmentRequestConfigId")
-	public AppointmentRequestConfig getAppointmentRequestConfig() {
-		return appointmentRequestConfig;
+	public VoteConfig getAppointmentRequestConfig() {
+		return voteConfig;
 	}
 	
-	public void setAppointmentRequestConfig(AppointmentRequestConfig appointmentRequestConfig) {
-		this.appointmentRequestConfig = appointmentRequestConfig;
+	public void setAppointmentRequestConfig(VoteConfig voteConfig) {
+		this.voteConfig = voteConfig;
 	}
 
 	@Column(name = "isNotified")
@@ -292,7 +293,7 @@ public class AppointmentRequest implements Serializable {
 	 * @param decision
 	 */
     private void decisionTypeVerification(VoteDecision decision) {
-    	switch (this.appointmentRequestConfig.getDecisionType()) {
+    	switch (this.voteConfig.getDecisionType()) {
     	case EXTENDED:
     		if (decision.getParticipants() != null) {
     			throw new MalformedException("Decision does not fit to DecisionType");
@@ -327,7 +328,7 @@ public class AppointmentRequest implements Serializable {
 		builder.append(",\norganizerMail=");
 		builder.append(organizerMail);
 		builder.append(",\nappointmentRequestConfig=\n");
-		builder.append(appointmentRequestConfig);
+		builder.append(voteConfig);
 		builder.append(",\nappointments=\n");
 		builder.append(voteOptions);
 		builder.append(",\nappointmentMembers=\n");

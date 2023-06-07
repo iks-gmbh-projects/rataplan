@@ -1,5 +1,5 @@
 <dataset>
-  <appointmentRequestConfig id="1" decisionType="1" isDescription="1" isStartDate="1" isStartTime="1" isEndDate="0" isEndTime="0" isUrl="0" />
+  <voteConfig id="1" decisionType="1" isDescription="1" isStartDate="1" isStartTime="1" isEndDate="0" isEndTime="0" isUrl="0" />
 
   <appointmentRequest id="1" title="Test Title" description="A short description of the voteOption." deadline="2010-10-10" organizerMail="iks@iks-gmbh.com" isNotified="true" appointmentRequestConfigId="1" />
   
