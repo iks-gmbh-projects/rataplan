@@ -4,7 +4,7 @@ import de.iks.rataplan.domain.*;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.VoteDecisionRepository;
-import de.iks.rataplan.repository.AppointmentRepository;
+import de.iks.rataplan.repository.VoteOptionRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 import de.iks.rataplan.repository.BackendUserAccessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class VoteServiceImpl implements VoteService {
 	private AppointmentRequestRepository appointmentRequestRepository;
 
 	@Autowired
-	private AppointmentRepository appointmentRepository;
+	private VoteOptionRepository voteOptionRepository;
 	
 	@Autowired
 	private BackendUserAccessRepository backendUserAccessRepository;
@@ -193,7 +193,7 @@ public class VoteServiceImpl implements VoteService {
 
 		for (VoteOption voteOption : toRemove) {
 			oldVoteOptions.remove(voteOption);
-			this.appointmentRepository.delete(voteOption);
+			this.voteOptionRepository.delete(voteOption);
 		}
 	}
 
@@ -204,9 +204,9 @@ public class VoteServiceImpl implements VoteService {
 				throw new MalformedException("AppointmentType does not fit the AppointmentRequest.");
 			}
 
-			if (voteOption.getId() == null || !appointmentRepository.exists(voteOption.getId())) {
+			if (voteOption.getId() == null || !voteOptionRepository.exists(voteOption.getId())) {
 				voteOption.setVote(oldRequest);
-				voteOption = appointmentRepository.saveAndFlush(voteOption);
+				voteOption = voteOptionRepository.saveAndFlush(voteOption);
 
 				for(VoteParticipant member: oldRequest.getParticipants()) {
 					voteDecisionRepository.save(new VoteDecision(Decision.NO_ANSWER, voteOption, member));

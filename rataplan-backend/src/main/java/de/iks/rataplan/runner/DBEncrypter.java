@@ -2,7 +2,7 @@ package de.iks.rataplan.runner;
 
 import de.iks.rataplan.domain.EncryptedString;
 import de.iks.rataplan.repository.VoteParticipantRepository;
-import de.iks.rataplan.repository.AppointmentRepository;
+import de.iks.rataplan.repository.VoteOptionRepository;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 import de.iks.rataplan.service.CryptoService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 @Transactional
 public class DBEncrypter implements ApplicationRunner {
     private final AppointmentRequestRepository appointmentRequestRepository;
-    private final AppointmentRepository appointmentRepository;
+    private final VoteOptionRepository voteOptionRepository;
     private final VoteParticipantRepository voteParticipantRepository;
     private final CryptoService cryptoService;
 
@@ -33,17 +33,17 @@ public class DBEncrypter implements ApplicationRunner {
                 ensureEncrypted(appointmentRequest::getOrganizerMail, appointmentRequest::setOrganizerMail);
             })
             .forEach(appointmentRequestRepository::save);
-        appointmentRepository.findUnencrypted()
+        voteOptionRepository.findUnencrypted()
             .peek(appointment -> {
                 ensureEncrypted(appointment::getDescription, appointment::setDescription);
                 ensureEncrypted(appointment::getUrl, appointment::setUrl);
             })
-            .forEach(appointmentRepository::save);
+            .forEach(voteOptionRepository::save);
         voteParticipantRepository.findUnencrypted()
             .peek(appointmentMember -> ensureEncrypted(appointmentMember::getName, appointmentMember::setName))
             .forEach(voteParticipantRepository::save);
         appointmentRequestRepository.flush();
-        appointmentRepository.flush();
+        voteOptionRepository.flush();
         voteParticipantRepository.flush();
     }
 

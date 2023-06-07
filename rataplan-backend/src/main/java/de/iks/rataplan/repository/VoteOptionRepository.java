@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.stream.Stream;
 
-public interface AppointmentRepository extends JpaRepository<VoteOption, Integer> {
+public interface VoteOptionRepository extends JpaRepository<VoteOption, Integer> {
     @Query(value = "SELECT * FROM voteOption" +
         " WHERE (description IS NOT NULL AND description NOT LIKE 'ENC\\_\\_##\\_\\_%')" +
         " OR (url IS NOT NULL AND url NOT LIKE 'ENC\\_\\_##\\_\\_%')", nativeQuery = true)

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.domain.Decision;
 import de.iks.rataplan.dto.VoteDecisionDTO;
-import de.iks.rataplan.repository.AppointmentRepository;
+import de.iks.rataplan.repository.VoteOptionRepository;
 
 @Component
 public class DecisionConverter {
 
 	@Autowired
-	private AppointmentRepository appointmentRepository;
+	private VoteOptionRepository voteOptionRepository;
 
 	public Converter<VoteDecision, VoteDecisionDTO> toDTO = new AbstractConverter<VoteDecision, VoteDecisionDTO>() {
 
@@ -38,7 +38,7 @@ public class DecisionConverter {
 		@Override
 		protected VoteDecision convert(VoteDecisionDTO dtoDecision) {
 			VoteDecision decision = new VoteDecision();
-			VoteOption voteOption = appointmentRepository.findOne(dtoDecision.getOptionId());
+			VoteOption voteOption = voteOptionRepository.findOne(dtoDecision.getOptionId());
 			decision.setVoteOption(voteOption);
 			
 			if (dtoDecision.getDecision() != null) {
