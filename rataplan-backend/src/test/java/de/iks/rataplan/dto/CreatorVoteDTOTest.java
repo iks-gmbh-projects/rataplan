@@ -32,7 +32,7 @@ public class CreatorVoteDTOTest {
 	@Test
 	public void mapToDTO_PlainVote_mapped() {
 		
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 
 		CreatorVoteDTO dtoVote = mapper.map(vote, CreatorVoteDTO.class);
 
@@ -52,7 +52,7 @@ public class CreatorVoteDTOTest {
 
 	@Test
 	public void mapToDTO_VoteWithOption_mapped() {
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 		VoteOption voteOption = new VoteOption(new Timestamp(123123123L), new EncryptedString("iks Hilden", false),
 			vote
 		);

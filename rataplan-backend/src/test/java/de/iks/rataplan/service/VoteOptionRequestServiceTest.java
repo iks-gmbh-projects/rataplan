@@ -12,8 +12,8 @@ import static de.iks.rataplan.testutils.TestConstants.IKS_MAIL;
 import static de.iks.rataplan.testutils.TestConstants.PATH;
 import static de.iks.rataplan.testutils.TestConstants.SERVICE;
 import static de.iks.rataplan.testutils.TestConstants.UPDATE;
-import static de.iks.rataplan.testutils.TestConstants.createSimpleAppointmentRequest;
-import static de.iks.rataplan.utils.AppointmentRequestBuilder.appointmentList;
+import static de.iks.rataplan.testutils.TestConstants.createSimpleVote;
+import static de.iks.rataplan.utils.VoteBuilder.voteOptionList;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.Date;
@@ -60,7 +60,7 @@ public class VoteOptionRequestServiceTest {
 	@DatabaseSetup(FILE_EMPTY_DB)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequest() throws Exception {
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 
 		voteService.createVote(vote);
 	}
@@ -68,7 +68,7 @@ public class VoteOptionRequestServiceTest {
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void createAppointmentRequestShouldFailHasNoAppointments() throws Exception {
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 		vote.setOptions(new ArrayList<VoteOption>());
 
 		voteService.createVote(vote);
@@ -77,7 +77,7 @@ public class VoteOptionRequestServiceTest {
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void createAppointmentRequestShouldFailHasMember() throws Exception {
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 
 		List<VoteParticipant> voteParticipants = vote.getParticipants();
 
@@ -93,13 +93,13 @@ public class VoteOptionRequestServiceTest {
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void createAppointmentRequestShouldFailWrongAppointmentConfig() throws Exception {
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 
 		VoteOption voteOption = new VoteOption(new EncryptedString("iks Hilden", false), vote);
 		voteOption.setUrl(new EncryptedString("thiswontwork.com", false));
 
 		vote
-				.setOptions(appointmentList(voteOption, new VoteOption(new EncryptedString("homeoffice", false),
+				.setOptions(voteOptionList(voteOption, new VoteOption(new EncryptedString("homeoffice", false),
 					vote
 				)));
 
@@ -188,7 +188,7 @@ public class VoteOptionRequestServiceTest {
 		VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), vote);
 		voteOption3.setVote(vote);
 
-		vote.setOptions(appointmentList(voteOption1, voteOption2, voteOption3));
+		vote.setOptions(voteOptionList(voteOption1, voteOption2, voteOption3));
 
 		voteService.updateVote(oldVote, vote);
 	}
@@ -199,7 +199,7 @@ public class VoteOptionRequestServiceTest {
 		
 		Vote oldVote = voteService.getVoteById(1);
 		
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 		vote.setOptions(new ArrayList<VoteOption>());
 
 		// has no appointments

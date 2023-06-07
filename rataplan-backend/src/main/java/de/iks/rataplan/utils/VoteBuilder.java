@@ -6,13 +6,13 @@ import java.util.List;
 import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.domain.VoteParticipant;
 
-public class AppointmentRequestBuilder {
+public class VoteBuilder {
 
-	private AppointmentRequestBuilder() {
+	private VoteBuilder() {
 		// nothing to do here
 	}
 
-	public static List<VoteOption> appointmentList(VoteOption... voteOptions) {
+	public static List<VoteOption> voteOptionList(VoteOption... voteOptions) {
 		List<VoteOption> voteOptionList = new ArrayList<>();
 		for (VoteOption voteOption : voteOptions) {
 			voteOptionList.add(voteOption);
@@ -20,7 +20,7 @@ public class AppointmentRequestBuilder {
 		return voteOptionList;
 	}
 
-	public static List<VoteParticipant> memberList(VoteParticipant... voteParticipants) {
+	public static List<VoteParticipant> voteParticipantList(VoteParticipant... voteParticipants) {
 		List<VoteParticipant> voteParticipantList = new ArrayList<>();
 		for (VoteParticipant voteParticipant : voteParticipants) {
 			voteParticipantList.add(voteParticipant);

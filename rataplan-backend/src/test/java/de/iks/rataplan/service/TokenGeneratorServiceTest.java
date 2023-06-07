@@ -52,7 +52,7 @@ public class TokenGeneratorServiceTest {
     @Test
     @DatabaseSetup(FILE_EMPTY_DB)
     public void generateParticipationToken() throws Exception {
-        Vote vote = createSimpleAppointmentRequest();
+        Vote vote = createSimpleVote();
 
         String token = tokenGeneratorService.generateToken(8);
         vote.setParticipationToken(token);
@@ -65,7 +65,7 @@ public class TokenGeneratorServiceTest {
     @Test
     @DatabaseSetup(FILE_EMPTY_DB)
     public void generateEditToken() throws Exception {
-        Vote vote = createSimpleAppointmentRequest();
+        Vote vote = createSimpleVote();
 
         String token = tokenGeneratorService.generateToken(10);
         vote.setEditToken(token);

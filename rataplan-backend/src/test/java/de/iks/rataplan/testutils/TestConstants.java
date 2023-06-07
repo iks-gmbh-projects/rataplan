@@ -1,6 +1,6 @@
 package de.iks.rataplan.testutils;
 
-import static de.iks.rataplan.utils.AppointmentRequestBuilder.appointmentList;
+import static de.iks.rataplan.utils.VoteBuilder.voteOptionList;
 
 import java.sql.Date;
 
@@ -64,13 +64,13 @@ public final class TestConstants {
 
 	//public static final BackendUser BACKENDUSER_1_NEW = new BackendUser(1);
 
-	public static Vote createSimpleAppointmentRequest() {
+	public static Vote createSimpleVote() {
 		Vote vote = new Vote(
 				new EncryptedString("Coding Dojo", false), new EncryptedString("Fun with code", false),
 				new Date(DATE_2050_10_10), new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
 				new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
 
-		vote.setOptions(appointmentList(new VoteOption(new EncryptedString("iks Hilden", false), vote),
+		vote.setOptions(voteOptionList(new VoteOption(new EncryptedString("iks Hilden", false), vote),
 				new VoteOption(new EncryptedString("homeoffice", false), vote)));
 		return vote;
 	}

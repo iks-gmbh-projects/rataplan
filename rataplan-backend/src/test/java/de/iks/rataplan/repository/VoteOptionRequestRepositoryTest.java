@@ -1,7 +1,7 @@
 package de.iks.rataplan.repository;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
-import static de.iks.rataplan.utils.AppointmentRequestBuilder.appointmentList;
+import static de.iks.rataplan.utils.VoteBuilder.voteOptionList;
 import static org.junit.Assert.assertEquals;
 
 import java.sql.Date;
@@ -49,7 +49,7 @@ public class VoteOptionRequestRepositoryTest {
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequestWithDefaultConfigAndTwoAppointments() throws Exception {
 
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 
 		voteRepository.saveAndFlush(vote);
 	}
@@ -70,7 +70,7 @@ public class VoteOptionRequestRepositoryTest {
 		voteOption.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
 		voteOption.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
 
-		vote.setOptions(appointmentList(voteOption));
+		vote.setOptions(voteOptionList(voteOption));
 
 		voteRepository.saveAndFlush(vote);
 	}
@@ -81,7 +81,7 @@ public class VoteOptionRequestRepositoryTest {
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequestWithUserAndDefaultConfigAndTwoAppointments() throws Exception {
 
-		Vote vote = createSimpleAppointmentRequest();
+		Vote vote = createSimpleVote();
 
 		vote.setUserId(1);
 
