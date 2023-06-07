@@ -33,22 +33,22 @@ public class VoteOption implements Serializable {
     private EncryptedString description;
     private EncryptedString url;
     
-    private AppointmentRequest appointmentRequest;
+    private Vote vote;
     private List<VoteDecision> voteDecisions = new ArrayList<>();
 
-    public VoteOption(Timestamp startDate, EncryptedString description, AppointmentRequest appointmentRequest) {
+    public VoteOption(Timestamp startDate, EncryptedString description, Vote vote) {
         this.startDate = startDate;
         this.description = description;
-        this.appointmentRequest = appointmentRequest;
+        this.vote = vote;
     }
 
-    public VoteOption(EncryptedString description, AppointmentRequest appointmentRequest) {
+    public VoteOption(EncryptedString description, Vote vote) {
         this.description = description;
-        this.appointmentRequest = appointmentRequest;
+        this.vote = vote;
     }
 
-    public VoteOption(AppointmentRequest appointmentRequest) {
-        this.appointmentRequest = appointmentRequest;
+    public VoteOption(Vote vote) {
+        this.vote = vote;
     }
 
     public VoteOption() {
@@ -130,12 +130,12 @@ public class VoteOption implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "appointmentRequestId", nullable = false)
-    public AppointmentRequest getAppointmentRequest() {
-        return this.appointmentRequest;
+    public Vote getAppointmentRequest() {
+        return this.vote;
     }
 
-    public void setAppointmentRequest(AppointmentRequest appointmentRequest) {
-        this.appointmentRequest = appointmentRequest;
+    public void setAppointmentRequest(Vote vote) {
+        this.vote = vote;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentDecisionId.appointment", cascade = CascadeType.ALL)
@@ -172,7 +172,7 @@ public class VoteOption implements Serializable {
 		builder.append(", location=");
 		builder.append(description);
 		builder.append(", appointmentRequest=");
-		builder.append(appointmentRequest.getId());
+		builder.append(vote.getId());
 		builder.append(", appointmentDecisions=");
 		builder.append(voteDecisions);
 		builder.append("]");

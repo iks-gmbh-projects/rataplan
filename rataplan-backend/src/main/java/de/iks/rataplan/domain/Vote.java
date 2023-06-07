@@ -15,8 +15,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "appointmentRequest")
-public class AppointmentRequest implements Serializable {
+@Table(name = "vote")
+public class Vote implements Serializable {
 
 	private static final long serialVersionUID = 6229127764261785894L;
 
@@ -46,7 +46,7 @@ public class AppointmentRequest implements Serializable {
 	private List<VoteParticipant> voteParticipants = new ArrayList<>();
 	private List<BackendUserAccess> accessList = new ArrayList<>();
 
-	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
+	public Vote(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
 							  EncryptedString organizerMail, VoteConfig voteConfig, List<VoteOption> voteOptions,
 			List<VoteParticipant> voteParticipants, boolean isNotified
 	) {
@@ -61,7 +61,7 @@ public class AppointmentRequest implements Serializable {
 		this.isNotified = isNotified;
 	}
 
-	public AppointmentRequest(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
+	public Vote(EncryptedString title, EncryptedString description, Date deadline, EncryptedString organizerName,
 							  EncryptedString organizerMail, VoteConfig voteConfig
 	) {
 		this.title = title;
@@ -72,7 +72,7 @@ public class AppointmentRequest implements Serializable {
 		this.voteConfig = voteConfig;
 	}
 
-	public AppointmentRequest() {
+	public Vote() {
 		// required for Hibernate
 	}
 	

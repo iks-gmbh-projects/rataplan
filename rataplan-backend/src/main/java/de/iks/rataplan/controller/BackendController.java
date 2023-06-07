@@ -1,7 +1,7 @@
 package de.iks.rataplan.controller;
 
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteParticipant;
-import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.service.AppointmentMemberService;
 import de.iks.rataplan.service.AppointmentRequestService;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class BackendController {
         //TODO validate secret
         appointmentRequestService.getAppointmentRequestsWhereUserTakesPartIn(userId)
             .stream()
-            .map(AppointmentRequest::getAppointmentMembers)
+            .map(Vote::getAppointmentMembers)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)
@@ -47,7 +47,7 @@ public class BackendController {
         //TODO validate secret
         appointmentRequestService.getAppointmentRequestsWhereUserTakesPartIn(userId)
             .stream()
-            .map(AppointmentRequest::getAppointmentMembers)
+            .map(Vote::getAppointmentMembers)
             .flatMap(List::stream)
             .filter(m -> Objects.equals(m.getUserId(), userId))
             .mapToInt(VoteParticipant::getId)

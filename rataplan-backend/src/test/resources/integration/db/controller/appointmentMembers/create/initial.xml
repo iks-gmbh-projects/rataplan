@@ -1,7 +1,7 @@
 <dataset>
   <voteConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
   
-  <appointmentRequest id="1" title="ENC__##__Coding Dojo" description="ENC__##__Fun with code" organizerMail="ENC__##__iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" appointmentRequestConfigId="1" />
+  <vote id="1" title="ENC__##__Coding Dojo" description="ENC__##__Fun with code" organizerMail="ENC__##__iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" appointmentRequestConfigId="1" />
 
   <voteOption id="1" appointmentRequestId="1" description="ENC__##__iks Hilden" />
   <voteOption id="2" appointmentRequestId="1" description="ENC__##__homeoffice" />

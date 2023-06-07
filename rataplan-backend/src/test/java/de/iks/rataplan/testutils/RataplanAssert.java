@@ -3,10 +3,10 @@ package de.iks.rataplan.testutils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.domain.VoteDecision;
 import de.iks.rataplan.domain.VoteParticipant;
-import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.dto.VoteOptionDTO;
 import de.iks.rataplan.dto.VoteDecisionDTO;
 import de.iks.rataplan.dto.VoteParticipantDTO;
@@ -47,7 +47,7 @@ public class RataplanAssert {
 	 * @param request
 	 * @param dtoRequest
 	 */
-	public static void assertVote(AppointmentRequest request, CreatorVoteDTO dtoRequest) {
+	public static void assertVote(Vote request, CreatorVoteDTO dtoRequest) {
 		assertEquals("Vote.title", request.getTitle().getString(), dtoRequest.getTitle());
 		assertEquals("Vote.description", request.getDescription().getString(), dtoRequest.getDescription());
 		assertEquals("Vote.deadline", request.getDeadline(), dtoRequest.getDeadline());
@@ -68,7 +68,7 @@ public class RataplanAssert {
 	 * @param dtoRequest
 	 * @param request
 	 */
-	public static void assertVoteDTO(CreatorVoteDTO dtoRequest, AppointmentRequest request) {
+	public static void assertVoteDTO(CreatorVoteDTO dtoRequest, Vote request) {
 		assertEquals("VoteDTO.title", dtoRequest.getTitle(), request.getTitle().getString());
 		assertEquals("VoteDTO.description", dtoRequest.getDescription(), request.getDescription().getString());
 		assertEquals("VoteDTO.deadline", dtoRequest.getDeadline(), request.getDeadline());

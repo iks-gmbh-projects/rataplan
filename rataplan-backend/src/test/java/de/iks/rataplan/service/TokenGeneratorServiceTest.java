@@ -4,7 +4,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.domain.AppointmentRequest;
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,27 +52,27 @@ public class TokenGeneratorServiceTest {
     @Test
     @DatabaseSetup(FILE_EMPTY_DB)
     public void generateParticipationToken() throws Exception {
-        AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+        Vote vote = createSimpleAppointmentRequest();
 
         String token = tokenGeneratorService.generateToken(8);
-        appointmentRequest.setParticipationToken(token);
-        appointmentRequestRepository.saveAndFlush(appointmentRequest);
+        vote.setParticipationToken(token);
+        appointmentRequestRepository.saveAndFlush(vote);
 
-        AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.findByParticipationToken(token);
-        assertNotNull(createdAppointmentRequest.getParticipationToken());
+        Vote createdVote = appointmentRequestRepository.findByParticipationToken(token);
+        assertNotNull(createdVote.getParticipationToken());
     }
 
     @Test
     @DatabaseSetup(FILE_EMPTY_DB)
     public void generateEditToken() throws Exception {
-        AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+        Vote vote = createSimpleAppointmentRequest();
 
         String token = tokenGeneratorService.generateToken(10);
-        appointmentRequest.setEditToken(token);
-        appointmentRequestRepository.saveAndFlush(appointmentRequest);
+        vote.setEditToken(token);
+        appointmentRequestRepository.saveAndFlush(vote);
 
-        AppointmentRequest createdAppointmentRequest = appointmentRequestRepository.findByEditToken(token);
-        assertNotNull(createdAppointmentRequest.getEditToken());
+        Vote createdVote = appointmentRequestRepository.findByEditToken(token);
+        assertNotNull(createdVote.getEditToken());
     }
 
     @Test

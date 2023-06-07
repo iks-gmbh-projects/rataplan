@@ -4,11 +4,11 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 
+import de.iks.rataplan.domain.Vote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 
 @Component
@@ -25,9 +25,9 @@ public class SchedulerService {
 //	@Scheduled(fixedRate = 10000)		// Alle 10 Sekunden
     public void reportCurrentTime() {
 
-        List<AppointmentRequest> requests = appointmentRequestRepository.findByDeadlineBeforeAndNotifiedFalse(new Date(Calendar.getInstance().getTimeInMillis()));
+        List<Vote> requests = appointmentRequestRepository.findByDeadlineBeforeAndNotifiedFalse(new Date(Calendar.getInstance().getTimeInMillis()));
 
-        for (AppointmentRequest request : requests) {
+        for (Vote request : requests) {
 
             request.setNotified(true);
             appointmentRequestRepository.saveAndFlush(request);

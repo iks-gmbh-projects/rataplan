@@ -2,18 +2,18 @@ package de.iks.rataplan.service;
 
 import java.util.List;
 
-import de.iks.rataplan.domain.AppointmentRequest;
+import de.iks.rataplan.domain.Vote;
 
 public interface AppointmentRequestService {
-    public List<AppointmentRequest> getAppointmentRequests();
-    public List<AppointmentRequest> getAppointmentRequestsForUser(Integer userId);
-    public AppointmentRequest getAppointmentRequestById(Integer requestId);
-    public AppointmentRequest getAppointmentRequestByParticipationToken(String participationToken);
-    public AppointmentRequest getAppointmentRequestByEditToken(String editToken);
-    public AppointmentRequest createAppointmentRequest(AppointmentRequest appointmentRequest);
-    public AppointmentRequest updateAppointmentRequest(AppointmentRequest dbAppointmentRequest, AppointmentRequest newAppointmentRequest);
-    public List<AppointmentRequest> getAppointmentRequestsWhereUserTakesPartIn(Integer userId);
-    public void deleteAppointmentRequest(AppointmentRequest request);
+    public List<Vote> getAppointmentRequests();
+    public List<Vote> getAppointmentRequestsForUser(Integer userId);
+    public Vote getAppointmentRequestById(Integer requestId);
+    public Vote getAppointmentRequestByParticipationToken(String participationToken);
+    public Vote getAppointmentRequestByEditToken(String editToken);
+    public Vote createAppointmentRequest(Vote vote);
+    public Vote updateAppointmentRequest(Vote dbVote, Vote newVote);
+    public List<Vote> getAppointmentRequestsWhereUserTakesPartIn(Integer userId);
+    public void deleteAppointmentRequest(Vote request);
     public void anonymizeAppointmentRequests(Integer userId);
 }
 

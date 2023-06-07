@@ -29,12 +29,12 @@ public class VoteParticipant implements Serializable {
     private Integer id;
     private Integer userId;
     private EncryptedString name;
-    private AppointmentRequest appointmentRequest;
+    private Vote vote;
     private List<VoteDecision> voteDecisions = new ArrayList<>();
 
-    public VoteParticipant(EncryptedString name, AppointmentRequest appointmentRequest) {
+    public VoteParticipant(EncryptedString name, Vote vote) {
         this.name = name;
-        this.appointmentRequest = appointmentRequest;
+        this.vote = vote;
     }
 
     public VoteParticipant() {
@@ -97,12 +97,12 @@ public class VoteParticipant implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "appointmentRequestId", nullable = false)
-    public AppointmentRequest getAppointmentRequest() {
-        return appointmentRequest;
+    public Vote getAppointmentRequest() {
+        return vote;
     }
 
-    public void setAppointmentRequest(AppointmentRequest appointmentRequest) {
-        this.appointmentRequest = appointmentRequest;
+    public void setAppointmentRequest(Vote vote) {
+        this.vote = vote;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "appointmentDecisionId.appointmentMember", cascade = CascadeType.ALL)
@@ -122,7 +122,7 @@ public class VoteParticipant implements Serializable {
 		builder.append(", name=");
 		builder.append(name);
 		builder.append(", appointmentRequest=");
-		builder.append(appointmentRequest.getId());
+		builder.append(vote.getId());
 		builder.append(", appointmentDecisions=");
 		builder.append(voteDecisions);
 		builder.append("]");

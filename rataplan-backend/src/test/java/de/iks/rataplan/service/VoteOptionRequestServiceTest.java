@@ -60,71 +60,73 @@ public class VoteOptionRequestServiceTest {
 	@DatabaseSetup(FILE_EMPTY_DB)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequest() throws Exception {
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 
-		appointmentRequestService.createAppointmentRequest(appointmentRequest);
+		appointmentRequestService.createAppointmentRequest(vote);
 	}
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void createAppointmentRequestShouldFailHasNoAppointments() throws Exception {
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
-		appointmentRequest.setAppointments(new ArrayList<VoteOption>());
+		Vote vote = createSimpleAppointmentRequest();
+		vote.setAppointments(new ArrayList<VoteOption>());
 
-		appointmentRequestService.createAppointmentRequest(appointmentRequest);
+		appointmentRequestService.createAppointmentRequest(vote);
 	}
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void createAppointmentRequestShouldFailHasMember() throws Exception {
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 
-		List<VoteParticipant> voteParticipants = appointmentRequest.getAppointmentMembers();
+		List<VoteParticipant> voteParticipants = vote.getAppointmentMembers();
 
 		VoteParticipant voteParticipant = new VoteParticipant();
 		voteParticipant.setName(new EncryptedString("Fritz macht den Fehler", false));
 		voteParticipants.add(voteParticipant);
 
-		appointmentRequest.setAppointmentMembers(voteParticipants);
+		vote.setAppointmentMembers(voteParticipants);
 
-		appointmentRequestService.createAppointmentRequest(appointmentRequest);
+		appointmentRequestService.createAppointmentRequest(vote);
 	}
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void createAppointmentRequestShouldFailWrongAppointmentConfig() throws Exception {
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 
-		VoteOption voteOption = new VoteOption(new EncryptedString("iks Hilden", false), appointmentRequest);
+		VoteOption voteOption = new VoteOption(new EncryptedString("iks Hilden", false), vote);
 		voteOption.setUrl(new EncryptedString("thiswontwork.com", false));
 
-		appointmentRequest
-				.setAppointments(appointmentList(voteOption, new VoteOption(new EncryptedString("homeoffice", false), appointmentRequest)));
+		vote
+				.setAppointments(appointmentList(voteOption, new VoteOption(new EncryptedString("homeoffice", false),
+					vote
+				)));
 
-		appointmentRequestService.createAppointmentRequest(appointmentRequest);
+		appointmentRequestService.createAppointmentRequest(vote);
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAllAppointmentRequests() throws Exception {
-		List<AppointmentRequest> appointmentRequests = appointmentRequestService.getAppointmentRequests();
-		assertEquals(4, appointmentRequests.size());
+		List<Vote> votes = appointmentRequestService.getAppointmentRequests();
+		assertEquals(4, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
 	public void getAppointmentRequestsNoneAvailable() throws Exception {
-		List<AppointmentRequest> appointmentRequests = appointmentRequestService.getAppointmentRequests();
-		assertEquals(0, appointmentRequests.size());
+		List<Vote> votes = appointmentRequestService.getAppointmentRequests();
+		assertEquals(0, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAppointmentRequestById() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
-		assertEquals(appointmentRequest.getTitle().getString(), "Coding Dojo");
-		assertEquals(appointmentRequest.getAppointments().size(), 2);
-		assertEquals(appointmentRequest.getAppointmentMembers().size(), 0);
+		Vote vote = appointmentRequestService.getAppointmentRequestById(1);
+		assertEquals(vote.getTitle().getString(), "Coding Dojo");
+		assertEquals(vote.getAppointments().size(), 2);
+		assertEquals(vote.getAppointmentMembers().size(), 0);
 	}
 
 	@Test(expected = ResourceNotFoundException.class)
@@ -137,15 +139,15 @@ public class VoteOptionRequestServiceTest {
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAppointmentRequestsByUser() throws Exception {
-		List<AppointmentRequest> appointmentRequests = appointmentRequestService.getAppointmentRequestsForUser(1);
-		assertEquals(2, appointmentRequests.size());
+		List<Vote> votes = appointmentRequestService.getAppointmentRequestsForUser(1);
+		assertEquals(2, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
 	public void getAppointmentRequestsByUserNoneAvailable() throws Exception {
-		List<AppointmentRequest> appointmentRequests = appointmentRequestService.getAppointmentRequestsForUser(2);
-		assertEquals(0, appointmentRequests.size());
+		List<Vote> votes = appointmentRequestService.getAppointmentRequestsForUser(2);
+		assertEquals(0, votes.size());
 	}
 
 	@Test
@@ -153,55 +155,55 @@ public class VoteOptionRequestServiceTest {
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentRequest() throws Exception {
 		
-		AppointmentRequest oldAppointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
+		Vote oldVote = appointmentRequestService.getAppointmentRequestById(1);
 		
 		VoteConfig voteConfig = new VoteConfig(
 				new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
 		voteConfig.setId(1);
 
-		AppointmentRequest appointmentRequest = new AppointmentRequest();
-		appointmentRequest.setId(1);
-		appointmentRequest.setTitle(new EncryptedString("IKS-Thementag", false));
-		appointmentRequest.setDeadline(new Date(DATE_2050_10_10));
-		appointmentRequest.setDescription(new EncryptedString("Fun with code", false));
-		appointmentRequest.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
-		appointmentRequest.setAppointmentRequestConfig(voteConfig);
+		Vote vote = new Vote();
+		vote.setId(1);
+		vote.setTitle(new EncryptedString("IKS-Thementag", false));
+		vote.setDeadline(new Date(DATE_2050_10_10));
+		vote.setDescription(new EncryptedString("Fun with code", false));
+		vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
+		vote.setAppointmentRequestConfig(voteConfig);
 
 		VoteParticipant voteParticipant = new VoteParticipant();
 		voteParticipant.setId(1);
 		voteParticipant.setName(new EncryptedString("RubberBandMan", false));
-		voteParticipant.setAppointmentRequest(appointmentRequest);
+		voteParticipant.setAppointmentRequest(vote);
 
 		List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
 		voteParticipants.add(voteParticipant);
 
-		appointmentRequest.setAppointmentMembers(voteParticipants);
+		vote.setAppointmentMembers(voteParticipants);
 
-		VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), appointmentRequest);
-		voteOption1.setAppointmentRequest(appointmentRequest);
+		VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote);
+		voteOption1.setAppointmentRequest(vote);
 
-		VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), appointmentRequest);
-		voteOption2.setAppointmentRequest(appointmentRequest);
+		VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote);
+		voteOption2.setAppointmentRequest(vote);
 
-		VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), appointmentRequest);
-		voteOption3.setAppointmentRequest(appointmentRequest);
+		VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), vote);
+		voteOption3.setAppointmentRequest(vote);
 
-		appointmentRequest.setAppointments(appointmentList(voteOption1, voteOption2, voteOption3));
+		vote.setAppointments(appointmentList(voteOption1, voteOption2, voteOption3));
 
-		appointmentRequestService.updateAppointmentRequest(oldAppointmentRequest, appointmentRequest);
+		appointmentRequestService.updateAppointmentRequest(oldVote, vote);
 	}
 
 	@Test(expected = MalformedException.class)
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	public void updateAppointmentRequestShouldFailNoAppointment() throws Exception {
 		
-		AppointmentRequest oldAppointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
+		Vote oldVote = appointmentRequestService.getAppointmentRequestById(1);
 		
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
-		appointmentRequest.setAppointments(new ArrayList<VoteOption>());
+		Vote vote = createSimpleAppointmentRequest();
+		vote.setAppointments(new ArrayList<VoteOption>());
 
 		// has no appointments
-		appointmentRequestService.updateAppointmentRequest(oldAppointmentRequest, appointmentRequest);
+		appointmentRequestService.updateAppointmentRequest(oldVote, vote);
 	}
 
 	@Test
@@ -210,12 +212,12 @@ public class VoteOptionRequestServiceTest {
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentRequestNewExpiredDate() throws Exception {
 		
-		AppointmentRequest oldAppointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
+		Vote oldVote = appointmentRequestService.getAppointmentRequestById(1);
 		
-		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
+		Vote vote = appointmentRequestService.getAppointmentRequestById(1);
 
-		appointmentRequest.setDeadline(new Date(DATE_2050_10_10));
-		appointmentRequestService.updateAppointmentRequest(oldAppointmentRequest, appointmentRequest);
+		vote.setDeadline(new Date(DATE_2050_10_10));
+		appointmentRequestService.updateAppointmentRequest(oldVote, vote);
 	}
 
 }

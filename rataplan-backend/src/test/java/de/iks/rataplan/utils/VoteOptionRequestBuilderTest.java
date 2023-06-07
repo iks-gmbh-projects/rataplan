@@ -29,17 +29,17 @@ public class VoteOptionRequestBuilderTest {
 	
 	@Test
 	public void testAppointmentListWithSimpleNewAppointments() {
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 		
 		List<VoteOption> voteOptions = AppointmentRequestBuilder.appointmentList(
-				new VoteOption(new EncryptedString("homeoffice", false), appointmentRequest),
-				new VoteOption(new EncryptedString("somewhere", false), appointmentRequest),
-				new VoteOption(new EncryptedString("here", false), appointmentRequest),
-				new VoteOption(new EncryptedString("iks Hilden", false), appointmentRequest)
+				new VoteOption(new EncryptedString("homeoffice", false), vote),
+				new VoteOption(new EncryptedString("somewhere", false), vote),
+				new VoteOption(new EncryptedString("here", false), vote),
+				new VoteOption(new EncryptedString("iks Hilden", false), vote)
 				);
 
 		for (VoteOption voteOption : voteOptions) {
-			assertEquals(appointmentRequest, voteOption.getAppointmentRequest());
+			assertEquals(vote, voteOption.getAppointmentRequest());
 		}
 		
 		assertEquals("homeoffice", voteOptions.get(0).getDescription().getString());
@@ -50,12 +50,12 @@ public class VoteOptionRequestBuilderTest {
 	
 	@Test
 	public void testAppointmentListWithSimpleExistingAppointments() {
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 		
-		VoteOption voteOption0 = new VoteOption(new EncryptedString("homeoffice", false), appointmentRequest);
-		VoteOption voteOption1 = new VoteOption(new EncryptedString("somewhere", false), appointmentRequest);
-		VoteOption voteOption2 = new VoteOption(new EncryptedString("here", false), appointmentRequest);
-		VoteOption voteOption3 = new VoteOption(new EncryptedString("iks Hilden", false), appointmentRequest);
+		VoteOption voteOption0 = new VoteOption(new EncryptedString("homeoffice", false), vote);
+		VoteOption voteOption1 = new VoteOption(new EncryptedString("somewhere", false), vote);
+		VoteOption voteOption2 = new VoteOption(new EncryptedString("here", false), vote);
+		VoteOption voteOption3 = new VoteOption(new EncryptedString("iks Hilden", false), vote);
 		
 		List<VoteOption> voteOptions = AppointmentRequestBuilder.appointmentList(
             voteOption0,
@@ -65,7 +65,7 @@ public class VoteOptionRequestBuilderTest {
 				);
 
 		for (VoteOption voteOption : voteOptions) {
-			assertEquals(appointmentRequest, voteOption.getAppointmentRequest());
+			assertEquals(vote, voteOption.getAppointmentRequest());
 		}
 		
 		assertEquals(voteOption0, voteOptions.get(0));
@@ -76,18 +76,18 @@ public class VoteOptionRequestBuilderTest {
 	
 	@Test
 	public void testAppointmentListWithComplicatedExistingAppointments() {
-		AppointmentRequest appointmentRequest = this.createComplicatedAppointmentRequest();
-		VoteOption voteOption0 = new VoteOption(new EncryptedString("I was first", false), appointmentRequest);
+		Vote vote = this.createComplicatedAppointmentRequest();
+		VoteOption voteOption0 = new VoteOption(new EncryptedString("I was first", false), vote);
 		voteOption0.setUrl(new EncryptedString("www.nice.url", false));
 		voteOption0.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
 		voteOption0.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
 		
-		VoteOption voteOption1 = new VoteOption(new EncryptedString("I was second", false), appointmentRequest);
+		VoteOption voteOption1 = new VoteOption(new EncryptedString("I was second", false), vote);
 		voteOption1.setUrl(new EncryptedString("www.maybe.here", false));
 		voteOption1.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
 		voteOption1.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
 		
-		VoteOption voteOption2 = new VoteOption(new EncryptedString("I was last", false), appointmentRequest);
+		VoteOption voteOption2 = new VoteOption(new EncryptedString("I was last", false), vote);
 		voteOption2.setUrl(new EncryptedString("www.test.de", false));
 		voteOption2.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
 		voteOption2.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
@@ -99,7 +99,7 @@ public class VoteOptionRequestBuilderTest {
 				);
 		
 		for (VoteOption voteOption : voteOptions) {
-			assertEquals(appointmentRequest, voteOption.getAppointmentRequest());
+			assertEquals(vote, voteOption.getAppointmentRequest());
 		}
 		
 		assertEquals(voteOption0, voteOptions.get(0));
@@ -109,15 +109,15 @@ public class VoteOptionRequestBuilderTest {
 
 	@Test
 	public void testMemberListWithNewMembers() {
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 		List<VoteParticipant> voteParticipants = AppointmentRequestBuilder.memberList(
-				new VoteParticipant(new EncryptedString("Fritz", false), appointmentRequest),
-				new VoteParticipant(new EncryptedString("Hans", false), appointmentRequest),
-				new VoteParticipant(new EncryptedString("Peter", false), appointmentRequest)
+				new VoteParticipant(new EncryptedString("Fritz", false), vote),
+				new VoteParticipant(new EncryptedString("Hans", false), vote),
+				new VoteParticipant(new EncryptedString("Peter", false), vote)
 				);
 		
 		for (VoteParticipant voteParticipant : voteParticipants) {
-			assertEquals(appointmentRequest, voteParticipant.getAppointmentRequest());
+			assertEquals(vote, voteParticipant.getAppointmentRequest());
 		}
 		
 		assertEquals("Fritz", voteParticipants.get(0).getName().getString());
@@ -127,11 +127,11 @@ public class VoteOptionRequestBuilderTest {
 	
 	@Test
 	public void testMemberListWithExistingMembers() {
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 		
-		VoteParticipant voteParticipant0 = new VoteParticipant(new EncryptedString("Fritz", false), appointmentRequest);
-		VoteParticipant voteParticipant1 = new VoteParticipant(new EncryptedString("Hans",false), appointmentRequest);
-		VoteParticipant voteParticipant2 = new VoteParticipant(new EncryptedString("Peter", false), appointmentRequest);
+		VoteParticipant voteParticipant0 = new VoteParticipant(new EncryptedString("Fritz", false), vote);
+		VoteParticipant voteParticipant1 = new VoteParticipant(new EncryptedString("Hans",false), vote);
+		VoteParticipant voteParticipant2 = new VoteParticipant(new EncryptedString("Peter", false), vote);
 		List<VoteParticipant> voteParticipants = AppointmentRequestBuilder.memberList(
 			voteParticipant0,
 			voteParticipant1,
@@ -139,7 +139,7 @@ public class VoteOptionRequestBuilderTest {
 				);
 		
 		for (VoteParticipant voteParticipant : voteParticipants) {
-			assertEquals(appointmentRequest, voteParticipant.getAppointmentRequest());
+			assertEquals(vote, voteParticipant.getAppointmentRequest());
 		}
 		
 		assertEquals(voteParticipant0, voteParticipants.get(0));
@@ -147,8 +147,8 @@ public class VoteOptionRequestBuilderTest {
 		assertEquals(voteParticipant2, voteParticipants.get(2));
 	}
 	
-	private AppointmentRequest createComplicatedAppointmentRequest() {
-		return new AppointmentRequest( new EncryptedString("Coding Dojo", false),
+	private Vote createComplicatedAppointmentRequest() {
+		return new Vote( new EncryptedString("Coding Dojo", false),
 				new EncryptedString("Fun with code", false), new Date(DATE_2050_10_10),
 				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
 				new VoteConfig(new VoteOptionConfig(true, true, true, true, true, true), DecisionType.EXTENDED));

@@ -4,13 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.domain.ContactData;
 import sibModel.SendSmtpEmail;
 import sibModel.SendSmtpEmailSender;
@@ -44,9 +44,9 @@ public class MailBuilderSendInBlue {
         this.fromEncryptedStringConverter = fromEncryptedStringConverter;
     }
     
-    public List<SendSmtpEmail> buildMailListForAppointmentRequestInvitations(AppointmentRequest appointmentRequest) {
-        String participationToken = appointmentRequest.getParticipationToken();
-        if(participationToken == null) participationToken = appointmentRequest.getId().toString();
+    public List<SendSmtpEmail> buildMailListForAppointmentRequestInvitations(Vote vote) {
+        String participationToken = vote.getParticipationToken();
+        if(participationToken == null) participationToken = vote.getId().toString();
         String url = baseUrl + "/appointmentrequest/" + participationToken;
     
     
@@ -56,7 +56,7 @@ public class MailBuilderSendInBlue {
         String subjectString = templateEngine.process("invitation_subject", ctx);
         String contentString = templateEngine.process("invitation_content", ctx);
 
-        return appointmentRequest.getConsigneeList()
+        return vote.getConsigneeList()
             .stream()
             .map(consignee -> new SendSmtpEmail()
                 .sender(sender)
@@ -69,14 +69,14 @@ public class MailBuilderSendInBlue {
             ).collect(Collectors.toList());
     }
 
-    public SendSmtpEmail buildMailForAppointmentRequestExpired(AppointmentRequest appointmentRequest) {
-        String participationToken = appointmentRequest.getParticipationToken();
-        if(participationToken == null) participationToken = appointmentRequest.getId().toString();
+    public SendSmtpEmail buildMailForAppointmentRequestExpired(Vote vote) {
+        String participationToken = vote.getParticipationToken();
+        if(participationToken == null) participationToken = vote.getId().toString();
         String url = baseUrl + "/appointmentrequest/" + participationToken;
 
         Context ctx = new Context();
         ctx.setVariable("url", url);
-        ctx.setVariable("title", appointmentRequest.getTitle());
+        ctx.setVariable("title", vote.getTitle());
 
         String subjectContent = templateEngine.process("expired_subject", ctx);
 
@@ -90,17 +90,17 @@ public class MailBuilderSendInBlue {
             .sender(sender)
             .to(Collections.singletonList(
                 new SendSmtpEmailTo()
-                    .email(fromEncryptedStringConverter.convert(appointmentRequest.getOrganizerMail()))
+                    .email(fromEncryptedStringConverter.convert(vote.getOrganizerMail()))
             ))
             .subject(subjectContent)
             .htmlContent(htmlContent);
     }
 
-    public SendSmtpEmail buildMailForAppointmentRequestCreation(AppointmentRequest appointmentRequest) {
-        String participationToken = appointmentRequest.getParticipationToken();
-        if(participationToken == null) participationToken = appointmentRequest.getId().toString();
+    public SendSmtpEmail buildMailForAppointmentRequestCreation(Vote vote) {
+        String participationToken = vote.getParticipationToken();
+        if(participationToken == null) participationToken = vote.getId().toString();
         String url = baseUrl + "/appointmentrequest/" + participationToken;
-        String editToken = appointmentRequest.getEditToken();
+        String editToken = vote.getEditToken();
         String adminUrl = editToken == null ? null : baseUrl + "/appointmentrequest/" + editToken + "/edit";
 
         Context ctx = new Context();
@@ -120,7 +120,7 @@ public class MailBuilderSendInBlue {
             .sender(sender)
             .to(Collections.singletonList(
                 new SendSmtpEmailTo()
-                    .email(fromEncryptedStringConverter.convert(appointmentRequest.getOrganizerMail()))
+                    .email(fromEncryptedStringConverter.convert(vote.getOrganizerMail()))
             ))
             .subject(subjectContent)
             .htmlContent(htmlContent);

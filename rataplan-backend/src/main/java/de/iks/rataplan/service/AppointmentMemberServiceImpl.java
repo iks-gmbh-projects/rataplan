@@ -10,7 +10,7 @@ import de.iks.rataplan.domain.VoteParticipant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.iks.rataplan.domain.AppointmentRequest;
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.repository.AppointmentMemberRepository;
@@ -27,16 +27,16 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
     private AppointmentMemberRepository appointmentMemberRepository;
 
     @Override
-    public VoteParticipant createAppointmentMember(AppointmentRequest appointmentRequest, VoteParticipant voteParticipant) {
+    public VoteParticipant createAppointmentMember(Vote vote, VoteParticipant voteParticipant) {
         
-        this.validateExpirationDate(appointmentRequest);
+        this.validateExpirationDate(vote);
 		
         voteParticipant.setId(null);
 
-        if (appointmentRequest.validateDecisionsForAppointmentMember(voteParticipant)) {
+        if (vote.validateDecisionsForAppointmentMember(voteParticipant)) {
         	
-            voteParticipant.setAppointmentRequest(appointmentRequest);
-            appointmentRequest.getAppointmentMembers().add(voteParticipant);
+            voteParticipant.setAppointmentRequest(vote);
+            vote.getAppointmentMembers().add(voteParticipant);
 
             for (VoteDecision decision : voteParticipant.getAppointmentDecisions()) {
                 decision.setAppointmentMember(voteParticipant);
@@ -50,28 +50,29 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
     }
 
 	@Override
-    public void deleteAppointmentMember(AppointmentRequest appointmentRequest, VoteParticipant voteParticipant) {
+    public void deleteAppointmentMember(Vote vote, VoteParticipant voteParticipant) {
 
-        this.validateExpirationDate(appointmentRequest);
+        this.validateExpirationDate(vote);
         
-        appointmentRequest.getAppointmentMembers().remove(voteParticipant);
-        appointmentRequestRepository.saveAndFlush(appointmentRequest);
+        vote.getAppointmentMembers().remove(voteParticipant);
+        appointmentRequestRepository.saveAndFlush(vote);
     }
 
     @Override
-    public VoteParticipant updateAppointmentMember(AppointmentRequest appointmentRequest, VoteParticipant dbVoteParticipant,
+    public VoteParticipant updateAppointmentMember(
+        Vote vote, VoteParticipant dbVoteParticipant,
             VoteParticipant newVoteParticipant
     ) {
         
-        this.validateExpirationDate(appointmentRequest);
+        this.validateExpirationDate(vote);
 
-        if (!appointmentRequest.validateDecisionsForAppointmentMember(newVoteParticipant)) {
+        if (!vote.validateDecisionsForAppointmentMember(newVoteParticipant)) {
         	throw new MalformedException(
         			"AppointmentDecisions don't fit the DecisionType in the AppointmentRequest.");
         }
 
         dbVoteParticipant.setName(newVoteParticipant.getName());
-        dbVoteParticipant.setAppointmentRequest(appointmentRequest);
+        dbVoteParticipant.setAppointmentRequest(vote);
         this.updateAppointmentDecisionsForMember(dbVoteParticipant.getAppointmentDecisions(), newVoteParticipant.getAppointmentDecisions());
         return appointmentMemberRepository.saveAndFlush(dbVoteParticipant);
     }
@@ -103,8 +104,8 @@ public class AppointmentMemberServiceImpl implements AppointmentMemberService {
         }
     }
     
-    private void validateExpirationDate(AppointmentRequest appointmentRequest) {
-    	if (appointmentRequest.isNotified()) {
+    private void validateExpirationDate(Vote vote) {
+    	if (vote.isNotified()) {
 			throw new ForbiddenException("Appointmentrequest ist expired!");
 		}
     }

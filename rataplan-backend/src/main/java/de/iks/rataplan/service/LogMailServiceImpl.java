@@ -1,6 +1,6 @@
 package de.iks.rataplan.service;
 
-import de.iks.rataplan.domain.AppointmentRequest;
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.ContactData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,19 +16,19 @@ public class LogMailServiceImpl implements MailService {
     private String baseUrl;
     
     @Override
-    public void sendMailForAppointmentRequestCreation(AppointmentRequest appointmentRequest) {
-        log.info("Appointment request created link: {}", baseUrl + "/appointmentrequest/" + appointmentRequest.getId());
-        log.info("Appointment request created admin link: {}", baseUrl + "/appointmentrequest/" + appointmentRequest.getId() + "/edit");
+    public void sendMailForAppointmentRequestCreation(Vote vote) {
+        log.info("Appointment request created link: {}", baseUrl + "/appointmentrequest/" + vote.getId());
+        log.info("Appointment request created admin link: {}", baseUrl + "/appointmentrequest/" + vote.getId() + "/edit");
     }
     
     @Override
-    public void sendMailForAppointmentRequestExpired(AppointmentRequest appointmentRequest) {
-        log.info("Appointment request expired link: {}", baseUrl + "/appointmentrequest/" + appointmentRequest.getId());
+    public void sendMailForAppointmentRequestExpired(Vote vote) {
+        log.info("Appointment request expired link: {}", baseUrl + "/appointmentrequest/" + vote.getId());
     }
     
     @Override
-    public void sendMailForAppointmentRequestInvitations(AppointmentRequest appointmentRequest) {
-        log.info("Appointment request invitation link: {}", baseUrl + "/appointmentrequest/" + appointmentRequest.getId());
+    public void sendMailForAppointmentRequestInvitations(Vote vote) {
+        log.info("Appointment request invitation link: {}", baseUrl + "/appointmentrequest/" + vote.getId());
     }
     
     @Override

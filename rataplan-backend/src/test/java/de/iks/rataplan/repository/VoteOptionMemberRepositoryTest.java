@@ -56,7 +56,7 @@ public class VoteOptionMemberRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + CREATE + DECISION
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentMemberWithDecisions() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
+		Vote vote = appointmentRequestRepository.findOne(1);
 
 		VoteParticipant voteParticipant = new VoteParticipant();
 
@@ -64,20 +64,20 @@ public class VoteOptionMemberRepositoryTest {
 
 		VoteDecision decision = new VoteDecision();
 		decision.setDecision(Decision.ACCEPT);
-		decision.setAppointment(appointmentRequest.getAppointments().get(0));
+		decision.setAppointment(vote.getAppointments().get(0));
 		decision.setAppointmentMember(voteParticipant);
 		decisions.add(decision);
 
 		VoteDecision decision2 = new VoteDecision();
 		decision2.setDecision(Decision.ACCEPT);
-		decision2.setAppointment(appointmentRequest.getAppointments().get(1));
+		decision2.setAppointment(vote.getAppointments().get(1));
 		decision2.setAppointmentMember(voteParticipant);
 		decisions.add(decision2);
 
 		voteParticipant.setName(new EncryptedString("Hans", false));
 		voteParticipant.setAppointmentDecisions(decisions);
-		voteParticipant.setAppointmentRequest(appointmentRequest);
-		appointmentRequest.getAppointmentMembers().add(voteParticipant);
+		voteParticipant.setAppointmentRequest(vote);
+		vote.getAppointmentMembers().add(voteParticipant);
 
 		for (VoteDecision voteDecision : voteParticipant.getAppointmentDecisions()) {
 			voteDecision.setAppointmentMember(voteParticipant);
@@ -91,7 +91,7 @@ public class VoteOptionMemberRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + CREATE + PARTICIPANTS
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentMemberWithParticipants() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
+		Vote vote = appointmentRequestRepository.findOne(1);
 
 		VoteParticipant voteParticipant = new VoteParticipant();
 
@@ -99,12 +99,12 @@ public class VoteOptionMemberRepositoryTest {
 
 		VoteDecision decision = new VoteDecision();
 		decision.setParticipants(5);
-		decision.setAppointment(appointmentRequest.getAppointments().get(0));
+		decision.setAppointment(vote.getAppointments().get(0));
 		decision.setAppointmentMember(voteParticipant);
 
 		VoteDecision decision2 = new VoteDecision();
 		decision2.setParticipants(5);
-		decision2.setAppointment(appointmentRequest.getAppointments().get(1));
+		decision2.setAppointment(vote.getAppointments().get(1));
 		decision2.setAppointmentMember(voteParticipant);
 
 		decisions.add(decision);
@@ -112,8 +112,8 @@ public class VoteOptionMemberRepositoryTest {
 
 		voteParticipant.setName(new EncryptedString("Hans", false));
 		voteParticipant.setAppointmentDecisions(decisions);
-		voteParticipant.setAppointmentRequest(appointmentRequest);
-		appointmentRequest.getAppointmentMembers().add(voteParticipant);
+		voteParticipant.setAppointmentRequest(vote);
+		vote.getAppointmentMembers().add(voteParticipant);
 
 		for (VoteDecision voteDecision : voteParticipant.getAppointmentDecisions()) {
 			voteDecision.setAppointmentMember(voteParticipant);
@@ -126,22 +126,22 @@ public class VoteOptionMemberRepositoryTest {
 	@DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void deleteAppointmentMember() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
-		VoteParticipant voteParticipant = appointmentRequest.getAppointmentMemberById(1);
-		appointmentRequest.getAppointmentMembers().remove(voteParticipant);
+		Vote vote = appointmentRequestRepository.findOne(1);
+		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
+		vote.getAppointmentMembers().remove(voteParticipant);
 
-		appointmentRequestRepository.saveAndFlush(appointmentRequest);
+		appointmentRequestRepository.saveAndFlush(vote);
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + DELETE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void deleteAppointmentMemberShouldFail() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
-		VoteParticipant voteParticipant = appointmentRequest.getAppointmentMemberById(3);
-		appointmentRequest.getAppointmentMembers().remove(voteParticipant);
+		Vote vote = appointmentRequestRepository.findOne(1);
+		VoteParticipant voteParticipant = vote.getAppointmentMemberById(3);
+		vote.getAppointmentMembers().remove(voteParticipant);
 
-		appointmentRequestRepository.saveAndFlush(appointmentRequest);
+		appointmentRequestRepository.saveAndFlush(vote);
 	}
 
 	@Test
@@ -149,11 +149,11 @@ public class VoteOptionMemberRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + DECISION
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentMemberNameAndDecision() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
+		Vote vote = appointmentRequestRepository.findOne(1);
 
-		VoteParticipant voteParticipant = appointmentRequest.getAppointmentMemberById(1);
+		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
 		voteParticipant.setName(new EncryptedString("Fritz", false));
-		voteParticipant.setAppointmentRequest(appointmentRequest);
+		voteParticipant.setAppointmentRequest(vote);
 
 		List<VoteDecision> decisions = voteParticipant.getAppointmentDecisions();
 		decisions.get(0).setDecision(Decision.DECLINE);
@@ -167,11 +167,11 @@ public class VoteOptionMemberRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + PARTICIPANTS
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentMemberNameAndParticipants() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
+		Vote vote = appointmentRequestRepository.findOne(1);
 
-		VoteParticipant voteParticipant = appointmentRequest.getAppointmentMemberById(1);
+		VoteParticipant voteParticipant = vote.getAppointmentMemberById(1);
 		voteParticipant.setName(new EncryptedString("Fritz", false));
-		voteParticipant.setAppointmentRequest(appointmentRequest);
+		voteParticipant.setAppointmentRequest(vote);
 
 		List<VoteDecision> decicions = voteParticipant.getAppointmentDecisions();
 		decicions.get(0).setParticipants(1);

@@ -49,9 +49,9 @@ public class VoteOptionRequestRepositoryTest {
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequestWithDefaultConfigAndTwoAppointments() throws Exception {
 
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 
-		appointmentRequestRepository.saveAndFlush(appointmentRequest);
+		appointmentRequestRepository.saveAndFlush(vote);
 	}
 
 	@Test
@@ -59,20 +59,20 @@ public class VoteOptionRequestRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + CREATE + "/extended"
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequestWithExtendedConfigAndOneAppointment() throws Exception {
-		AppointmentRequest appointmentRequest = new AppointmentRequest(new EncryptedString("Coding Dojo", false),
+		Vote vote = new Vote(new EncryptedString("Coding Dojo", false),
 				new EncryptedString("Fun with code", false), new Date(DATE_2050_10_10),
 				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false), new VoteConfig(
 						new VoteOptionConfig(true, true, true, true, true, true), DecisionType.EXTENDED));
 
-		VoteOption voteOption = new VoteOption(new EncryptedString("Let's Do Something", false), appointmentRequest);
+		VoteOption voteOption = new VoteOption(new EncryptedString("Let's Do Something", false), vote);
 		voteOption.setDescription(new EncryptedString("Let's Do Something", false));
 		voteOption.setUrl(new EncryptedString("www.maybe.here", false));
 		voteOption.setStartDate(new Timestamp(DATE_2050_11_11__11_11_00));
 		voteOption.setEndDate(new Timestamp(DATE_2050_12_12__12_12_00));
 
-		appointmentRequest.setAppointments(appointmentList(voteOption));
+		vote.setAppointments(appointmentList(voteOption));
 
-		appointmentRequestRepository.saveAndFlush(appointmentRequest);
+		appointmentRequestRepository.saveAndFlush(vote);
 	}
 
 	@Test
@@ -81,90 +81,90 @@ public class VoteOptionRequestRepositoryTest {
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createAppointmentRequestWithUserAndDefaultConfigAndTwoAppointments() throws Exception {
 
-		AppointmentRequest appointmentRequest = createSimpleAppointmentRequest();
+		Vote vote = createSimpleAppointmentRequest();
 
-		appointmentRequest.setUserId(1);
+		vote.setUserId(1);
 
-		appointmentRequestRepository.saveAndFlush(appointmentRequest);
+		appointmentRequestRepository.saveAndFlush(vote);
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/simple" + FILE_INITIAL)
 	public void getAppointmentRequestById() throws Exception {
 
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
+		Vote vote = appointmentRequestRepository.findOne(1);
 
-		assertEquals(1, appointmentRequest.getAppointmentRequestConfig().getId().intValue());
-		assertEquals(DecisionType.DEFAULT, appointmentRequest.getAppointmentRequestConfig().getDecisionType());
-		assertEquals(true, appointmentRequest.getAppointmentRequestConfig().getAppointmentConfig().isDescription());
-		assertEquals(false, appointmentRequest.getAppointmentRequestConfig().getAppointmentConfig().isStartDate());
-		assertEquals(false, appointmentRequest.getAppointmentRequestConfig().getAppointmentConfig().isStartTime());
-		assertEquals(false, appointmentRequest.getAppointmentRequestConfig().getAppointmentConfig().isEndDate());
-		assertEquals(false, appointmentRequest.getAppointmentRequestConfig().getAppointmentConfig().isEndTime());
-		assertEquals(false, appointmentRequest.getAppointmentRequestConfig().getAppointmentConfig().isUrl());
+		assertEquals(1, vote.getAppointmentRequestConfig().getId().intValue());
+		assertEquals(DecisionType.DEFAULT, vote.getAppointmentRequestConfig().getDecisionType());
+		assertEquals(true, vote.getAppointmentRequestConfig().getAppointmentConfig().isDescription());
+		assertEquals(false, vote.getAppointmentRequestConfig().getAppointmentConfig().isStartDate());
+		assertEquals(false, vote.getAppointmentRequestConfig().getAppointmentConfig().isStartTime());
+		assertEquals(false, vote.getAppointmentRequestConfig().getAppointmentConfig().isEndDate());
+		assertEquals(false, vote.getAppointmentRequestConfig().getAppointmentConfig().isEndTime());
+		assertEquals(false, vote.getAppointmentRequestConfig().getAppointmentConfig().isUrl());
 
-		assertEquals(1, appointmentRequest.getId().intValue());
-		assertEquals("Coding Dojo", appointmentRequest.getTitle().getString());
-		assertEquals("Fun with code", appointmentRequest.getDescription().getString());
-		assertEquals(IKS_MAIL, appointmentRequest.getOrganizerMail().getString());
-		assertEquals(false, appointmentRequest.isNotified());
+		assertEquals(1, vote.getId().intValue());
+		assertEquals("Coding Dojo", vote.getTitle().getString());
+		assertEquals("Fun with code", vote.getDescription().getString());
+		assertEquals(IKS_MAIL, vote.getOrganizerMail().getString());
+		assertEquals(false, vote.isNotified());
 
-		assertEquals(2, appointmentRequest.getAppointments().size());
+		assertEquals(2, vote.getAppointments().size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/simpleThreeRequests" + FILE_INITIAL)
 	public void getAllAppointmentRequests() throws Exception {
 
-		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAll();
+		List<Vote> votes = appointmentRequestRepository.findAll();
 
-		assertEquals(3, appointmentRequests.size());
-		assertEquals("Coding Dojo 1", appointmentRequests.get(0).getTitle().getString());
-		assertEquals("Coding Dojo 2", appointmentRequests.get(1).getTitle().getString());
-		assertEquals("Coding Dojo 3", appointmentRequests.get(2).getTitle().getString());
+		assertEquals(3, votes.size());
+		assertEquals("Coding Dojo 1", votes.get(0).getTitle().getString());
+		assertEquals("Coding Dojo 2", votes.get(1).getTitle().getString());
+		assertEquals("Coding Dojo 3", votes.get(2).getTitle().getString());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/simpleThreeRequests" + FILE_INITIAL)
 	public void getAllAppointmentRequestsByUserId() throws Exception {
 
-		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAllByUserId(1);
+		List<Vote> votes = appointmentRequestRepository.findAllByUserId(1);
 
-		assertEquals(2, appointmentRequests.size());
-		assertEquals("Coding Dojo 1", appointmentRequests.get(0).getTitle().getString());
-		assertEquals("Coding Dojo 3", appointmentRequests.get(1).getTitle().getString());
+		assertEquals(2, votes.size());
+		assertEquals("Coding Dojo 1", votes.get(0).getTitle().getString());
+		assertEquals("Coding Dojo 3", votes.get(1).getTitle().getString());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/backendUserWithoutRequests" + FILE_INITIAL)
 	public void getAllAppointmentRequestsByUserIdNoAppointmentRequests() throws Exception {
 
-		List<AppointmentRequest> appointmentRequests = appointmentRequestRepository.findAllByUserId(1);
+		List<Vote> votes = appointmentRequestRepository.findAllByUserId(1);
 
-		assertEquals(0, appointmentRequests.size());
+		assertEquals(0, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentRequest() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
+		Vote vote = appointmentRequestRepository.findOne(1);
 
-		appointmentRequest.setTitle(new EncryptedString("IKS-Thementag", false));
+		vote.setTitle(new EncryptedString("IKS-Thementag", false));
 
-		appointmentRequestRepository.saveAndFlush(appointmentRequest);
+		appointmentRequestRepository.saveAndFlush(vote);
 	}
 
 	@Test(expected = DataIntegrityViolationException.class)
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void updateAppointmentRequestShouldFailNoDeadline() throws Exception {
-		AppointmentRequest appointmentRequest = appointmentRequestRepository.findOne(1);
+		Vote vote = appointmentRequestRepository.findOne(1);
 
-		appointmentRequest.setTitle(new EncryptedString("IKS-Thementag", false));
-		appointmentRequest.setDeadline(null);
+		vote.setTitle(new EncryptedString("IKS-Thementag", false));
+		vote.setDeadline(null);
 
-		appointmentRequestRepository.saveAndFlush(appointmentRequest);
+		appointmentRequestRepository.saveAndFlush(vote);
 	}
 
 }

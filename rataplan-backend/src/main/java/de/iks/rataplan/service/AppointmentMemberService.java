@@ -1,16 +1,18 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.VoteParticipant;
-import de.iks.rataplan.domain.AppointmentRequest;
+import de.iks.rataplan.domain.Vote;
 
 public interface AppointmentMemberService {
-	public VoteParticipant createAppointmentMember(AppointmentRequest appointmentRequest,
+	public VoteParticipant createAppointmentMember(
+		Vote vote,
 			VoteParticipant voteParticipant
     );
 
-	public void deleteAppointmentMember(AppointmentRequest appointmentRequest, VoteParticipant voteParticipant);
+	public void deleteAppointmentMember(Vote vote, VoteParticipant voteParticipant);
 
-	public VoteParticipant updateAppointmentMember(AppointmentRequest appointmentRequest,
+	public VoteParticipant updateAppointmentMember(
+		Vote vote,
 			VoteParticipant dbVoteParticipant, VoteParticipant newVoteParticipant
     );
 	

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import de.iks.rataplan.domain.AppointmentRequest;
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.AuthUser;
 import de.iks.rataplan.dto.VoteParticipantDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
@@ -45,7 +45,7 @@ public class AppointmentMemberControllerService {
 
 	public VoteParticipantDTO createParticipant(VoteParticipantDTO voteParticipantDTO, String participationToken, String jwtToken) {
 
-		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+		Vote vote = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
 
 		//BackendUser backendUser = null;
 		AuthUser authUser = null;
@@ -53,18 +53,18 @@ public class AppointmentMemberControllerService {
 		if (jwtToken != null) {
 			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
 			authUser = authServiceResponse.getBody();
-			if (isUserParticipantInAppointmentRequest(appointmentRequest, authUser)) {
+			if (isUserParticipantInAppointmentRequest(vote, authUser)) {
 				throw new RataplanException("User already participated in this appointmentRequest");
 			}
 			//backendUser = backendUserService.getBackendUserByAuthUserId(authUser.getId());
 		}
 //				authorizationControllerService.getAppointmentRequestIfAuthorized(false, requestId, jwtToken, accessToken, backendUser);
 		
-		this.createValidDTOParticipant(appointmentRequest, voteParticipantDTO, authUser);
+		this.createValidDTOParticipant(vote, voteParticipantDTO, authUser);
 		voteParticipantDTO.assertAddValid();
 		
 		VoteParticipant voteParticipant = modelMapper.map(voteParticipantDTO, VoteParticipant.class);
-		voteParticipant = appointmentMemberService.createAppointmentMember(appointmentRequest, voteParticipant);
+		voteParticipant = appointmentMemberService.createAppointmentMember(vote, voteParticipant);
 
 		return modelMapper.map(voteParticipant, VoteParticipantDTO.class);
 	}
@@ -78,12 +78,12 @@ public class AppointmentMemberControllerService {
 			authUser = authServiceResponse.getBody();
 		}
 		
-		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
-		VoteParticipant voteParticipant = appointmentRequest.getAppointmentMemberById(memberId);
+		Vote vote = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+		VoteParticipant voteParticipant = vote.getAppointmentMemberById(memberId);
 		
 		validateAccessToParticipant(voteParticipant, authUser);
 		
-		appointmentMemberService.deleteAppointmentMember(appointmentRequest, voteParticipant);
+		appointmentMemberService.deleteAppointmentMember(vote, voteParticipant);
 	}
 	
 	public VoteParticipantDTO updateParticipant(String participationToken, Integer memberId, VoteParticipantDTO voteParticipantDTO, String jwtToken) {
@@ -95,8 +95,8 @@ public class AppointmentMemberControllerService {
 			authUser = authServiceResponse.getBody();
 		}
 		
-		AppointmentRequest appointmentRequest = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
-		VoteParticipant oldVoteParticipant = appointmentRequest.getAppointmentMemberById(memberId);
+		Vote vote = appointmentRequestService.getAppointmentRequestByParticipationToken(participationToken);
+		VoteParticipant oldVoteParticipant = vote.getAppointmentMemberById(memberId);
 		
 		validateAccessToParticipant(oldVoteParticipant, authUser);
 		
@@ -109,7 +109,8 @@ public class AppointmentMemberControllerService {
 		if(authUser != null) voteParticipantDTO.setUserId(authUser.getId());
 
 		VoteParticipant voteParticipant = modelMapper.map(voteParticipantDTO, VoteParticipant.class);
-		voteParticipant = appointmentMemberService.updateAppointmentMember(appointmentRequest,
+		voteParticipant = appointmentMemberService.updateAppointmentMember(
+			vote,
 			oldVoteParticipant,
 			voteParticipant
 		);
@@ -132,8 +133,8 @@ public class AppointmentMemberControllerService {
 		throw new ForbiddenException();
 	}
 	
-	private boolean isUserParticipantInAppointmentRequest(AppointmentRequest appointmentRequest, AuthUser authUser) {
-		for (VoteParticipant voteParticipant : appointmentRequest.getAppointmentMembers()) {
+	private boolean isUserParticipantInAppointmentRequest(Vote vote, AuthUser authUser) {
+		for (VoteParticipant voteParticipant : vote.getAppointmentMembers()) {
 			if (voteParticipant.getUserId() != null && voteParticipant.getUserId().equals(authUser.getId())) {
 				return true;
 			}
@@ -141,9 +142,10 @@ public class AppointmentMemberControllerService {
 		return false;
 	}
 
-	private VoteParticipantDTO createValidDTOParticipant(AppointmentRequest appointmentRequest,
+	private VoteParticipantDTO createValidDTOParticipant(
+		Vote vote,
 			VoteParticipantDTO voteParticipantDTO, AuthUser user) {
-		voteParticipantDTO.setVoteId(appointmentRequest.getId());
+		voteParticipantDTO.setVoteId(vote.getId());
 		if (user == null) {
 			voteParticipantDTO.setUserId(null);
 		} else {

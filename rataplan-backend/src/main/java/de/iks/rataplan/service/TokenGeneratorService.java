@@ -1,6 +1,6 @@
 package de.iks.rataplan.service;
 
-import de.iks.rataplan.domain.AppointmentRequest;
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.repository.AppointmentRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,14 +33,14 @@ public class TokenGeneratorService {
     }
 
     public boolean isTokenUnique(String token, int length) {
-        AppointmentRequest appointmentRequest;
+        Vote vote;
         if (length == 8) {
-            appointmentRequest = appointmentRequestRepository.findByParticipationToken(token);
+            vote = appointmentRequestRepository.findByParticipationToken(token);
         } else if (length == 10) {
-            appointmentRequest = appointmentRequestRepository.findByEditToken(token);
+            vote = appointmentRequestRepository.findByEditToken(token);
         } else {
             throw new Error("appointmentRequest token does not fit the form");
         }
-        return appointmentRequest == null;
+        return vote == null;
     }
 }

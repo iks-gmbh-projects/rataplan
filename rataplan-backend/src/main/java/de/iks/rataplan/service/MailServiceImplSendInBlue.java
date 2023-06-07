@@ -2,6 +2,7 @@ package de.iks.rataplan.service;
 
 import java.util.List;
 
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.utils.MailBuilderSendInBlue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.MailPreparationException;
 import org.springframework.stereotype.Service;
 
-import de.iks.rataplan.domain.AppointmentRequest;
 import de.iks.rataplan.domain.ContactData;
 import sendinblue.ApiException;
 import sibApi.TransactionalEmailsApi;
@@ -38,8 +38,8 @@ public class MailServiceImplSendInBlue implements MailService {
     }
     
     @Override
-    public void sendMailForAppointmentRequestCreation(AppointmentRequest appointmentRequest) {
-        SendSmtpEmail mail = mailBuilder.buildMailForAppointmentRequestCreation(appointmentRequest);
+    public void sendMailForAppointmentRequestCreation(Vote vote) {
+        SendSmtpEmail mail = mailBuilder.buildMailForAppointmentRequestCreation(vote);
         try {
             transactionalEmailsApi.sendTransacEmail(mail);
         } catch (ApiException ex) {
@@ -49,8 +49,8 @@ public class MailServiceImplSendInBlue implements MailService {
     }
 
     @Override
-    public void sendMailForAppointmentRequestExpired(AppointmentRequest appointmentRequest) {
-        SendSmtpEmail mail = mailBuilder.buildMailForAppointmentRequestExpired(appointmentRequest);
+    public void sendMailForAppointmentRequestExpired(Vote vote) {
+        SendSmtpEmail mail = mailBuilder.buildMailForAppointmentRequestExpired(vote);
         try {
             transactionalEmailsApi.sendTransacEmail(mail);
         } catch (ApiException ex) {
@@ -60,8 +60,8 @@ public class MailServiceImplSendInBlue implements MailService {
     }
 
     @Override
-    public void sendMailForAppointmentRequestInvitations(AppointmentRequest appointmentRequest) {
-        List<SendSmtpEmail> mailList = mailBuilder.buildMailListForAppointmentRequestInvitations(appointmentRequest);
+    public void sendMailForAppointmentRequestInvitations(Vote vote) {
+        List<SendSmtpEmail> mailList = mailBuilder.buildMailListForAppointmentRequestInvitations(vote);
 
         for (SendSmtpEmail mail : mailList) {
             try {
