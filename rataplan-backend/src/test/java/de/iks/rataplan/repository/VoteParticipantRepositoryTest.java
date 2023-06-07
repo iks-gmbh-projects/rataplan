@@ -1,6 +1,6 @@
 package de.iks.rataplan.repository;
 
-import static de.iks.rataplan.testutils.TestConstants.APPOINTMENTMEMBERS;
+import static de.iks.rataplan.testutils.TestConstants.VOTE_PARTICIPANTS;
 import static de.iks.rataplan.testutils.TestConstants.CREATE;
 import static de.iks.rataplan.testutils.TestConstants.DECISION;
 import static de.iks.rataplan.testutils.TestConstants.DELETE;
@@ -43,7 +43,7 @@ import de.iks.rataplan.config.TestConfig;
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class VoteParticipantRepositoryTest {
 
-	private static final String FILE_PATH = PATH + REPOSITORY + APPOINTMENTMEMBERS;
+	private static final String FILE_PATH = PATH + REPOSITORY + VOTE_PARTICIPANTS;
 
 	@Autowired
 	private VoteParticipantRepository voteParticipantRepository;

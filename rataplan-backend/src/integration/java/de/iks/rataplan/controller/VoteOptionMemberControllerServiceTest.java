@@ -58,7 +58,7 @@ import static de.iks.rataplan.testutils.ITConstants.*;
         TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class})
 public class VoteOptionMemberControllerServiceTest {
 
-    private static final String FILE_PATH = PATH + APPOINTMENTMEMBERS;
+    private static final String FILE_PATH = PATH + VOTE_PARTICIPANTS;
 
     private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     private MockMvc mockMvc;
@@ -95,7 +95,7 @@ public class VoteOptionMemberControllerServiceTest {
         String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(VERSION + APPOINTMENTREQUESTS + "/1" + APPOINTMENTMEMBERS);
+                .post(VERSION + VOTES + "/1" + VOTE_PARTICIPANTS);
         requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
         requestBuilder.content(json.getBytes());
 
@@ -115,7 +115,7 @@ public class VoteOptionMemberControllerServiceTest {
         String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(VERSION + APPOINTMENTREQUESTS + "/1" + APPOINTMENTMEMBERS);
+                .post(VERSION + VOTES + "/1" + VOTE_PARTICIPANTS);
         requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
         requestBuilder.content(json.getBytes());
 
@@ -136,7 +136,7 @@ public class VoteOptionMemberControllerServiceTest {
 		String json = gson.toJson(voteParticipantDTO);
 
 		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-				.post(VERSION + APPOINTMENTREQUESTS + "/1" + APPOINTMENTMEMBERS);
+				.post(VERSION + VOTES + "/1" + VOTE_PARTICIPANTS);
 		requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
 		requestBuilder.content(json.getBytes());
 		requestBuilder.cookie(cookieBuilder.generateCookie(JWTTOKEN_VALUE, false));
@@ -156,7 +156,7 @@ public class VoteOptionMemberControllerServiceTest {
         String json = gson.toJson(voteParticipantDTO);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(VERSION + APPOINTMENTREQUESTS + "/1" + APPOINTMENTMEMBERS);
+                .post(VERSION + VOTES + "/1" + VOTE_PARTICIPANTS);
         requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
         requestBuilder.content(json.getBytes());
         requestBuilder.cookie(cookieBuilder.generateCookie(JWTTOKEN_VALUE, false));

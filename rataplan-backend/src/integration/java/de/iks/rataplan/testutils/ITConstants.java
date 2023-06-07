@@ -14,8 +14,8 @@ public final class ITConstants {
 	public static final String PATH = "classpath:integration/db/controller";
 
 	// Paths (used to find files and do REST-calls -> folder structure is same as REST-call structure)
-	public static final String APPOINTMENTMEMBERS = "/appointmentMembers";
-	public static final String APPOINTMENTREQUESTS = "/appointmentRequests";
+	public static final String VOTE_PARTICIPANTS = "/voteParticipants";
+	public static final String VOTES = "/votes";
 	public static final String CONTACTS = "/contacts";
 	public static final String CREATE = "/create";
 	public static final String CREATIONS = "/creations";

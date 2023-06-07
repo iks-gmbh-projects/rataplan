@@ -1,6 +1,6 @@
 package de.iks.rataplan.service;
 
-import static de.iks.rataplan.testutils.TestConstants.APPOINTMENTREQUESTS;
+import static de.iks.rataplan.testutils.TestConstants.VOTES;
 import static de.iks.rataplan.testutils.TestConstants.CREATE;
 import static de.iks.rataplan.testutils.TestConstants.DATE_2050_10_10;
 import static de.iks.rataplan.testutils.TestConstants.EXPIRED;
@@ -51,7 +51,7 @@ import de.iks.rataplan.exceptions.ResourceNotFoundException;
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class VoteOptionRequestServiceTest {
 
-	private static final String FILE_PATH = PATH + SERVICE + APPOINTMENTREQUESTS;
+	private static final String FILE_PATH = PATH + SERVICE + VOTES;
 
 	@Autowired
 	private VoteService voteService;

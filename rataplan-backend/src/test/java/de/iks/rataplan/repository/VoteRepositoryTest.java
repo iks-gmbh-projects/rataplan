@@ -38,7 +38,7 @@ import de.iks.rataplan.config.TestConfig;
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class VoteRepositoryTest {
 
-	private static final String FILE_PATH = PATH + REPOSITORY + APPOINTMENTREQUESTS;
+	private static final String FILE_PATH = PATH + REPOSITORY + VOTES;
 
 	@Autowired
 	private VoteRepository voteRepository;

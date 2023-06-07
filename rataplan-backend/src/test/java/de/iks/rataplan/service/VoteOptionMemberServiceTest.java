@@ -1,6 +1,6 @@
 package de.iks.rataplan.service;
 
-import static de.iks.rataplan.testutils.TestConstants.APPOINTMENTMEMBERS;
+import static de.iks.rataplan.testutils.TestConstants.VOTE_PARTICIPANTS;
 import static de.iks.rataplan.testutils.TestConstants.CREATE;
 import static de.iks.rataplan.testutils.TestConstants.DELETE;
 import static de.iks.rataplan.testutils.TestConstants.EXPIRED;
@@ -42,7 +42,7 @@ import de.iks.rataplan.repository.VoteRepository;
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
 public class VoteOptionMemberServiceTest {
 
-	private static final String FILE_PATH = PATH + SERVICE + APPOINTMENTMEMBERS;
+	private static final String FILE_PATH = PATH + SERVICE + VOTE_PARTICIPANTS;
 
 	@Autowired
 	private VoteParticipantService voteParticipantService;

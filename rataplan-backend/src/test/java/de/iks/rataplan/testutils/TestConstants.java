@@ -17,8 +17,8 @@ public final class TestConstants {
 	public static final String PATH = "classpath:test/db";
 
 	// Paths (used to find files)
-	public static final String APPOINTMENTMEMBERS = "/appointmentMembers";
-	public static final String APPOINTMENTREQUESTS = "/appointmentRequests";
+	public static final String VOTE_PARTICIPANTS = "/voteParticipants";
+	public static final String VOTES = "/votes";
 	public static final String AUTHORIZATION = "/authorization";
 	public static final String CONTROLLERSERVICE = "/controllerService";
 	public static final String GENERATORTOKEN = "/generatorToken";
