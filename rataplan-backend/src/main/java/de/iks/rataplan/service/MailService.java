@@ -4,11 +4,11 @@ import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.ContactData;
 
 public interface MailService {
-    void sendMailForAppointmentRequestCreation(Vote vote);
+    void sendMailForVoteCreation(Vote vote);
 
-    void sendMailForAppointmentRequestInvitations(Vote vote);
+    void sendMailForVoteInvitations(Vote vote);
 
-    void sendMailForAppointmentRequestExpired(Vote vote);
+    void sendMailForVoteExpired(Vote vote);
 
     void sendMailForContactRequest(ContactData contactData);
 

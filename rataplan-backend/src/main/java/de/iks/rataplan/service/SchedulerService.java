@@ -33,7 +33,7 @@ public class SchedulerService {
             appointmentRequestRepository.saveAndFlush(request);
 
             if (request.getOrganizerMail() != null) {
-                mailService.sendMailForAppointmentRequestExpired(request);
+                mailService.sendMailForVoteExpired(request);
             }
         }
     }

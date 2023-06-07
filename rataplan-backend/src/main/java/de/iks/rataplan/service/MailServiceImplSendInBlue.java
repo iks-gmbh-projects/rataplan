@@ -38,8 +38,8 @@ public class MailServiceImplSendInBlue implements MailService {
     }
     
     @Override
-    public void sendMailForAppointmentRequestCreation(Vote vote) {
-        SendSmtpEmail mail = mailBuilder.buildMailForAppointmentRequestCreation(vote);
+    public void sendMailForVoteCreation(Vote vote) {
+        SendSmtpEmail mail = mailBuilder.buildMailForVoteCreation(vote);
         try {
             transactionalEmailsApi.sendTransacEmail(mail);
         } catch (ApiException ex) {
@@ -49,8 +49,8 @@ public class MailServiceImplSendInBlue implements MailService {
     }
 
     @Override
-    public void sendMailForAppointmentRequestExpired(Vote vote) {
-        SendSmtpEmail mail = mailBuilder.buildMailForAppointmentRequestExpired(vote);
+    public void sendMailForVoteExpired(Vote vote) {
+        SendSmtpEmail mail = mailBuilder.buildMailForVoteExpired(vote);
         try {
             transactionalEmailsApi.sendTransacEmail(mail);
         } catch (ApiException ex) {
@@ -60,8 +60,8 @@ public class MailServiceImplSendInBlue implements MailService {
     }
 
     @Override
-    public void sendMailForAppointmentRequestInvitations(Vote vote) {
-        List<SendSmtpEmail> mailList = mailBuilder.buildMailListForAppointmentRequestInvitations(vote);
+    public void sendMailForVoteInvitations(Vote vote) {
+        List<SendSmtpEmail> mailList = mailBuilder.buildMailListForVoteInvitations(vote);
 
         for (SendSmtpEmail mail : mailList) {
             try {

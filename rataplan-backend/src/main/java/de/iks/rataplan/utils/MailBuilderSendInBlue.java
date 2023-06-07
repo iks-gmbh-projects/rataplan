@@ -44,10 +44,10 @@ public class MailBuilderSendInBlue {
         this.fromEncryptedStringConverter = fromEncryptedStringConverter;
     }
     
-    public List<SendSmtpEmail> buildMailListForAppointmentRequestInvitations(Vote vote) {
+    public List<SendSmtpEmail> buildMailListForVoteInvitations(Vote vote) {
         String participationToken = vote.getParticipationToken();
         if(participationToken == null) participationToken = vote.getId().toString();
-        String url = baseUrl + "/appointmentrequest/" + participationToken;
+        String url = baseUrl + "/vote/" + participationToken;
     
     
         Context ctx = new Context();
@@ -69,10 +69,10 @@ public class MailBuilderSendInBlue {
             ).collect(Collectors.toList());
     }
 
-    public SendSmtpEmail buildMailForAppointmentRequestExpired(Vote vote) {
+    public SendSmtpEmail buildMailForVoteExpired(Vote vote) {
         String participationToken = vote.getParticipationToken();
         if(participationToken == null) participationToken = vote.getId().toString();
-        String url = baseUrl + "/appointmentrequest/" + participationToken;
+        String url = baseUrl + "/vote/" + participationToken;
 
         Context ctx = new Context();
         ctx.setVariable("url", url);
@@ -96,12 +96,12 @@ public class MailBuilderSendInBlue {
             .htmlContent(htmlContent);
     }
 
-    public SendSmtpEmail buildMailForAppointmentRequestCreation(Vote vote) {
+    public SendSmtpEmail buildMailForVoteCreation(Vote vote) {
         String participationToken = vote.getParticipationToken();
         if(participationToken == null) participationToken = vote.getId().toString();
-        String url = baseUrl + "/appointmentrequest/" + participationToken;
+        String url = baseUrl + "/vote/" + participationToken;
         String editToken = vote.getEditToken();
-        String adminUrl = editToken == null ? null : baseUrl + "/appointmentrequest/" + editToken + "/edit";
+        String adminUrl = editToken == null ? null : baseUrl + "/vote/" + editToken + "/edit";
 
         Context ctx = new Context();
         ctx.setVariable("url", url);

@@ -65,10 +65,10 @@ public class VoteServiceImpl implements VoteService {
         Vote createdVote = appointmentRequestRepository.saveAndFlush(vote);
 
 		if (createdVote.getOrganizerMail() != null) {
-			mailService.sendMailForAppointmentRequestCreation(createdVote);
+			mailService.sendMailForVoteCreation(createdVote);
 		}
 		if (vote.getConsigneeList().size() > 0) {
-			this.mailService.sendMailForAppointmentRequestInvitations(vote);
+			this.mailService.sendMailForVoteInvitations(vote);
 		}
 
 		return createdVote;
