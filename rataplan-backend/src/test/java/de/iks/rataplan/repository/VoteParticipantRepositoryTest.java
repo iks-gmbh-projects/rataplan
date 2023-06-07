@@ -41,7 +41,7 @@ import de.iks.rataplan.config.TestConfig;
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class VoteOptionMemberRepositoryTest {
+public class VoteParticipantRepositoryTest {
 
 	private static final String FILE_PATH = PATH + REPOSITORY + APPOINTMENTMEMBERS;
 
@@ -55,7 +55,7 @@ public class VoteOptionMemberRepositoryTest {
 	@DatabaseSetup(FILE_PATH + CREATE + DECISION + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + DECISION
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void createAppointmentMemberWithDecisions() throws Exception {
+	public void createParticipantWithDecisions() throws Exception {
 		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant voteParticipant = new VoteParticipant();
@@ -90,7 +90,7 @@ public class VoteOptionMemberRepositoryTest {
 	@DatabaseSetup(FILE_PATH + CREATE + PARTICIPANTS + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + PARTICIPANTS
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void createAppointmentMemberWithParticipants() throws Exception {
+	public void createParticipantWithParticipants() throws Exception {
 		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant voteParticipant = new VoteParticipant();
@@ -125,7 +125,7 @@ public class VoteOptionMemberRepositoryTest {
 	@Test
 	@DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void deleteAppointmentMember() throws Exception {
+	public void deleteParticipant() throws Exception {
 		Vote vote = voteRepository.findOne(1);
 		VoteParticipant voteParticipant = vote.getParticipantById(1);
 		vote.getParticipants().remove(voteParticipant);
@@ -136,7 +136,7 @@ public class VoteOptionMemberRepositoryTest {
 	@Test
 	@DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + DELETE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void deleteAppointmentMemberShouldFail() throws Exception {
+	public void deleteParticipantShouldFail() throws Exception {
 		Vote vote = voteRepository.findOne(1);
 		VoteParticipant voteParticipant = vote.getParticipantById(3);
 		vote.getParticipants().remove(voteParticipant);
@@ -148,7 +148,7 @@ public class VoteOptionMemberRepositoryTest {
 	@DatabaseSetup(FILE_PATH + UPDATE + DECISION + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + DECISION
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void updateAppointmentMemberNameAndDecision() throws Exception {
+	public void updateParticipantNameAndDecision() throws Exception {
 		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant voteParticipant = vote.getParticipantById(1);
@@ -166,7 +166,7 @@ public class VoteOptionMemberRepositoryTest {
 	@DatabaseSetup(FILE_PATH + UPDATE + PARTICIPANTS + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + PARTICIPANTS
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void updateAppointmentMemberNameAndParticipants() throws Exception {
+	public void updateParticipantNameAndParticipants() throws Exception {
 		Vote vote = voteRepository.findOne(1);
 
 		VoteParticipant voteParticipant = vote.getParticipantById(1);

@@ -36,7 +36,7 @@ import de.iks.rataplan.config.TestConfig;
 @Transactional
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
 		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
-public class VoteOptionRequestRepositoryTest {
+public class VoteRepositoryTest {
 
 	private static final String FILE_PATH = PATH + REPOSITORY + APPOINTMENTREQUESTS;
 
@@ -47,7 +47,7 @@ public class VoteOptionRequestRepositoryTest {
 	@DatabaseSetup(FILE_EMPTY_DB)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + "/simple"
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void createAppointmentRequestWithDefaultConfigAndTwoAppointments() throws Exception {
+	public void createVoteWithDefaultConfigAndTwoOptions() throws Exception {
 
 		Vote vote = createSimpleVote();
 
@@ -58,7 +58,7 @@ public class VoteOptionRequestRepositoryTest {
 	@DatabaseSetup(FILE_EMPTY_DB)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + "/extended"
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void createAppointmentRequestWithExtendedConfigAndOneAppointment() throws Exception {
+	public void createVoteWithExtendedConfigAndOneOption() throws Exception {
 		Vote vote = new Vote(new EncryptedString("Coding Dojo", false),
 				new EncryptedString("Fun with code", false), new Date(DATE_2050_10_10),
 				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false), new VoteConfig(
@@ -79,7 +79,7 @@ public class VoteOptionRequestRepositoryTest {
 	@DatabaseSetup(FILE_PATH + CREATE + "/simpleWithUser" + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + "/simpleWithUser"
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void createAppointmentRequestWithUserAndDefaultConfigAndTwoAppointments() throws Exception {
+	public void createVoteWithUserAndDefaultConfigAndTwoOptions() throws Exception {
 
 		Vote vote = createSimpleVote();
 
@@ -90,7 +90,7 @@ public class VoteOptionRequestRepositoryTest {
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/simple" + FILE_INITIAL)
-	public void getAppointmentRequestById() throws Exception {
+	public void getVoteById() throws Exception {
 
 		Vote vote = voteRepository.findOne(1);
 
@@ -114,7 +114,7 @@ public class VoteOptionRequestRepositoryTest {
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/simpleThreeRequests" + FILE_INITIAL)
-	public void getAllAppointmentRequests() throws Exception {
+	public void getAllVotes() throws Exception {
 
 		List<Vote> votes = voteRepository.findAll();
 
@@ -126,7 +126,7 @@ public class VoteOptionRequestRepositoryTest {
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/simpleThreeRequests" + FILE_INITIAL)
-	public void getAllAppointmentRequestsByUserId() throws Exception {
+	public void getAllVotesByUserId() throws Exception {
 
 		List<Vote> votes = voteRepository.findAllByUserId(1);
 
@@ -137,7 +137,7 @@ public class VoteOptionRequestRepositoryTest {
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + "/backendUserWithoutRequests" + FILE_INITIAL)
-	public void getAllAppointmentRequestsByUserIdNoAppointmentRequests() throws Exception {
+	public void getAllVotesByUserIdNoVotes() throws Exception {
 
 		List<Vote> votes = voteRepository.findAllByUserId(1);
 
@@ -147,7 +147,7 @@ public class VoteOptionRequestRepositoryTest {
 	@Test
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void updateAppointmentRequest() throws Exception {
+	public void updateVote() throws Exception {
 		Vote vote = voteRepository.findOne(1);
 
 		vote.setTitle(new EncryptedString("IKS-Thementag", false));
@@ -158,7 +158,7 @@ public class VoteOptionRequestRepositoryTest {
 	@Test(expected = DataIntegrityViolationException.class)
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void updateAppointmentRequestShouldFailNoDeadline() throws Exception {
+	public void updateVoteShouldFailNoDeadline() throws Exception {
 		Vote vote = voteRepository.findOne(1);
 
 		vote.setTitle(new EncryptedString("IKS-Thementag", false));
