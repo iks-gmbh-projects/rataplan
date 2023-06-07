@@ -43,7 +43,7 @@ public class CreatorVoteDTOTest {
 	public void mapToDomain_PlainVoteDTO_mapped() {
 		
 		CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title", "Description", new Date(1234567890L),
-				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
+				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT));
 
 		AppointmentRequest appointmentRequest = mapper.map(dtoVote, AppointmentRequest.class);
 
@@ -73,7 +73,7 @@ public class CreatorVoteDTOTest {
 
 	@Test
 	public void mapToDomain_VoteDTOWithOption_mapped() {
-		AppointmentConfig config = new AppointmentConfig(true, false, true, true, true, true);
+		VoteOptionConfig config = new VoteOptionConfig(true, false, true, true, true, true);
 		
 		CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title", "Description", new Date(1234567890L),
 				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(config, DecisionType.EXTENDED));
@@ -102,7 +102,7 @@ public class CreatorVoteDTOTest {
 		AppointmentRequest appointmentRequest = new AppointmentRequest(new EncryptedString("Title", false),
 				new EncryptedString("Description", false), new Date(123456789L),
 				new EncryptedString(IKS_NAME, false), new EncryptedString(IKS_MAIL, false),
-				new AppointmentRequestConfig(new AppointmentConfig(true, false, true, false, false, false), DecisionType.EXTENDED));
+				new AppointmentRequestConfig(new VoteOptionConfig(true, false, true, false, false, false), DecisionType.EXTENDED));
 		VoteOption voteOption1 = new VoteOption(new Timestamp(123123123L), new EncryptedString("iks Hilden", false), appointmentRequest);
 		VoteOption voteOption2 = new VoteOption(new Timestamp(321321321L), new EncryptedString("Berufsschule D�sseldorf", false), appointmentRequest);
 
@@ -144,7 +144,7 @@ public class CreatorVoteDTOTest {
 	@Test
 	public void mapToDomain_VoteDTOFull_mapped() {
 		CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title", "Description", new Date(123456789L),
-				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new AppointmentConfig(true, false, true, true, false, false), DecisionType.NUMBER));
+				IKS_NAME, IKS_MAIL, new AppointmentRequestConfig(new VoteOptionConfig(true, false, true, true, false, false), DecisionType.NUMBER));
 		dtoVote.setId(1);
 		
 		VoteOptionDTO option1 = new VoteOptionDTO(new Timestamp(123123123L), "iks Hilden");

@@ -1,6 +1,6 @@
 package de.iks.rataplan.dto;
 
-import de.iks.rataplan.domain.AppointmentConfig;
+import de.iks.rataplan.domain.VoteOptionConfig;
 import de.iks.rataplan.exceptions.MalformedException;
 
 import java.io.Serializable;
@@ -88,11 +88,11 @@ public class VoteOptionDTO implements Serializable {
 		this.url = url;
 	}
     
-    public void assertValid(AppointmentConfig appointmentConfig) {
-        if((startDate == null) == appointmentConfig.isStartDate() ||
-            (endDate == null) == (appointmentConfig.isEndDate() || appointmentConfig.isEndTime()) ||
-            (description == null || description.trim().isEmpty()) == appointmentConfig.isDescription() ||
-            (url == null || url.trim().isEmpty()) == appointmentConfig.isUrl()
+    public void assertValid(VoteOptionConfig voteOptionConfig) {
+        if((startDate == null) == voteOptionConfig.isStartDate() ||
+            (endDate == null) == (voteOptionConfig.isEndDate() || voteOptionConfig.isEndTime()) ||
+            (description == null || description.trim().isEmpty()) == voteOptionConfig.isDescription() ||
+            (url == null || url.trim().isEmpty()) == voteOptionConfig.isUrl()
         ) throw new MalformedException("Missing or invalid input fields");
     }
 }

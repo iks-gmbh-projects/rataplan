@@ -24,21 +24,21 @@ public class AppointmentRequestConfig {
 	private Integer version;
 	
 	private Integer id;
-	private AppointmentConfig appointmentConfig;
+	private VoteOptionConfig voteOptionConfig;
 	private DecisionType decisionType = DecisionType.DEFAULT;
 
 	public AppointmentRequestConfig() {
 		//Nothing to do here
 	}
 
-	public AppointmentRequestConfig(Integer id, AppointmentConfig appointmentConfig, DecisionType decisionType) {
+	public AppointmentRequestConfig(Integer id, VoteOptionConfig voteOptionConfig, DecisionType decisionType) {
 		this.id = id;
-		this.appointmentConfig = appointmentConfig;
+		this.voteOptionConfig = voteOptionConfig;
 		this.decisionType = decisionType;
 	}
 
-	public AppointmentRequestConfig(AppointmentConfig appointmentConfig, DecisionType decisionType) {
-		this.appointmentConfig = appointmentConfig;
+	public AppointmentRequestConfig(VoteOptionConfig voteOptionConfig, DecisionType decisionType) {
+		this.voteOptionConfig = voteOptionConfig;
 		this.decisionType = decisionType;
 	}
 	
@@ -78,12 +78,12 @@ public class AppointmentRequestConfig {
 	}
 	
 	@Embedded
-	public AppointmentConfig getAppointmentConfig() {
-		return appointmentConfig;
+	public VoteOptionConfig getAppointmentConfig() {
+		return voteOptionConfig;
 	}
 
-	public void setAppointmentConfig(AppointmentConfig appointmentConfig) {
-		this.appointmentConfig = appointmentConfig;
+	public void setAppointmentConfig(VoteOptionConfig voteOptionConfig) {
+		this.voteOptionConfig = voteOptionConfig;
 	}
 	
 	@Column(name = "decisionType")
@@ -99,7 +99,7 @@ public class AppointmentRequestConfig {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("AppointmentRequestConfig [appointmentType=");
-		builder.append(appointmentConfig);
+		builder.append(voteOptionConfig);
 		builder.append(", decisionType=");
 		builder.append(decisionType);
 		builder.append("]");
@@ -118,7 +118,7 @@ public class AppointmentRequestConfig {
 	}
 	
 	public void assertCreationValid() {
-		if(decisionType == null || appointmentConfig == null) throw new MalformedException("Missing input fields");
-		appointmentConfig.assertValid();
+		if(decisionType == null || voteOptionConfig == null) throw new MalformedException("Missing input fields");
+		voteOptionConfig.assertValid();
 	}
 }

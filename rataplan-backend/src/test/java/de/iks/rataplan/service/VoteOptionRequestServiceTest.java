@@ -156,7 +156,7 @@ public class VoteOptionRequestServiceTest {
 		AppointmentRequest oldAppointmentRequest = appointmentRequestService.getAppointmentRequestById(1);
 		
 		AppointmentRequestConfig appointmentRequestConfig = new AppointmentRequestConfig(
-				new AppointmentConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
+				new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
 		appointmentRequestConfig.setId(1);
 
 		AppointmentRequest appointmentRequest = new AppointmentRequest();

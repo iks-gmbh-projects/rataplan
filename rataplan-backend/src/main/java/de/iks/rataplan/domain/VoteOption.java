@@ -147,7 +147,7 @@ public class VoteOption implements Serializable {
         this.voteDecisions = decisionList;
     }
 	
-	public boolean validateAppointmentConfig(AppointmentConfig config) {
+	public boolean validateAppointmentConfig(VoteOptionConfig config) {
 		if ((config.isStartDate() || config.isStartTime()) == (this.startDate != null) &&
 				(config.isEndDate() || config.isEndTime()) == (this.endDate != null)) {
 			

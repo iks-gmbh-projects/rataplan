@@ -14,7 +14,7 @@ import javax.persistence.Embeddable;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AppointmentConfig {
+public class VoteOptionConfig {
 	private boolean startDate;
 	private boolean startTime;
 	private boolean endDate;
@@ -22,7 +22,7 @@ public class AppointmentConfig {
 	private boolean url;
 	private boolean description;
 	
-	public AppointmentConfig(boolean description, boolean url, boolean startDate, boolean startTime, boolean endDate, boolean endTime) {
+	public VoteOptionConfig(boolean description, boolean url, boolean startDate, boolean startTime, boolean endDate, boolean endTime) {
 		this.description = description;
 		this.url = url;
 		this.startDate = startDate;
