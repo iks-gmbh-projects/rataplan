@@ -1,9 +1,9 @@
 <dataset>
   <voteConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" adminPassword="$2a$10$n6HpNYztOjdoN7BjxOpqCOGB75M/sculHHHdSAf8q3Ldt.QRDN2he"/>
   
-  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" appointmentRequestConfigId="1" />
+  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" voteConfigId="1" />
 
-  <voteOption appointmentRequestId="1" description="iks Hilden" />
+  <voteOption voteId="1" description="iks Hilden" />
 
   <voteParticipant />
 

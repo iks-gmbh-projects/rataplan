@@ -1,18 +1,18 @@
 <dataset>
   <voteConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
   
-  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" appointmentRequestConfigId="1" />
+  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" voteConfigId="1" />
 
-  <voteOption id="1" appointmentRequestId="1" description="iks Hilden" />
-  <voteOption id="2" appointmentRequestId="1" description="homeoffice" />
+  <voteOption id="1" voteId="1" description="iks Hilden" />
+  <voteOption id="2" voteId="1" description="homeoffice" />
 
-  <voteParticipant id="1" appointmentRequestId="1" name="IKS" />
-  <voteParticipant id="2" appointmentRequestId="1" name="IKS-GMBH" />
+  <voteParticipant id="1" voteId="1" name="IKS" />
+  <voteParticipant id="2" voteId="1" name="IKS-GMBH" />
 
-  <voteDecision id="1" appointmentMemberId="1" appointmentId="1" decision="0" />
-  <voteDecision id="2" appointmentMemberId="1" appointmentId="2" decision="1" />
-  <voteDecision id="3" appointmentMemberId="2" appointmentId="1" decision="3" />
-  <voteDecision id="4" appointmentMemberId="2" appointmentId="2" decision="3" />
+  <voteDecision id="1" voteParticipantId="1" voteOptionId="1" decision="0" />
+  <voteDecision id="2" voteParticipantId="1" voteOptionId="2" decision="1" />
+  <voteDecision id="3" voteParticipantId="2" voteOptionId="1" decision="3" />
+  <voteDecision id="4" voteParticipantId="2" voteOptionId="2" decision="3" />
   
   <backendUserAccess />
 </dataset>

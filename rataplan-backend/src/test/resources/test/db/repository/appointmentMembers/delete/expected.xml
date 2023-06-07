@@ -1,15 +1,15 @@
 <dataset>
   <voteConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
   
-  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" appointmentRequestConfigId="1" isNotified="false" />
+  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" voteConfigId="1" isNotified="false" />
   
-  <voteOption id="1" description="iks Hilden" appointmentRequestId="1" />
-  <voteOption id="2" description="homeoffice" appointmentRequestId="1" />
+  <voteOption id="1" description="iks Hilden" voteId="1" />
+  <voteOption id="2" description="homeoffice" voteId="1" />
 
-  <voteParticipant id="2" appointmentRequestId="1" name="Fritz" />
+  <voteParticipant id="2" voteId="1" name="Fritz" />
   
-  <voteDecision appointmentId="1" appointmentMemberId="2" decision="0" />
-  <voteDecision appointmentId="2" appointmentMemberId="2" decision="0" />
+  <voteDecision voteOptionId="1" voteParticipantId="2" decision="0" />
+  <voteDecision voteOptionId="2" voteParticipantId="2" decision="0" />
   
   <backendUserAccess />
 </dataset>

@@ -2,18 +2,18 @@
   <voteConfig id="1" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" password="$2a$10$d7KcSMsnhOG1ZiXzbTy8quw2kKxrBsio3V8lWkm0tmAujv9PwPLsG" adminPassword="$2a$10$eCT.ISZ.WZ8Y7xSDOHUh2.r5RDUAM4p/oRo2xxJIBidK.2F6OiFJC" />
   <voteConfig id="2" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
   
-  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" appointmentRequestConfigId="1"/>
-  <vote id="2" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" appointmentRequestConfigId="2"/>
+  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" voteConfigId="1"/>
+  <vote id="2" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" voteConfigId="2"/>
 
-  <voteOption id="1" appointmentRequestId="1" description="iks Hilden" />
-  <voteOption id="2" appointmentRequestId="1" description="homeoffice" />
-  <voteOption id="3" appointmentRequestId="2" description="iks Hilden" />
-  <voteOption id="4" appointmentRequestId="2" description="homeoffice" />
+  <voteOption id="1" voteId="1" description="iks Hilden" />
+  <voteOption id="2" voteId="1" description="homeoffice" />
+  <voteOption id="3" voteId="2" description="iks Hilden" />
+  <voteOption id="4" voteId="2" description="homeoffice" />
 
-  <voteParticipant id="1" appointmentRequestId="1" name="iks" />
+  <voteParticipant id="1" voteId="1" name="iks" />
   
-  <voteDecision id="1" appointmentId="1" appointmentMemberId="1" decision="1" />
-  <voteDecision id="2" appointmentId="2" appointmentMemberId="1" decision="3" />
+  <voteDecision id="1" voteOptionId="1" voteParticipantId="1" decision="1" />
+  <voteDecision id="2" voteOptionId="2" voteParticipantId="1" decision="3" />
   
-  <backendUserAccess id="1" appointmentRequestId="1" isEdit="false" isInvited="false" userId="1" />
+  <backendUserAccess id="1" voteId="1" isEdit="false" isInvited="false" userId="1" />
 </dataset>
