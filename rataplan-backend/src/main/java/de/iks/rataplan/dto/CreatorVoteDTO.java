@@ -1,19 +1,22 @@
 package de.iks.rataplan.dto;
 
+import de.iks.rataplan.domain.VoteConfig;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
-import de.iks.rataplan.domain.VoteConfig;
-
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class CreatorVoteDTO extends VoteDTO implements Serializable {
 
     private static final long serialVersionUID = 8169186536220940206L;
 
     private String editToken;
-    
-    public CreatorVoteDTO() {
-    }
     
     public CreatorVoteDTO(
         Integer id,
@@ -48,13 +51,5 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         VoteConfig voteConfig
     ) {
         super(title, description, deadline, organizerName, organizerMail, voteConfig);
-    }
-
-    public String getEditToken() {
-        return editToken;
-    }
-
-    public void setEditToken(String editToken) {
-        this.editToken = editToken;
     }
 }

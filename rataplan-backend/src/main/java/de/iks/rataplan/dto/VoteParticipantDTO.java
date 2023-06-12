@@ -1,11 +1,15 @@
 package de.iks.rataplan.dto;
 
 import de.iks.rataplan.exceptions.MalformedException;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 public class VoteParticipantDTO implements Serializable {
 
     private static final long serialVersionUID = 359333166152845707L;
@@ -20,59 +24,6 @@ public class VoteParticipantDTO implements Serializable {
         this.name = name;
     }
 
-    public VoteParticipantDTO() {
-        //Nothing to do here
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getVoteId() {
-        return voteId;
-    }
-
-    public void setVoteId(Integer voteId) {
-        this.voteId = voteId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<VoteDecisionDTO> getDecisions() {
-        return decisions;
-    }
-
-    public void setDecisions(List<VoteDecisionDTO> decisions) {
-        this.decisions = decisions;
-    }
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("VoteParticipantDTO [decisions=");
-		builder.append(decisions);
-		builder.append("]");
-		return builder.toString();
-	}
-    
     public void assertAddValid() {
         if(voteId == null ||
             name == null || name.trim().isEmpty() ||

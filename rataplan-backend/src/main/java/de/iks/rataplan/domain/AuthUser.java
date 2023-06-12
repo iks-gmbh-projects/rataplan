@@ -1,5 +1,9 @@
 package de.iks.rataplan.domain;
 
+import lombok.*;
+
+@Data
+@NoArgsConstructor
 public class AuthUser {
 	
 	private Integer id;
@@ -43,47 +47,6 @@ public class AuthUser {
 //		this.lastName = frontendUser.getLastname();
 //    	this.trimUserCredentials();
 //    }
-    
-	public AuthUser() {
-    	// Required for Hibernate
-    }
-    
-    public Integer getId() {
-    	return id;
-    }
-    
-    public void setId(Integer id) {
-    	this.id = id;
-    }
-    
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-	
-	public String getUsername() {
-		return username;
-	}
-	
-	public void setUsername(String name) {
-		this.username = name;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getDisplayname() { return displayname; }
-
-	public void setDisplayname(String displayname) { this.displayname = displayname; }
-
 
 	public void trimUserCredentials() {
 		username = trimAndNull(username);
@@ -93,24 +56,11 @@ public class AuthUser {
 	public String trimAndNull(String toTrim) {
 		if (toTrim != null) {
 			toTrim = toTrim.trim();
-			if (toTrim == "") {
+			if (toTrim.equals("")) {
 				return null;
 			}
 		}
 		return toTrim;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("User [username=");
-		builder.append(username);
-		builder.append(", password=");
-		builder.append(password);
-		builder.append(", mail=");
-		builder.append(mail);
-		builder.append("]");
-		return builder.toString();
 	}
 	
 }

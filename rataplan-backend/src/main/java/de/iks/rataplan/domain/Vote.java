@@ -1,5 +1,15 @@
 package de.iks.rataplan.domain;
 
+import de.iks.rataplan.exceptions.MalformedException;
+import de.iks.rataplan.mapping.crypto.DBEncryptedStringConverter;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.Instant;
@@ -7,15 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.*;
-
-import de.iks.rataplan.exceptions.MalformedException;
-import de.iks.rataplan.mapping.crypto.DBEncryptedStringConverter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 @Entity
 @Table(name = "vote")
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class Vote implements Serializable {
 
 	private static final long serialVersionUID = 6229127764261785894L;
@@ -71,44 +78,11 @@ public class Vote implements Serializable {
 		this.organizerMail = organizerMail;
 		this.voteConfig = voteConfig;
 	}
-
-	public Vote() {
-		// required for Hibernate
-	}
-	
-	public Instant getCreationTime() {
-		return creationTime;
-	}
-	
-	public void setCreationTime(Instant creationTime) {
-		this.creationTime = creationTime;
-	}
-	
-	public Instant getLastUpdated() {
-		return lastUpdated;
-	}
-	
-	public void setLastUpdated(Instant lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
-
-	public Integer getVersion() {
-		return version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
-
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
 		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	@Column(name = "title")
@@ -117,27 +91,15 @@ public class Vote implements Serializable {
 		return title;
 	}
 
-	public void setTitle(EncryptedString title) {
-		this.title = title;
-	}
-
 	@Column(name = "description")
 	@Convert(converter = DBEncryptedStringConverter.class)
 	public EncryptedString getDescription() {
 		return description;
 	}
 
-	public void setDescription(EncryptedString description) {
-		this.description = description;
-	}
-
 	@Column(name = "deadline")
 	public Date getDeadline() {
 		return deadline;
-	}
-
-	public void setDeadline(Date deadline) {
-		this.deadline = deadline;
 	}
 
 	@Column(name = "organizerName")
@@ -146,27 +108,15 @@ public class Vote implements Serializable {
 		return organizerName;
 	}
 
-	public void setOrganizerName(EncryptedString organizerName) {
-		this.organizerName = organizerName;
-	}
-
 	@Column(name = "organizerMail")
 	@Convert(converter = DBEncryptedStringConverter.class)
 	public EncryptedString getOrganizerMail() {
 		return organizerMail;
 	}
 
-	public void setOrganizerMail(EncryptedString organizerMail) {
-		this.organizerMail = organizerMail;
-	}
-	
 	@Column(name = "userId")
 	public Integer getUserId() {
 		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vote", cascade = CascadeType.ALL)
@@ -174,36 +124,20 @@ public class Vote implements Serializable {
 		return options;
 	}
 
-	public void setOptions(List<VoteOption> voteOptions) {
-		this.options = voteOptions;
-	}
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vote", orphanRemoval = true, cascade = CascadeType.ALL)
 	public List<VoteParticipant> getParticipants() {
 		return participants;
 	}
 
-	public void setParticipants(List<VoteParticipant> voteParticipants) {
-		this.participants = voteParticipants;
-	}
-	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "voteConfigId")
 	public VoteConfig getVoteConfig() {
 		return voteConfig;
 	}
 	
-	public void setVoteConfig(VoteConfig voteConfig) {
-		this.voteConfig = voteConfig;
-	}
-
 	@Column(name = "isNotified")
 	public boolean isNotified() {
 		return isNotified;
-	}
-
-	public void setNotified(boolean isNotified) {
-		this.isNotified = isNotified;
 	}
 
 	@Column(name = "participationToken")
@@ -211,17 +145,9 @@ public class Vote implements Serializable {
 		return participationToken;
 	}
 
-	public void setParticipationToken(String participationToken) {
-		this.participationToken = participationToken;
-	}
-
 	@Column(name = "editToken")
 	public String getEditToken() {
 		return editToken;
-	}
-
-	public void setEditToken(String editToken) {
-		this.editToken = editToken;
 	}
 
 	public VoteParticipant getParticipantById(long id) {
@@ -247,17 +173,9 @@ public class Vote implements Serializable {
 		return consigneeList;
 	}
 
-	public void setConsigneeList(List<String> consigneeList) {
-		this.consigneeList = consigneeList;
-	}
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "voteId", cascade = CascadeType.ALL)
 	public List<BackendUserAccess> getAccessList() {
 		return accessList;
-	}
-
-	public void setAccessList(List<BackendUserAccess> accessList) {
-		this.accessList = accessList;
 	}
 
 	/**
@@ -311,31 +229,6 @@ public class Vote implements Serializable {
     		return;
     	}
     }
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Vote [\nid=");
-		builder.append(id);
-		builder.append(",\ntitle=");
-		builder.append(title);
-		builder.append(",\ndescription=");
-		builder.append(description);
-		builder.append(",\ndeadline=");
-		builder.append(deadline);
-		builder.append(",\norganizerName=");
-		builder.append(organizerName);
-		builder.append(",\norganizerMail=");
-		builder.append(organizerMail);
-		builder.append(",\nvoteConfig=\n");
-		builder.append(voteConfig);
-		builder.append(",\noptions=\n");
-		builder.append(options);
-		builder.append(",\nparticipants=\n");
-		builder.append(participants);
-		builder.append("\n]");
-		return builder.toString();
-	}
 	
 	// Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
 	@PrePersist

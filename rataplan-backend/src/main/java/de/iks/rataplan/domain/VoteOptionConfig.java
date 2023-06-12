@@ -1,19 +1,17 @@
 package de.iks.rataplan.domain;
 
 import de.iks.rataplan.exceptions.MalformedException;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-@EqualsAndHashCode
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class VoteOptionConfig {
 	private boolean startDate;
 	private boolean startTime;
