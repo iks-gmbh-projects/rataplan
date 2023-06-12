@@ -1,36 +1,32 @@
 package de.iks.rataplan.controller;
 
+import de.iks.rataplan.domain.AuthUser;
+import de.iks.rataplan.domain.BackendUserAccess;
+import de.iks.rataplan.domain.Vote;
+import de.iks.rataplan.dto.CreatorVoteDTO;
+import de.iks.rataplan.dto.VoteDTO;
+import de.iks.rataplan.exceptions.ForbiddenException;
+import de.iks.rataplan.exceptions.RequiresAuthorizationException;
+import de.iks.rataplan.restservice.AuthService;
+import de.iks.rataplan.service.VoteService;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.domain.Vote;
-import de.iks.rataplan.dto.VoteDTO;
-import de.iks.rataplan.restservice.AuthService;
-import de.iks.rataplan.domain.BackendUserAccess;
-import de.iks.rataplan.exceptions.RequiresAuthorizationException;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import de.iks.rataplan.dto.CreatorVoteDTO;
-import de.iks.rataplan.exceptions.ForbiddenException;
-import de.iks.rataplan.service.VoteService;
-
 @Service
+@RequiredArgsConstructor
 public class VoteControllerService {
+	private final VoteService voteService;
 
-	@Autowired
-	private VoteService voteService;
+	private final AuthService authService;
 
-	@Autowired
-	private AuthService authService;
-
-	@Autowired
-	private ModelMapper modelMapper;
+	private final ModelMapper modelMapper;
 	
     public CreatorVoteDTO createVote(CreatorVoteDTO creatorVoteDTO, String jwtToken) {
 		creatorVoteDTO.defaultNullValues();

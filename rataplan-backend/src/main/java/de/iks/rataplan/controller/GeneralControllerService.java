@@ -1,5 +1,6 @@
 package de.iks.rataplan.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,10 +9,9 @@ import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.service.MailService;
 
 @Service
+@RequiredArgsConstructor
 public class GeneralControllerService {
-
-	@Autowired
-	private MailService mailService;
+	private final MailService mailService;
 	
 	public void sendMailToContact(ContactData contactData) {
 		if (contactDataIsValid(contactData)) {

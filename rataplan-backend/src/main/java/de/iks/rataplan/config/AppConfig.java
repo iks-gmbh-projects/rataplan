@@ -1,19 +1,15 @@
 package de.iks.rataplan.config;
 
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
+import com.github.springtestdbunit.bean.DatabaseConfigBean;
+import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
+import com.google.gson.Gson;
+import de.iks.rataplan.mapping.DecisionConverter;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -29,24 +25,17 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import com.github.springtestdbunit.bean.DatabaseConfigBean;
-import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
-import com.google.gson.Gson;
-
-import de.iks.rataplan.mapping.DecisionConverter;
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @Profile({"dev", "prod", "test", "integration"})
 @Configuration
 @PropertySource({ "classpath:/application.properties" })
 @ComponentScan(basePackages = "de.iks.rataplan")
 @EnableTransactionManagement
+@RequiredArgsConstructor
 public class AppConfig {
-
-	@Autowired
-	private Environment environment;
-
-	@Autowired
-	private DecisionConverter decisionConverter;
+	private final Environment environment;
 
 	@Bean
 	public DataSource dataSource() {
@@ -100,7 +89,7 @@ public class AppConfig {
 	 * @return ModelMapper instance
 	 */
 	@Bean
-	public ModelMapper modelMapper(ToEncryptedStringConverter toEncryptedStringConverter, FromEncryptedStringConverter fromEncryptedStringConverter) {
+	public ModelMapper modelMapper(DecisionConverter decisionConverter, ToEncryptedStringConverter toEncryptedStringConverter, FromEncryptedStringConverter fromEncryptedStringConverter) {
 		ModelMapper mapper = new ModelMapper();
 		mapper.addConverter(decisionConverter.toDAO);
 		mapper.addConverter(decisionConverter.toDTO);

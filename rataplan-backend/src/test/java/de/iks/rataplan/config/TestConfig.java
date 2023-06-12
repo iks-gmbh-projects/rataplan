@@ -1,18 +1,11 @@
 package de.iks.rataplan.config;
 
-import java.util.Properties;
-import java.util.TimeZone;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-
 import de.iks.rataplan.mapping.DecisionConverter;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
 import de.iks.rataplan.service.MockCryptoService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
@@ -22,22 +15,25 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+import java.util.Properties;
+import java.util.TimeZone;
+
 @Profile("test")
 @PropertySource("classpath:/test.properties")
+@RequiredArgsConstructor
 public class TestConfig {
 
-	@Autowired
-	Environment environment;
-
-    @Autowired
-    private DecisionConverter decisionConverter;
+	private final Environment environment;
 
     private final MockCryptoService mockCryptoService = new MockCryptoService();
     private final FromEncryptedStringConverter fromEncryptedStringConverter = new FromEncryptedStringConverter(mockCryptoService);
     private final ToEncryptedStringConverter toEncryptedStringConverter = new ToEncryptedStringConverter(mockCryptoService);
 
     @Bean
-    public ModelMapper modelMapper() {
+    public ModelMapper modelMapper(DecisionConverter decisionConverter) {
         ModelMapper mapper = new ModelMapper();
         mapper.addConverter(decisionConverter.toDAO);
         mapper.addConverter(decisionConverter.toDTO);

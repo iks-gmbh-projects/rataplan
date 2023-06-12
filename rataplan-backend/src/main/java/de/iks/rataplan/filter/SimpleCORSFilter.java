@@ -15,11 +15,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SimpleCORSFilter implements Filter {
-
-    public SimpleCORSFilter() {
-        //Nothing to do here
-    }
-
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {

@@ -1,41 +1,31 @@
 package de.iks.rataplan.service;
 
-import java.util.List;
-
+import de.iks.rataplan.domain.ContactData;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.utils.MailBuilderSendInBlue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailPreparationException;
 import org.springframework.stereotype.Service;
-
-import de.iks.rataplan.domain.ContactData;
 import sendinblue.ApiException;
 import sibApi.TransactionalEmailsApi;
 import sibModel.SendSmtpEmail;
 
+import java.util.List;
+
 @Primary
 @Service
 @ConditionalOnBean(TransactionalEmailsApi.class)
+@RequiredArgsConstructor
+@Slf4j
 public class MailServiceImplSendInBlue implements MailService {
-    private static final Logger log = LoggerFactory.getLogger(MailServiceImplSendInBlue.class);
     private final MailBuilderSendInBlue mailBuilder;
     private final TransactionalEmailsApi transactionalEmailsApi;
 
     private final Environment environment;
-    
-    public MailServiceImplSendInBlue(
-        MailBuilderSendInBlue mailBuilder,
-        TransactionalEmailsApi transactionalEmailsApi,
-        Environment environment
-    ) {
-        this.mailBuilder = mailBuilder;
-        this.transactionalEmailsApi = transactionalEmailsApi;
-        this.environment = environment;
-    }
     
     @Override
     public void sendMailForVoteCreation(Vote vote) {
@@ -82,9 +72,5 @@ public class MailServiceImplSendInBlue implements MailService {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
             throw new MailPreparationException(ex);
         }
-    }
-
-    private boolean isInProdMode() {
-        return "true".equals(environment.getProperty("RATAPLAN.PROD"));
     }
 }

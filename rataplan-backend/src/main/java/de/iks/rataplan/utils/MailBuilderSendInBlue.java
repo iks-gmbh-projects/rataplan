@@ -1,22 +1,23 @@
 package de.iks.rataplan.utils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import de.iks.rataplan.domain.ContactData;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import de.iks.rataplan.domain.ContactData;
 import sibModel.SendSmtpEmail;
 import sibModel.SendSmtpEmailSender;
 import sibModel.SendSmtpEmailTo;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
+@RequiredArgsConstructor
 public class MailBuilderSendInBlue {
 
     /*
@@ -37,12 +38,6 @@ public class MailBuilderSendInBlue {
     private final TemplateEngine templateEngine;
 
     private final FromEncryptedStringConverter fromEncryptedStringConverter;
-
-    public MailBuilderSendInBlue(SendSmtpEmailSender sender, TemplateEngine templateEngine, FromEncryptedStringConverter fromEncryptedStringConverter) {
-        this.sender = sender;
-        this.templateEngine = templateEngine;
-        this.fromEncryptedStringConverter = fromEncryptedStringConverter;
-    }
     
     public List<SendSmtpEmail> buildMailListForVoteInvitations(Vote vote) {
         String participationToken = vote.getParticipationToken();

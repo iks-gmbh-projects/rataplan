@@ -1,24 +1,22 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.Vote;
+import de.iks.rataplan.repository.VoteRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
 
-import de.iks.rataplan.domain.Vote;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import de.iks.rataplan.repository.VoteRepository;
-
 @Component
+@RequiredArgsConstructor
 public class SchedulerService {
 
-    @Autowired
-    private VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
 
-    @Autowired
-    private MailService mailService;
+    private final MailService mailService;
 
 
     @Scheduled(cron = "0 1 0 ? * *")    // Jeden Tag um 0:01 Uhr
@@ -36,10 +34,5 @@ public class SchedulerService {
                 mailService.sendMailForVoteExpired(request);
             }
         }
-    }
-
-    @Scheduled(fixedRate = 20000)
-    public void deleteOldAuthToken() {
-        //authService
     }
 }

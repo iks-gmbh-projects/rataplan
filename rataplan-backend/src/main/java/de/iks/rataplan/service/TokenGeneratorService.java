@@ -2,16 +2,15 @@ package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.repository.VoteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class TokenGeneratorService {
-
-    @Autowired
-    private VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
 
     private final Random random = new Random();
 

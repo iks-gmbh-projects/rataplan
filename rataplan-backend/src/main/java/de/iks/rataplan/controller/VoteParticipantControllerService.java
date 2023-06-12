@@ -1,47 +1,35 @@
 package de.iks.rataplan.controller;
 
-import de.iks.rataplan.domain.VoteParticipant;
-import de.iks.rataplan.exceptions.RataplanException;
-import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
-import de.iks.rataplan.service.VoteService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.AuthUser;
+import de.iks.rataplan.domain.Vote;
+import de.iks.rataplan.domain.VoteParticipant;
 import de.iks.rataplan.dto.VoteParticipantDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
+import de.iks.rataplan.exceptions.RataplanException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
+import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.restservice.AuthService;
 import de.iks.rataplan.service.VoteParticipantService;
+import de.iks.rataplan.service.VoteService;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class VoteParticipantControllerService {
+	private final VoteService voteService;
 
-	@Autowired
-	private VoteService voteService;
+	private final VoteParticipantService voteParticipantService;
 
-	@Autowired
-	private VoteParticipantService voteParticipantService;
+	private final AuthService authService;
 
-	/*@Autowired
-	private AuthorizationControllerService authorizationControllerService;
-	*/
-	@Autowired
-	private AuthService authService;
-
-	/*@Autowired
-	private BackendUserService backendUserService;*/
+	private final ModelMapper modelMapper;
 	
-	@Autowired
-	private ModelMapper modelMapper;
-
-	@Autowired
-	private FromEncryptedStringConverter fromEncryptedStringConverter;
+	private final FromEncryptedStringConverter fromEncryptedStringConverter;
 
 	public VoteParticipantDTO createParticipant(VoteParticipantDTO voteParticipantDTO, String participationToken, String jwtToken) {
 

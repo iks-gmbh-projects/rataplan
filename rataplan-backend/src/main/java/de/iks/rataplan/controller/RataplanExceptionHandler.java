@@ -1,8 +1,11 @@
 package de.iks.rataplan.controller;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.gson.Gson;
+import de.iks.rataplan.domain.ErrorCode;
+import de.iks.rataplan.exceptions.Error;
+import de.iks.rataplan.exceptions.RataplanException;
+import de.iks.rataplan.utils.CookieBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,24 +14,16 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.google.gson.Gson;
-
-import de.iks.rataplan.domain.ErrorCode;
-import de.iks.rataplan.exceptions.Error;
-import de.iks.rataplan.exceptions.RataplanException;
-import de.iks.rataplan.utils.CookieBuilder;
+import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class RataplanExceptionHandler extends ResponseEntityExceptionHandler {
-	
-	@Autowired
-	private Gson gson;
+	private final Gson gson;
 
-	@Autowired
-	private HttpServletResponse servletResponse;
+	private final HttpServletResponse servletResponse;
 
-	@Autowired
-	private CookieBuilder cookieBuilder;
+	private final CookieBuilder cookieBuilder;
 	
 	@ExceptionHandler(RataplanException.class) 
 	public ResponseEntity<Error> rataplanException(RataplanException e) {

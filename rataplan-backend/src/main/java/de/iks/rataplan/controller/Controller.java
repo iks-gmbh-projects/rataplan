@@ -1,39 +1,36 @@
 package de.iks.rataplan.controller;
 
-import java.util.List;
-
-import de.iks.rataplan.domain.*;
-import de.iks.rataplan.dto.VoteDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import de.iks.rataplan.dto.VoteParticipantDTO;
+import de.iks.rataplan.domain.ContactData;
 import de.iks.rataplan.dto.CreatorVoteDTO;
+import de.iks.rataplan.dto.VoteDTO;
+import de.iks.rataplan.dto.VoteParticipantDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.exceptions.ServiceNotAvailableException;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
+@RequiredArgsConstructor
 public class Controller {
 
     private static final String JWT_COOKIE_NAME = "jwttoken";
     private static final String ACCESS_TOKEN = "accesstoken";
 
-    @Autowired
-    private VoteControllerService voteControllerService;
+    private final VoteControllerService voteControllerService;
 
-    @Autowired
-    private VoteParticipantControllerService voteParticipantControllerService;
+    private final VoteParticipantControllerService voteParticipantControllerService;
 
-    @Autowired
-    private GeneralControllerService generalControllerService;
+    private final GeneralControllerService generalControllerService;
 
     @ApiResponses({@ApiResponse(code = 200, message = "OK")})
     @RequestMapping(value = "/*", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

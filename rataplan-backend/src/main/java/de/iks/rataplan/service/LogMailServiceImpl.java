@@ -1,17 +1,16 @@
 package de.iks.rataplan.service;
 
-import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.ContactData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.iks.rataplan.domain.Vote;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @Service
 @ConditionalOnProperty(value = "RATAPLAN.PROD", havingValue = "false", matchIfMissing = true)
+@Slf4j
 public class LogMailServiceImpl implements MailService {
-    private static final Logger log = LoggerFactory.getLogger(LogMailServiceImpl.class);
     @Value("${rataplan.frontend.url}")
     private String baseUrl;
     

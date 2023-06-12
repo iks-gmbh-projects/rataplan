@@ -3,11 +3,11 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.*;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
+import de.iks.rataplan.repository.BackendUserAccessRepository;
 import de.iks.rataplan.repository.VoteDecisionRepository;
 import de.iks.rataplan.repository.VoteOptionRepository;
 import de.iks.rataplan.repository.VoteRepository;
-import de.iks.rataplan.repository.BackendUserAccessRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,25 +18,19 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
-
-	@Autowired
-	private VoteDecisionRepository voteDecisionRepository;
+	private final VoteDecisionRepository voteDecisionRepository;
 	
-	@Autowired
-	private VoteRepository voteRepository;
+	private final VoteRepository voteRepository;
 
-	@Autowired
-	private VoteOptionRepository voteOptionRepository;
+	private final VoteOptionRepository voteOptionRepository;
 	
-	@Autowired
-	private BackendUserAccessRepository backendUserAccessRepository;
+	private final BackendUserAccessRepository backendUserAccessRepository;
 
-	@Autowired
-	private MailService mailService;
+	private final MailService mailService;
 
-    @Autowired
-    private TokenGeneratorService tokenGeneratorService;
+    private final TokenGeneratorService tokenGeneratorService;
 
     @Override
     public Vote createVote(Vote vote) {

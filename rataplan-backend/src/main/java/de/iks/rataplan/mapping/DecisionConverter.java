@@ -1,23 +1,21 @@
 package de.iks.rataplan.mapping;
 
-import de.iks.rataplan.domain.VoteDecision;
-import org.modelmapper.AbstractConverter;
-import org.modelmapper.Converter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.domain.Decision;
+import de.iks.rataplan.domain.VoteDecision;
+import de.iks.rataplan.domain.VoteOption;
 import de.iks.rataplan.dto.VoteDecisionDTO;
 import de.iks.rataplan.repository.VoteOptionRepository;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.AbstractConverter;
+import org.modelmapper.Converter;
+import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class DecisionConverter {
+	private final VoteOptionRepository voteOptionRepository;
 
-	@Autowired
-	private VoteOptionRepository voteOptionRepository;
-
-	public Converter<VoteDecision, VoteDecisionDTO> toDTO = new AbstractConverter<VoteDecision, VoteDecisionDTO>() {
-
+	public final Converter<VoteDecision, VoteDecisionDTO> toDTO = new AbstractConverter<VoteDecision, VoteDecisionDTO>() {
 		@Override
 		protected VoteDecisionDTO convert(VoteDecision voteDecision) {
 			VoteDecisionDTO dtoDecision = new VoteDecisionDTO();
@@ -33,8 +31,7 @@ public class DecisionConverter {
 		}
 	};
 
-	public Converter<VoteDecisionDTO, VoteDecision> toDAO = new AbstractConverter<VoteDecisionDTO, VoteDecision>() {
-
+	public final Converter<VoteDecisionDTO, VoteDecision> toDAO = new AbstractConverter<VoteDecisionDTO, VoteDecision>() {
 		@Override
 		protected VoteDecision convert(VoteDecisionDTO dtoDecision) {
 			VoteDecision decision = new VoteDecision();

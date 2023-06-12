@@ -1,30 +1,27 @@
 package de.iks.rataplan.service;
 
-import java.util.List;
-import java.util.Objects;
-
-import javax.transaction.Transactional;
-
+import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteDecision;
 import de.iks.rataplan.domain.VoteParticipant;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.repository.VoteParticipantRepository;
 import de.iks.rataplan.repository.VoteRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class VoteParticipantServiceImpl implements VoteParticipantService {
 
-    @Autowired
-    private VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
 
-    @Autowired
-    private VoteParticipantRepository voteParticipantRepository;
+    private final VoteParticipantRepository voteParticipantRepository;
 
     @Override
     public VoteParticipant createParticipant(Vote vote, VoteParticipant voteParticipant) {

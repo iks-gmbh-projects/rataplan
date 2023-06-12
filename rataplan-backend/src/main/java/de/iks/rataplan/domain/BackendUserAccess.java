@@ -1,5 +1,8 @@
 package de.iks.rataplan.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -8,6 +11,9 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "backendUserAccess")
+@NoArgsConstructor
+@Getter
+@Setter
 public class BackendUserAccess {
     
     @CreationTimestamp
@@ -31,34 +37,6 @@ public class BackendUserAccess {
         this.isInvited = isInvited;
     }
     
-    public BackendUserAccess() {
-        // Nothing to do here
-    }
-    
-    public Instant getCreationTime() {
-        return creationTime;
-    }
-    
-    public void setCreationTime(Instant creationTime) {
-        this.creationTime = creationTime;
-    }
-    
-    public Instant getLastUpdated() {
-        return lastUpdated;
-    }
-    
-    public void setLastUpdated(Instant lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-    
-    public Integer getVersion() {
-        return version;
-    }
-    
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-    
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -66,17 +44,9 @@ public class BackendUserAccess {
         return id;
     }
     
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    
     @Column(name = "voteId", nullable = false)
     public Integer getVoteId() {
         return voteId;
-    }
-    
-    public void setVoteId(Integer requestId) {
-        this.voteId = requestId;
     }
     
     @Column(name = "userId")
@@ -84,26 +54,14 @@ public class BackendUserAccess {
         return userId;
     }
     
-    public void setUserId(Integer backendUserId) {
-        this.userId = backendUserId;
-    }
-    
     @Column(name = "isEdit")
     public boolean isEdit() {
         return isEdit;
     }
     
-    public void setEdit(boolean isEdit) {
-        this.isEdit = isEdit;
-    }
-    
     @Column(name = "isInvited")
     public boolean isInvited() {
         return isInvited;
-    }
-    
-    public void setInvited(boolean isInvited) {
-        this.isInvited = isInvited;
     }
     
     // Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.

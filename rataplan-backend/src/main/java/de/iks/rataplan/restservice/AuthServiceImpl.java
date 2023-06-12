@@ -18,7 +18,7 @@ public class AuthServiceImpl implements AuthService {
     private String authUrl;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate; // moving this to constructor injection breaks the mocks in AuthServiceTest somehow
 
     public ResponseEntity<AuthUser> getUserData(String token) {
         String url = authUrl + "/users/profile";
