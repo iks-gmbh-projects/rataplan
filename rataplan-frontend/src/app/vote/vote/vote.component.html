@@ -1,0 +1,157 @@
+<div class='wrapper'>
+  <h2 *ngIf='isPreview'>Vorschau</h2>
+  <mat-card>
+    <mat-card-title>{{ vote?.title }}</mat-card-title>
+    <mat-card-content>
+      <p></p>
+      <p>{{ vote?.description }}</p>
+    </mat-card-content>
+    <mat-card-subtitle>
+      Abstimmung aktiv bis: {{ vote?.deadline | date:'dd MMMM yyyy':'+0200':'de' }}
+    </mat-card-subtitle>
+    <mat-card-subtitle *ngIf='deadlineService.hasDeadlinePassed()'>
+      <span class='mat-error'>Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
+    </mat-card-subtitle>
+    <div *ngIf='vote?.organizerName'>
+      <span>Erstellt von {{ vote!.organizerName }}</span>
+    </div>
+  </mat-card>
+  <div style='margin-top: 20px; margin-bottom: 20px'>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Teilnehmer : {{ vote?.participants?.length }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-list *ngFor='let participant of (this.vote?.participants || [])'>
+        <mat-list-item class='member'>
+          <div class='icon-name'>
+            <mat-icon *ngIf='participant.userId' class='user-icon'>person</mat-icon>
+            {{ participant.name }}
+          </div>
+          <div *ngIf='!deadlineService.hasDeadlinePassed() && (!participant.userId || participant.userId === currentUser?.id)' class='member-button'>
+            <button mat-icon-button
+                    [disabled]='isPreview'
+                    (click)='isPreview || editMember(participant)'>
+              <mat-icon mat-list-icon>edit_square</mat-icon>
+            </button>
+            <button mat-icon-button
+                    [disabled]='isPreview'
+                    (click)='isPreview || deleteMember(participant)'>
+              <mat-icon mat-list-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+  </div>
+  <div *ngIf='!deadlineService.hasDeadlinePassed()'>
+    <mat-form-field appearance='fill'>
+      <mat-label>Name</mat-label>
+      <input [(ngModel)]='voteParticipant.name'
+             required
+             someNonWhitespace
+             matInput
+             [disabled]='isPreview || !!currentUser'
+             autocomplete='off'
+             #nameField='ngModel'>
+      <mat-error>{{errorMessageService.genericFormError(nameField.control)}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <span>Keine Eingaben werden als nicht Entschieden gespeichert</span>
+  </div>
+  <mat-list>
+    <mat-list-item *ngFor='let option of (vote?.options || []); let voteIndex=index'>
+      <div mat-line
+           style='font-size: 90%'>
+        {{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}
+        <ng-template [ngIf]='option.endDate'>
+          {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
+        </ng-template>
+        {{option.description || ''}}
+        <a *ngIf='option.url'
+           [href]='option.url'>Link</a>
+      </div>
+      <button mat-icon-button
+              (click)='openDialog(option)'>
+        <mat-icon>info</mat-icon>
+      </button>
+      <mat-form-field *ngIf='vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex'
+                      appearance='fill'>
+        <mat-label>Teilnehmerzahl</mat-label>
+        <input type='text'
+               inputmode='numeric'
+               min='0'
+               required
+               integer
+               matInput
+               [ngModel]='voteParticipant!.decisions[voteIndex]?.participants'
+               (ngModelChange)='setParticipantNumber(option, $event)'
+               mat-line
+               [disabled]='isPreview'
+               #participantField='ngModel'>
+        <mat-error mat-line>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
+      </mat-form-field>
+      <ng-template #decisionComplex>
+        <mat-button-toggle-group style='scale: 90%'>
+          <mat-button-toggle (click)='isPreview || setDecision(option, 1)'
+                             [checked]='checkVoteOfMember(option, 1)'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
+                             matTooltip='Ja'
+                             matTooltipPosition='above'>
+            <mat-icon>done</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle *ngIf='vote?.voteConfig?.decisionType === DecisionType.EXTENDED'
+                             (click)='isPreview || setDecision(option, 2)'
+                             [checked]='checkVoteOfMember(option, 2)'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
+                             matTooltip='Vielleicht'
+                             matTooltipPosition='above'>
+            <mat-icon>question_mark</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle (click)='isPreview || setDecision(option, 3)'
+                             [checked]='checkVoteOfMember(option, 3)'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
+                             matTooltip='Nein'
+                             matTooltipPosition='above'>
+            <mat-icon>close</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle (click)='isPreview || setDecision(option, 0)'
+                             [checked]='checkVoteOfMember(option, 0)'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
+                             matTooltip='Keine Antwort'
+                             matTooltipPosition='above'>
+            <mat-icon></mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </ng-template>
+    </mat-list-item>
+  </mat-list>
+  <div *ngIf='!isPreview; else previewButtons'>
+    <button *ngIf='!deadlineService.hasDeadlinePassed()'
+            class='vote-button'
+            type='submit'
+            color='primary'
+            mat-raised-button
+            (click)='saveVote()'>{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
+    </button>
+  </div>
+  <ng-template #previewButtons>
+    <div class='fill-width'>
+      <a class='back-button'
+         mat-raised-button
+         routerLink="../email">
+        Zurück
+      </a>
+      <a class='vote-button'
+         type='submit'
+         color='primary'
+         mat-raised-button
+         [disabled]='busy'
+         (click)='acceptPreview()'>
+        Fertig
+      </a>
+    </div>
+  </ng-template>
+</div>

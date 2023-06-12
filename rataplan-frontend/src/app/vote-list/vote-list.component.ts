@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 
-import { AppointmentRequestModel } from '../models/appointment-request.model';
+import { VoteModel } from '../models/vote.model';
 import { VoteListService } from '../services/dashboard-service/vote-list.service';
 
 @Component({
@@ -11,8 +11,8 @@ import { VoteListService } from '../services/dashboard-service/vote-list.service
 })
 export class VoteListComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
-  createdVotes: AppointmentRequestModel[] = [];
-  participatedVotes: AppointmentRequestModel[] = [];
+  createdVotes: VoteModel[] = [];
+  participatedVotes: VoteModel[] = [];
 
   constructor(private voteListService: VoteListService) { }
 

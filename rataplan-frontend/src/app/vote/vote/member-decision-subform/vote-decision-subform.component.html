@@ -1,0 +1,67 @@
+<div>
+  <h3 mat-dialog-title>{{ data.vote.startDate | date:'dd. MMMM yyyy':'+0200':'de' }}</h3>
+  <mat-selection-list [multiple]='false'>
+    <ng-template [ngIf]='data.decisionType === DecisionType.NUMBER' [ngIfElse]='complexDecision'>
+      <mat-list-option mat-line (click)='clicked = VoteOptionDecisionType.ACCEPT'>
+        <span>Teilnehmer</span><span>{{countDecision()}}</span>
+      </mat-list-option>
+      <div>
+        <ng-template [ngIf]='clicked === VoteOptionDecisionType.ACCEPT'>
+          <p style='text-align: center'
+             *ngFor='let member of checkMembers(data.voteParticipants)'>
+            {{ member }}
+          </p>
+        </ng-template>
+      </div>
+    </ng-template>
+    <ng-template #complexDecision>
+      <mat-list-option (click)='clicked = VoteOptionDecisionType.ACCEPT'>
+        <mat-icon mat-list-icon
+                  [matBadge]='countDecision(VoteOptionDecisionType.ACCEPT)'
+                  matBadgeColor='primary'>done
+        </mat-icon>
+        <div mat-line>Ja</div>
+      </mat-list-option>
+      <div>
+        <ng-template [ngIf]='clicked === VoteOptionDecisionType.ACCEPT'>
+          <p style='text-align: center'
+             *ngFor='let member of checkMembers(data.voteParticipants, VoteOptionDecisionType.ACCEPT)'>
+            {{ member }}
+          </p>
+        </ng-template>
+      </div>
+      <ng-template [ngIf]="data.decisionType === DecisionType.EXTENDED">
+        <mat-list-option (click)='clicked = VoteOptionDecisionType.ACCEPT_IF_NECESSARY'>
+          <mat-icon mat-list-icon
+                    [matBadge]='countDecision(VoteOptionDecisionType.ACCEPT_IF_NECESSARY)'
+                    matBadgeColor='primary'>question_mark
+          </mat-icon>
+          <div mat-line>Vielleicht</div>
+        </mat-list-option>
+        <div>
+          <ng-template [ngIf]='clicked === VoteOptionDecisionType.ACCEPT_IF_NECESSARY'>
+            <p style='text-align: center'
+               *ngFor='let member of checkMembers(data.voteParticipants, VoteOptionDecisionType.ACCEPT_IF_NECESSARY)'>
+              {{ member }}
+            </p>
+          </ng-template>
+        </div>
+      </ng-template>
+      <mat-list-option (click)='clicked = VoteOptionDecisionType.DECLINE'>
+        <mat-icon mat-list-icon
+                  [matBadge]='countDecision(VoteOptionDecisionType.DECLINE)'
+                  matBadgeColor='primary'>close
+        </mat-icon>
+        <div mat-line>Nein</div>
+      </mat-list-option>
+      <div>
+        <ng-template [ngIf]='clicked === VoteOptionDecisionType.DECLINE'>
+          <p style='text-align: center'
+             *ngFor='let member of checkMembers(data.voteParticipants, VoteOptionDecisionType.DECLINE)'>
+            {{ member }}
+          </p>
+        </ng-template>
+      </div>
+    </ng-template>
+  </mat-selection-list>
+</div>

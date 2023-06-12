@@ -36,17 +36,9 @@ import { appEffects } from './app.effects';
 import { appReducers } from './app.reducers';
 import { AppCommonModule } from './app-common.module';
 import { AppRoutingModule } from './app-routing.module';
-import { AppointmentComponent } from './appointment/appointment/appointment.component';
-import { MemberDecisionSubformComponent } from './appointment/appointment/member-decision-subform/member-decision-subform.component';
-import { AppointmentRequestFormComponent, } from './appointment/appointment-request-form/appointment-request-form.component';
-import { ConfigSubformComponent } from './appointment/appointment-request-form/config-subform/config-subform.component';
-import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
-import { EmailSubformComponent } from './appointment/appointment-request-form/email-subform/email-subform.component';
-import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
-import { LinkSubformComponent } from './appointment/appointment-request-form/link-subform/link-subform.component';
-import { OverviewSubformComponent } from './appointment/appointment-request-form/overview-subform/overview-subform.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
@@ -55,10 +47,18 @@ import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { LoginComponent } from './login/login.component';
 import { MainNavComponent } from './main-nav/main-nav.component';
-import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { VoteDecisionSubformComponent } from './vote/vote/member-decision-subform/vote-decision-subform.component';
+import { VoteComponent } from './vote/vote/vote.component';
+import { ConfigSubformComponent } from './vote/vote-form/config-subform/config-subform.component';
+import { DatepickerSubformComponent } from './vote/vote-form/datepicker-subform/datepicker-subform.component';
+import { EmailSubformComponent } from './vote/vote-form/email-subform/email-subform.component';
+import { GeneralSubformComponent } from './vote/vote-form/general-subform/general-subform.component';
+import { LinkSubformComponent } from './vote/vote-form/link-subform/link-subform.component';
+import { OverviewSubformComponent } from './vote/vote-form/overview-subform/overview-subform.component';
+import { VoteFormComponent } from './vote/vote-form/vote-form.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
 
 registerLocaleData(localeDE);
@@ -78,14 +78,14 @@ registerLocaleData(localeDE);
     ResetPasswordComponent,
     RegisterComponent,
     MainNavComponent,
-    AppointmentRequestFormComponent,
+    VoteFormComponent,
     GeneralSubformComponent,
     DatepickerSubformComponent,
     EmailSubformComponent,
     LinkSubformComponent,
     EditProfileComponent,
-    AppointmentComponent,
-    MemberDecisionSubformComponent,
+    VoteComponent,
+    VoteDecisionSubformComponent,
     ChangePasswordComponent,
     ConfigSubformComponent,
     OverviewSubformComponent,

@@ -1,0 +1,35 @@
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { catchError, EMPTY, filter, map, Observable, take, timeout } from 'rxjs';
+
+import { appState } from '../../../app.reducers';
+import { VoteModel } from '../../../models/vote.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class VotePreviewResolver implements Resolve<VoteModel> {
+
+  constructor(
+    private router: Router,
+    private store: Store<appState>,
+  ) {
+  }
+
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<VoteModel> {
+    return this.store.select('vote')
+      .pipe(
+        filter(state => state.complete!),
+        map(state => state.vote!),
+        take(1),
+        timeout(100),
+        catchError(() => {
+          const editToken = route.parent!.params['id'];
+          if(editToken) this.router.navigate(['/vote/edit', editToken]);
+          else this.router.navigate(['/create-vote']);
+          return EMPTY;
+        }),
+      );
+  }
+}

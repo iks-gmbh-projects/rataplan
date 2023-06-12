@@ -1,6 +1,7 @@
 import { Directive, Input } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
-import { combineDateTime } from '../appointment/appointment-request-form/appointment-request-form.service';
+
+import { combineDateTime } from '../vote/vote-form/vote-form.service';
 
 @Directive({
   selector: '[combinedDatetimeMin]',

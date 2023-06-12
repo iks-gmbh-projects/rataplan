@@ -1,17 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AppointmentComponent } from './appointment/appointment/appointment.component';
-import { AppointmentRequestFormComponent } from './appointment/appointment-request-form/appointment-request-form.component';
-import { ConfigSubformComponent } from './appointment/appointment-request-form/config-subform/config-subform.component';
-import { DatepickerSubformComponent } from './appointment/appointment-request-form/datepicker-subform/datepicker-subform.component';
-import { EmailSubformComponent } from './appointment/appointment-request-form/email-subform/email-subform.component';
-import { GeneralSubformComponent } from './appointment/appointment-request-form/general-subform/general-subform.component';
-import { LinkSubformComponent } from './appointment/appointment-request-form/link-subform/link-subform.component';
-import { OverviewSubformComponent } from './appointment/appointment-request-form/overview-subform/overview-subform.component';
-import { AppointmentRequestAuthGuard } from './appointment/auth-guard/appointment-request-auth-guard.service';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
@@ -19,15 +11,23 @@ import { ContactComponent } from './legals/contact/contact.component';
 import { ImprintComponent } from './legals/imprint/imprint.component';
 import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { LoginComponent } from './login/login.component';
-import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { VoteAuthGuard } from './vote/auth-guard/vote-auth-guard.service';
+import { VoteResolver } from './vote/vote/resolver/vote.resolver';
+import { VotePreviewResolver } from './vote/vote/resolver/vote-preview.resolver';
+import { VoteComponent } from './vote/vote/vote.component';
+import { ConfigSubformComponent } from './vote/vote-form/config-subform/config-subform.component';
+import { DatepickerSubformComponent } from './vote/vote-form/datepicker-subform/datepicker-subform.component';
+import { EmailSubformComponent } from './vote/vote-form/email-subform/email-subform.component';
+import { GeneralSubformComponent } from './vote/vote-form/general-subform/general-subform.component';
+import { LinkSubformComponent } from './vote/vote-form/link-subform/link-subform.component';
+import { OverviewSubformComponent } from './vote/vote-form/overview-subform/overview-subform.component';
+import { VoteFormComponent } from './vote/vote-form/vote-form.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
-import { AppointmentRequestResolver } from './appointment/appointment/resolver/appointment-request.resolver';
-import { AppointmentRequestPreviewResolver } from './appointment/appointment/resolver/appointment-request-preview.resolver';
 
 // function matcherFunction(url: UrlSegment[]) {
 //
@@ -46,21 +46,21 @@ import { AppointmentRequestPreviewResolver } from './appointment/appointment/res
 const routes: Routes = [
   { path: '', component: HomepageComponent },
   {
-    // matcher: matcherFunction,  component: AppointmentRequestFormComponent,
-    path: 'create-vote', component: AppointmentRequestFormComponent,
+    // matcher: matcherFunction,  component: VoteFormComponent,
+    path: 'create-vote', component: VoteFormComponent,
     children: [
       { path: '', redirectTo: 'general', pathMatch: 'full' },
       { path: 'general', component: GeneralSubformComponent },
-      { path: 'datepicker', component: DatepickerSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
-      { path: 'configurationOptions', component: ConfigSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
-      { path: 'configuration', component: OverviewSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
-      { path: 'email', component: EmailSubformComponent, canActivate: [AppointmentRequestAuthGuard] },
+      { path: 'datepicker', component: DatepickerSubformComponent, canActivate: [VoteAuthGuard] },
+      { path: 'configurationOptions', component: ConfigSubformComponent, canActivate: [VoteAuthGuard] },
+      { path: 'configuration', component: OverviewSubformComponent, canActivate: [VoteAuthGuard] },
+      { path: 'email', component: EmailSubformComponent, canActivate: [VoteAuthGuard] },
       {
         path: 'preview',
         data: { isPreview: true },
-        resolve: { appointmentRequest: AppointmentRequestPreviewResolver },
-        component: AppointmentComponent,
-        canActivate: [AppointmentRequestAuthGuard],
+        resolve: { vote: VotePreviewResolver },
+        component: VoteComponent,
+        canActivate: [VoteAuthGuard],
       },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],
@@ -70,11 +70,11 @@ const routes: Routes = [
   {
     path: 'vote/:id',
     data: { isPreview: false },
-    resolve: { appointmentRequest: AppointmentRequestResolver },
-    component: AppointmentComponent,
+    resolve: { vote: VoteResolver },
+    component: VoteComponent,
   },
   {
-    path: 'vote/edit/:id', component: AppointmentRequestFormComponent,
+    path: 'vote/edit/:id', component: VoteFormComponent,
     children: [
       { path: '', redirectTo: 'general', pathMatch: 'full' },
       { path: 'general', component: GeneralSubformComponent },
@@ -85,8 +85,8 @@ const routes: Routes = [
       {
         path: 'preview',
         data: { isPreview: true },
-        resolve: { appointmentRequest: AppointmentRequestPreviewResolver },
-        component: AppointmentComponent,
+        resolve: { vote: VotePreviewResolver },
+        component: VoteComponent,
       },
       { path: '**', redirectTo: 'general', pathMatch: 'full' },
     ],

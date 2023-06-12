@@ -1,4 +1,4 @@
 import { AuthEffects } from "./authentication/auth.effects";
-import { AppointmentRequestEffects } from "./appointment/appointment.effects";
+import { VoteEffects } from "./vote/vote.effects";
 
-export const appEffects = [AuthEffects, AppointmentRequestEffects];
+export const appEffects = [AuthEffects, VoteEffects];
