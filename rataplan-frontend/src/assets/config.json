@@ -1,5 +1,5 @@
 {
   "authBackend": "http://localhost:8081/v1/",
-  "voteBackend": "http://localhost:8082/v1/",
-  "surveyBackend": "http://localhost:8083/"
+  "voteBackend": "http://localhost:8080/v1/",
+  "surveyBackend": "http://localhost:8082/"
 }
