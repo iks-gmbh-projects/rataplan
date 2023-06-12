@@ -12,7 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,12 +27,8 @@ public class Vote implements Serializable {
 
 	private static final long serialVersionUID = 6229127764261785894L;
 
-	@CreationTimestamp
-	@Column(updatable = false)
-	private Instant creationTime;
-	@UpdateTimestamp
-	private Instant lastUpdated;
-	@Version
+	private Timestamp creationTime;
+	private Timestamp lastUpdated;
 	private Integer version;
 
 	private Integer id;
@@ -78,6 +74,23 @@ public class Vote implements Serializable {
 		this.organizerMail = organizerMail;
 		this.voteConfig = voteConfig;
 	}
+	
+	@CreationTimestamp
+	@Column(updatable = false)
+	public Timestamp getCreationTime() {
+		return creationTime;
+	}
+	
+	@UpdateTimestamp
+	public Timestamp getLastUpdated() {
+		return lastUpdated;
+	}
+
+	@Version
+	public Integer getVersion() {
+		return version;
+	}
+
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -229,15 +242,4 @@ public class Vote implements Serializable {
     		return;
     	}
     }
-	
-	// Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
-	@PrePersist
-	@PreUpdate
-	public void hibernateStupidity() {
-		final Instant now = Instant.now();
-		if(this.creationTime == null) this.creationTime = now;
-		this.lastUpdated = now;
-		if(this.version == null) this.version = 1;
-		else this.version++;
-	}
 }

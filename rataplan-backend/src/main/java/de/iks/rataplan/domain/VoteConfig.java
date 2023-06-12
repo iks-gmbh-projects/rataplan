@@ -10,7 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "voteConfig")
@@ -19,14 +19,10 @@ import java.time.Instant;
 @Setter
 @ToString
 public class VoteConfig {
-	@CreationTimestamp
-	@Column(updatable = false)
 	@JsonIgnore
-	private Instant creationTime;
-	@UpdateTimestamp
+	private Timestamp creationTime;
 	@JsonIgnore
-	private Instant lastUpdated;
-	@Version
+	private Timestamp lastUpdated;
 	@JsonIgnore
 	private Integer version;
 	
@@ -45,6 +41,22 @@ public class VoteConfig {
 		this.decisionType = decisionType;
 	}
 	
+	@CreationTimestamp
+	@Column(updatable = false)
+	public Timestamp getCreationTime() {
+		return creationTime;
+	}
+	
+	@UpdateTimestamp
+	public Timestamp getLastUpdated() {
+		return lastUpdated;
+	}
+	
+	@Version
+	public Integer getVersion() {
+		return version;
+	}
+	
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,17 +72,6 @@ public class VoteConfig {
 	@Column(name = "decisionType")
 	public DecisionType getDecisionType() {
 		return decisionType;
-	}
-	
-	// Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
-	@PrePersist
-	@PreUpdate
-	public void hibernateStupidity() {
-		final Instant now = Instant.now();
-		if(this.creationTime == null) this.creationTime = now;
-		this.lastUpdated = now;
-		if(this.version == null) this.version = 1;
-		else this.version++;
 	}
 	
 	public void assertCreationValid() {

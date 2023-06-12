@@ -9,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Instant;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "voteDecision")
@@ -26,12 +26,8 @@ public class VoteDecision implements Serializable {
 
     private static final long serialVersionUID = 6111550357472865287L;
     
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Instant creationTime;
-    @UpdateTimestamp
-    private Instant lastUpdated;
-    @Version
+    private Timestamp creationTime;
+    private Timestamp lastUpdated;
     private Integer version;
     
     private VoteDecisionId voteDecisionId = new VoteDecisionId();
@@ -54,6 +50,22 @@ public class VoteDecision implements Serializable {
         this.participants = participants;
         this.voteDecisionId.setVoteOption(voteOption);
         this.voteDecisionId.setVoteParticipant(voteParticipant);
+    }
+    
+    @CreationTimestamp
+    @Column(updatable = false)
+    public Timestamp getCreationTime() {
+        return creationTime;
+    }
+    
+    @UpdateTimestamp
+    public Timestamp getLastUpdated() {
+        return lastUpdated;
+    }
+    
+    @Version
+    public Integer getVersion() {
+        return version;
     }
 
     @EmbeddedId
@@ -87,17 +99,6 @@ public class VoteDecision implements Serializable {
     @Column(name = "decision")
     public Decision getDecision() {
     	return decision;
-    }
-    
-    // Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
-    @PrePersist
-    @PreUpdate
-    public void hibernateStupidity() {
-        final Instant now = Instant.now();
-        if(this.creationTime == null) this.creationTime = now;
-        this.lastUpdated = now;
-        if(this.version == null) this.version = 1;
-        else this.version++;
     }
 }
 

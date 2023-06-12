@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "backendUserAccess")
@@ -16,12 +16,8 @@ import java.time.Instant;
 @Setter
 public class BackendUserAccess {
     
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Instant creationTime;
-    @UpdateTimestamp
-    private Instant lastUpdated;
-    @Version
+    private Timestamp creationTime;
+    private Timestamp lastUpdated;
     private Integer version;
     
     private Integer id;
@@ -37,11 +33,27 @@ public class BackendUserAccess {
         this.isInvited = isInvited;
     }
     
+    @CreationTimestamp
+    @Column(updatable = false)
+    public Timestamp getCreationTime() {
+        return creationTime;
+    }
+    
+    @UpdateTimestamp
+    public Timestamp getLastUpdated() {
+        return lastUpdated;
+    }
+    
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
+    }
+    
+    @Version
+    public Integer getVersion() {
+        return version;
     }
     
     @Column(name = "voteId", nullable = false)
@@ -62,16 +74,5 @@ public class BackendUserAccess {
     @Column(name = "isInvited")
     public boolean isInvited() {
         return isInvited;
-    }
-    
-    // Because hibernate is ignoring the Annotations on creationTime, lastUpdated and version for some reason.
-    @PrePersist
-    @PreUpdate
-    public void hibernateStupidity() {
-        final Instant now = Instant.now();
-        if(this.creationTime == null) this.creationTime = now;
-        this.lastUpdated = now;
-        if(this.version == null) this.version = 1;
-        else this.version++;
     }
 }
