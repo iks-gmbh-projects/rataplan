@@ -2,11 +2,7 @@ package de.iks.rataplan.domain;
 
 import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
+@Data
 public class DeleteUserRequest {
     public enum Method {
         DELETE,

@@ -1,7 +1,7 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.repository.AuthTokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,10 +12,9 @@ import java.util.Date;
 
 @Transactional
 @Component
+@RequiredArgsConstructor
 public class SchedulerService {
-
-    @Autowired
-    private AuthTokenRepository authTokenRepository;
+    private final AuthTokenRepository authTokenRepository;
 
     @Value("${token.lifetime}")
     private int tokenLifetime;

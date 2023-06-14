@@ -4,7 +4,7 @@ import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
 import de.iks.rataplan.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,22 +15,18 @@ import de.iks.rataplan.domain.User;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
     
-    @Autowired
-    private SurveyToolMessageService surveyToolMessageService;
+    private final SurveyToolMessageService surveyToolMessageService;
     
-    @Autowired
-    CryptoServiceImpl cryptoService;
+    private final CryptoServiceImpl cryptoService;
     
-    @Autowired
-    private BackendMessageService backendMessageService;
+    private final BackendMessageService backendMessageService;
     
     public UserDTO registerUser(UserDTO userDTO) {
         if (userDTO.invalidFull()) throw new InvalidUserDataException();

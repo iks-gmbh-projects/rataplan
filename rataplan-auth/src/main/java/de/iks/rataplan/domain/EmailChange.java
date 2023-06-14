@@ -3,12 +3,7 @@ package de.iks.rataplan.domain;
 
 import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-
+@Data
 public class EmailChange {
     private String token;
     private String email;
