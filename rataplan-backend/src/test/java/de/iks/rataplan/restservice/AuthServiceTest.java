@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
 import java.util.Date;
 
 import static de.iks.rataplan.testutils.TestConstants.AUTHUSER_1;
@@ -56,7 +55,7 @@ public class AuthServiceTest {
 		claims.put(AuthServiceImpl.CLAIM_USERID, AUTHUSER_1.getId());
 		claims.put(AuthServiceImpl.CLAIM_PURPOSE, AuthServiceImpl.PURPOSE_LOGIN);
 		claims.setExpiration(new Date(System.currentTimeMillis()+1000));
-		keyExchangeConfig.setValidIssuer(Collections.singletonList("test"));
+		keyExchangeConfig.setValidIssuer("test");
 		
 		String token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.RS512, keyPair.getPrivate()).compact();
 		
