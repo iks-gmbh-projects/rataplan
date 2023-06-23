@@ -3,8 +3,8 @@ package de.iks.rataplan.config;
 import de.iks.rataplan.mapping.DecisionConverter;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
-import de.iks.rataplan.restservice.IDKeyService;
 import de.iks.rataplan.service.MockCryptoService;
+import io.jsonwebtoken.SigningKeyResolver;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,7 +35,7 @@ public class TestConfig {
     private final ToEncryptedStringConverter toEncryptedStringConverter = new ToEncryptedStringConverter(mockCryptoService);
     
     @MockBean
-    private IDKeyService idKeyService;
+    private SigningKeyResolver keyResolver;
 
     @Bean
     public ModelMapper modelMapper(DecisionConverter decisionConverter) {

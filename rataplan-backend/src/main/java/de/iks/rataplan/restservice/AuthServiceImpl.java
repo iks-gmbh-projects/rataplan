@@ -20,19 +20,18 @@ public class AuthServiceImpl implements AuthService {
     public static final String PURPOSE_ID = "id";
 
     private final KeyExchangeConfig keyExchangeConfig;
-    private final IDKeyService idKeyService;
+    private final SigningKeyResolver keyResolver;
     private final RestTemplate restTemplate;
     
     private Claims parseToken(String token) {
         try{
             return Jwts.parser()
-                .setSigningKey(idKeyService.getIDKey(false))
+                .setSigningKeyResolver(keyResolver)
                 .parseClaimsJws(token)
                 .getBody();
         } catch(SignatureException ex) {
             if(keyExchangeConfig.isShortenedCache()) throw ex;
             return Jwts.parser()
-                .setSigningKey(idKeyService.getIDKey(true))
                 .parseClaimsJws(token)
                 .getBody();
         }

@@ -4,9 +4,7 @@ import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.KeyExchangeConfig;
 import de.iks.rataplan.config.TestConfig;
 import de.iks.rataplan.exceptions.InvalidTokenException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +32,7 @@ public class AuthServiceTest {
 	private KeyExchangeConfig keyExchangeConfig;
 	
 	@Autowired
-	private IDKeyService idKeyService;
+	private SigningKeyResolver keyResolver;
 
 	@Autowired
 	private AuthService authService;
@@ -46,7 +44,7 @@ public class AuthServiceTest {
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
 		kpg.initialize(2048);
 		keyPair = kpg.generateKeyPair();
-		when(idKeyService.getIDKey(Matchers.anyBoolean()))
+		when(keyResolver.resolveSigningKey(Matchers.isA(JwsHeader.class), Matchers.isA(Claims.class)))
 			.thenReturn(keyPair.getPublic());
     }
 	
