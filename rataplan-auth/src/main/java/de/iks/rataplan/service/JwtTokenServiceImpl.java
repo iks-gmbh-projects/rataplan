@@ -20,13 +20,15 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 	private final CryptoService cryptoService;
 	private final JwtConfig jwtConfig;
 	public static final String CLAIM_PURPOSE = "purpose";
-	static final String PURPOSE_LOGIN = "login";
-	static final String PURPOSE_ID = "id";
+	public static final String CLAIM_USERID = "user_id";
+	public static final String PURPOSE_LOGIN = "login";
+	public static final String PURPOSE_ID = "id";
 
 	@Override
 	public String generateLoginToken(UserDTO user) {
 		Claims claims = Jwts.claims();
 		claims.setSubject(user.getUsername());
+		claims.put(CLAIM_USERID, user.getId());
 		claims.setIssuedAt(new Date());
 		claims.setIssuer(jwtConfig.getIssuer());
 		claims.put(CLAIM_PURPOSE, PURPOSE_LOGIN);
