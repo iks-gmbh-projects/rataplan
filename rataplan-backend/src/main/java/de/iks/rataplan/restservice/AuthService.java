@@ -6,4 +6,5 @@ import de.iks.rataplan.exceptions.InvalidTokenException;
 public interface AuthService {
     AuthUser getUserData(String token) throws InvalidTokenException;
     String fetchDisplayName(Integer userId);
+    public boolean isValidIDToken(String token);
 }
