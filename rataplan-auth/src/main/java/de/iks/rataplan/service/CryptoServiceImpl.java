@@ -36,7 +36,7 @@ public class CryptoServiceImpl implements CryptoService {
             log.info("Loading DB key");
             byte[] bytes;
             final String encKey = db.getKey();
-            if (encKey.isEmpty()) {
+            if (encKey == null) {
                 bytes = Files.readAllBytes(Paths.get(db.getPath()));
             } else bytes = Base64.getDecoder().decode(encKey);
             dbKey = new SecretKeySpec(bytes, db.getAlgorithm());
