@@ -3,9 +3,11 @@ package de.iks.rataplan.config;
 import de.iks.rataplan.mapping.DecisionConverter;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
+import de.iks.rataplan.restservice.IDKeyService;
 import de.iks.rataplan.service.MockCryptoService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
@@ -31,6 +33,9 @@ public class TestConfig {
     private final MockCryptoService mockCryptoService = new MockCryptoService();
     private final FromEncryptedStringConverter fromEncryptedStringConverter = new FromEncryptedStringConverter(mockCryptoService);
     private final ToEncryptedStringConverter toEncryptedStringConverter = new ToEncryptedStringConverter(mockCryptoService);
+    
+    @MockBean
+    private IDKeyService idKeyService;
 
     @Bean
     public ModelMapper modelMapper(DecisionConverter decisionConverter) {
