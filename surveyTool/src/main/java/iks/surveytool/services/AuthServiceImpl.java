@@ -1,55 +1,62 @@
 package iks.surveytool.services;
 
+import iks.surveytool.config.KeyExchangeConfig;
 import iks.surveytool.domain.AuthUser;
+import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.Level;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 @Log4j2
 public class AuthServiceImpl implements AuthService {
-    private final String authUrl;
-    private final RestTemplate restTemplate;
-
-    @Autowired
-    public AuthServiceImpl(
-        @Value("${rataplan.auth.url}") String authUrl,
-        RestTemplate restTemplate
-    ) {
-        this.authUrl = authUrl;
-        this.restTemplate = restTemplate;
+    public static final String CLAIM_PURPOSE = "purpose";
+    public static final String CLAIM_USERID = "user_id";
+    public static final String PURPOSE_LOGIN = "login";
+    public static final String PURPOSE_ID = "id";
+    
+    private final KeyExchangeConfig keyExchangeConfig;
+    private final SigningKeyResolver keyResolver;
+    
+    private Claims parseToken(String token, String purpose) {
+        return Jwts.parser()
+            .setSigningKeyResolver(keyResolver)
+            .requireIssuer(keyExchangeConfig.getValidIssuer())
+            .require(CLAIM_PURPOSE, purpose)
+            .parseClaimsJws(token)
+            .getBody();
     }
-
+    
     public AuthUser getUserData(String token) {
-        String url = authUrl + "/users/profile";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(JWT_COOKIE_NAME, token);
-
-        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         try {
-            final ResponseEntity<AuthUser> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                AuthUser.class
+            Claims claims = parseToken(token, PURPOSE_LOGIN);
+            return new AuthUser(
+                claims.get(CLAIM_USERID, Integer.class).longValue(),
+                claims.getSubject()
             );
-            if (response.getStatusCode().is2xxSuccessful()) return response.getBody();
-            else return null;
-        } catch (RestClientResponseException ex) {
-            log.catching(Level.INFO, ex);
-            return null;
+        } catch (ExpiredJwtException |
+                 SignatureException |
+                 MalformedJwtException |
+                 UnsupportedJwtException |
+                 IllegalArgumentException ex) {
+            throw new InvalidTokenException("Invalid Token");
         }
     }
 
     @Override
-    public boolean validateBackendSecret(String secret) {
-        return true; // TODO verify that the secret string comes from the auth backend
+    public boolean validateBackendSecret(String token) {
+        try {
+            Claims claims = parseToken(token, PURPOSE_ID);
+            return Objects.equals(claims.getSubject(), claims.getIssuer());
+        } catch (ExpiredJwtException |
+                 SignatureException |
+                 MalformedJwtException |
+                 UnsupportedJwtException |
+                 IllegalArgumentException ex) {
+            return false;
+        }
     }
 }
