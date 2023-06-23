@@ -12,7 +12,6 @@ import de.iks.rataplan.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -35,8 +34,7 @@ public class VoteControllerService {
 
         if (jwtToken != null) {
             //backendUser = authorizationControllerService.getBackendUser(jwtToken);
-			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-			authUser = authServiceResponse.getBody();
+			authUser = authService.getUserData(jwtToken);
             creatorVoteDTO.setUserId(authUser.getId());
         }
 
@@ -52,7 +50,7 @@ public class VoteControllerService {
 	public CreatorVoteDTO updateVote(String editToken, CreatorVoteDTO creatorVoteDTO, String jwtToken) {
 		final Integer backendUserId;
 		if(jwtToken == null) backendUserId = null;
-		else backendUserId = authService.getUserData(jwtToken).getBody().getId();
+		else backendUserId = authService.getUserData(jwtToken).getId();
 
 		Vote dbVote = voteService.getVoteByEditToken(editToken);
 		if(dbVote.getUserId() != null) {
@@ -78,8 +76,7 @@ public class VoteControllerService {
 			throw new ForbiddenException();
 		}
 
-		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-		AuthUser authUser = authServiceResponse.getBody();
+		AuthUser authUser = authService.getUserData(jwtToken);
 		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
 		List<Vote> votes = voteService
@@ -95,8 +92,7 @@ public class VoteControllerService {
 
 		//BackendUser backendUser = authorizationControllerService.getBackendUser(jwtToken);
 
-		ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-		AuthUser authUser = authServiceResponse.getBody();
+		AuthUser authUser = authService.getUserData(jwtToken);
 
 		List<Vote> votes = voteService
 				.getVotesWhereUserParticipates(authUser.getId());
@@ -115,8 +111,7 @@ public class VoteControllerService {
 		
 		if(vote == null) return null;
 		if(jwtToken != null && vote.getUserId() != null) {
-			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-			AuthUser authUser = authServiceResponse.getBody();
+			AuthUser authUser = authService.getUserData(jwtToken);
 			if(!Objects.equals(vote.getUserId(), authUser.getId()) &&
 				vote.getAccessList().stream().filter(BackendUserAccess::isEdit)
 						.mapToInt(BackendUserAccess::getUserId).noneMatch(authUser.getId()::equals)

@@ -13,7 +13,6 @@ import de.iks.rataplan.service.VoteParticipantService;
 import de.iks.rataplan.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -39,8 +38,7 @@ public class VoteParticipantControllerService {
 		AuthUser authUser = null;
 
 		if (jwtToken != null) {
-			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-			authUser = authServiceResponse.getBody();
+			authUser = authService.getUserData(jwtToken);
 			if (isUserParticipantInVote(vote, authUser)) {
 				throw new RataplanException("User already participated in this vote");
 			}
@@ -60,8 +58,7 @@ public class VoteParticipantControllerService {
 		AuthUser authUser = null;
 		
 		if (jwtToken != null) {
-			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-			authUser = authServiceResponse.getBody();
+			authUser = authService.getUserData(jwtToken);
 		}
 		
 		Vote vote = voteService.getVoteByParticipationToken(participationToken);
@@ -77,8 +74,7 @@ public class VoteParticipantControllerService {
 		AuthUser authUser = null;
 		
 		if (jwtToken != null) {
-			ResponseEntity<AuthUser> authServiceResponse = authService.getUserData(jwtToken);
-			authUser = authServiceResponse.getBody();
+			authUser = authService.getUserData(jwtToken);
 		}
 		
 		Vote vote = voteService.getVoteByParticipationToken(participationToken);
@@ -139,7 +135,7 @@ public class VoteParticipantControllerService {
 			if(voteParticipantDTO.getName() == null ||
 				voteParticipantDTO.getName().trim().isEmpty()
 			) {
-				voteParticipantDTO.setName(user.getDisplayname());
+				voteParticipantDTO.setName(authService.fetchDisplayName(user.getId()));
 			}
 		}
 		return voteParticipantDTO;
