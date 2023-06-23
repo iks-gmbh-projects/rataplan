@@ -1,45 +1,36 @@
 package de.iks.rataplan.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import de.iks.rataplan.config.JwtConfig;
 import de.iks.rataplan.dto.UserDTO;
+import de.iks.rataplan.exceptions.InvalidTokenException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import de.iks.rataplan.exceptions.InvalidTokenException;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7186407209737805247L;
-
-	static final String SECRET = "cd+Pr1js+w2qfT2BoCD+tPcYp9LbjpmhSMEJqUob1mcxZ7+Wmik4AYdjX+DlDjmE4yporzQ9tm7v3z/j+QbdYg==";
-
-	static final Integer EXPIRATION = 60000;
-
-	static final String CLAIM_KEY_USERNAME = "username";
-	static final String CLAIM_KEY_MAIL = "mail";
-	static final String CLAIM_KEY_AUDIENCE = "audience";
-	static final String CLAIM_KEY_CREATED = "created";
+	private final CryptoService cryptoService;
+	private final JwtConfig jwtConfig;
+	public static final String CLAIM_PURPOSE = "purpose";
+	static final String PURPOSE_LOGIN = "login";
+	static final String PURPOSE_ID = "id";
 
 	@Override
-	public String generateToken(UserDTO user) {
-		Map<String, Object> claims = new HashMap<>();
-		claims.put(CLAIM_KEY_USERNAME, user.getUsername());
-		claims.put(CLAIM_KEY_MAIL, user.getMail());
-		claims.put(CLAIM_KEY_CREATED, new Date());
+	public String generateLoginToken(UserDTO user) {
+		Claims claims = Jwts.claims();
+		claims.setSubject(user.getUsername());
+		claims.setIssuedAt(new Date());
+		claims.setIssuer(jwtConfig.getIssuer());
+		claims.put(CLAIM_PURPOSE, PURPOSE_LOGIN);
+		claims.setExpiration(generateExpirationDate());
 		return generateToken(claims);
 	}
 
@@ -66,8 +57,11 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 			if (isTokenExpired(claims.getExpiration())) {
 				throw new InvalidTokenException("Invalid JWT");
 			}
+			if(!PURPOSE_LOGIN.equals(claims.get(CLAIM_PURPOSE))) {
+				throw new InvalidTokenException("Invalid JWT");
+			}
 
-			username = (String) claims.get(CLAIM_KEY_USERNAME);
+			username = claims.getSubject();
 		} catch (Exception e) {
 			throw new InvalidTokenException("Invalid JWT");
 		}
@@ -78,19 +72,19 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 		return expiration.before(new Date());
 	}
 
-	private String generateToken(Map<String, Object> claims) {
-		return Jwts.builder().setClaims(claims).setExpiration(generateExpirationDate())
-				.signWith(SignatureAlgorithm.HS512, SECRET).compact();
+	private String generateToken(Claims claims) {
+		return Jwts.builder().setClaims(claims)
+				.signWith(SignatureAlgorithm.RS512, cryptoService.idKeyP()).compact();
 	}
 
 	private Date generateExpirationDate() {
-		return new Date(System.currentTimeMillis() + EXPIRATION * 1000);
+		return new Date(System.currentTimeMillis() + jwtConfig.getLifetime() * 1000);
 	}
 
 	private Claims getClaimsFromToken(String token) {
 		Claims claims;
 		try {
-			claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+			claims = Jwts.parser().setSigningKey(cryptoService.idKeyP()).parseClaimsJws(token).getBody();
 		} catch (Exception e) {
 			throw new InvalidTokenException("Invalid JWT");
 		}
@@ -99,6 +93,12 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 
 	@Override
 	public String generateIdToken() {
-		return ""; //Preparation for validation via cryptography
+		Claims claims = Jwts.claims();
+		claims.setIssuedAt(new Date());
+		claims.setSubject(jwtConfig.getIssuer());
+		claims.setIssuer(jwtConfig.getIssuer());
+		claims.put(CLAIM_PURPOSE, PURPOSE_ID);
+		claims.setExpiration(new Date(System.currentTimeMillis()+60000));
+		return generateToken(claims);
 	}
 }

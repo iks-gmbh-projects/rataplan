@@ -41,7 +41,7 @@ public class JwtTokenServiceTest {
 		user.setMail("peter@sch.mitz");
 //		user.setPassword("geheim");
 
-		String token = jwtTokenService.generateToken(user);
+		String token = jwtTokenService.generateLoginToken(user);
 		assertNotNull(token);
 
 		assertTrue(jwtTokenService.isTokenValid(token));

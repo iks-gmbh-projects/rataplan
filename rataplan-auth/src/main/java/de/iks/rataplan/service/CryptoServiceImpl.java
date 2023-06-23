@@ -1,8 +1,11 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.IDKeyConfig;
+import de.iks.rataplan.config.DBKeyConfig;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.exceptions.CryptoException;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -19,30 +22,33 @@ import java.security.*;
 import java.util.Base64;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CryptoServiceImpl implements CryptoService {
-    private final String dbKeyAlgorithm;
-    private final String dbKeyBytes;
-    private final String dbKeyPath;
-
+    private final DBKeyConfig db;
+    private final IDKeyConfig id;
     private Key dbKey;
-
-    public CryptoServiceImpl(
-        @Value("${keys.db.algorithm:AES}") String dbKeyAlgorithm,
-        @Value("${keys.db.key:}") String dbKeyBytes,
-        @Value("${keys.db.path:}") String dbKeyPath
-    ) {
-        this.dbKeyAlgorithm = dbKeyAlgorithm;
-        this.dbKeyBytes = dbKeyBytes;
-        this.dbKeyPath = dbKeyPath;
-    }
+    private KeyPair idKey;
 
     @PostConstruct
-    public void init() throws IOException {
-        byte[] bytes;
-        if (dbKeyBytes.isEmpty()) {
-            bytes = Files.readAllBytes(Paths.get(dbKeyPath));
-        } else bytes = Base64.getDecoder().decode(dbKeyBytes);
-        dbKey = new SecretKeySpec(bytes, dbKeyAlgorithm);
+    public void init() throws IOException, NoSuchAlgorithmException {
+        {
+            log.info("Loading DB key");
+            byte[] bytes;
+            final String encKey = db.getKey();
+            if (encKey.isEmpty()) {
+                bytes = Files.readAllBytes(Paths.get(db.getPath()));
+            } else bytes = Base64.getDecoder().decode(encKey);
+            dbKey = new SecretKeySpec(bytes, db.getAlgorithm());
+            log.info("DB key loaded");
+        }
+        {
+            log.info("Loading ID s");
+            KeyPairGenerator gen = KeyPairGenerator.getInstance(id.getAlgorithm());
+            gen.initialize(id.getLength());
+            idKey = gen.generateKeyPair();
+            log.info("ID keys loaded");
+        }
     }
 
     @Override
@@ -99,11 +105,11 @@ public class CryptoServiceImpl implements CryptoService {
 
     @Override
     public PublicKey idKey() {
-        return null;
+        return idKey.getPublic();
     }
 
     @Override
     public PrivateKey idKeyP() {
-        return null;
+        return idKey.getPrivate();
     }
 }

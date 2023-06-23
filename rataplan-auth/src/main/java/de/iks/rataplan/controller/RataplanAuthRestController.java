@@ -190,7 +190,7 @@ public class RataplanAuthRestController {
     private HttpHeaders createResponseHeaders(UserDTO user) {
         HttpHeaders responseHeaders = new HttpHeaders();
         
-        String token = jwtTokenService.generateToken(user);
+        String token = jwtTokenService.generateLoginToken(user);
         responseHeaders.set(JWT_COOKIE_NAME, token);
         responseHeaders.add("Set-Cookie", cookieBuilder.generateCookieValue(token, false));
         

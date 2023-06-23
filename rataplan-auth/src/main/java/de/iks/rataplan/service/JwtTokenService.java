@@ -8,7 +8,7 @@ public interface JwtTokenService {
 
 	public String getUsernameFromToken(String token);
 
-	public String generateToken(UserDTO user);
+	public String generateLoginToken(UserDTO user);
 
 	public Date getTokenExpiration(String token);
 
