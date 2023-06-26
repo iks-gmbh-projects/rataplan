@@ -38,6 +38,8 @@ public class User implements Serializable {
     @JsonIgnore
     private boolean encrypted;
 
+    private boolean accountConfirmed;
+
     public User(Integer id, String mail, String username, String password, String displayname, boolean encrypted) {
         this.id = id;
         this.mail = mail;
