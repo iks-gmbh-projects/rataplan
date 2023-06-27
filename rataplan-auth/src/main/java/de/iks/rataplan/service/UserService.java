@@ -12,7 +12,7 @@ public interface UserService {
     UserDTO getUserDTOFromUsername(String username);
     boolean checkIfMailExists(String mail);
     boolean checkIfUsernameExists(String username);
-    UserDTO loginUser(UserDTO user);
+    UserDTO loginUser(UserDTO user) throws Exception;
     boolean verifyPassword(User user, String password);
     void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;
     User getUserFromUsername(String username);
@@ -23,4 +23,6 @@ public interface UserService {
     void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException;
     User getUserFromEmail (String mail);
     String getDisplayNameFromId(int id);
+    Boolean confirmAccount(String token);
+    UserDTO validateResendConfirmationEmailRequest(String email);
 }
