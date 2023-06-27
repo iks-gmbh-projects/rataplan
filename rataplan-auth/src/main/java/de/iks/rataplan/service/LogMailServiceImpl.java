@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.ConfirmAccountMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,5 +16,10 @@ public class LogMailServiceImpl implements MailService {
     @Override
     public void sendMailForResetPassword(ResetPasswordMailData resetPasswordMailData) {
         log.info("Reset password link: {}", baseUrl + "/reset-password?token=" + resetPasswordMailData.getToken());
+    }
+
+    @Override
+    public void sendAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData) {
+        log.info("Account confirmation link: " + baseUrl + "/confirm-account?token=" + confirmAccountMailData.getToken());
     }
 }

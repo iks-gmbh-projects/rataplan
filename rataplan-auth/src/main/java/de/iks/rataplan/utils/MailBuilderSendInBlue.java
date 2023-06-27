@@ -1,5 +1,6 @@
 package de.iks.rataplan.utils;
 
+import de.iks.rataplan.domain.ConfirmAccountMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,19 +25,38 @@ public class MailBuilderSendInBlue {
 
     public SendSmtpEmail buildMailForResetPassword(ResetPasswordMailData resetPasswordMailData) {
         String resetPasswordLink = baseUrl + "/reset-password?token=" + resetPasswordMailData.getToken();
-        
+
         Context ctx = new Context();
         ctx.setVariable("link", resetPasswordLink);
-        
+
         return new SendSmtpEmail()
-            .sender(sender)
-            .to(Collections.singletonList(
-                new SendSmtpEmailTo()
-                    .email(resetPasswordMailData.getMail())
-            ))
-            .subject(templateEngine.process("resetPassword_subject", ctx))
-            .htmlContent(templateEngine.process("resetPassword_content", ctx))
-            ;
+                .sender(sender)
+                .to(Collections.singletonList(
+                        new SendSmtpEmailTo()
+                                .email(resetPasswordMailData.getMail())
+                ))
+                .subject(templateEngine.process("resetPassword_subject", ctx))
+                .htmlContent(templateEngine.process("resetPassword_content", ctx))
+                ;
+    }
+
+    public SendSmtpEmail buildAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData) {
+        return new SendSmtpEmail()
+                .sender(sender)
+                .subject("Konto Bestätigung")
+                .to(Collections
+                        .singletonList(new SendSmtpEmailTo()
+                                .email(confirmAccountMailData.getEmailAddress()))).htmlContent(" < html >\n" +
+                        " <head > \n" +
+                        "<title > Email Template </title > \n" +
+                        "</head > \n" +
+                        "<body > \n" +
+                        "<h2 > Klicken Sie den Knopf, um Ihr Konto zu aktivieren</h2 >\n " +
+                        "<p > \n" +
+                        "<a href = ADD DRUMDIBUM LINK HERE ONCE PAGE IS DESIGNED + DATA TOKEN> Konto Bestätigen </a >\n" +
+                        " </p > \n" +
+                        "</body > \n" +
+                        "</html >");
     }
 
 

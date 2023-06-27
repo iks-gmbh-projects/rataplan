@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.ConfirmAccountMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
 import de.iks.rataplan.utils.MailBuilderSendInBlue;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,19 @@ public class MailServiceImplSendInBlue implements MailService {
             throw new MailPreparationException(ex);
         }
     }
-    
+
+    @Override
+    public void sendAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData) {
+        SendSmtpEmail mail = mailBuilder.buildAccountConfirmationEmail(confirmAccountMailData);
+        try {
+            log.info(mail.getHtmlContent());
+            transactionalEmailsApi.sendTransacEmail(mail);
+        } catch (ApiException ex) {
+            log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
+            throw new MailPreparationException(ex);
+        }
+    }
+
     private boolean isInProdMode() {
         return "true".equals(environment.getProperty("RATAPLAN.PROD"));
     }
