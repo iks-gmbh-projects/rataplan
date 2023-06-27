@@ -37,6 +37,9 @@ import { appReducers } from './app.reducers';
 import { AppCommonModule } from './app-common.module';
 import { AppRoutingModule } from './app-routing.module';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ConfirmAccountComponent } from './confirm-account/confirm-account/confirm-account.component';
+import { ConfirmAccountInstructionComponent } from './confirm-account/confirm-account-instruction/confirm-account-instruction.component';
+import { ResendAccountConfirmationEmailComponent } from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -92,6 +95,9 @@ registerLocaleData(localeDE);
     DeleteProfileComponent,
     VoteListComponent,
     ViewProfileComponent,
+    ConfirmAccountInstructionComponent,
+    ConfirmAccountComponent,
+    ResendAccountConfirmationEmailComponent
   ],
   imports: [
     BrowserModule,
