@@ -70,6 +70,28 @@ body {
   width: 400px;
   max-width: 80%;
 }
+
+*:has(>.left,>.center,>.right) {
+  display: flex;
+}
+
+.left, .center, .right {
+  position: relative;
+  display: inline-flex;
+}
+
+.left {
+  text-align: left;
+}
+
+.center {
+  flex-grow: 1;
+}
+
+.right {
+  text-align: right;
+}
+
 /* Main-Nav */
 
 .sidenav-container {

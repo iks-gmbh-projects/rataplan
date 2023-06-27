@@ -2,11 +2,6 @@
   padding: 1em;
 }
 
-.bottomspace {
-  margin-bottom: 1ex;
-
-}
-
 .parent-div {
   max-width: 300px;
   width: 100%;
@@ -23,15 +18,23 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
-.right {
-  margin: 1rem 0;
+.bottomSpace {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-.left{
-  float: left;
-  margin: 1rem 0;
+.inputFieldWrapper {
+  width: 100%;
+}
+.newLine {
+  white-space: normal;
+}
+
+.max-width mat-form-field input {
+  width: 100%;
 }
 
 

@@ -9,6 +9,12 @@ form {
   text-align: start;
 }
 
+.max-width {
+  width: 400px;
+  max-width: 80%;
+  margin-left: 7%;
+}
+
 .max-width mat-form-field input {
   width: 100%;
 }

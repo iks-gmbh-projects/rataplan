@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatStepper } from '@angular/material/stepper';
 import { QuestionGroup, Survey } from '../../survey.model';
 
 @Component({
@@ -9,16 +8,17 @@ import { QuestionGroup, Survey } from '../../survey.model';
 })
 export class SurveyPreviewComponent {
   @Input() public survey?:Survey;
+  public page = 0;
   @Output() public readonly onSubmit = new EventEmitter<Survey>();
 
   constructor() { }
 
-  public changePage(stepper: MatStepper, answer?: any): void {
+  public changePage(answer?: any): void {
     if(!this.survey) return;
     if(answer) {
-      if(stepper.selectedIndex >= this.survey.questionGroups.length-1) this.onSubmit.emit(this.survey);
-      else stepper.next();
-    } else if(stepper.selectedIndex) stepper.previous();
+      if(this.page >= this.survey.questionGroups.length-1) this.onSubmit.emit(this.survey);
+      else this.page++;
+    } else if(this.page) this.page--;
     else this.onSubmit.emit();
   }
 

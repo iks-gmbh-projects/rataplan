@@ -19,7 +19,7 @@
   </div>
   <div class="center"></div>
   <div class="right">
-    <button mat-raised-button color="primary" type="submit" [disabled]="formGroup?.invalid || false">
+    <button mat-raised-button color="primary" type="button" (click)="preview()" [disabled]="!!formGroup?.invalid">
       Vorschau
     </button>
   </div>

@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, map, Observable, ReplaySubject, startWith, Subscription, switchMap } from 'rxjs';
 import { Answer, Survey } from '../survey.model';
@@ -17,6 +16,7 @@ import { PageComponent } from './page/page.component';
 
 export class SurveyFormComponent implements OnInit, OnDestroy {
   public survey?: Survey;
+  public page = 0;
   private answers: { [key: string | number]: Answer } = {};
   private sub?: Subscription;
   private readonly pagesSubject = new ReplaySubject<QueryList<PageComponent>>(1);
@@ -58,19 +58,19 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  public pageSubmit(stepper: MatStepper, answers?: { [key: string | number]: Answer }) {
+  public pageSubmit(answers?: { [key: string | number]: Answer }) {
     if (!this.survey) return;
     if (answers) {
       this.answers = {...this.answers, ...answers};
-      stepper.next();
+      this.page++;
     } else {
-      stepper.previous();
+      this.page--;
     }
   }
 
-  public submit(stepper: MatStepper): void {
+  public submit(): void {
     if (!this.survey) return;
-    if (stepper.selectedIndex >= this.survey.questionGroups.length) {
+    if (this.page >= this.survey.questionGroups.length) {
       this.surveys.answerSurvey({
         surveyId: this.survey.id!,
         answers: this.answers,
@@ -79,7 +79,7 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
           this.dialogs.open(SurveyAnswerComponent);
         },
         error: () => {
-          stepper.previous();
+          this.page--;
           this.snackBars.open("Fehler beim Hochladen der Antwort.", "OK");
         },
       });

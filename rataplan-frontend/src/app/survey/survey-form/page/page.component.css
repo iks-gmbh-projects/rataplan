@@ -1,3 +1,7 @@
 mat-radio-group mat-radio-button{
   white-space: break-spaces !important;
 }
+
+mat-form-field {
+  width: 100%;
+}

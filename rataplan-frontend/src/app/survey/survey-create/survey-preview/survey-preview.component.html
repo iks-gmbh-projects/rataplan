@@ -1,20 +1,21 @@
 <div class="content">
-<mat-card class="width" *ngIf="survey">
-  <mat-card-content>
-    <mat-stepper orientation="vertical" #stepper="matStepper">
-     <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title" #step="matStep">
-        <app-survey-form-page [preview]="true" [questionGroup]="previewify(questionGroup)" [isFirst]="page==0" (formAfterViewInit)="step.stepControl=$event" (onSubmit)="changePage(stepper, $event)">
-        </app-survey-form-page>
-      </mat-step>
-    </mat-stepper>
-  </mat-card-content>
+  <mat-card class="width" *ngIf="survey">
+    <mat-card-content>
+      <app-survey-form-page
+        [preview]="true"
+        [questionGroup]="previewify(survey.questionGroups[page])"
+        [isFirst]="page==0"
+        (onSubmit)="changePage($event)"
+      ></app-survey-form-page>
+    </mat-card-content>
     <div>
-    <button mat-raised-button color="primary" (click)="onSubmit.emit()">
-      Zurück
-    </button>
-    <button class="right" mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
-      Erstellen
-    </button>
+      <button class="left" mat-raised-button color="primary" (click)="onSubmit.emit()">
+        Zurück
+      </button>
+      <div class="center"></div>
+      <button class="right" mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
+        Erstellen
+      </button>
     </div>
-</mat-card>
+  </mat-card>
 </div>
