@@ -28,7 +28,7 @@ export class VoteAuthGuard implements CanActivate {
         if (title && deadline) {
           return true;
         }
-        return this.router.createUrlTree(['/create-vote/general']);
+        return this.router.createUrlTree(['/vote/create/general']);
       })
     );
   }

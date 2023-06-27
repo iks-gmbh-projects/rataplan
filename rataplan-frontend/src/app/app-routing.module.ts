@@ -16,81 +16,10 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
-import { VoteAuthGuard } from './vote/auth-guard/vote-auth-guard.service';
-import { VoteResolver } from './vote/vote/resolver/vote.resolver';
-import { VotePreviewResolver } from './vote/vote/resolver/vote-preview.resolver';
-import { VoteComponent } from './vote/vote/vote.component';
-import { ConfigSubformComponent } from './vote/vote-form/config-subform/config-subform.component';
-import { DatepickerSubformComponent } from './vote/vote-form/datepicker-subform/datepicker-subform.component';
-import { EmailSubformComponent } from './vote/vote-form/email-subform/email-subform.component';
-import { GeneralSubformComponent } from './vote/vote-form/general-subform/general-subform.component';
-import { LinkSubformComponent } from './vote/vote-form/link-subform/link-subform.component';
-import { OverviewSubformComponent } from './vote/vote-form/overview-subform/overview-subform.component';
-import { VoteFormComponent } from './vote/vote-form/vote-form.component';
-import { VoteListComponent } from './vote-list/vote-list.component';
-
-// function matcherFunction(url: UrlSegment[]) {
-//
-//   const path = url[0].path;
-//   if(path.startsWith('create-vote')) {
-//     console.log(url);
-//     return { consumed: url.slice(0,1) };
-//   }
-//   if (path.startsWith('edit')) {
-//     return { consumed: url.slice(0,1) };
-//   }
-//
-//   return null;
-// }
 
 const routes: Routes = [
   { path: '', component: HomepageComponent },
-  {
-    // matcher: matcherFunction,  component: VoteFormComponent,
-    path: 'create-vote', component: VoteFormComponent,
-    children: [
-      { path: '', redirectTo: 'general', pathMatch: 'full' },
-      { path: 'general', component: GeneralSubformComponent },
-      { path: 'datepicker', component: DatepickerSubformComponent, canActivate: [VoteAuthGuard] },
-      { path: 'configurationOptions', component: ConfigSubformComponent, canActivate: [VoteAuthGuard] },
-      { path: 'configuration', component: OverviewSubformComponent, canActivate: [VoteAuthGuard] },
-      { path: 'email', component: EmailSubformComponent, canActivate: [VoteAuthGuard] },
-      {
-        path: 'preview',
-        data: { isPreview: true },
-        resolve: { vote: VotePreviewResolver },
-        component: VoteComponent,
-        canActivate: [VoteAuthGuard],
-      },
-      { path: '**', redirectTo: 'general', pathMatch: 'full' },
-    ],
-  },
-  { path: 'vote/links', component: LinkSubformComponent },
-  { path: 'vote/own', component: VoteListComponent },
-  {
-    path: 'vote/:id',
-    data: { isPreview: false },
-    resolve: { vote: VoteResolver },
-    component: VoteComponent,
-  },
-  {
-    path: 'vote/edit/:id', component: VoteFormComponent,
-    children: [
-      { path: '', redirectTo: 'general', pathMatch: 'full' },
-      { path: 'general', component: GeneralSubformComponent },
-      { path: 'datepicker', component: DatepickerSubformComponent },
-      { path: 'configurationOptions', component: ConfigSubformComponent },
-      { path: 'configuration', component: OverviewSubformComponent },
-      { path: 'email', component: EmailSubformComponent },
-      {
-        path: 'preview',
-        data: { isPreview: true },
-        resolve: { vote: VotePreviewResolver },
-        component: VoteComponent,
-      },
-      { path: '**', redirectTo: 'general', pathMatch: 'full' },
-    ],
-  },
+  { path: 'vote', loadChildren: () => import('./vote/vote.module').then(m => m.VoteModule) },
   { path: 'appointmentrequest/:id', redirectTo: '/vote/:id' },
   { path: 'terms-and-conditions', component: ConditionsComponent },
   { path: 'imprint', component: ImprintComponent },
