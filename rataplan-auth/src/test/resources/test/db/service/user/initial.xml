@@ -1,4 +1,5 @@
 <dataset>
-	<rataplanuser id="1" username="peter" mail="peter@sch.mitz" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="peter" encrypted="false" version="1" />
-	<rataplanuser id="2" username="hans" mail="hans@mei.er" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="hans" encrypted="false" version="1" />
+	<rataplanuser id="1" username="peter" mail="peter@sch.mitz" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="peter" encrypted="false" version="1" accountconfirmed="true"/>
+	<rataplanuser id="2" username="hans" mail="hans@mei.er" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="hans" encrypted="false" version="1" accountconfirmed="true"/>
+	<rataplanuser id="3" username="john" mail="john@smith" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="john" encrypted="false" version="1" accountconfirmed="false"/>
 </dataset>
