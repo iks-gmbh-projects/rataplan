@@ -71,7 +71,7 @@ public class MailBuilderSendInBlue {
 
         Context ctx = new Context();
         ctx.setVariable("url", url);
-        ctx.setVariable("title", vote.getTitle());
+        ctx.setVariable("title", fromEncryptedStringConverter.convert(vote.getTitle()));
 
         String subjectContent = templateEngine.process("expired_subject", ctx);
 
