@@ -4,11 +4,13 @@ import { Subscription } from 'rxjs';
 
 import { SurveyHead } from '../survey.model';
 import { SurveyService } from '../survey.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-survey-list',
   templateUrl: './survey-list.component.html',
-  styleUrls: ['./survey-list.component.css']
+  styleUrls: ['./survey-list.component.css'],
 })
 export class SurveyListComponent implements OnInit, OnDestroy {
   public surveys: SurveyHead[] = [];
@@ -17,7 +19,16 @@ export class SurveyListComponent implements OnInit, OnDestroy {
   public isOwn = false;
   private sub?: Subscription;
 
-  constructor(private surveyService: SurveyService, private activeRoute: ActivatedRoute) { }
+  constructor(
+    private surveyService: SurveyService,
+    private activeRoute: ActivatedRoute,
+    readonly snackBars: MatSnackBar,
+    readonly clipboard: Clipboard) {
+  }
+
+  public expired(survey: SurveyHead): boolean {
+    return survey.endDate < new Date();
+  }
 
   public ngOnInit(): void {
     this.isOwn = this.activeRoute.snapshot.data['own'];
@@ -33,7 +44,7 @@ export class SurveyListComponent implements OnInit, OnDestroy {
   }
 
   public updateList(): void {
-    if (this.busy) return;
+    if(this.busy) return;
     this.busy = true;
     this.error = null;
     const request = this.isOwn ? this.surveyService.getOwnSurveys() : this.surveyService.getOpenSurveys();
