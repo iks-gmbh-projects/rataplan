@@ -1,0 +1,48 @@
+<form *ngIf="formGroup" [formGroup]="formGroup">
+  <div class="inputFieldWrapper">
+    <mat-form-field class="mat-form-field-flex" appearance="fill">
+      <mat-label>Umfragename</mat-label>
+      <input type="text" matInput formControlName="name">
+      <mat-error>{{errorMessageService.genericFormError(formGroup!.get('name'))}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field class="mat-form-field-flex" appearance="fill">
+      <mat-label>Beschreibung</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      <mat-error>{{errorMessageService.genericFormError(formGroup.get('description'))}}</mat-error>
+    </mat-form-field>
+  </div>
+  <mat-checkbox formControlName="anonymousParticipation"><span class="newLine">Erlaube anonyme Antworten</span>
+  </mat-checkbox>
+  <br><br>
+  <mat-form-field class="mat-form-field-flex" appearance="fill">
+    <mat-label>Von</mat-label>
+    <input type="localdatetime" [min]="yesterday" matInput [ngxMatDatetimePicker]="startTime"
+           formControlName="startDate">
+    <mat-datepicker-toggle matSuffix [for]="$any(startTime)"></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker [defaultTime]="[0,0,0]" #startTime></ngx-mat-datetime-picker>
+    <mat-error>{{errorMessageService.genericFormError(formGroup.get('startDate'))}}</mat-error>
+  </mat-form-field>
+  <br>
+  <mat-form-field class="mat-form-field-flex" appearance="fill">
+    <mat-label>Bis</mat-label>
+    <input type="localdatetime" [min]="(formGroup.get('startDate')?.value || yesterday)" matInput
+           [ngxMatDatetimePicker]="endTime" formControlName="endDate">
+    <mat-datepicker-toggle matSuffix [for]="$any(endTime)"></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker [defaultTime]="[24,0,0]" #endTime></ngx-mat-datetime-picker>
+    <mat-error>{{errorMessageService.genericFormError(formGroup.get('endDate'))}}</mat-error>
+  </mat-form-field>
+  <br>
+  <mat-checkbox formControlName="openAccess"><span class="newLine">Liste die Umfrage in der Liste auf.</span>
+  </mat-checkbox>
+  <br><br>
+  <div class="nextContainer">
+    <button
+      type="button" mat-raised-button color="primary"
+      (click)="submit.emit()"
+      [disabled]="!headerComplete()">
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+  </div>
+</form>

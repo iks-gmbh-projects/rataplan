@@ -1,6 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../../../validator/validators";
@@ -22,12 +29,6 @@ export class SurveyCreateFormComponent {
   public get survey() {
     return this._survey;
   }
-  public get yesterday(): Date {
-    let ms = Date.now();
-    ms -= 24*3600000;
-    ms -= ms % 60000;
-    return new Date(ms);
-  }
   @Input() public set survey(survey: Survey | undefined) {
     if (this._survey === survey) return;
     this._survey = survey;
@@ -36,10 +37,12 @@ export class SurveyCreateFormComponent {
   @Output() public readonly onSubmit: EventEmitter<Survey> = new EventEmitter<Survey>();
   public formGroup?: FormGroup = this.createSurvey(this.survey);
 
+  public page: number = -1;
+
   constructor(public readonly errorMessageService: FormErrorMessageService) { }
 
   private createSurvey(survey?: Survey): FormGroup {
-    const startDate = new FormControl(survey?.startDate || null, [Validators.required, Validators.min(this.yesterday.getTime())]);
+    const startDate = new FormControl(survey?.startDate || null, [Validators.required, Validators.min(Date.now()-24*3600000)]);
     const endDate = new FormControl(survey?.endDate || null, [Validators.required, minControlValueValidator(startDate)]);
     return new FormGroup({
       id: new FormControl(survey?.id),
@@ -59,12 +62,12 @@ export class SurveyCreateFormComponent {
     return new FormGroup({
       id: new FormControl(questionGroup?.id),
       title: new FormControl(questionGroup?.title || null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
-      questions: new FormArray(questionGroup?.questions?.map(this.createQuestion, this) || [this.createQuestion()], Validators.required)
+      questions: new FormArray(questionGroup?.questions?.map(SurveyCreateFormComponent.createQuestion, this) || [SurveyCreateFormComponent.createQuestion()], Validators.required)
     });
   }
 
-  public createQuestion(question?: Question): FormGroup {
-    const checkboxes= new FormArray(question?.checkboxGroup?.checkboxes?.map(this.createCheckbox, this) || []);
+  public static createQuestion(question?: Question): FormGroup {
+    const checkboxes= new FormArray(question?.checkboxGroup?.checkboxes?.map(SurveyCreateFormComponent.createCheckbox, this) || []);
     const minSelect = new FormControl(question?.checkboxGroup?.minSelect || 0, [ExtraValidators.integer, Validators.min(0), ExtraValidators.indexValue(checkboxes, true)]);
     const maxSelect = new FormControl(question?.checkboxGroup?.maxSelect || 2, [ExtraValidators.integer, Validators.min(1), ExtraValidators.valueGreaterThan(minSelect), ExtraValidators.indexValue(checkboxes, true)]);
     minSelect.addValidators(ExtraValidators.valueLessThan(maxSelect));
@@ -81,7 +84,7 @@ export class SurveyCreateFormComponent {
     });
   }
 
-  public createCheckbox(checkbox?: Checkbox): FormGroup {
+  public static createCheckbox(checkbox?: Checkbox): FormGroup {
     return new FormGroup({
       id: new FormControl(checkbox?.id),
       text: new FormControl(checkbox?.text || null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
@@ -90,29 +93,19 @@ export class SurveyCreateFormComponent {
     });
   }
 
-  public headerComplete(): boolean {
-    if (!this.formGroup) return false;
-    return this.formGroup.get("name")!.valid
-      && this.formGroup.get("description")!.valid
-      && this.formGroup.get("startDate")!.valid
-      && this.formGroup.get("endDate")!.valid;
+  public advanceForm(addGroup: boolean) {
+    this.page++;
+    if(addGroup) this.getQuestionGroups().insert(this.page, this.createQuestionGroup());
   }
 
-  public addQuestionGroup(stepper: MatStepper): void {
-    this.getQuestionGroups().push(this.createQuestionGroup());
-    if (this.formGroup?.get(['questionGroups', this.getQuestionGroups().length - 2])?.valid) setTimeout(() => stepper.next(), 10);
+  public removeGroup() {
+    const arr = this.getQuestionGroups();
+    arr.removeAt(this.page);
+    if(this.page >= arr.length) this.page = arr.length-1;
   }
 
   public getQuestionGroups(): FormArray {
     return this.formGroup?.get("questionGroups") as FormArray;
-  }
-
-  public getQuestions(questionGroup: AbstractControl): FormArray {
-    return questionGroup?.get("questions") as FormArray;
-  }
-
-  public getCheckboxes(question: AbstractControl): FormArray {
-    return question?.get(["checkboxGroup", "checkboxes"]) as FormArray;
   }
 
   public preview(): void {

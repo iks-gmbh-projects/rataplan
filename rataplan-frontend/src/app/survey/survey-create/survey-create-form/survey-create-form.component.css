@@ -1,8 +1,7 @@
 .bottomSpace {
   margin-top: 1rem;
   margin-bottom: 1rem;
-  margin-left: 7%;
-  max-width: 80%;
+  display: flex;
 }
 
 .inputFieldWrapper {
@@ -25,4 +24,21 @@
 
 .max-width mat-form-field input {
   width: 100%;
+}
+
+.left, .center, .right {
+  position: relative;
+  display: inline-flex;
+}
+
+.left {
+  text-align: left;
+}
+
+.center {
+  flex-grow: 1;
+}
+
+.right {
+  text-align: right;
 }

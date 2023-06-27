@@ -18,6 +18,8 @@ import { SurveyListComponent } from './survey-list/survey-list.component';
 import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
+import { SurveyCreateFormHeadComponent } from './survey-create/survey-create-form/survey-create-form-head/survey-create-form-head.component';
+import { SurveyCreateFormPageComponent } from './survey-create/survey-create-form/survey-create-form-page/survey-create-form-page.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { SurveyResultsComponent } from './survey-results/survey-results.componen
     SurveyMissingComponent,
     SurveyForbiddenComponent,
     SurveyAnswerComponent,
+    SurveyCreateFormHeadComponent,
+    SurveyCreateFormPageComponent,
   ],
   imports: [
     AppCommonModule,
