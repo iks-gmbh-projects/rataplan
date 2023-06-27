@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
         Claims claims = jwtTokenService.getAccountConfirmationClaims(token);
         String email = (String) claims.get("email");
         User user = getUserFromUsername((String) claims.get("username"));
-        if (user.getMail().equals(cryptoService.encryptDB(email))) {
+        if (user.getMail().equals(cryptoService.encryptDB(email)) && !user.isAccountConfirmed()) {
             user.setAccountConfirmed(true);
             userRepository.saveAndFlush(user);
             return true;
