@@ -52,7 +52,6 @@ public class RataplanExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(Exception.class) 
 	public ResponseEntity<Error> genericException(Exception e) {
-		log.error("Unexpected exception", e);
 		Error error = new Error(ErrorCode.UNEXPECTED_ERROR, e.toString());
 		log.debug("Unexpected Exception", e); //debug to avoid potential leaks of secrets from production into the logfiles
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
