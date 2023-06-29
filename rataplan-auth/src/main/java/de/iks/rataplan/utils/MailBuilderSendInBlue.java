@@ -53,7 +53,7 @@ public class MailBuilderSendInBlue {
                         "<body > \n" +
                         "<h2 > Klicken Sie den Knopf, um Ihr Konto zu aktivieren</h2 >\n " +
                         "<p > \n" +
-                        "<a href = ADD DRUMDIBUM LINK HERE ONCE PAGE IS DESIGNED + DATA TOKEN> Konto Bestätigen </a >\n" +
+                        "<a href = drumdibum.com/confirm-account/" + confirmAccountMailData.getToken() + "> Konto Bestätigen </a >\n" +
                         " </p > \n" +
                         "</body > \n" +
                         "</html >");

@@ -20,6 +20,6 @@ public class LogMailServiceImpl implements MailService {
 
     @Override
     public void sendAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData) {
-        log.info("Account confirmation link: " + baseUrl + "/confirm-account?token=" + confirmAccountMailData.getToken());
+        log.info("Account confirmation link: " + baseUrl + "/confirm-account/" + confirmAccountMailData.getToken());
     }
 }
