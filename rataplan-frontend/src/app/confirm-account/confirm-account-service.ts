@@ -24,7 +24,7 @@ export class ConfirmAccountService {
       snackBarConfig.duration = (10000);
       if (successful) {
         this.matSnackBar.open('Bestätigungsemail erneut geschickt' ,'', snackBarConfig);
-        this.router.navigate(['confirm-account']);
+        this.router.navigate(['login']);
       } else {
         this.matSnackBar.open('Einer Fehler ist aufgetreten', '', snackBarConfig);
       }
