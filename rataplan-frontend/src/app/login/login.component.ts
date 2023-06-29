@@ -10,7 +10,9 @@ import { appState } from "../app.reducers";
 import { AuthActions, LoginAction } from "../authentication/auth.actions";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Actions, ofType } from "@ngrx/effects";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { CookieBannerComponent } from '../cookie-banner/cookie-banner.component';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +23,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
   hide = true;
+  cookieAllowed = false;
+  cookieInit = true;
   isLoading = false;
   user = new Subject<User>()
   inputField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
@@ -32,6 +36,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   });
 
   private busySub?: Subscription;
+  private cookieSub?: Subscription;
   private errorSub?: Subscription;
 
   login() {
@@ -77,6 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private actions$: Actions,
     // private router: Router,
     private activatedRoute: ActivatedRoute,
+    private bottomSheets: MatBottomSheet,
     public readonly errorMessageService: FormErrorMessageService
   ) {
   }
@@ -88,9 +94,18 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.isLoading = busy;
     });
 
+    this.cookieSub = this.store.select("cookie").pipe(
+      tap(b => {
+        if(this.cookieInit) {
+          this.cookieInit = false;
+          if(!b) this.bottomSheets.open(CookieBannerComponent, {disableClose: true});
+        }
+      })
+    ).subscribe(cookieAllowed => this.cookieAllowed = cookieAllowed);
+
     this.errorSub = this.actions$.pipe(
       ofType(AuthActions.LOGIN_ERROR_ACTION)
-    ).subscribe(err => this.handleError(err))
+    ).subscribe(err => this.handleError(err));
   }
 
   ngOnDestroy() {

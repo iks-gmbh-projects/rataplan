@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Actions, concatLatestFrom, createEffect, ofType, rootEffectsInit } from '@ngrx/effects';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, from, of } from 'rxjs';
-import { catchError, concatMap, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
 
 import { FrontendUser } from '../models/user.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
@@ -27,6 +27,7 @@ import {
   ResetPasswordSuccessAction,
   UpdateUserdataSuccessAction,
 } from './auth.actions';
+import { AcceptCookieAction, CookieActions } from '../cookie-banner/cookie.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +60,8 @@ export class AuthEffects {
 
   autoLoginStart = createEffect(() => {
     return this.actions$.pipe(
-      ofType(rootEffectsInit),
+      ofType(CookieActions.ACCEPT_COOKIE),
+      filter((a: AcceptCookieAction) => a.onLoad),
       map(() => new AutoLoginAction()),
     );
   });

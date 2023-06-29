@@ -60,6 +60,8 @@ import { LinkSubformComponent } from './vote/vote-form/link-subform/link-subform
 import { OverviewSubformComponent } from './vote/vote-form/overview-subform/overview-subform.component';
 import { VoteFormComponent } from './vote/vote-form/vote-form.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
+import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 
 registerLocaleData(localeDE);
 
@@ -92,6 +94,7 @@ registerLocaleData(localeDE);
     DeleteProfileComponent,
     VoteListComponent,
     ViewProfileComponent,
+    CookieBannerComponent,
   ],
   imports: [
     BrowserModule,
@@ -123,6 +126,7 @@ registerLocaleData(localeDE);
     MatProgressSpinnerModule,
     MatTooltipModule,
     NgxMaterialTimepickerModule,
+    MatBottomSheetModule,
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,
