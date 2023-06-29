@@ -26,8 +26,8 @@ public class BackendUserAccess {
     private boolean isEdit;
     private boolean isInvited;
     
-    public BackendUserAccess(Integer requestId, Integer userId, boolean hasEditRights, boolean isInvited) {
-        this.voteId = requestId;
+    public BackendUserAccess(Integer voteId, Integer userId, boolean hasEditRights, boolean isInvited) {
+        this.voteId = voteId;
         this.userId = userId;
         this.isEdit = hasEditRights;
         this.isInvited = isInvited;

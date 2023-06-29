@@ -11,6 +11,8 @@ public class KeyExchangeConfig {
     private String url;
     @Value("${auth.displayname.url:}")
     private String displayNameURL;
+    @Value("${auth.email.url:}")
+    private String emailURL;
     @Value("${auth.id.validIssuer:drumdibum-auth}")
     private String validIssuer;
 }

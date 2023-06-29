@@ -5,14 +5,19 @@ import de.iks.rataplan.domain.AuthUser;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Objects;
 
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
     public static final String CLAIM_PURPOSE = "purpose";
     public static final String CLAIM_USERID = "user_id";
@@ -49,8 +54,25 @@ public class AuthServiceImpl implements AuthService {
     }
     
     @Override
+    public Integer fetchUserIdFromEmail(String email) {
+        try {
+            String url = UriComponentsBuilder.fromHttpUrl(keyExchangeConfig.getEmailURL())
+                .queryParam("email", email)
+                .toUriString();
+            ResponseEntity<Integer> response = restTemplate.getForEntity(url, Integer.class);
+            if (response.getStatusCode().is2xxSuccessful() && response.hasBody()) return response.getBody();
+        } catch(RestClientException ex) {
+            log.error("rest error", ex);
+        }
+        return null;
+    }
+    
+    @Override
     public String fetchDisplayName(Integer userId) {
-        return restTemplate.getForEntity(keyExchangeConfig.getDisplayNameURL() + userId, String.class).getBody();
+        String url = UriComponentsBuilder.fromHttpUrl(keyExchangeConfig.getDisplayNameURL())
+            .pathSegment(userId.toString())
+            .toUriString();
+        return restTemplate.getForObject(url, String.class);
     }
     
     public boolean isValidIDToken(String token) {

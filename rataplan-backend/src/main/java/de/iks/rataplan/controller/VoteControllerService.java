@@ -8,6 +8,7 @@ import de.iks.rataplan.dto.VoteDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.RequiresAuthorizationException;
 import de.iks.rataplan.restservice.AuthService;
+import de.iks.rataplan.service.ConsigneeService;
 import de.iks.rataplan.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,6 +25,8 @@ public class VoteControllerService {
 	private final VoteService voteService;
 
 	private final AuthService authService;
+	
+	private final ConsigneeService consigneeService;
 
 	private final ModelMapper modelMapper;
 	
@@ -45,6 +48,7 @@ public class VoteControllerService {
 				new BackendUserAccess(vote.getId(), authUser.getId(), true, false)
 			));
 		}
+		consigneeService.transcribeConsigneesToBackendUserAccesses(vote);
 		
 		return modelMapper.map(vote, CreatorVoteDTO.class);
 	}

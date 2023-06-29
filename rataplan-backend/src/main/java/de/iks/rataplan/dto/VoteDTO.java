@@ -25,18 +25,12 @@ public class VoteDTO implements Serializable {
     private boolean notified;
     private String participationToken;
     private VoteConfig voteConfig = new VoteConfig();
-    private List<String> consigneeList;
     private List<VoteOptionDTO> options;
     private List<VoteParticipantDTO> participants;
 
     public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, VoteConfig voteConfig) {
         this(title, description, deadline, organizerName, organizerMail, voteConfig);
         this.id = id;
-    }
-    
-    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, VoteConfig voteConfig, List<String> consigneeList) {
-        this(title, description, deadline, organizerName, organizerMail, voteConfig);
-        this.consigneeList = consigneeList;
     }
     
     public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, VoteConfig voteConfig) {
@@ -73,7 +67,6 @@ public class VoteDTO implements Serializable {
     }
     
     public void defaultNullValues() {
-        if(this.consigneeList == null) this.consigneeList = new ArrayList<>();
         if(this.options == null) this.options = new ArrayList<>();
         if(this.participants == null) this.participants = new ArrayList<>();
     }

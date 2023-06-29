@@ -4,9 +4,8 @@ import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 import com.google.gson.Gson;
 import de.iks.rataplan.mapping.DecisionConverter;
-import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
-import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.*;
@@ -26,6 +25,7 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Properties;
 
 @Profile({"dev", "prod", "test", "integration"})
@@ -89,12 +89,11 @@ public class AppConfig {
 	 * @return ModelMapper instance
 	 */
 	@Bean
-	public ModelMapper modelMapper(DecisionConverter decisionConverter, ToEncryptedStringConverter toEncryptedStringConverter, FromEncryptedStringConverter fromEncryptedStringConverter) {
+	public ModelMapper modelMapper(DecisionConverter decisionConverter, List<Converter<?, ?>> converters) {
 		ModelMapper mapper = new ModelMapper();
 		mapper.addConverter(decisionConverter.toDAO);
 		mapper.addConverter(decisionConverter.toDTO);
-		mapper.addConverter(toEncryptedStringConverter);
-		mapper.addConverter(fromEncryptedStringConverter);
+		converters.forEach(mapper::addConverter);
 		return mapper;
 	}
 
@@ -107,7 +106,7 @@ public class AppConfig {
 
 	private ITemplateResolver htmlTemplateResolver() {
 		final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-		templateResolver.setOrder(Integer.valueOf(2));
+		templateResolver.setOrder(2);
 		templateResolver.setPrefix("/");
 		templateResolver.setSuffix(".html");
 		templateResolver.setTemplateMode(TemplateMode.HTML);

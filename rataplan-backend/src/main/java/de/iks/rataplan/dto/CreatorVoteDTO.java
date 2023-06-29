@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -17,6 +18,8 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
     private static final long serialVersionUID = 8169186536220940206L;
 
     private String editToken;
+    
+    private List<String> consigneeList;
     
     public CreatorVoteDTO(
         Integer id,
@@ -39,7 +42,8 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         VoteConfig voteConfig,
         List<String> consigneeList
     ) {
-        super(title, description, deadline, organizerName, organizerMail, voteConfig, consigneeList);
+        super(title, description, deadline, organizerName, organizerMail, voteConfig);
+        this.consigneeList = consigneeList;
     }
     
     public CreatorVoteDTO(
@@ -51,5 +55,11 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         VoteConfig voteConfig
     ) {
         super(title, description, deadline, organizerName, organizerMail, voteConfig);
+    }
+    
+    @Override
+    public void defaultNullValues() {
+        super.defaultNullValues();
+        if(this.consigneeList == null) this.consigneeList = new ArrayList<>();
     }
 }
