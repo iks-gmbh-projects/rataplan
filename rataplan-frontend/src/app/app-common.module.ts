@@ -26,6 +26,7 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
 const declarations = [
@@ -61,6 +62,7 @@ const imports = [
   MatListModule,
   MatBadgeModule,
   MatStepperModule,
+  MatTabsModule,
   NgxMaterialTimepickerModule,
   ClipboardModule,
 ];

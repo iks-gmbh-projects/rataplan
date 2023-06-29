@@ -22,6 +22,12 @@ export class VoteListService {
     );
   }
 
+  public getCondignedVotes(): Observable<VoteModel[]> {
+    return this.urlService.voteURL$.pipe(
+      exhaustMap(url => this.http.get<VoteModel[]>(url+'users/votes/consigns', { withCredentials: true }))
+    );
+  }
+
   public getCreatedVotes(): Observable<VoteModel[]> {
     return this.urlService.voteURL$.pipe(
       exhaustMap(url => this.http.get<VoteModel[]>(url+'users/votes/creations', { withCredentials: true }))
