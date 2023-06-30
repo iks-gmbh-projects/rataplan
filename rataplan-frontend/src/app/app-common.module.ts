@@ -7,8 +7,6 @@ import { CheckboxCountMinDirective } from "./validator/checkbox-count-min.direct
 import { CheckboxCountMaxDirective } from "./validator/checkbox-count-max.directive";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { IntegerDirective } from './validator/integer.directive';
-import { CombinedDatetimeMaxDirective } from './validator/combined-datetime-max.directive';
-import { CombinedDatetimeMinDirective } from './validator/combined-datetime-min.directive';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -28,6 +26,7 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 const declarations = [
   DisplayNamePipe,
@@ -36,14 +35,13 @@ const declarations = [
   CheckboxCountMinDirective,
   CheckboxCountMaxDirective,
   IntegerDirective,
-  CombinedDatetimeMaxDirective,
-  CombinedDatetimeMinDirective,
 ];
 
 const imports = [
   CommonModule,
   FormsModule,
   ReactiveFormsModule,
+  ClipboardModule,
   MatTooltipModule,
   MatIconModule,
   MatButtonModule,

@@ -17,7 +17,6 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { appEffects } from './app.effects';
-import { appReducers } from './app.reducers';
 import { AppCommonModule } from './app-common.module';
 import { AppRoutingModule } from './app-routing.module';
 import { ChangePasswordComponent } from './change-password/change-password.component';
@@ -37,6 +36,8 @@ import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { EUDateAdapter } from './eu-date-adapter';
 import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { authFeature } from './authentication/auth.feature';
+import { cookieFeature } from './cookie-banner/cookie.feature';
 
 registerLocaleData(localeDE);
 
@@ -75,7 +76,9 @@ registerLocaleData(localeDE);
     NgxMaterialTimepickerModule,
     MatBottomSheetModule,
     MatDialogModule,
-    StoreModule.forRoot(appReducers),
+    StoreModule.forRoot({}),
+    StoreModule.forFeature(authFeature),
+    StoreModule.forFeature(cookieFeature),
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,
   ],

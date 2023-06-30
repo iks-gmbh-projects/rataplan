@@ -4,11 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { combineLatest, startWith, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
-import { appState } from '../../../app.reducers';
 import { VoteOptionConfig } from '../../../models/vote-option.model';
 import { ExtraValidators } from '../../../validator/validators';
 import { SetVoteOptionConfigAction } from '../../vote.actions';
+import { voteFeature } from '../../vote.feature';
 
 @Component({
   selector: 'app-config-subform',
@@ -36,13 +35,13 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private activeRoute: ActivatedRoute,
-    private store: Store<appState>
+    private store: Store
   ) {
     this.configForm.setValidators(ExtraValidators.filterCountMin(1));
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select('vote')
+    this.storeSub = this.store.select(voteFeature.selectVoteState)
       .pipe(
         filter(state => !!state.vote),
         map(state => state.vote!.voteConfig.voteOptionConfig)

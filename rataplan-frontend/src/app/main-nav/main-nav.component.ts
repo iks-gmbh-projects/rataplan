@@ -6,9 +6,9 @@ import { LoginComponent } from "../login/login.component";
 import { Router } from "@angular/router";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { Store } from "@ngrx/store";
-import { appState } from "../app.reducers";
 import { LogoutAction } from "../authentication/auth.actions";
 import { FrontendUser } from "../models/user.model";
+import { authFeature } from '../authentication/auth.feature';
 
 @Component({
   selector: 'app-main-nav',
@@ -33,12 +33,12 @@ export class MainNavComponent implements OnInit, OnDestroy {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private router: Router,
-    private store: Store<appState>
+    private store: Store
   ) {}
 
   ngOnInit() {
-    this.loggedInSub = this.store.select("auth")
-      .subscribe(auth => this.currentUser = auth.user);
+    this.loggedInSub = this.store.select(authFeature.selectUser)
+      .subscribe(user => this.currentUser = user);
   }
 
   ngOnDestroy() {

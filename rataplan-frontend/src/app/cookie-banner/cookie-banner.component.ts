@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { appState } from '../app.reducers';
 import { Store } from '@ngrx/store';
 import { AcceptCookieAction } from './cookie.actions';
 
@@ -12,7 +11,7 @@ import { AcceptCookieAction } from './cookie.actions';
 export class CookieBannerComponent {
 
   constructor(
-    readonly store: Store<appState>,
+    readonly store: Store,
     readonly ref: MatBottomSheetRef<CookieBannerComponent>,
   ) { }
 

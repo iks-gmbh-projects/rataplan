@@ -3,8 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
-import { appState } from '../../app.reducers';
+import { voteFeature } from '../vote.feature';
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +11,13 @@ import { appState } from '../../app.reducers';
 export class VoteAuthGuard implements CanActivate {
 
   constructor(
-    private store: Store<appState>,
+    private store: Store,
     private router: Router
   ) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.store.select('vote').pipe(
+    return this.store.select(voteFeature.selectVoteState).pipe(
       filter(state => !state.busy),
       take(1),
       map(state => {

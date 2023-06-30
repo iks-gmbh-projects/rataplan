@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ResetPasswordDataModel } from '../models/reset-password-data.model';
 import { ExtraValidators } from "../validator/validators";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { appState } from "../app.reducers";
 import { Store } from "@ngrx/store";
 import { AuthActions, ResetPasswordAction } from "../authentication/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
@@ -32,7 +31,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   private errorSub?: Subscription;
 
   constructor(private formBuilder: FormBuilder,
-              private store: Store<appState>,
+              private store: Store,
               private actions$: Actions,
               private route: ActivatedRoute,
               private snackbar: MatSnackBar,

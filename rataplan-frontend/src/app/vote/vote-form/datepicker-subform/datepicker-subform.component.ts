@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { VoteOptionModel } from "../../../models/vote-option.model";
-import { appState } from "../../../app.reducers";
 import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { AddVoteOptionsAction, RemoveVoteOptionAction } from "../../vote.actions";
 import { MatCalendar } from "@angular/material/datepicker";
+import { voteFeature } from '../../vote.feature';
 
 @Component({
   selector: 'app-datepicker-subform',
@@ -20,7 +20,7 @@ export class DatepickerSubformComponent implements OnInit, OnDestroy {
   private storeSub?: Subscription;
 
   constructor(
-    private store: Store<appState>
+    private store: Store
   ) {
     const currentYear = new Date().getFullYear();
     this.minDate = new Date();
@@ -28,7 +28,7 @@ export class DatepickerSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select("vote")
+    this.storeSub = this.store.select(voteFeature.selectVoteState)
       .pipe(
         filter(state => !!state.vote),
         map(state => state.vote!.options)

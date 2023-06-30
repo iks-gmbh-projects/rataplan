@@ -11,6 +11,12 @@ import { VoteDecisionSubformComponent } from './vote/member-decision-subform/vot
 import { ConfigSubformComponent } from './vote-form/config-subform/config-subform.component';
 import { OverviewSubformComponent } from './vote-form/overview-subform/overview-subform.component';
 import { VoteListComponent } from '../vote-list/vote-list.component';
+import { StoreModule } from '@ngrx/store';
+import { voteFeature } from './vote.feature';
+import { EffectsModule } from '@ngrx/effects';
+import { VoteEffects } from './vote.effects';
+import { CombinedDatetimeMaxDirective } from '../validator/combined-datetime-max.directive';
+import { CombinedDatetimeMinDirective } from '../validator/combined-datetime-min.directive';
 
 @NgModule({
   declarations: [
@@ -24,10 +30,15 @@ import { VoteListComponent } from '../vote-list/vote-list.component';
     ConfigSubformComponent,
     OverviewSubformComponent,
     VoteListComponent,
+
+    CombinedDatetimeMaxDirective,
+    CombinedDatetimeMinDirective,
   ],
   imports: [
     AppCommonModule,
-    VoteRoutingModule
+    VoteRoutingModule,
+    StoreModule.forFeature(voteFeature),
+    EffectsModule.forFeature([VoteEffects]),
   ],
 })
 export class VoteModule {}
