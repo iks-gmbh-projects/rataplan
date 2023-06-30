@@ -9,7 +9,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -60,10 +60,12 @@ import { LinkSubformComponent } from './vote/vote-form/link-subform/link-subform
 import { OverviewSubformComponent } from './vote/vote-form/overview-subform/overview-subform.component';
 import { VoteFormComponent } from './vote/vote-form/vote-form.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
+import { EUDateAdapter } from './eu-date-adapter';
 
 registerLocaleData(localeDE);
 
 @NgModule({
+  bootstrap: [AppComponent],
   declarations: [
     AppComponent,
     ConditionsComponent,
@@ -129,8 +131,7 @@ registerLocaleData(localeDE);
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
-  ],
-  bootstrap: [AppComponent],
+    { provide: DateAdapter, useClass: EUDateAdapter }],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule { }
