@@ -51,6 +51,7 @@ const ActionRequiresInitTypeAssertion: {
 
 export class InitVoteAction implements Action {
   readonly type = VoteActions.INIT;
+
   constructor(
     readonly id?: string | number
   ) {
@@ -59,6 +60,7 @@ export class InitVoteAction implements Action {
 
 export class InitVoteSuccessAction implements Action {
   readonly type = VoteActions.INIT_SUCCESS;
+
   constructor(
     readonly request: VoteModel
   ) {
@@ -67,6 +69,7 @@ export class InitVoteSuccessAction implements Action {
 
 export class InitVoteErrorAction implements Action {
   readonly type = VoteActions.INIT_ERROR;
+
   constructor(
     readonly error: any
   ) {
@@ -82,6 +85,8 @@ export class SetGeneralValuesVoteOptionAction implements Action {
       description?: string,
       deadline: Date,
       decisionType: DecisionType,
+      yesLimitActive: boolean,
+      yesAnswerLimit: number | null
     }
   ) {
   }
@@ -108,6 +113,7 @@ export class SetVoteOptionsAction implements Action {
 export class AddVoteOptionsAction implements Action {
   readonly type = VoteActions.ADD_VOTES;
   readonly votes: VoteOptionModel[];
+
   constructor(
     ...votes: VoteOptionModel[]
   ) {
@@ -117,6 +123,7 @@ export class AddVoteOptionsAction implements Action {
 
 export class EditVoteOptionAction implements Action {
   readonly type = VoteActions.EDIT_VOTE;
+
   constructor(
     readonly index: number,
     readonly voteOption: VoteOptionModel
@@ -126,6 +133,7 @@ export class EditVoteOptionAction implements Action {
 
 export class RemoveVoteOptionAction implements Action {
   readonly type = VoteActions.REMOVE_VOTE;
+
   constructor(
     readonly index: number
   ) {

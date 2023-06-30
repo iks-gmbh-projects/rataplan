@@ -45,4 +45,6 @@ export type VoteConfig<serialized extends boolean = false> = {
   id?: number,
   voteOptionConfig: VoteOptionConfig,
   decisionType: serialized extends false ? DecisionType : SerializedDecisionType,
+  yesLimitActive?:boolean,
+  yesAnswerLimit?:number|null
 };

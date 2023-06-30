@@ -4,10 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
-import { appState } from "../../../app.reducers";
-import { Store } from "@ngrx/store";
-import { SetGeneralValuesVoteOptionAction } from "../../vote.actions";
-import { DecisionType } from "../decision-type.enum";
+import { appState } from '../../../app.reducers';
+import { Store } from '@ngrx/store';
+import { SetGeneralValuesVoteOptionAction } from '../../vote.actions';
+import { DecisionType } from '../decision-type.enum';
 
 @Component({
   selector: 'app-general-subform',
@@ -24,9 +24,12 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     'description': new FormControl(null),
     'deadline': new FormControl(null, Validators.required),
     'decision': new FormControl(0, Validators.required),
+    'yesLimitActive': new FormControl(false, Validators.required),
+    'yesAnswerLimit': new FormControl(null, ExtraValidators.yesAnswerLimitMoreThanZeroOrNull())
   });
 
   showDescription = false;
+  showYesAnswerLimit = false;
 
   private storeSub?: Subscription;
 
@@ -43,18 +46,21 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select("vote")
+    this.storeSub = this.store.select('vote')
       .subscribe(state => {
         const vote = state.vote;
         const title = vote?.title;
         const deadline = vote?.deadline;
         const decision = vote?.voteConfig?.decisionType;
-
+        const yesLimitActive = vote?.voteConfig.yesLimitActive;
+        const yesAnswerLimit = vote?.voteConfig.yesAnswerLimit;
         if (title || deadline) {
           this.generalSubform.get('title')?.setValue(title);
           this.generalSubform.get('description')?.setValue(vote.description);
           this.generalSubform.get('deadline')?.setValue(deadline);
           this.generalSubform.get('decision')?.setValue(decision);
+          this.generalSubform.get('yesAnswerLimit')?.setValue(yesAnswerLimit);
+          this.generalSubform.get('yesLimitActive')?.setValue(yesLimitActive);
         }
         if (this.generalSubform.get('description')?.value) {
           this.showDescription = true;
@@ -73,15 +79,28 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     }
   }
 
+  addAndDeleteYesAnswerLimit() {
+    this.generalSubform.get('yesAnswerLimit')?.setValue(null);
+    this.generalSubform.get('yesAnswerLimit')?.markAsPristine();
+    this.generalSubform.get('yesAnswerLimit')?.setErrors(null);
+  }
+
   nextPage() {
+    if (this.generalSubform.get('yesLimitActive') && Number(this.generalSubform.get('yesAnswerLimit')?.value) <= 0) {
+      this.generalSubform.get('yesAnswerLimit')?.setValue(null);
+    }
     this.store.dispatch(new SetGeneralValuesVoteOptionAction({
       title: this.generalSubform.value.title,
       description: this.generalSubform.value.description,
       deadline: new Date(this.generalSubform.value.deadline),
       decisionType: this.generalSubform.value.decision,
+      yesLimitActive: this.generalSubform.value.yesLimitActive,
+      yesAnswerLimit: this.generalSubform.value.yesAnswerLimit
     }));
     console.log(this.generalSubform.get('title'));
     console.log(this.generalSubform.get('deadline'));
+    console.log(this.generalSubform.get('yesAnswerLimit'));
+    console.log(this.generalSubform.get('yesLimitActive'));
     this.router.navigate(['..', 'configurationOptions'], { relativeTo: this.activeRoute });
   }
 }
