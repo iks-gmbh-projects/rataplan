@@ -64,20 +64,20 @@
               Ja/Vielleicht/Nein
             </mat-radio-button>
             <br>
-            <mat-radio-button [value]="DecisionType.NUMBER">
+            <mat-radio-button [value]="DecisionType.NUMBER" (click)="resetYesLimitActiveAndYesNumberLimit()">
               Teilnehmerzahl
             </mat-radio-button>
           </mat-radio-group>
         </div>
       </div>
-      <div>
+      <div *ngIf="generalSubform.get('decision')?.value != 2">
         <p>Möchten Sie die Anzahl der Ja Antworten begrenzen?</p>
         <mat-radio-group formControlName="yesLimitActive">
           <mat-radio-button style="display: block" [value]=true>Ja</mat-radio-button>
           <mat-radio-button style="display: block" [value]=false (click)="addAndDeleteYesAnswerLimit()">Nein</mat-radio-button>
         </mat-radio-group>
       </div>
-      <div *ngIf="generalSubform.get('yesLimitActive')!.value!">
+      <div *ngIf="generalSubform.get('yesLimitActive')!.value! && generalSubform.get('decision')?.value != 2">
         <p>Geben Sie hier an, wie oft Ja darf ausgewahlt werden</p>
         <mat-form-field>
           <input matInput

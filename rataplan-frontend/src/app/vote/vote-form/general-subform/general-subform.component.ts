@@ -85,6 +85,11 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     this.generalSubform.get('yesAnswerLimit')?.setErrors(null);
   }
 
+  resetYesLimitActiveAndYesNumberLimit(){
+    this.generalSubform.get('yesLimitActive')?.setValue(false);
+    this.addAndDeleteYesAnswerLimit();
+  }
+
   nextPage() {
     if (this.generalSubform.get('yesLimitActive') && Number(this.generalSubform.get('yesAnswerLimit')?.value) <= 0) {
       this.generalSubform.get('yesAnswerLimit')?.setValue(null);
