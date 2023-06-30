@@ -9,3 +9,19 @@
 h2 {
   margin-bottom: 40px;
 }
+
+.vote-link{
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.vote-link-button{
+  color: white;
+  background: #3f51b5;
+}
+
+.link-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}

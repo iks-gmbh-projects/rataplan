@@ -60,6 +60,7 @@ import { LinkSubformComponent } from './vote/vote-form/link-subform/link-subform
 import { OverviewSubformComponent } from './vote/vote-form/overview-subform/overview-subform.component';
 import { VoteFormComponent } from './vote/vote-form/vote-form.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 registerLocaleData(localeDE);
 
@@ -126,6 +127,7 @@ registerLocaleData(localeDE);
     StoreModule.forRoot(appReducers),
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,
+    ClipboardModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
