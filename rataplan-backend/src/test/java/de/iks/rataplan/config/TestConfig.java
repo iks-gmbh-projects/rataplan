@@ -1,18 +1,18 @@
 package de.iks.rataplan.config;
 
 import de.iks.rataplan.mapping.DecisionConverter;
-import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
-import de.iks.rataplan.mapping.crypto.ToEncryptedStringConverter;
+import de.iks.rataplan.service.CryptoService;
 import de.iks.rataplan.service.MockCryptoService;
 import io.jsonwebtoken.SigningKeyResolver;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -20,6 +20,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 
@@ -30,20 +31,21 @@ public class TestConfig {
 
 	private final Environment environment;
 
-    private final MockCryptoService mockCryptoService = new MockCryptoService();
-    private final FromEncryptedStringConverter fromEncryptedStringConverter = new FromEncryptedStringConverter(mockCryptoService);
-    private final ToEncryptedStringConverter toEncryptedStringConverter = new ToEncryptedStringConverter(mockCryptoService);
-    
     @MockBean
     private SigningKeyResolver keyResolver;
-
+    
     @Bean
-    public ModelMapper modelMapper(DecisionConverter decisionConverter) {
+    @Primary
+    public CryptoService mockCryptoService() {
+        return new MockCryptoService();
+    }
+    
+    @Bean
+    public ModelMapper modelMapper(DecisionConverter decisionConverter, List<Converter<?, ?>> converters) {
         ModelMapper mapper = new ModelMapper();
         mapper.addConverter(decisionConverter.toDAO);
         mapper.addConverter(decisionConverter.toDTO);
-        mapper.addConverter(toEncryptedStringConverter);
-        mapper.addConverter(fromEncryptedStringConverter);
+        converters.forEach(mapper::addConverter);
         return mapper;
     }
 
@@ -55,10 +57,9 @@ public class TestConfig {
     @Bean
     public DataSource dataSource() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        EmbeddedDatabase db = builder
+        return builder
                 .setType(EmbeddedDatabaseType.H2)
                 .build();
-        return db;
     }
     
     @Bean 

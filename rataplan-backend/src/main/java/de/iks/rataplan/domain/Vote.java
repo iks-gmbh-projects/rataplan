@@ -184,7 +184,6 @@ public class Vote implements Serializable {
 	public List<String> getConsigneeList() {
 		return consigneeList;
 	}
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "voteId", cascade = CascadeType.ALL)
 	public List<BackendUserAccess> getAccessList() {
 		return accessList;

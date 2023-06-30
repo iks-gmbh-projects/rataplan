@@ -10,4 +10,5 @@ public interface VoteParticipantRepository extends JpaRepository<VoteParticipant
     @Query(value = "SELECT * FROM voteParticipant" +
         " WHERE name NOT LIKE 'ENC\\_\\_##\\_\\_%'", nativeQuery = true)
     public Stream<VoteParticipant> findUnencrypted();
+    public Stream<VoteParticipant> findByUserId(Integer userId);
 }

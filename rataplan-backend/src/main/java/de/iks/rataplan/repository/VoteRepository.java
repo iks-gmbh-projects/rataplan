@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 public interface VoteRepository extends JpaRepository<Vote, Integer> {
 	List<Vote> findAllByUserId(Integer userId);
 	
+	int deleteAllByUserId(Integer userId);
+	
 	List<Vote> findDistinctByParticipants_UserIdIn(Integer userId);
 	
 	List<Vote> findByDeadlineBeforeAndNotifiedFalse(Date deadline);// find by deadline == xx and organizermail not null

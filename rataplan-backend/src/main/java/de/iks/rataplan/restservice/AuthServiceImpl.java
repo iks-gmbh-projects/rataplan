@@ -61,9 +61,7 @@ public class AuthServiceImpl implements AuthService {
                 .toUriString();
             ResponseEntity<Integer> response = restTemplate.getForEntity(url, Integer.class);
             if (response.getStatusCode().is2xxSuccessful() && response.hasBody()) return response.getBody();
-        } catch(RestClientException ex) {
-            log.error("rest error", ex);
-        }
+        } catch(RestClientException ignored) {}
         return null;
     }
     

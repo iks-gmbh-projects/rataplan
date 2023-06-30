@@ -19,53 +19,53 @@ import java.util.Objects;
 @Transactional
 @RequiredArgsConstructor
 public class VoteParticipantServiceImpl implements VoteParticipantService {
-
+    
     private final VoteRepository voteRepository;
-
+    
     private final VoteParticipantRepository voteParticipantRepository;
-
+    
     @Override
     public VoteParticipant createParticipant(Vote vote, VoteParticipant voteParticipant) {
         
         this.validateExpirationDate(vote);
-		if (!this.validateDecisions(vote,voteParticipant))throw new MalformedException("bad");
+        if (!this.validateDecisions(vote,voteParticipant))throw new MalformedException("bad");
         voteParticipant.setId(null);
-
+        
         if (vote.validateDecisionsForParticipant(voteParticipant)) {
             voteParticipant.setVote(vote);
             vote.getParticipants().add(voteParticipant);
-
+            
             for (VoteDecision decision : voteParticipant.getVoteDecisions()) {
                 decision.setVoteParticipant(voteParticipant);
             }
-
+            
             return voteParticipantRepository.saveAndFlush(voteParticipant);
         } else {
             throw new MalformedException("VoteDecisions don't fit the DecisionType in the Vote.");
         }
     }
-
-	@Override
+    
+    @Override
     public void deleteParticipant(Vote vote, VoteParticipant voteParticipant) {
-
+        
         this.validateExpirationDate(vote);
         
         vote.getParticipants().remove(voteParticipant);
         voteRepository.saveAndFlush(vote);
     }
-
+    
     @Override
     public VoteParticipant updateParticipant(
         Vote vote, VoteParticipant dbVoteParticipant,
-            VoteParticipant newVoteParticipant
+        VoteParticipant newVoteParticipant
     ) {
         
         this.validateExpirationDate(vote);
-
+        
         if (!vote.validateDecisionsForParticipant(newVoteParticipant)) {
-        	throw new MalformedException("VoteDecisions don't fit the DecisionType in the Vote.");
+            throw new MalformedException("VoteDecisions don't fit the DecisionType in the Vote.");
         }
-
+        
         dbVoteParticipant.setName(newVoteParticipant.getName());
         dbVoteParticipant.setVote(vote);
 
@@ -90,11 +90,13 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     }
 
     @Override
-    public void anonymizeParticipant(int id) {
-        VoteParticipant member = voteParticipantRepository.findOne(id);
-        member.setName(null);
-        member.setUserId(null);
-        voteParticipantRepository.saveAndFlush(member);
+    public void anonymizeParticipants(int userId) {
+        voteParticipantRepository.findByUserId(userId)
+            .peek(member -> {
+                member.setName(null);
+                member.setUserId(null);
+            })
+            .forEach(voteParticipantRepository::save);
     }
 
     /**
@@ -104,8 +106,10 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
      * @param oldDecisions
      * @param newDecisions
      */
-    private void updateDecisionsForParticipant(List<VoteDecision> oldDecisions,
-            List<VoteDecision> newDecisions) {
+    private void updateDecisionsForParticipant(
+        List<VoteDecision> oldDecisions,
+        List<VoteDecision> newDecisions
+    ) {
         for (VoteDecision voteDecision : oldDecisions) {
             for (VoteDecision newdecision : newDecisions) {
                 if (Objects.equals(voteDecision.getVoteOption().getId(), newdecision.getVoteOption().getId())) {
@@ -117,8 +121,8 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     }
 
     private void validateExpirationDate(Vote vote) {
-    	if (vote.isNotified()) {
-			throw new ForbiddenException("Vote is expired!");
-		}
+        if (vote.isNotified()) {
+            throw new ForbiddenException("Vote is expired!");
+        }
     }
 }
