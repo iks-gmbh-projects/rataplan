@@ -27,11 +27,10 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     public VoteParticipant createParticipant(Vote vote, VoteParticipant voteParticipant) {
         
         this.validateExpirationDate(vote);
-		
+		if (!this.validateDecisions(vote,voteParticipant))throw new MalformedException("bad");
         voteParticipant.setId(null);
 
         if (vote.validateDecisionsForParticipant(voteParticipant)) {
-        	
             voteParticipant.setVote(vote);
             vote.getParticipants().add(voteParticipant);
 
@@ -68,10 +67,25 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
 
         dbVoteParticipant.setName(newVoteParticipant.getName());
         dbVoteParticipant.setVote(vote);
+
+        if (!this.validateDecisions(vote,newVoteParticipant)) throw new MalformedException("bad");
+
         this.updateDecisionsForParticipant(dbVoteParticipant.getVoteDecisions(), newVoteParticipant.getVoteDecisions());
         return voteParticipantRepository.saveAndFlush(dbVoteParticipant);
     }
-    
+
+    public boolean validateDecisions(Vote vote, VoteParticipant voteParticipant){
+        if (vote.getVoteConfig().isYesLimitActive()) {
+            int yesVotes = Math.toIntExact(voteParticipant
+                    .getVoteDecisions()
+                    .stream()
+                    .filter(decision -> decision.getDecision().getValue() == 1)
+                    .count());
+            return yesVotes <= vote.getVoteConfig().getYesAnswerLimit();
+        }
+        return true;
+    }
+
     @Override
     public void anonymizeParticipant(int id) {
         VoteParticipant member = voteParticipantRepository.findOne(id);
