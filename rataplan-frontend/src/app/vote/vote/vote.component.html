@@ -58,8 +58,9 @@
       <mat-error>{{errorMessageService.genericFormError(nameField.control)}}</mat-error>
     </mat-form-field>
   </div>
-  <div>
-    <span>Keine Eingaben werden als nicht Entschieden gespeichert</span>
+  <div class="centered" style="display: inline-block">
+    <p>Keine Eingaben werden als nicht Entschieden gespeichert</p>
+    <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie auf maximal {{vote.voteConfig.yesAnswerLimit!}} Optionen zustimmen</p>
   </div>
   <mat-list>
     <mat-list-item *ngFor='let option of (vote?.options || []); let voteIndex=index'>
@@ -97,7 +98,7 @@
         <mat-button-toggle-group style='scale: 90%'>
           <mat-button-toggle (click)='isPreview || setDecision(option, 1)'
                              [checked]='checkVoteOfMember(option, 1)'
-                             [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed() || isYesVoteLimitMet'
                              matTooltip='Ja'
                              matTooltipPosition='above'>
             <mat-icon>done</mat-icon>
