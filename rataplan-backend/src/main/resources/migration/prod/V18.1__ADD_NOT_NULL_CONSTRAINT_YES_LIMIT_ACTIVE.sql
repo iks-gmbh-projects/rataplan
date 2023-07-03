@@ -1,0 +1,1 @@
+AlTER TABLE voteconfig ALTER COLUMN yeslimitactive SET NOT NULL
