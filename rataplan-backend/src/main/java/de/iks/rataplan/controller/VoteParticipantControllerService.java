@@ -140,14 +140,6 @@ public class VoteParticipantControllerService {
             ) {
                 voteParticipantDTO.setName(authService.fetchDisplayName(user.getId()));
             }
-//            if (vote.getVoteConfig().isYesLimitActive()) {
-//                int yesVotes = Math.toIntExact(voteParticipantDTO
-//                        .getDecisions()
-//                        .stream()
-//                        .filter(decision -> decision.getDecision() == 1)
-//                        .count());
-//                if (yesVotes > vote.getVoteConfig().getYesAnswerLimit()) throw new MalformedException("bad");
-//            }
         }
         return voteParticipantDTO;
     }
