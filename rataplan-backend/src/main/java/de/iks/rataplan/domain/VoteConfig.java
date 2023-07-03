@@ -18,7 +18,7 @@ import javax.persistence.Embedded;
 public class VoteConfig {
 	private VoteOptionConfig voteOptionConfig;
 	private DecisionType decisionType = DecisionType.DEFAULT;
-	private boolean isYesLimitActive;
+	private Boolean yesLimitActive;
 	private Integer yesAnswerLimit;
 
 	public VoteConfig(VoteOptionConfig voteOptionConfig, DecisionType decisionType) {
@@ -35,21 +35,13 @@ public class VoteConfig {
 	public DecisionType getDecisionType() {
 		return decisionType;
 	}
-	@Column(name = "yesLimitActive")
-	public boolean isYesLimitActive() {
-		return isYesLimitActive;
+	@Column(name = "yeslimitactive")
+	public Boolean getYesLimitActive() {
+		return yesLimitActive;
 	}
-	public void setYesLimitActive(boolean yesLimitActive) {
-		isYesLimitActive = yesLimitActive;
-	}
-
 	@Column(name = "yesanswerlimit")
 	public Integer getYesAnswerLimit() {
 		return yesAnswerLimit;
-	}
-
-	public void setYesAnswerLimit(Integer yesAnswerLimit) {
-		this.yesAnswerLimit = yesAnswerLimit;
 	}
 
 	public void assertCreationValid() {
@@ -59,7 +51,7 @@ public class VoteConfig {
 	}
 
 	public boolean assertYesAnswerConfigValid(){
-		if (!this.isYesLimitActive() && this.yesAnswerLimit != null) return false;
-		else return !this.isYesLimitActive() || this.yesAnswerLimit > 0;
+		if (!this.getYesLimitActive() && this.yesAnswerLimit != null) return false;
+		else return !this.getYesLimitActive() || this.yesAnswerLimit > 0;
 	}
 }

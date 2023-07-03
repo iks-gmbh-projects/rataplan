@@ -75,13 +75,16 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     }
 
     public boolean validateDecisions(Vote vote, VoteParticipant voteParticipant){
-        if (vote.getVoteConfig().isYesLimitActive()) {
-            int yesVotes = Math.toIntExact(voteParticipant
-                    .getVoteDecisions()
-                    .stream()
-                    .filter(decision -> decision.getDecision().getValue() == 1)
-                    .count());
-            return yesVotes <= vote.getVoteConfig().getYesAnswerLimit();
+        if (vote.getVoteConfig().getYesLimitActive()) {
+            if (voteParticipant.getVoteDecisions().isEmpty()) return false;
+            else {
+                int yesVotes = Math.toIntExact(voteParticipant
+                        .getVoteDecisions()
+                        .stream()
+                        .filter(decision -> decision.getDecision().getValue() == 1)
+                        .count());
+                return yesVotes <= vote.getVoteConfig().getYesAnswerLimit();
+            }
         }
         return true;
     }
@@ -93,7 +96,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
         member.setUserId(null);
         voteParticipantRepository.saveAndFlush(member);
     }
-    
+
     /**
      * updates the oldDecisions decisions to the new ones based on the
      * voteOptionId's
@@ -112,7 +115,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
             }
         }
     }
-    
+
     private void validateExpirationDate(Vote vote) {
     	if (vote.isNotified()) {
 			throw new ForbiddenException("Vote is expired!");
