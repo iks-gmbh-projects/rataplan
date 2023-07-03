@@ -11,27 +11,31 @@ import { VoteListService } from '../services/dashboard-service/vote-list.service
 })
 export class VoteListComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
+  ready: 0|1|2|3|4|5|6|7 = 0;
   createdVotes: VoteModel[] = [];
   consignedVotes: VoteModel[] = [];
   participatedVotes: VoteModel[] = [];
 
-  constructor(private voteListService: VoteListService) { }
+  constructor(readonly voteListService: VoteListService) { }
 
   public ngOnInit(): void {
     this.voteListService.getCreatedVotes()
       .pipe(takeUntil(this.destroySubject))
       .subscribe(res => {
         this.createdVotes = res;
+        this.ready |= 1;
       });
     this.voteListService.getCondignedVotes()
       .pipe(takeUntil(this.destroySubject))
       .subscribe(res => {
         this.consignedVotes = res;
+        this.ready |= 2;
       })
     this.voteListService.getParticipatedVotes()
       .pipe(takeUntil(this.destroySubject))
       .subscribe(res => {
         this.participatedVotes = res;
+        this.ready |= 4;
       });
   }
 
