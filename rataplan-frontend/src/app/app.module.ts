@@ -17,7 +17,6 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { appEffects } from './app.effects';
-import { AppCommonModule } from './app-common.module';
 import { AppRoutingModule } from './app-routing.module';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
@@ -38,6 +37,13 @@ import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { authFeature } from './authentication/auth.feature';
 import { cookieFeature } from './cookie-banner/cookie.feature';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
 
 registerLocaleData(localeDE);
 
@@ -65,8 +71,15 @@ registerLocaleData(localeDE);
   imports: [
     BrowserModule,
     AppRoutingModule,
-    AppCommonModule,
+    ReactiveFormsModule,
+    FormsModule,
     BrowserAnimationsModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatButtonModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatListModule,
     MatToolbarModule,
     MatSidenavModule,
     MatNativeDateModule,
