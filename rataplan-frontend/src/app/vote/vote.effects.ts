@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
+import { Actions, concatLatestFrom, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, delayWhen, from, of, switchMap, take } from 'rxjs';
+import { catchError, delayWhen, from, of, startWith, switchMap, take } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { deserializeVoteModel, VoteModel } from '../models/vote.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
@@ -18,6 +18,9 @@ import {
 import { DecisionType } from './vote-form/decision-type.enum';
 import { voteFeature } from './vote.feature';
 import { authFeature } from '../authentication/auth.feature';
+import { VoteListService } from '../services/dashboard-service/vote-list.service';
+import { notificationActions } from '../notification/notification.actions';
+import { voteNotificationtypes } from './vote.notificationtypes';
 
 @Injectable({
   providedIn: 'root',
@@ -29,9 +32,23 @@ export class VoteEffects {
     private readonly http: HttpClient,
     private readonly router: Router,
     private readonly activeRoute: ActivatedRoute,
-    private readonly urlService: BackendUrlService
+    private readonly urlService: BackendUrlService,
+    private readonly voteListService: VoteListService
   ) {
   }
+
+  loadNotifications = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ROOT_EFFECTS_INIT),
+      startWith(null),
+      switchMap(() => this.voteListService.getCondignedVotes()),
+      map(v => v.length),
+      switchMap(n => of(
+        notificationActions.clear(voteNotificationtypes.consigns),
+        notificationActions.notify(voteNotificationtypes.consigns, n)
+      ))
+    );
+  });
 
   initVote = createEffect(() => { return this.actions$.pipe(
     ofType(VoteActions.INIT),

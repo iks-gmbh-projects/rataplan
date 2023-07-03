@@ -1,7 +1,7 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidenav" fixedInViewport
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'over'">
+               [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+               [mode]="(isHandset$ | async) ? 'over' : 'over'">
     <mat-toolbar color="primary">drumdibum</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item routerLink="/" (click)="drawer.close()">Home</a>
@@ -25,16 +25,31 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>drumdibum</span>
-      <span class="fillRemainingSpace" ></span>
-      <button  (click)="onClick()" [matMenuTriggerFor]="menu" #trigger = "matMenuTrigger" class="loginIcon" mat-icon-button color="FFFFFF" aria-label="Example icon button with a home icon">
+      <span class="fillRemainingSpace"></span>
+      <button (click)="onClick()" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" class="loginIcon" mat-icon-button
+              color="FFFFFF" aria-label="Example icon button with a home icon">
         <mat-icon *ngIf='!this.currentUser'>login</mat-icon>
-        <mat-icon *ngIf='this.currentUser'>perm_identity</mat-icon>
+        <mat-icon *ngIf='this.currentUser' [matBadge]="notificationCount" [matBadgeHidden]="!notificationCount" matBadgeColor="warn" matBadgeOverlap="false" matBadgeSize="small">
+          perm_identity
+        </mat-icon>
       </button>
-      <mat-menu #menu="matMenu" >
-        <button mat-menu-item routerLink="/view-profile"><mat-icon>account_circle</mat-icon>Profil</button>
-        <button mat-menu-item routerLink="/survey/own"><mat-icon>campaign</mat-icon>Meine Umfragen</button>
-        <button mat-menu-item routerLink="/vote/own"><mat-icon>campaign</mat-icon>Meine Abstimmungen</button>
-        <button mat-menu-item routerLink="/" (click)="onLogout()"><mat-icon>logout</mat-icon>Logout</button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item routerLink="/view-profile">
+          <mat-icon>account_circle</mat-icon>
+          Profil
+        </button>
+        <button mat-menu-item routerLink="/survey/own">
+          <mat-icon>campaign</mat-icon>
+          Meine Umfragen
+        </button>
+        <button mat-menu-item routerLink="/vote/own">
+          <mat-icon [matBadge]="notificationState[notificationTypeConsignee] || 0" [matBadgeHidden]="!notificationState[notificationTypeConsignee]" matBadgeSize="small" matBadgeOverlap="false">campaign</mat-icon>
+          Meine Abstimmungen
+        </button>
+        <button mat-menu-item routerLink="/" (click)="onLogout()">
+          <mat-icon>logout</mat-icon>
+          Logout
+        </button>
       </mat-menu>
     </mat-toolbar>
     <ng-content></ng-content>

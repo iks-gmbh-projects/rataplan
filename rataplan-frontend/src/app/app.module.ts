@@ -44,6 +44,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
+import { notificationFeature } from './notification/notification.feature';
 
 registerLocaleData(localeDE);
 
@@ -92,6 +93,7 @@ registerLocaleData(localeDE);
     StoreModule.forRoot({}),
     StoreModule.forFeature(authFeature),
     StoreModule.forFeature(cookieFeature),
+    StoreModule.forFeature(notificationFeature),
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,
   ],

@@ -9,6 +9,8 @@ import { Store } from "@ngrx/store";
 import { LogoutAction } from "../authentication/auth.actions";
 import { FrontendUser } from "../models/user.model";
 import { authFeature } from '../authentication/auth.feature';
+import { notificationFeature } from '../notification/notification.feature';
+import { voteNotificationtypes } from '../vote/vote.notificationtypes';
 
 @Component({
   selector: 'app-main-nav',
@@ -27,7 +29,11 @@ export class MainNavComponent implements OnInit, OnDestroy {
     );
 
   currentUser?: FrontendUser;
+  notificationCount: number = 0;
+  notificationState: {[type: string]: number} = {};
+  readonly notificationTypeConsignee = voteNotificationtypes.consigns;
   private loggedInSub?: Subscription;
+  private notificationSub?: Subscription;
 
 
   constructor(
@@ -39,6 +45,11 @@ export class MainNavComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loggedInSub = this.store.select(authFeature.selectUser)
       .subscribe(user => this.currentUser = user);
+    this.notificationSub = this.store.select(notificationFeature.selectNotificationState)
+      .subscribe(n => {
+        this.notificationState = n;
+        this.notificationCount = Object.values(n).reduce((a, b) => a+b, 0)
+      });
   }
 
   ngOnDestroy() {
