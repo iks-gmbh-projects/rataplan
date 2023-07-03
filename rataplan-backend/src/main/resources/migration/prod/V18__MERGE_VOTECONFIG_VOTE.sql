@@ -7,12 +7,8 @@ ALTER TABLE vote
     ADD COLUMN isURL         boolean,
     ADD COLUMN isDescription boolean;
 
-MERGE INTO vote
-USING voteConfig
-ON vote.voteConfigId = voteConfig.id
-WHEN MATCHED THEN
-    UPDATE
-    SET (
+UPDATE vote
+SET (
             decisionType,
             isStartDate,
             isEndDate,
@@ -28,7 +24,9 @@ WHEN MATCHED THEN
             voteConfig.isEndTime,
             voteConfig.isURL,
             voteConfig.isDescription
-            );
+            )
+FROM voteConfig
+WHERE vote.voteConfigId = voteConfig.id;
 
 ALTER TABLE vote
     ALTER COLUMN decisionType SET NOT NULL,
@@ -38,6 +36,6 @@ ALTER TABLE vote
     ALTER COLUMN isEndTime SET NOT NULL,
     ALTER COLUMN isURL SET NOT NULL,
     ALTER COLUMN isDescription SET NOT NULL,
-    DROP COLUMN voteconfigid;
+    DROP COLUMN voteConfigId;
 
 DROP TABLE voteConfig;
