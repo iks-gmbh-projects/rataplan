@@ -29,7 +29,6 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   });
 
   showDescription = false;
-  showYesAnswerLimit = false;
 
   private storeSub?: Subscription;
 
@@ -79,7 +78,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     }
   }
 
-  addAndDeleteYesAnswerLimit() {
+  sanitiseYesAnswerLimit() {
     this.generalSubform.get('yesAnswerLimit')?.setValue(null);
     this.generalSubform.get('yesAnswerLimit')?.markAsPristine();
     this.generalSubform.get('yesAnswerLimit')?.setErrors(null);
@@ -87,12 +86,13 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
 
   resetYesLimitActiveAndYesNumberLimit(){
     this.generalSubform.get('yesLimitActive')?.setValue(false);
-    this.addAndDeleteYesAnswerLimit();
+    this.sanitiseYesAnswerLimit();
   }
 
   nextPage() {
-    if (this.generalSubform.get('yesLimitActive') && Number(this.generalSubform.get('yesAnswerLimit')?.value) <= 0) {
-      this.generalSubform.get('yesAnswerLimit')?.setValue(null);
+    if ((this.generalSubform.get('yesLimitActive') && Number(this.generalSubform.get('yesAnswerLimit')?.value) <= 0)
+      || this.generalSubform.get('decision')?.value === 2) {
+      this.resetYesLimitActiveAndYesNumberLimit();
     }
     this.store.dispatch(new SetGeneralValuesVoteOptionAction({
       title: this.generalSubform.value.title,
