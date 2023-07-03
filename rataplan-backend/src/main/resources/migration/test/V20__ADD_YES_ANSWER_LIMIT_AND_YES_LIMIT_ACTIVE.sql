@@ -1,17 +1,16 @@
-ALTER TABLE voteconfig
-    ADD COLUMN yeslimitactive boolean
+ALTER TABLE vote
+    ADD COLUMN yeslimitactive boolean NOT NULL
         default false;
 
-ALTER TABLE voteconfig
+ALTER TABLE vote
     ALTER COLUMN yeslimitactive
         DROP DEFAULT;
 
 
-ALTER TABLE voteconfig
+ALTER TABLE vote
     ADD COLUMN yesanswerlimit integer
         default null;
 
-ALTER TABLE voteconfig
+ALTER TABLE vote
     ALTER COLUMN yesanswerlimit
         DROP DEFAULT;
-

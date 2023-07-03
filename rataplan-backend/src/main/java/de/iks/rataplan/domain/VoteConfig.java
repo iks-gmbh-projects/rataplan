@@ -1,10 +1,7 @@
 package de.iks.rataplan.domain;
 
 import de.iks.rataplan.exceptions.MalformedException;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -12,18 +9,18 @@ import javax.persistence.Embedded;
 
 @Embeddable
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
 public class VoteConfig {
 	private VoteOptionConfig voteOptionConfig;
 	private DecisionType decisionType = DecisionType.DEFAULT;
-	private Boolean yesLimitActive;
+	private boolean yesLimitActive;
 	private Integer yesAnswerLimit;
 
 	public VoteConfig(VoteOptionConfig voteOptionConfig, DecisionType decisionType) {
-		this.voteOptionConfig = voteOptionConfig;
-		this.decisionType = decisionType;
+		this(voteOptionConfig, decisionType, false, null);
 	}
 	
 	@Embedded
@@ -36,7 +33,7 @@ public class VoteConfig {
 		return decisionType;
 	}
 	@Column(name = "yeslimitactive")
-	public Boolean getYesLimitActive() {
+	public boolean getYesLimitActive() {
 		return yesLimitActive;
 	}
 	@Column(name = "yesanswerlimit")
