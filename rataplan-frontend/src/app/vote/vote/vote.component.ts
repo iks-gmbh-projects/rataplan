@@ -17,6 +17,12 @@ import { VoteService } from './vote-service/vote.service';
 import { voteFeature } from '../vote.feature';
 import { authFeature } from '../../authentication/auth.feature';
 
+const decisionCycle = {
+  [VoteOptionDecisionType.NO_ANSWER]: VoteOptionDecisionType.ACCEPT,
+  [VoteOptionDecisionType.ACCEPT]: VoteOptionDecisionType.ACCEPT_IF_NECESSARY,
+  [VoteOptionDecisionType.ACCEPT_IF_NECESSARY]: VoteOptionDecisionType.DECLINE,
+  [VoteOptionDecisionType.DECLINE]: VoteOptionDecisionType.NO_ANSWER,
+} as const;
 
 @Component({
   selector: 'app-vote',
@@ -63,12 +69,12 @@ export class VoteComponent implements OnInit, OnDestroy {
       this.isPreview = isPreview;
       this.vote = vote;
       this.deadlineService.setDeadline(new Date(vote.deadline));
-      if (!this.deadlineService.hasDeadlinePassed()) {
+      if(!this.deadlineService.hasDeadlinePassed()) {
         this.setVoteOptions();
       }
       this.userVoted = this.vote!.participants.some(participant =>
         participant.userId === this.currentUser?.id);
-      if (this.currentUser) {
+      if(this.currentUser) {
         this.voteParticipant.name = this.currentUser.displayname;
       }
     });
@@ -85,11 +91,11 @@ export class VoteComponent implements OnInit, OnDestroy {
   }
 
   saveVote() {
-    if (this.isEditMember) {
+    if(this.isEditMember) {
       this.updateVote();
       return;
     }
-    if (this.currentUser != null && this.userVoted) {
+    if(this.currentUser != null && this.userVoted) {
       console.log(this.currentUser + ' hat schon abgestimmt');
       this.resetVote();
       return;
@@ -118,13 +124,13 @@ export class VoteComponent implements OnInit, OnDestroy {
     };
     this.nameField?.reset();
     this.setVoteOptions();
-    if (this.currentUser !== null) {
+    if(this.currentUser !== null) {
       this.voteParticipant.name = this.currentUser?.displayname;
     }
   }
 
   setVoteOptions() {
-    if (this.vote?.voteConfig.decisionType === DecisionType.NUMBER) {
+    if(this.vote?.voteConfig.decisionType === DecisionType.NUMBER) {
       this.voteParticipant.decisions = this.vote!.options.map(vote => ({
         optionId: vote.id!,
         participants: 0,
@@ -154,6 +160,67 @@ export class VoteComponent implements OnInit, OnDestroy {
     voteDecision.participants = participants;
   }
 
+  cycleDecision(vote: VoteOptionModel): void {
+    const index = this.vote!.options.indexOf(vote);
+    const voteDecision = this.voteParticipant.decisions[index];
+
+    do {
+      voteDecision.decision = decisionCycle[voteDecision.decision || VoteOptionDecisionType.NO_ANSWER];
+    } while (!this.canChooseDecision(voteDecision.decision, vote));
+  }
+
+  private canChooseDecision(decision: VoteOptionDecisionType, vote: VoteOptionModel): boolean {
+    switch (decision) {
+      case VoteOptionDecisionType.ACCEPT_IF_NECESSARY:
+        return this.vote!.voteConfig.decisionType == DecisionType.EXTENDED
+      case VoteOptionDecisionType.ACCEPT:
+        if(!this.vote!.voteConfig.yesLimitActive) return true;
+        return this.voteParticipant.decisions
+          .map(d => d.decision)
+          .filter(d => d == VoteOptionDecisionType.ACCEPT)
+          .length < this.vote!.voteConfig.yesAnswerLimit!;
+    }
+    return true;
+  }
+
+  decisionDescription(vote: VoteOptionModel): {
+    class: string,
+    icon?: string,
+    tooltip?: string,
+  } {
+    const index = this.vote!.options.indexOf(vote);
+    const voteDecision = this.voteParticipant.decisions[index];
+    switch (voteDecision.decision!) {
+      case VoteOptionDecisionType.ACCEPT:
+        return {
+          class: "checkedAccept",
+          tooltip: "Ja",
+          icon: "done",
+        };
+      case VoteOptionDecisionType.ACCEPT_IF_NECESSARY:
+        return {
+          class: "checkedAcceptIfNecessary",
+          tooltip: "Vielleicht",
+          icon: "question_mark",
+        };
+      case VoteOptionDecisionType.DECLINE:
+        return {
+          class: "checkedDecline",
+          tooltip: "Nein",
+          icon: "close",
+        };
+      case VoteOptionDecisionType.NO_ANSWER:
+        return {
+          class: "checkedNoAnswer",
+          tooltip: "Keine Antwort",
+        };
+      default:
+        return {
+          class: "",
+        };
+    }
+  }
+
   setDecision(vote: VoteOptionModel, decision: number) {
     const index = this.vote!.options.indexOf(vote);
     const voteDecision = this.voteParticipant.decisions[index];
@@ -163,14 +230,12 @@ export class VoteComponent implements OnInit, OnDestroy {
         voteDecision.decision = VoteOptionDecisionType.ACCEPT;
         if (this.votes.size < this.vote!.voteConfig?.yesAnswerLimit! && !this.votes.get(index)){
           this.updateYesAnswerRestrictions(1,index);
-        }
-        break;
+        }break;
       case 2:
         voteDecision.decision = VoteOptionDecisionType.ACCEPT_IF_NECESSARY;
         break;
       default:
-        voteDecision.decision = VoteOptionDecisionType.DECLINE;
-        if (this.votes.get(index))this.updateYesAnswerRestrictions(3,index);
+        voteDecision.decision = VoteOptionDecisionType.DECLINE;if (this.votes.get(index))this.updateYesAnswerRestrictions(3,index);
         break;
     }
   }
@@ -190,7 +255,7 @@ export class VoteComponent implements OnInit, OnDestroy {
 
   editMember(member: VoteParticipantModel) {
     this.isEditMember = true;
-    if (member.name != undefined) {
+    if(member.name != undefined) {
       this.voteParticipant = member;
     }
   }

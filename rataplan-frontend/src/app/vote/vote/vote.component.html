@@ -99,37 +99,15 @@
           <mat-error>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
         </mat-form-field>
         <ng-template #decisionComplex>
-          <mat-button-toggle-group style='scale: 90%'>
-            <mat-button-toggle (click)='yesButton.disabled || setDecision(option, 1)'
-                               [checked]='checkVoteOfMember(option, 1)'
-                               [disabled]='isPreview || deadlineService.hasDeadlinePassed()|| isYesVoteLimitMet'
-                               matTooltip='Ja'
-                               matTooltipPosition='above'
-              #yesButton=matButtonToggle><mat-icon>done</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle *ngIf='vote?.voteConfig?.decisionType === DecisionType.EXTENDED'
-                               (click)='maybeButton.disabled || setDecision(option, 2)'
-                               [checked]='checkVoteOfMember(option, 2)'
-                               [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
-                               matTooltip='Vielleicht'
-                               matTooltipPosition='above'
-            #maybeButton=matButtonToggle>  <mat-icon>question_mark</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle (click)='noButton.disabled || setDecision(option, 3)'
-                               [checked]='checkVoteOfMember(option, 3)'
-                               [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
-                               matTooltip='Nein'
-                               matTooltipPosition='above'#noButton=matButtonToggle>
-              <mat-icon>close</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle (click)='isPreview || setDecision(option, 0)'
-                               [checked]='checkVoteOfMember(option, 0)'
-                               [disabled]='isPreview || deadlineService.hasDeadlinePassed()'
-                               matTooltip='Keine Antwort'
-                               matTooltipPosition='above'>
-              <mat-icon></mat-icon>
-            </mat-button-toggle>
-          </mat-button-toggle-group>
+          <mat-button-toggle
+            *ngIf="decisionDescription(option) as desc"
+            [class]='desc.class'
+            [matTooltip]='desc.tooltip || ""'
+            matTooltipPosition='above'
+            (click)='isPreview || deadlineService.hasDeadlinePassed() || cycleDecision(option); selectionButton.checked = false'
+            #selectionButton>
+            <mat-icon>{{desc.icon || ""}}</mat-icon>
+          </mat-button-toggle>
         </ng-template>
       </div>
     </div>

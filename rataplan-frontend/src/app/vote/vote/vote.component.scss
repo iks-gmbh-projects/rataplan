@@ -60,3 +60,23 @@
 .topspace {
   margin-top: 1rem;
 }
+
+.checkedAccept {
+  background-color: limegreen;
+}
+
+.checkedAcceptIfNecessary {
+  background-color: yellow;
+}
+
+.checkedDecline {
+  background-color: red;
+}
+
+.checkedNoAnswer {
+  background-color: lightgray;
+}
+
+.checkedAccept, .checkedAcceptIfNecessary, .checkedDecline, .checkedNoAnswer {
+  scale: 90%;
+}
