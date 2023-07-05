@@ -30,6 +30,7 @@ public class SurveyResponseController {
             if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             surveyResponseDTO.setUserId(user.getId());
         }
+        surveyResponseDTO.trimAndNull();
         if(!surveyResponseDTO.valid()) return ResponseEntity.badRequest().build();
         return responseService.processSurveyResponseDTOs(surveyResponseDTO);
     }

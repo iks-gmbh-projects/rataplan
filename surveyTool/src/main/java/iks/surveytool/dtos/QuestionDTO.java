@@ -28,6 +28,12 @@ public class QuestionDTO extends AbstractDTO {
     }
     
     @Override
+    public void trimAndNull() {
+        text = trimAndNull(text);
+        if(checkboxGroup != null) checkboxGroup.trimAndNull();
+    }
+    
+    @Override
     public boolean valid() {
         return text != null && !text.isBlank() && (hasCheckbox ? checkboxGroup != null && checkboxGroup.valid() : checkboxGroup == null);
     }

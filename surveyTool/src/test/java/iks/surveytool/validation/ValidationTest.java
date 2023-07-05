@@ -494,7 +494,7 @@ class ValidationTest {
                 .createQuestionGroupIn(survey, 1L, "Bla");
 
         Question question = new QuestionBuilder()
-                .createQuestionIn(group, 1L, "Test Question", false, true);
+                .createQuestionIn(group, 1L, "Test Question", true, true);
         
         Checkbox checkbox = new CheckboxBuilder()
                 .createCheckbox(1L, "Test Checkbox", true);
@@ -521,7 +521,7 @@ class ValidationTest {
                 .createQuestionGroupIn(survey, 1L, "Bla");
 
         Question question = new QuestionBuilder()
-                .createQuestionIn(group, 1L, "Test Question", false, false);
+                .createQuestionIn(group, 1L, "Test Question", true, false);
 
         SurveyResponse response = new SurveyResponseBuilder()
                 .createResponse(1L, survey, null);
@@ -530,6 +530,27 @@ class ValidationTest {
                 .createAnswerIn(response, 1L, null, question, null);
 
         assertFalse(answer.validate());
+    }
+    
+    @Test
+    @DisplayName("Successful validation - Answer missing Text when text Question and not required")
+    void answerMissingTextWhenQuestionWithTextFieldNotRequired() {
+        Survey survey = new SurveyBuilder()
+            .createDefaultSurvey();
+        
+        QuestionGroup group = new QuestionGroupBuilder()
+            .createQuestionGroupIn(survey, 1L, "Bla");
+        
+        Question question = new QuestionBuilder()
+            .createQuestionIn(group, 1L, "Test Question", false, false);
+        
+        SurveyResponse response = new SurveyResponseBuilder()
+            .createResponse(1L, survey, null);
+        
+        Answer answer = new AnswerBuilder()
+            .createAnswerIn(response, 1L, null, question, null);
+        
+        assertTrue(answer.validate());
     }
 
     @Test

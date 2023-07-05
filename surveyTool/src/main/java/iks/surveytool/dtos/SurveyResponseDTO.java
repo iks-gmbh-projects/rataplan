@@ -15,6 +15,11 @@ public class SurveyResponseDTO extends AbstractDTO {
     private Map<Long, AnswerDTO> answers;
     
     @Override
+    public void trimAndNull() {
+        if(answers != null) answers.values().forEach(AnswerDTO::trimAndNull);
+    }
+    
+    @Override
     public boolean valid() {
         return answers != null && answers.values().stream().allMatch(AnswerDTO::valid);
     }

@@ -9,5 +9,12 @@ import lombok.*;
 abstract class AbstractDTO {
     private Long id;
     
+    public abstract void trimAndNull();
+    
+    protected static String trimAndNull(String s) {
+        if(s.isBlank()) return null;
+        return s.trim();
+    }
+    
     public abstract boolean valid();
 }

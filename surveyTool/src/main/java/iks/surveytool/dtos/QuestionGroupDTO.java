@@ -22,6 +22,12 @@ public class QuestionGroupDTO extends AbstractDTO {
     }
     
     @Override
+    public void trimAndNull() {
+        title = trimAndNull(title);
+        if(questions != null) questions.forEach(QuestionDTO::trimAndNull);
+    }
+    
+    @Override
     public boolean valid() {
         return title != null && !title.isBlank() && questions.stream().allMatch(QuestionDTO::valid);
     }

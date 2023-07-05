@@ -30,6 +30,12 @@ public class SurveyOverviewDTO extends AbstractDTO {
     private Long userId;
     
     @Override
+    public void trimAndNull() {
+        name = trimAndNull(name);
+        description = trimAndNull(description);
+    }
+    
+    @Override
     public boolean valid() {
         return name != null && !name.isBlank() &&
             description != null && !description.isBlank() &&

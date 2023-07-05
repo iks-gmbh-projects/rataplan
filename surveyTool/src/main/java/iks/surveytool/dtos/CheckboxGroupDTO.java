@@ -26,6 +26,11 @@ public class CheckboxGroupDTO extends AbstractDTO {
     }
     
     @Override
+    public void trimAndNull() {
+        if(checkboxes != null) checkboxes.forEach(CheckboxDTO::trimAndNull);
+    }
+    
+    @Override
     public boolean valid() {
         if(!multipleSelect) return true;
         final int choiceCount = checkboxes.size();

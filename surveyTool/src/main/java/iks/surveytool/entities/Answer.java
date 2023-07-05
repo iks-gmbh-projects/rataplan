@@ -66,6 +66,7 @@ public class Answer extends AbstractEntity {
     }
 
     private boolean checkIfAnswerTextValid() {
+        if(this.text == null && !this.question.isRequired()) return true;
         return this.text != null && this.text.getString().length() <= 1500;
     }
 }

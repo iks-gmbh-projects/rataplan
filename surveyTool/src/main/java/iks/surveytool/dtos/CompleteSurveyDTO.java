@@ -16,6 +16,12 @@ public class CompleteSurveyDTO extends SurveyOverviewDTO {
     private List<QuestionGroupDTO> questionGroups;
     
     @Override
+    public void trimAndNull() {
+        super.trimAndNull();
+        if(questionGroups != null) questionGroups.forEach(QuestionGroupDTO::trimAndNull);
+    }
+    
+    @Override
     public boolean valid() {
         return super.valid() && questionGroups.stream().allMatch(QuestionGroupDTO::valid);
     }

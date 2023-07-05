@@ -19,6 +19,11 @@ public class CheckboxDTO extends AbstractDTO {
     }
     
     @Override
+    public void trimAndNull() {
+        text = trimAndNull(text);
+    }
+    
+    @Override
     public boolean valid() {
         return text != null && !text.isBlank();
     }

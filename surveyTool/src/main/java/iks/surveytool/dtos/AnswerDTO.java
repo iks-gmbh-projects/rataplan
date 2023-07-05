@@ -22,6 +22,11 @@ public class AnswerDTO extends AbstractDTO {
     }
     
     @Override
+    public void trimAndNull() {
+        text = trimAndNull(text);
+    }
+    
+    @Override
     public boolean valid() {
         return this.text == null || !this.text.isBlank();
     }
