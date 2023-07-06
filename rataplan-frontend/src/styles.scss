@@ -16,6 +16,15 @@ body {
   width: 80vw;
   max-width: 400px;
 }
+
+.mat-form-field.unlimited {
+  display: block;
+}
+
+.mat-form-field.unlimited, .mat-form-field.inline-unlimited {
+  max-width: unset;
+}
+
 .username {
   margin-top: 21.5px;
 }
@@ -71,11 +80,15 @@ body {
   max-width: 80%;
 }
 
-*:has(>.left,>.center,>.right) {
+.padded {
+  margin: 2rem;
+}
+
+*:has(>.left,>.middle,>.right) {
   display: flex;
 }
 
-.left, .center, .right {
+.left, .middle, .right {
   position: relative;
   display: inline-flex;
 }
@@ -84,7 +97,7 @@ body {
   text-align: left;
 }
 
-.center {
+.middle {
   flex-grow: 1;
 }
 

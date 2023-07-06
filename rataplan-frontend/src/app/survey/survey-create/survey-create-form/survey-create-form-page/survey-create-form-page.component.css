@@ -1,6 +1,7 @@
 .inputFieldWrapper {
   width: 100%;
 }
+
 .newLine {
   white-space: normal;
 }
@@ -19,4 +20,25 @@ mat-form-field {
 
 .nextContainer {
   text-align: end;
+}
+
+.bottomspace {
+  margin-bottom: 1ex;
+}
+
+.answerGrid {
+  display: grid;
+  grid-template-columns: auto minmax(min-content, max-content);
+}
+
+.answerField {
+  grid-column: 1;
+}
+
+.answerCheckbox {
+  grid-column: 1 / span 2;
+}
+
+.answerDelete {
+  grid-column: 2;
 }
