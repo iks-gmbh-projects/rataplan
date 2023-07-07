@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `endDate` timestamp,
   `url` varchar(30),
   `description` varchar(200) NOT NULL,
+    CONSTRAINT appointment_appointmentRequestId_fkey
     FOREIGN KEY (appointmentRequestId)
     REFERENCES appointmentRequest(id),
     PRIMARY KEY (id)
@@ -36,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `appointmentMember` (
   `id` int NOT NULL AUTO_INCREMENT,
   `appointmentRequestId` int  NOT NULL,
   `name` varchar(100),
+    CONSTRAINT appointmentMember_appointmentRequestId_fkey
     FOREIGN KEY (appointmentRequestId)
     REFERENCES appointmentRequest(id),
     PRIMARY KEY (id)
@@ -46,11 +48,13 @@ CREATE TABLE IF NOT EXISTS `appointmentDecision` (
   `appointmentMemberId` int NOT NULL,
   `decision` int,
   `participants` int,
-  PRIMARY KEY (id),
-  CONSTRAINT unique_appointmentId_appointmentMemberId
-  UNIQUE (appointmentId, appointmentMemberId),
+    PRIMARY KEY (id),
+    CONSTRAINT unique_appointmentId_appointmentMemberId
+    UNIQUE (appointmentId, appointmentMemberId),
+    CONSTRAINT appointmentDecision_appointmentId_fkey
     FOREIGN KEY (appointmentId)
     REFERENCES appointment(id),
+    CONSTRAINT appointmentDecision_appointmentMemberId_fkey
     FOREIGN KEY (appointmentMemberId)
     REFERENCES appointmentMember(id)
 );
