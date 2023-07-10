@@ -1,15 +1,13 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 
 import { AuthActions, ChangeProfileDetailsAction } from '../authentication/auth.actions';
 import { FrontendUser } from '../models/user.model';
-import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
 import {
   UsernameEmailValidatorsService,
@@ -31,14 +29,11 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private store: Store,
     private actions$: Actions,
     private snackbar: MatSnackBar,
     private emailValidatorsService: UsernameEmailValidatorsService,
     public readonly errorMessageService: FormErrorMessageService,
-    public http: HttpClient,
-    public urlService: BackendUrlService,
   ) {
   }
 
