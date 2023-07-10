@@ -18,6 +18,7 @@ import { SurveyListComponent } from './survey-list/survey-list.component';
 import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
+import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unknown-error.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SurveyResultsComponent } from './survey-results/survey-results.componen
     SurveyMissingComponent,
     SurveyForbiddenComponent,
     SurveyAnswerComponent,
+    SurveyUnknownErrorComponent,
   ],
   imports: [
     AppCommonModule,
