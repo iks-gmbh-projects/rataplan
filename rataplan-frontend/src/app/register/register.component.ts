@@ -1,17 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import {
   UsernameEmailValidatorsService,
 } from '../services/username-email-validators-service/username-email-validators.service';
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { RegisterData } from "../models/user.model";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
 import { Store } from "@ngrx/store";
 import { AuthActions, RegisterAction } from "../authentication/auth.actions";
 import { Subscription } from "rxjs";
-import { map } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { authFeature } from '../authentication/auth.feature';
@@ -20,7 +19,7 @@ import { authFeature } from '../authentication/auth.feature';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
 
@@ -36,7 +35,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   hide = true;
   hideConfirm = true;
 
-  registerForm = this.formBuilder.group({
+  registerForm = new FormGroup({
     username: this.username,
     mail: this.mail,
     password: this.password,
@@ -48,26 +47,23 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private errorSub?: Subscription;
 
   constructor(
-    private formBuilder: FormBuilder,
     private registerService: UsernameEmailValidatorsService,
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private store: Store,
     private actions$: Actions,
     private snackbar: MatSnackBar,
-    public readonly errorMessages: FormErrorMessageService
+    public readonly errorMessages: FormErrorMessageService,
   ) {
   }
 
   ngOnInit(): void {
-    this.busySub = this.store.select(authFeature.selectAuthState).pipe(
-      map(auth => auth.busy)
-    ).subscribe(busy => {
-      if (busy) this.registerForm.disable();
-      else this.registerForm.enable();
-    });
+    this.busySub = this.store.select(authFeature.selectBusy)
+      .subscribe(busy => {
+        if(busy) this.registerForm.disable();
+        else this.registerForm.enable();
+      });
     this.errorSub = this.actions$.pipe(
-      ofType(AuthActions.REGISTER_ERROR_ACTION)
+      ofType(AuthActions.REGISTER_ERROR_ACTION),
     ).subscribe(() => this.snackbar.open("Es ist ein Fehler aufgetreten.", "Ok"));
   }
 
@@ -86,8 +82,5 @@ export class RegisterComponent implements OnInit, OnDestroy {
     };
 
     this.store.dispatch(new RegisterAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
-
-    //should route to profile, which doesnt exist yet
-    //this.router.navigateByUrl('/');
   }
 }

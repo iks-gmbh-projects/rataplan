@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { filter, map, Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 
 import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
@@ -62,12 +62,11 @@ export class OverviewSubformComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVoteState).pipe(
-      filter(request => !!request.vote),
-      map(state => state.vote!),
+    this.storeSub = this.store.select(voteFeature.selectVote).pipe(
+      filter(vote => !!vote),
     ).subscribe(request => {
-      this.voteConfig = request.voteConfig.voteOptionConfig;
-      this.voteOptions = request.options;
+      this.voteConfig = request!.voteConfig.voteOptionConfig;
+      this.voteOptions = request!.options;
     });
   }
 

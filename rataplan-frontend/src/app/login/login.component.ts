@@ -68,17 +68,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  // private handleError(errorRes: HttpErrorResponse) {
-  //   let errorMessage = 'An unknown error occurred!';
-  //   if (!errorRes.error || !errorRes.error.error) {
-  //     return throwError(errorMessage);
-  //   }
-  //   switch (errorRes.error.error.message) {
-  //     case
-  //   }
-  // }
-
-
   constructor(
     private store: Store,
     private actions$: Actions,

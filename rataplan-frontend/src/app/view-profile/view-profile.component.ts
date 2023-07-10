@@ -21,11 +21,11 @@ export class ViewProfileComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userDataSub = this.store.select(authFeature.selectAuthState)
-      .subscribe((authData) => {
-        this.userName = authData.user!.username;
-        this.displayName = authData.user!.displayname;
-        this.email = authData.user!.mail;
+    this.userDataSub = this.store.select(authFeature.selectUser)
+      .subscribe((user) => {
+        this.userName = user!.username;
+        this.displayName = user!.displayname;
+        this.email = user!.mail;
       });
   }
 

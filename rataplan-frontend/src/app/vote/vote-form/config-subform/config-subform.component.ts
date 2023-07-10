@@ -41,10 +41,10 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVoteState)
+    this.storeSub = this.store.select(voteFeature.selectVote)
       .pipe(
-        filter(state => !!state.vote),
-        map(state => state.vote!.voteConfig.voteOptionConfig)
+        filter(vote => !!vote),
+        map(vote => vote!.voteConfig.voteOptionConfig)
       ).subscribe(voteConfig => {
         this.configForm.setValue({
           isDateChecked: voteConfig.startDate,

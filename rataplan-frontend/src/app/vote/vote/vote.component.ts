@@ -16,6 +16,7 @@ import { VoteDecisionSubformComponent } from './member-decision-subform/vote-dec
 import { VoteService } from './vote-service/vote.service';
 import { voteFeature } from '../vote.feature';
 import { authFeature } from '../../authentication/auth.feature';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -45,6 +46,7 @@ export class VoteComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
+    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private voteService: VoteService,
     public deadlineService: DeadlineService,
@@ -63,12 +65,12 @@ export class VoteComponent implements OnInit, OnDestroy {
       this.isPreview = isPreview;
       this.vote = vote;
       this.deadlineService.setDeadline(new Date(vote.deadline));
-      if (!this.deadlineService.hasDeadlinePassed()) {
+      if(!this.deadlineService.hasDeadlinePassed()) {
         this.setVoteOptions();
       }
       this.userVoted = this.vote!.participants.some(participant =>
         participant.userId === this.currentUser?.id);
-      if (this.currentUser) {
+      if(this.currentUser) {
         this.voteParticipant.name = this.currentUser.displayname;
       }
     });
@@ -85,29 +87,41 @@ export class VoteComponent implements OnInit, OnDestroy {
   }
 
   saveVote() {
-    if (this.isEditMember) {
+    if(this.isEditMember) {
       this.updateVote();
       return;
     }
-    if (this.currentUser != null && this.userVoted) {
+    if(this.currentUser != null && this.userVoted) {
       console.log(this.currentUser + ' hat schon abgestimmt');
       this.resetVote();
       return;
     }
     this.voteService.addVoteParticipant(this.vote!, this.voteParticipant)
       .pipe(takeUntil(this.destroySubject))
-      .subscribe(participant => {
-        this.vote!.participants.push(participant);
-        this.resetVote();
+      .subscribe({
+        next: participant => {
+          this.vote!.participants.push(participant);
+          this.resetVote();
+        },
+        error: err => {
+          this.snackBar.open("Unbekannter Fehler beim Abstimmen", "OK");
+          console.log(err);
+        },
       });
   }
 
   updateVote() {
     this.voteService.updateVoteParticipant(this.vote!, this.voteParticipant)
       .pipe(takeUntil(this.destroySubject))
-      .subscribe(() => {
-        this.resetVote();
-        this.isEditMember = false;
+      .subscribe({
+        next: () => {
+          this.resetVote();
+          this.isEditMember = false;
+        },
+        error: err => {
+          this.snackBar.open("Unbekannter Fehler beim Ändern der Stimme", "OK");
+          console.log(err);
+        },
       });
   }
 
@@ -118,13 +132,13 @@ export class VoteComponent implements OnInit, OnDestroy {
     };
     this.nameField?.reset();
     this.setVoteOptions();
-    if (this.currentUser !== null) {
+    if(this.currentUser !== null) {
       this.voteParticipant.name = this.currentUser?.displayname;
     }
   }
 
   setVoteOptions() {
-    if (this.vote?.voteConfig.decisionType === DecisionType.NUMBER) {
+    if(this.vote?.voteConfig.decisionType === DecisionType.NUMBER) {
       this.voteParticipant.decisions = this.vote!.options.map(vote => ({
         optionId: vote.id!,
         participants: 0,
@@ -163,14 +177,12 @@ export class VoteComponent implements OnInit, OnDestroy {
         voteDecision.decision = VoteOptionDecisionType.ACCEPT;
         if (this.votes.size < this.vote!.voteConfig?.yesAnswerLimit! && !this.votes.get(index)){
           this.updateYesAnswerRestrictions(1,index);
-        }
-        break;
+        }break;
       case 2:
         voteDecision.decision = VoteOptionDecisionType.ACCEPT_IF_NECESSARY;
         break;
       default:
-        voteDecision.decision = VoteOptionDecisionType.DECLINE;
-        if (this.votes.get(index))this.updateYesAnswerRestrictions(3,index);
+        voteDecision.decision = VoteOptionDecisionType.DECLINE;if (this.votes.get(index))this.updateYesAnswerRestrictions(3,index);
         break;
     }
   }
@@ -181,16 +193,22 @@ export class VoteComponent implements OnInit, OnDestroy {
         exhaustMap(() => this.voteService.getVoteByParticipationToken(this.vote!.participationToken!)),
         take(1),
       )
-      .subscribe((updatedRequest: VoteModel) => {
-        this.isEditMember = false;
-        this.resetVote();
-        this.vote = updatedRequest;
+      .subscribe({
+        next: (updatedRequest: VoteModel) => {
+          this.isEditMember = false;
+          this.resetVote();
+          this.vote = updatedRequest;
+        },
+        error: err => {
+          this.snackBar.open("Unbekannter Fehler beim löschen der Stimme", "OK");
+          console.log(err);
+        },
       });
   }
 
   editMember(member: VoteParticipantModel) {
     this.isEditMember = true;
-    if (member.name != undefined) {
+    if(member.name != undefined) {
       this.voteParticipant = member;
     }
   }

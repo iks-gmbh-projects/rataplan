@@ -9,6 +9,7 @@ import { FormErrorMessageService } from "../../../services/form-error-message-se
 import { ExtraValidators } from "../../../validator/validators";
 import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from "../../vote.actions";
 import { voteFeature } from '../../vote.feature';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-email-subform',
@@ -30,10 +31,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   private storeSub?: Subscription;
 
   constructor(
+    private snackBar: MatSnackBar,
     private store: Store,
     public readonly errorMessageService: FormErrorMessageService
   ) {
   }
+
+  private lastError?: any;
 
   ngOnInit(): void {
     this.storeSub = this.store.select(voteFeature.selectVoteState)
@@ -52,6 +56,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
           !config.endTime &&
           !config.description &&
           !config.url;
+        if(state.error !== this.lastError) {
+          this.lastError = state.error;
+          if(state.error) {
+            this.snackBar.open("Unbekannter Fehler beim Erstellen der Abstimmung", "OK");
+            console.log(state.error);
+          }
+        }
       });
   }
 
