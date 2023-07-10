@@ -65,8 +65,10 @@ export class VoteEffects {
 
   postVote = createEffect(() => { return this.actions$.pipe(
     ofType(VoteActions.POST),
-    switchMap(() => this.store.select(voteFeature.selectVoteState)),
-    filter(state => !!state.complete),
+    switchMap(() => this.store.select(voteFeature.selectVoteState).pipe(
+      filter(state => state.complete),
+      take(1),
+    )),
     map(state => ({ request: state.vote!, appointmentsEdited: state.appointmentsChanged })),
     delayWhen(() => this.store.select(authFeature.selectAuthState).pipe(
       filter(authState => !authState.busy),
