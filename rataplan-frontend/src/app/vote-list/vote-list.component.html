@@ -1,8 +1,7 @@
 <mat-tab-group dynamicHeight>
   <mat-tab>
     <ng-template mat-tab-label>
-      <span class='centered' [matBadge]='createdVotes.length' matBadgeOverlap='false'
-            [matBadgeHidden]='createdVotes.length == 0'>Erstellt</span>
+      <span class='centered'>Erstellt</span>
     </ng-template>
     <div class='wrapper'>
       <mat-card class='width'
@@ -49,8 +48,7 @@
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
-      <span class='centered' [matBadge]='participatedVotes.length' matBadgeOverlap='false'
-            [matBadgeHidden]='participatedVotes.length == 0'>Teilnahmen</span>
+      <span class='centered'>Teilnahmen</span>
     </ng-template>
     <div class='wrapper'>
       <mat-card class='width'
