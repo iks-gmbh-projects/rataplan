@@ -37,6 +37,9 @@ public class VoteOption implements Serializable {
     private Vote vote;
     private List<VoteDecision> voteDecisions = new ArrayList<>();
 
+    private boolean participantLimitActive;
+    private Integer participantLimit;
+
     public VoteOption(Timestamp startDate, EncryptedString description, Vote vote) {
         this.startDate = startDate;
         this.description = description;
@@ -120,4 +123,9 @@ public class VoteOption implements Serializable {
 		}
 		return false;
 	}
+
+    public boolean validateParticipantLimitConfig(){
+        if (!this.participantLimitActive && this.participantLimit == null) return true;
+        else return this.participantLimitActive && this.participantLimit > 0;
+    }
 }

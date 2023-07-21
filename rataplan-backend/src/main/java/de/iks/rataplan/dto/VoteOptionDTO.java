@@ -22,6 +22,8 @@ public class VoteOptionDTO implements Serializable {
     private Timestamp endDate;
     private String description;
 	private String url;
+    private boolean participantLimitActive;
+    private Integer participantLimit;
 	
     public VoteOptionDTO(Timestamp startDate, String description) {
         this.startDate = startDate;
