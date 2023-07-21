@@ -4,7 +4,6 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 import org.junit.Assert;
@@ -20,9 +19,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.AssertTrue;
 import java.security.*;
-import java.util.Date;
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)

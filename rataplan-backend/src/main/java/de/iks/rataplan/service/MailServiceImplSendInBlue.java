@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.MailPreparationException;
 import org.springframework.stereotype.Service;
 import sendinblue.ApiException;
 import sibApi.TransactionalEmailsApi;
@@ -34,7 +33,7 @@ public class MailServiceImplSendInBlue implements MailService {
             transactionalEmailsApi.sendTransacEmail(mail);
         } catch (ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
-            throw new MailPreparationException(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -45,7 +44,7 @@ public class MailServiceImplSendInBlue implements MailService {
             transactionalEmailsApi.sendTransacEmail(mail);
         } catch (ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
-            throw new MailPreparationException(ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -58,7 +57,7 @@ public class MailServiceImplSendInBlue implements MailService {
                 transactionalEmailsApi.sendTransacEmail(mail);
             } catch (ApiException ex) {
                 log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
-                throw new MailPreparationException(ex);
+                throw new RuntimeException(ex);
             }
         }
     }
@@ -70,7 +69,7 @@ public class MailServiceImplSendInBlue implements MailService {
             transactionalEmailsApi.sendTransacEmail(mail);
         } catch (ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
-            throw new MailPreparationException(ex);
+            throw new RuntimeException(ex);
         }
     }
 }

@@ -13,7 +13,6 @@ import de.iks.rataplan.restservice.AuthService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +32,7 @@ import javax.transaction.Transactional;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ActiveProfiles("integration")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -66,8 +65,8 @@ public class BackendControllerTest {
 
     @Before
     public void mockSecret() {
-        when(authService.isValidIDToken(Matchers.anyString()))
-            .thenAnswer(invocation -> "validToken".equals(invocation.getArgumentAt(0, String.class)));
+        when(authService.isValidIDToken(anyString()))
+            .thenAnswer(invocation -> "validToken".equals(invocation.getArgument(0, String.class)));
     }
     
     @Test

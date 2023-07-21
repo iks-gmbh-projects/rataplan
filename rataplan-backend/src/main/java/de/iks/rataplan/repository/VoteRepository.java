@@ -13,7 +13,7 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
 	
 	int deleteAllByUserId(Integer userId);
 	
-	List<Vote> findDistinctByParticipants_UserIdIn(Integer userId);
+	List<Vote> findDistinctByParticipants_UserIdContaining(Integer userId);
 	
 	List<Vote> findByDeadlineBeforeAndNotifiedFalse(Date deadline);// find by deadline == xx and organizermail not null
 

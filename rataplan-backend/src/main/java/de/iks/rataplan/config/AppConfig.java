@@ -1,147 +1,94 @@
 package de.iks.rataplan.config;
 
-import com.github.springtestdbunit.bean.DatabaseConfigBean;
-import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
-import com.google.gson.Gson;
 import de.iks.rataplan.mapping.DecisionConverter;
 import lombok.RequiredArgsConstructor;
+
+import com.github.springtestdbunit.bean.DatabaseConfigBean;
+import com.google.gson.Gson;
+
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.spring4.SpringTemplateEngine;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import javax.sql.DataSource;
 import java.util.List;
-import java.util.Properties;
 
 @Profile({"dev", "prod", "test", "integration"})
 @Configuration
-@PropertySource({ "classpath:/application.properties" })
+@PropertySource({"classpath:/application.properties"})
 @ComponentScan(basePackages = "de.iks.rataplan")
 @EnableTransactionManagement
 @RequiredArgsConstructor
 public class AppConfig {
-	private final Environment environment;
-
-	@Bean
-	public DataSource dataSource() {
-			DriverManagerDataSource dataSource = new DriverManagerDataSource();
-			dataSource.setDriverClassName(environment.getProperty("JDBC_DATABASE_DRIVER"));
-			dataSource.setUrl(environment.getProperty("JDBC_DATABASE_URL"));
-			dataSource.setUsername(environment.getProperty("JDBC_DATABASE_USERNAME"));
-			dataSource.setPassword(environment.getProperty("JDBC_DATABASE_PASSWORD"));
-			return dataSource;
-	}
-
-	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactory.setDataSource(dataSource());
-		entityManagerFactory.setPackagesToScan(environment.getProperty("entitymanager.packagesToScan"));
-
-		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-		entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
-
-		entityManagerFactory.setJpaProperties(additionalHibernateProperties());
-		return entityManagerFactory;
-	}
-
-	@Bean
-	public Properties additionalHibernateProperties() {
-		Properties additionalProperties = new Properties();
-		additionalProperties.put("hibernate.dialect", environment.getProperty("hibernate.dialect"));
-		additionalProperties.put("hibernate.show_sql", environment.getProperty("hibernate.show_sql"));
-		additionalProperties.put("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
-		return additionalProperties;
-	}
-
-	@Bean
-	public JpaTransactionManager transactionManager() {
-		return new JpaTransactionManager(entityManagerFactory().getObject());
-	}
-
-	@Bean
-	public BeanPostProcessor persistenceTranslation() {
-		return new PersistenceExceptionTranslationPostProcessor();
-	}
-
-	/**
-	 * ModelMapper for mapping between DAO and DTO beans
-	 *
-	 * toDAO and toDTO converters are just for mapping the VoteDecisions.
-	 * The toDAO converter accesses the database to get the options
-	 * according to the id's. Keep this in mind when writing tests!
-	 *
-	 * @return ModelMapper instance
-	 */
-	@Bean
-	public ModelMapper modelMapper(DecisionConverter decisionConverter, List<Converter<?, ?>> converters) {
-		ModelMapper mapper = new ModelMapper();
-		mapper.addConverter(decisionConverter.toDAO);
-		mapper.addConverter(decisionConverter.toDTO);
-		converters.forEach(mapper::addConverter);
-		return mapper;
-	}
-
-	@Bean
-	public TemplateEngine emailTemplateEngine() {
-		final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-		templateEngine.addTemplateResolver(htmlTemplateResolver());
-		return templateEngine;
-	}
-
-	private ITemplateResolver htmlTemplateResolver() {
-		final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-		templateResolver.setOrder(2);
-		templateResolver.setPrefix("/");
-		templateResolver.setSuffix(".html");
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		templateResolver.setCacheable(false);
-		return templateResolver;
-	}
-	
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
-
-	@Bean
-	public DatabaseConfigBean dbUnitDatabaseConfig() {
-		DatabaseConfigBean dbConfig = new com.github.springtestdbunit.bean.DatabaseConfigBean();
-		dbConfig.setDatatypeFactory(new org.dbunit.ext.h2.H2DataTypeFactory());
-		return dbConfig;
-	}
-
-	@Bean
-	public DatabaseDataSourceConnectionFactoryBean dbUnitDatabaseConnection() {
-		DatabaseDataSourceConnectionFactoryBean dbConnection = new com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean(
-				dataSource());
-		dbConnection.setDatabaseConfig(dbUnitDatabaseConfig());
-		return dbConnection;
-	}
-	
-	@Bean
-	public Gson gson() {
-		return new Gson();
-	}
-	
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
+    
+    @Bean
+    public BeanPostProcessor persistenceTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+    
+    /**
+     * ModelMapper for mapping between DAO and DTO beans
+     *
+     * toDAO and toDTO converters are just for mapping the VoteDecisions.
+     * The toDAO converter accesses the database to get the options
+     * according to the id's. Keep this in mind when writing tests!
+     *
+     * @return ModelMapper instance
+     */
+    @Bean
+    public ModelMapper modelMapper(DecisionConverter decisionConverter, List<Converter<?, ?>> converters) {
+        ModelMapper mapper = new ModelMapper();
+        mapper.addConverter(decisionConverter.toDAO);
+        mapper.addConverter(decisionConverter.toDTO);
+        converters.forEach(mapper::addConverter);
+        return mapper;
+    }
+    
+    @Bean
+    public TemplateEngine emailTemplateEngine() {
+        final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.addTemplateResolver(htmlTemplateResolver());
+        return templateEngine;
+    }
+    
+    private ITemplateResolver htmlTemplateResolver() {
+        final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setOrder(2);
+        templateResolver.setPrefix("/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCacheable(false);
+        return templateResolver;
+    }
+    
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+    
+    @Bean
+    public DatabaseConfigBean dbUnitDatabaseConfig() {
+        DatabaseConfigBean dbConfig = new com.github.springtestdbunit.bean.DatabaseConfigBean();
+        dbConfig.setDatatypeFactory(new org.dbunit.ext.h2.H2DataTypeFactory());
+        return dbConfig;
+    }
+    
+    @Bean
+    public Gson gson() {
+        return new Gson();
+    }
+    
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

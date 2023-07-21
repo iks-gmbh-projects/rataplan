@@ -64,7 +64,7 @@ public class VoteOptionMemberServiceTest {
     @DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void addParticipant() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         
         VoteParticipant participant = new VoteParticipant();
         participant.setName(new EncryptedString("Max", false));
@@ -87,7 +87,7 @@ public class VoteOptionMemberServiceTest {
     @Test(expected = MalformedException.class)
     @DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
     public void addParticipantShouldFailMoreYesChoicesThanPermitted() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         
         vote.getVoteConfig().setYesLimitActive(true);
         vote.getVoteConfig().setYesAnswerLimit(1);
@@ -139,7 +139,7 @@ public class VoteOptionMemberServiceTest {
             .map(option -> new VoteDecision(Decision.ACCEPT, option, participant))
             .collect(Collectors.toList()));
         
-        VoteParticipant dbParticipant = voteRepository.findOne(1).getParticipantById(1);
+        VoteParticipant dbParticipant = voteRepository.findById(1).orElseThrow().getParticipantById(1);
         
         voteParticipantService.updateParticipant(vote, dbParticipant, participant);
     }
@@ -147,7 +147,7 @@ public class VoteOptionMemberServiceTest {
     @Test(expected = MalformedException.class)
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
     public void createParticipantWithYesVoteShouldFailParticipantLimitFull() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         
         VoteParticipant participant = new VoteParticipant(new EncryptedString("Jimmy", false), vote);
         vote.getParticipants().add(participant);
@@ -162,7 +162,7 @@ public class VoteOptionMemberServiceTest {
     @Test(expected = MalformedException.class)
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
     public void updateParticipantWithYesVoteShouldFailParticipantLimitFullAndPreviousVoteNotYes() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         VoteParticipant dbParticipant = vote.getParticipantById(2);
         
         VoteParticipant participant = new VoteParticipant(new EncryptedString("Jimmy", false), vote);
@@ -176,7 +176,7 @@ public class VoteOptionMemberServiceTest {
     @Test(expected = MalformedException.class)
     @DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
     public void addParticipantShouldFailTooManyOptions() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         
         VoteParticipant participant = new VoteParticipant();
         participant.setName(new EncryptedString("Max", false));
@@ -205,7 +205,7 @@ public class VoteOptionMemberServiceTest {
     @Test(expected = ForbiddenException.class)
     @DatabaseSetup(FILE_PATH + CREATE + EXPIRED + FILE_INITIAL)
     public void addParticipantShouldFailRequestIsExpired() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         
         VoteParticipant participant = new VoteParticipant();
         participant.setName(new EncryptedString("Max", false));
@@ -229,7 +229,7 @@ public class VoteOptionMemberServiceTest {
     @DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void deleteParticipant() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         
         VoteParticipant voteParticipant = vote.getParticipantById(2);
         
@@ -239,7 +239,7 @@ public class VoteOptionMemberServiceTest {
     @Test(expected = ForbiddenException.class)
     @DatabaseSetup(FILE_PATH + DELETE + EXPIRED + FILE_INITIAL)
     public void deleteParticipantShouldFailRequestIsExpired() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         
         VoteParticipant voteParticipant = vote.getParticipantById(2);
         voteParticipantService.deleteParticipant(vote, voteParticipant);
@@ -249,7 +249,7 @@ public class VoteOptionMemberServiceTest {
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void updateParticipant() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         VoteParticipant dbVoteParticipant = vote.getParticipantById(1);
         VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
         
@@ -258,14 +258,14 @@ public class VoteOptionMemberServiceTest {
         newVoteParticipant.getVoteDecisions().add(decision1);
         newVoteParticipant.getVoteDecisions().add(decision2);
         
-        newVoteParticipant = voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
+        voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
     }
     
     @Test(expected = MalformedException.class)
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void updateParticipantShouldFailTooManyDecisions() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         VoteParticipant dbVoteParticipant = vote.getParticipantById(1);
         VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
         
@@ -276,7 +276,7 @@ public class VoteOptionMemberServiceTest {
         // this decision should not exist
         newVoteParticipant.getVoteDecisions().add(decision2);
         
-        newVoteParticipant = voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
+        voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
     }
     
     @Test(expected = ForbiddenException.class)
@@ -285,7 +285,7 @@ public class VoteOptionMemberServiceTest {
         value = FILE_PATH + UPDATE + EXPIRED + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT
     )
     public void updateParticipantShouldFailIsExpired() {
-        Vote vote = voteRepository.findOne(1);
+        Vote vote = voteRepository.findById(1).orElseThrow();
         VoteParticipant dbVoteParticipant = vote.getParticipantById(1);
         VoteParticipant newVoteParticipant = new VoteParticipant(new EncryptedString("RubberBandMan", false), vote);
         
@@ -296,6 +296,6 @@ public class VoteOptionMemberServiceTest {
         // this decision should not exist
         newVoteParticipant.getVoteDecisions().add(decision2);
         
-        newVoteParticipant = voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
+        voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
     }
 }
