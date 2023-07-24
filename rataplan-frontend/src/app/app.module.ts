@@ -65,7 +65,6 @@ import { EUDateAdapter } from './eu-date-adapter';
 registerLocaleData(localeDE);
 
 @NgModule({
-  bootstrap: [AppComponent],
   declarations: [
     AppComponent,
     ConditionsComponent,
@@ -131,7 +130,9 @@ registerLocaleData(localeDE);
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
-    { provide: DateAdapter, useClass: EUDateAdapter }],
+    { provide: DateAdapter, useClass: EUDateAdapter }
+  ],
+  bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule { }
