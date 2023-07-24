@@ -62,6 +62,7 @@ const imports = [
   MatBadgeModule,
   MatStepperModule,
   NgxMaterialTimepickerModule,
+  ClipboardModule,
 ];
 
 @NgModule({
