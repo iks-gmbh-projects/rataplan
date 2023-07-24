@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.Decision;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteDecision;
 import de.iks.rataplan.domain.VoteParticipant;
@@ -27,11 +28,10 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     public VoteParticipant createParticipant(Vote vote, VoteParticipant voteParticipant) {
         
         this.validateExpirationDate(vote);
-		
+		if (!this.validateDecisions(vote,voteParticipant))throw new MalformedException("bad");
         voteParticipant.setId(null);
 
         if (vote.validateDecisionsForParticipant(voteParticipant)) {
-        	
             voteParticipant.setVote(vote);
             vote.getParticipants().add(voteParticipant);
 
@@ -68,10 +68,27 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
 
         dbVoteParticipant.setName(newVoteParticipant.getName());
         dbVoteParticipant.setVote(vote);
+
+        if (!this.validateDecisions(vote,newVoteParticipant)) throw new MalformedException("bad");
+
         this.updateDecisionsForParticipant(dbVoteParticipant.getVoteDecisions(), newVoteParticipant.getVoteDecisions());
         return voteParticipantRepository.saveAndFlush(dbVoteParticipant);
     }
-    
+
+    public boolean validateDecisions(Vote vote, VoteParticipant voteParticipant){
+        if (vote.getVoteConfig().getYesLimitActive()) {
+            if (voteParticipant.getVoteDecisions().isEmpty()) return false;
+            else {
+                long yesVotes = voteParticipant.getVoteDecisions()
+                        .stream()
+                        .filter(decision -> decision.getDecision() == Decision.ACCEPT)
+                        .count();
+                return yesVotes <= vote.getVoteConfig().getYesAnswerLimit();
+            }
+        }
+        return true;
+    }
+
     @Override
     public void anonymizeParticipant(int id) {
         VoteParticipant member = voteParticipantRepository.findOne(id);
@@ -79,7 +96,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
         member.setUserId(null);
         voteParticipantRepository.saveAndFlush(member);
     }
-    
+
     /**
      * updates the oldDecisions decisions to the new ones based on the
      * voteOptionId's
@@ -98,7 +115,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
             }
         }
     }
-    
+
     private void validateExpirationDate(Vote vote) {
     	if (vote.isNotified()) {
 			throw new ForbiddenException("Vote is expired!");

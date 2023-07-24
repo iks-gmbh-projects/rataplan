@@ -20,126 +20,128 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class VoteParticipantControllerService {
-	private final VoteService voteService;
+    private final VoteService voteService;
 
-	private final VoteParticipantService voteParticipantService;
+    private final VoteParticipantService voteParticipantService;
 
-	private final AuthService authService;
+    private final AuthService authService;
 
-	private final ModelMapper modelMapper;
-	
-	private final FromEncryptedStringConverter fromEncryptedStringConverter;
+    private final ModelMapper modelMapper;
 
-	public VoteParticipantDTO createParticipant(VoteParticipantDTO voteParticipantDTO, String participationToken, String jwtToken) {
+    private final FromEncryptedStringConverter fromEncryptedStringConverter;
 
-		Vote vote = voteService.getVoteByParticipationToken(participationToken);
+    public VoteParticipantDTO createParticipant(VoteParticipantDTO voteParticipantDTO, String participationToken, String jwtToken) {
 
-		//BackendUser backendUser = null;
-		AuthUser authUser = null;
+        Vote vote = voteService.getVoteByParticipationToken(participationToken);
 
-		if (jwtToken != null) {
-			authUser = authService.getUserData(jwtToken);
-			if (isUserParticipantInVote(vote, authUser)) {
-				throw new RataplanException("User already participated in this vote");
-			}
-		}
-		
-		this.createValidDTOParticipant(vote, voteParticipantDTO, authUser);
-		voteParticipantDTO.assertAddValid();
-		
-		VoteParticipant voteParticipant = modelMapper.map(voteParticipantDTO, VoteParticipant.class);
-		voteParticipant = voteParticipantService.createParticipant(vote, voteParticipant);
+        //BackendUser backendUser = null;
+        AuthUser authUser = null;
 
-		return modelMapper.map(voteParticipant, VoteParticipantDTO.class);
-	}
-	
-	public void deleteParticipant(String participationToken, Integer memberId, String jwtToken) {
+        if (jwtToken != null) {
+            authUser = authService.getUserData(jwtToken);
 
-		AuthUser authUser = null;
-		
-		if (jwtToken != null) {
-			authUser = authService.getUserData(jwtToken);
-		}
-		
-		Vote vote = voteService.getVoteByParticipationToken(participationToken);
-		VoteParticipant voteParticipant = vote.getParticipantById(memberId);
-		
-		validateAccessToParticipant(voteParticipant, authUser);
-		
-		voteParticipantService.deleteParticipant(vote, voteParticipant);
-	}
-	
-	public VoteParticipantDTO updateParticipant(String participationToken, Integer memberId, VoteParticipantDTO voteParticipantDTO, String jwtToken) {
+            if (isUserParticipantInVote(vote, authUser)) {
+                throw new RataplanException("User already participated in this vote");
+            }
+        }
 
-		AuthUser authUser = null;
-		
-		if (jwtToken != null) {
-			authUser = authService.getUserData(jwtToken);
-		}
-		
-		Vote vote = voteService.getVoteByParticipationToken(participationToken);
-		VoteParticipant oldVoteParticipant = vote.getParticipantById(memberId);
-		
-		validateAccessToParticipant(oldVoteParticipant, authUser);
-		
-		voteParticipantDTO.setId(oldVoteParticipant.getId());
-		
-		if(voteParticipantDTO.getName() == null || voteParticipantDTO.getName().trim().isEmpty()) {
-			voteParticipantDTO.setName(fromEncryptedStringConverter.convert(oldVoteParticipant.getName()));
-		}
+        this.createValidDTOParticipant(vote, voteParticipantDTO, authUser);
+        voteParticipantDTO.assertAddValid();
 
-		if(authUser != null) voteParticipantDTO.setUserId(authUser.getId());
+        VoteParticipant voteParticipant = modelMapper.map(voteParticipantDTO, VoteParticipant.class);
+        voteParticipant = voteParticipantService.createParticipant(vote, voteParticipant);
 
-		VoteParticipant voteParticipant = modelMapper.map(voteParticipantDTO, VoteParticipant.class);
-		voteParticipant = voteParticipantService.updateParticipant(
-			vote,
-			oldVoteParticipant,
-			voteParticipant
-		);
-		
-		return modelMapper.map(voteParticipant, VoteParticipantDTO.class);
-	}
-	
-	private void validateAccessToParticipant(VoteParticipant voteParticipant, AuthUser authUser) {
+        return modelMapper.map(voteParticipant, VoteParticipantDTO.class);
+    }
 
-		if (voteParticipant == null) {
-			throw new ResourceNotFoundException("Participant does not exist!");
-		}
-		
-		if (voteParticipant.getUserId() == null || (authUser != null && Objects.equals(
-			authUser.getId(),
-			voteParticipant.getUserId()
-		))) {
-			return;
-		}
-		throw new ForbiddenException();
-	}
-	
-	private boolean isUserParticipantInVote(Vote vote, AuthUser authUser) {
-		for (VoteParticipant voteParticipant : vote.getParticipants()) {
-			if (voteParticipant.getUserId() != null && voteParticipant.getUserId().equals(authUser.getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public void deleteParticipant(String participationToken, Integer memberId, String jwtToken) {
 
-	private VoteParticipantDTO createValidDTOParticipant(
-		Vote vote,
-			VoteParticipantDTO voteParticipantDTO, AuthUser user) {
-		voteParticipantDTO.setVoteId(vote.getId());
-		if (user == null) {
-			voteParticipantDTO.setUserId(null);
-		} else {
-			voteParticipantDTO.setUserId(user.getId());
-			if(voteParticipantDTO.getName() == null ||
-				voteParticipantDTO.getName().trim().isEmpty()
-			) {
-				voteParticipantDTO.setName(authService.fetchDisplayName(user.getId()));
-			}
-		}
-		return voteParticipantDTO;
-	}
-	
-	
+        AuthUser authUser = null;
+
+        if (jwtToken != null) {
+            authUser = authService.getUserData(jwtToken);
+
+        }
+
+        Vote vote = voteService.getVoteByParticipationToken(participationToken);
+        VoteParticipant voteParticipant = vote.getParticipantById(memberId);
+
+        validateAccessToParticipant(voteParticipant, authUser);
+
+        voteParticipantService.deleteParticipant(vote, voteParticipant);
+    }
+
+    public VoteParticipantDTO updateParticipant(String participationToken, Integer memberId, VoteParticipantDTO voteParticipantDTO, String jwtToken) {
+
+        AuthUser authUser = null;
+
+        if (jwtToken != null) {
+            authUser = authService.getUserData(jwtToken);
+
+        }
+
+        Vote vote = voteService.getVoteByParticipationToken(participationToken);
+        VoteParticipant oldVoteParticipant = vote.getParticipantById(memberId);
+
+        validateAccessToParticipant(oldVoteParticipant, authUser);
+
+        voteParticipantDTO.setId(oldVoteParticipant.getId());
+
+        if (voteParticipantDTO.getName() == null || voteParticipantDTO.getName().trim().isEmpty()) {
+            voteParticipantDTO.setName(fromEncryptedStringConverter.convert(oldVoteParticipant.getName()));
+        }
+
+        if (authUser != null) voteParticipantDTO.setUserId(authUser.getId());
+
+        VoteParticipant voteParticipant = modelMapper.map(voteParticipantDTO, VoteParticipant.class);
+        voteParticipant = voteParticipantService.updateParticipant(
+                vote,
+                oldVoteParticipant,
+                voteParticipant
+        );
+
+        return modelMapper.map(voteParticipant, VoteParticipantDTO.class);
+    }
+
+    private void validateAccessToParticipant(VoteParticipant voteParticipant, AuthUser authUser) {
+
+        if (voteParticipant == null) {
+            throw new ResourceNotFoundException("Participant does not exist!");
+        }
+
+        if (voteParticipant.getUserId() == null || (authUser != null && Objects.equals(
+                authUser.getId(),
+                voteParticipant.getUserId()
+        ))) {
+            return;
+        }
+        throw new ForbiddenException();
+    }
+
+    private boolean isUserParticipantInVote(Vote vote, AuthUser authUser) {
+        for (VoteParticipant voteParticipant : vote.getParticipants()) {
+            if (voteParticipant.getUserId() != null && voteParticipant.getUserId().equals(authUser.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private VoteParticipantDTO createValidDTOParticipant(
+            Vote vote,
+            VoteParticipantDTO voteParticipantDTO, AuthUser user) {
+        voteParticipantDTO.setVoteId(vote.getId());
+        if (user == null) {
+            voteParticipantDTO.setUserId(null);
+        } else {
+            voteParticipantDTO.setUserId(user.getId());
+            if (voteParticipantDTO.getName() == null ||
+                    voteParticipantDTO.getName().trim().isEmpty()
+            ) {
+                voteParticipantDTO.setName(authService.fetchDisplayName(user.getId()));
+            }
+        }
+        return voteParticipantDTO;
+    }
+
 }

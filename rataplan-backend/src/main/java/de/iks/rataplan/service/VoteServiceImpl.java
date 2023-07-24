@@ -154,6 +154,13 @@ public class VoteServiceImpl implements VoteService {
 					dbConfig.setDecisionType(newConfig.getDecisionType());
 				}
 			}
+			if(newConfig.getYesLimitActive()) {
+				dbVote.getParticipants().removeIf(voteParticipant -> voteParticipant.getVoteDecisions()
+					.stream()
+					.filter(voteDecision -> voteDecision.getDecision() == Decision.ACCEPT)
+					.count() > newConfig.getYesAnswerLimit()
+                );
+			}
 			if(newConfig.getVoteOptionConfig() != null && !dbConfig.getVoteOptionConfig().equals(newConfig.getVoteOptionConfig())) {
 				dbConfig.setVoteOptionConfig(newConfig.getVoteOptionConfig());
 				dbVote.getOptions().clear();
