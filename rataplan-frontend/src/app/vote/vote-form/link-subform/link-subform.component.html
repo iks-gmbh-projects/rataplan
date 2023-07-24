@@ -2,19 +2,19 @@
   <h2>Abstimmungslinks</h2>
   <div>
     <p>Sie können nun folgenden Link an die Teilnehmer senden:</p>
-    <div class="link-container">
-      <a class="vote-link" [routerLink]='participationLink'>{{ host + participationLink }}</a>
-      <button class="vote-link-button" mat-raised-button [cdkCopyToClipboard]="host + participationLink">
+    <span>
+      <a [routerLink]='participationLink' #participation>{{ host + participationLink }}</a>
+      <button mat-icon-button [cdkCopyToClipboard]="participation.href">
         <mat-icon>content_copy</mat-icon>
       </button>
-    </div>
+    </span>
     <p>Hier können Sie die Abstimmung bearbeiten:</p>
-    <div class="link-container">
-      <a class="vote-link" [routerLink]='editLink'>{{ host + editLink }}</a>
-      <button class="vote-link-button" mat-raised-button [cdkCopyToClipboard]="host + editLink">
+    <span>
+      <a [routerLink]='editLink' #edit>{{ host + editLink }}</a>
+      <button mat-icon-button [cdkCopyToClipboard]="edit.href">
         <mat-icon>content_copy</mat-icon>
       </button>
-    </div>
+    </span>
     <h5>(Links speichern, da diese ansonsten verloren gehen)</h5>
   </div>
 </div>
