@@ -12,7 +12,7 @@ public interface UserService {
     UserDTO getUserDTOFromUsername(String username);
     boolean checkIfMailExists(String mail);
     boolean checkIfUsernameExists(String username);
-    UserDTO loginUser(UserDTO user) throws Exception;
+    UserDTO loginUser(UserDTO user);
     boolean verifyPassword(User user, String password);
     void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;
     User getUserFromUsername(String username);

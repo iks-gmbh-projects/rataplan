@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDTO loginUser(UserDTO userDTO) throws  InvalidUserDataException, UnconfirmedAccountException {
+    public UserDTO loginUser(UserDTO userDTO) throws InvalidUserDataException, UnconfirmedAccountException {
         if (userDTO.invalidLogin()) throw new InvalidUserDataException();
 
         User dbUser;
