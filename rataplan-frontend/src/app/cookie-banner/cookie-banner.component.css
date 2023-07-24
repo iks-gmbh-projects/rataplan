@@ -1,0 +1,18 @@
+.centered {
+  display: table;
+  width: 100%;
+}
+
+.right, .center {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+p {
+  font-weight: bold;
+  font-size: large;
+}
+
+.right>* {
+  display: block;
+}

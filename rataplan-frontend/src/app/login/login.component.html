@@ -27,7 +27,7 @@
     </div>
     <div class="button">
       <mat-spinner *ngIf="isLoading" diameter="30"></mat-spinner>
-      <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="isLoading || loginForm.invalid">Einloggen</button>
+      <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="isLoading || !cookieAllowed || loginForm.invalid">Einloggen</button>
     </div>
   </div>
   <mat-error ></mat-error>
