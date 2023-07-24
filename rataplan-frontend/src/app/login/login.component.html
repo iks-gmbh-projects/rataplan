@@ -1,4 +1,4 @@
-<form class="form-container" *ngIf="!isLoading" (ngSubmit)="login()">
+<form class="form-container" (ngSubmit)="login()">
   <div class="content">
     <div>
       <h1>Login</h1>
@@ -26,7 +26,8 @@
       <a class="passwordReset" routerLink="/forgot-password">Passwort vergessen</a>
     </div>
     <div class="button">
-      <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="loginForm.invalid">Einloggen</button>
+      <mat-spinner *ngIf="isLoading" diameter="30"></mat-spinner>
+      <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="isLoading || loginForm.invalid">Einloggen</button>
     </div>
   </div>
   <mat-error ></mat-error>

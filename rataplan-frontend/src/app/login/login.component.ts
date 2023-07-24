@@ -1,16 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { Subject, Subscription } from "rxjs";
-import { LoginData, User } from "../models/user.model";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Subscription } from "rxjs";
+import { LoginData } from "../models/user.model";
 import { ActivatedRoute } from "@angular/router";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
 import { Store } from "@ngrx/store";
 import { appState } from "../app.reducers";
-import { AuthActions, LoginAction } from "../authentication/auth.actions";
-import { HttpErrorResponse } from "@angular/common/http";
+import { AuthActions, LoginAction, LoginErrorAction } from "../authentication/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { map } from "rxjs/operators";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -22,11 +22,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   hide = true;
   isLoading = false;
-  user = new Subject<User>()
-  inputField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
-  password = new FormControl('', [Validators.required]);
+  readonly inputField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
+  readonly password = new FormControl('', [Validators.required]);
 
-  loginForm = this.formBuilder.group({
+  readonly loginForm = new FormGroup({
     inputField: this.inputField,
     password: this.password
   });
@@ -54,9 +53,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleError(errorRes: HttpErrorResponse) {
-    if (errorRes.error.errorCode === "WRONG_CREDENTIALS") {
-
+  private handleError(errorRes: LoginErrorAction) {
+    if (errorRes.error.error.errorCode === "WRONG_CREDENTIALS") {
+      this.password.setErrors({invalidCredentials: true});
+    } else {
+      this.snackBar.open("Unbekannter Fehler bei Login", "Ok");
+      console.log(errorRes);
     }
   }
 
@@ -72,11 +74,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private formBuilder: FormBuilder,
     private store: Store<appState>,
     private actions$: Actions,
     // private router: Router,
     private activatedRoute: ActivatedRoute,
+    private snackBar: MatSnackBar,
     public readonly errorMessageService: FormErrorMessageService
   ) {
   }
@@ -90,7 +92,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.errorSub = this.actions$.pipe(
       ofType(AuthActions.LOGIN_ERROR_ACTION)
-    ).subscribe(err => this.handleError(err))
+    ).subscribe((err: LoginErrorAction) => this.handleError(err))
   }
 
   ngOnDestroy() {

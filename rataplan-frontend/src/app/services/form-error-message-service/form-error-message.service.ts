@@ -23,6 +23,7 @@ export class FormErrorMessageService {
     if (element.hasError("mailDoesNotExist")) return "Es gibt keinen Benutzer mit dieser E-Mail.";
     if (element.hasError("wrongPassword")) return "Passwort ist falsch.";
     if (element.hasError("passwordMatch")) return "Passwort stimmt nicht überein.";
+    if (element.hasError("invalidCredentials")) return "Benutzername/Email oder Passwort ist falsch.";
     if (
       element.hasError("matDatepickerMin")
       || element.hasError("matDatetimePickerMin")
