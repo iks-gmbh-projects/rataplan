@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.Decision;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteDecision;
 import de.iks.rataplan.domain.VoteParticipant;
@@ -78,11 +79,10 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
         if (vote.getVoteConfig().getYesLimitActive()) {
             if (voteParticipant.getVoteDecisions().isEmpty()) return false;
             else {
-                int yesVotes = Math.toIntExact(voteParticipant
-                        .getVoteDecisions()
+                long yesVotes = voteParticipant.getVoteDecisions()
                         .stream()
-                        .filter(decision -> decision.getDecision().getValue() == 1)
-                        .count());
+                        .filter(decision -> decision.getDecision() == Decision.ACCEPT)
+                        .count();
                 return yesVotes <= vote.getVoteConfig().getYesAnswerLimit();
             }
         }
