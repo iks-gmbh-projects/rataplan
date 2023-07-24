@@ -26,7 +26,7 @@ import { VoteService } from './vote-service/vote.service';
 export class VoteComponent implements OnInit, OnDestroy {
   readonly DecisionType = DecisionType;
   destroySubject: Subject<boolean> = new Subject<boolean>();
-  vote?: VoteModel;
+  vote!: VoteModel;
   voteParticipant: VoteParticipantModel = {
     voteId: 0,
     decisions: [],
@@ -35,6 +35,9 @@ export class VoteComponent implements OnInit, OnDestroy {
   isPreview = false;
   busy = false;
   isEditMember = false;
+  isYesVoteLimitMet!: boolean;
+  yesVoteCount = 0;
+  votes: Map<number, boolean> = new Map<number, boolean>();
   @ViewChild('nameField') nameField?: NgModel;
 
   currentUser?: FrontendUser;
@@ -157,15 +160,19 @@ export class VoteComponent implements OnInit, OnDestroy {
     const voteDecision = this.voteParticipant.decisions[index];
 
     switch (decision) {
-    case 1:
-      voteDecision.decision = VoteOptionDecisionType.ACCEPT;
-      break;
-    case 2:
-      voteDecision.decision = VoteOptionDecisionType.ACCEPT_IF_NECESSARY;
-      break;
-    default:
-      voteDecision.decision = VoteOptionDecisionType.DECLINE;
-      break;
+      case 1:
+        voteDecision.decision = VoteOptionDecisionType.ACCEPT;
+        if (this.votes.size < this.vote!.voteConfig?.yesAnswerLimit! && !this.votes.get(index)){
+          this.updateYesAnswerRestrictions(1,index);
+        }
+        break;
+      case 2:
+        voteDecision.decision = VoteOptionDecisionType.ACCEPT_IF_NECESSARY;
+        break;
+      default:
+        voteDecision.decision = VoteOptionDecisionType.DECLINE;
+        if (this.votes.get(index))this.updateYesAnswerRestrictions(3,index);
+        break;
     }
   }
 
@@ -191,6 +198,26 @@ export class VoteComponent implements OnInit, OnDestroy {
 
   checkVoteOfMember(vote: VoteOptionModel, number: number) {
     return this.voteParticipant.decisions.find(a => a.optionId === vote.id)?.decision === number;
+  }
+
+  updateYesAnswerRestrictions(voteType: number, index: number) {
+    const voteConfig = this.vote?.voteConfig;
+    if (!voteConfig?.yesLimitActive) return;
+    console.log('fsd');
+    switch (voteType) {
+      case 1:
+        this.votes.set(index, true);
+        this.isYesVoteLimitMet = this.votes.size >= voteConfig.yesAnswerLimit!;
+        break;
+      case 3:
+        if (this.votes.get(index)) {
+          this.votes.delete(index);
+          this.isYesVoteLimitMet = false;
+        }
+        break;
+      default:
+        return;
+    }
   }
 
   acceptPreview() {

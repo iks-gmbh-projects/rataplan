@@ -55,4 +55,11 @@ export class ExtraValidators {
   static integer(ctrl: AbstractControl): ValidationErrors | null {
     return /^[-+]?\d*$/.test('' + ctrl.value) ? null : {integer: true};
   }
+
+  static yesAnswerLimitMoreThanZeroOrNull():ValidatorFn {
+    return (c) => {
+      if (c.parent?.get('yesLimitActive')?.value) return c.value > 0 ? null : { 'invalid yes answer limit' : true };
+      else return null;
+    };
+  }
 }

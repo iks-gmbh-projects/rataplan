@@ -1,85 +1,102 @@
- <div class="center">
-    <form [formGroup]="generalSubform">
+<div class="center">
+  <form [formGroup]="generalSubform">
+    <div>
       <div>
+        <mat-form-field
+          appearance="fill">
+          <mat-label>Titel</mat-label>
+          <input type="text"
+                 autocomplete="off"
+                 matInput
+                 formControlName="title">
+          <mat-error>{{errorMessageService.genericFormError(generalSubform.get("title"))}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngIf="!showDescription">
+        <button mat-raised-button
+                type="button"
+                (click)="addAndDeleteDescription()">+ Beschreibung
+        </button>
+      </div>
+      <div *ngIf="showDescription">
         <div>
           <mat-form-field
             appearance="fill">
-            <mat-label>Titel</mat-label>
-            <input type="text"
-                   autocomplete="off"
-                   matInput
-                   formControlName="title">
-            <mat-error>{{errorMessageService.genericFormError(generalSubform.get("title"))}}</mat-error>
+            <mat-label>Beschreibung</mat-label>
+            <textarea type="text"
+                      formControlName="description"
+                      matInput></textarea>
+            <mat-error>{{errorMessageService.genericFormError(generalSubform.get("description"))}}</mat-error>
           </mat-form-field>
         </div>
-        <div *ngIf="!showDescription">
+        <div>
           <button mat-raised-button
                   type="button"
-                  (click)="addAndDeleteDescription()">+ Beschreibung
+                  color="warn"
+                  (click)="addAndDeleteDescription()">Beschreibung löschen
           </button>
         </div>
-        <div *ngIf="showDescription">
-          <div>
-            <mat-form-field
-              appearance="fill">
-              <mat-label>Beschreibung</mat-label>
-              <textarea type="text"
-                        formControlName="description"
-                        matInput></textarea>
-              <mat-error>{{errorMessageService.genericFormError(generalSubform.get("description"))}}</mat-error>
-            </mat-form-field>
-          </div>
-          <div>
-            <button mat-raised-button
-                    type="button"
-                    color="warn"
-                    (click)="addAndDeleteDescription()">Beschreibung löschen
-            </button>
-          </div>
-        </div>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Deadline</mat-label>
+          <input autocomplete="off"
+                 matInput
+                 [matDatepicker]="picker"
+                 [max]="maxDate"
+                 [min]="minDate"
+                 formControlName="deadline">
+          <mat-datepicker-toggle matSuffix
+                                 [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error>{{errorMessageService.genericFormError(generalSubform.get("deadline"))}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <label id="example-radio-group-label">Antwortmöglichkeiten</label>
         <div>
-          <mat-form-field appearance="fill">
-            <mat-label>Deadline</mat-label>
-            <input autocomplete="off"
-                   matInput
-                   [matDatepicker]="picker"
-                   [max]="maxDate"
-                   [min]="minDate"
-                   formControlName="deadline">
-            <mat-datepicker-toggle matSuffix
-                                   [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error>{{errorMessageService.genericFormError(generalSubform.get("deadline"))}}</mat-error>
-          </mat-form-field>
-        </div>
-        <div>
-          <label id="example-radio-group-label">Antwortmöglichkeiten</label>
-          <div>
-            <mat-radio-group formControlName="decision">
-              <mat-radio-button [value]="DecisionType.DEFAULT">
-                Ja/Nein
-              </mat-radio-button>
-              <br>
-              <mat-radio-button [value]="DecisionType.EXTENDED">
-                Ja/Vielleicht/Nein
-              </mat-radio-button>
-              <br>
-              <mat-radio-button [value]="DecisionType.NUMBER">
-                Teilnehmerzahl
-              </mat-radio-button>
-            </mat-radio-group>
-          </div>
+          <mat-radio-group formControlName="decision">
+            <mat-radio-button [value]="DecisionType.DEFAULT">
+              Ja/Nein
+            </mat-radio-button>
+            <br>
+            <mat-radio-button [value]="DecisionType.EXTENDED">
+              Ja/Vielleicht/Nein
+            </mat-radio-button>
+            <br>
+            <mat-radio-button [value]="DecisionType.NUMBER" (click)="resetYesLimitActiveAndYesNumberLimit()">
+              Teilnehmerzahl
+            </mat-radio-button>
+          </mat-radio-group>
         </div>
       </div>
-      <div class="button-space">
-        <button [disabled]="this.generalSubform.invalid"
-                class="right"
-                type="button"
-                color="primary"
-                mat-raised-button
-                (click)="nextPage()">Weiter
-        </button>
+      <div *ngIf="generalSubform.get('decision')?.value != 2">
+        <p>Möchten Sie begrenzen wie oft Teilnehmer ja stimmen dürfen?</p>
+        <mat-radio-group formControlName="yesLimitActive">
+          <mat-radio-button style="display: block" [value]=true>Ja</mat-radio-button>
+          <mat-radio-button style="display: block" [value]=false (click)="sanitiseYesAnswerLimit()">Nein</mat-radio-button>
+        </mat-radio-group>
       </div>
-    </form>
-  </div>
+      <div *ngIf="generalSubform.get('yesLimitActive')!.value! && generalSubform.get('decision')?.value != 2">
+        <p>Geben Sie hier an, wie oft Ja ausgewählt werden darf.</p>
+        <mat-form-field>
+          <input matInput
+                 formControlName="yesAnswerLimit"
+                 type="number"
+                 style="text-align: center"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="button-space">
+      <button [disabled]="this.generalSubform.invalid"
+              class="right"
+              type="button"
+              color="primary"
+              mat-raised-button
+              (click)="nextPage()">Weiter
+      </button>
+    </div>
+  </form>
+</div>
 

@@ -83,6 +83,8 @@ export function voteReducer(
           voteConfig: {
             ...state.vote!.voteConfig,
             decisionType: action.payload.decisionType,
+            yesLimitActive:action.payload.yesLimitActive,
+            yesAnswerLimit:action.payload.yesAnswerLimit
           },
         },
         state.appointmentsChanged!,
