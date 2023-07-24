@@ -71,19 +71,18 @@
         </div>
       </div>
       <div *ngIf="generalSubform.get('decision')?.value != 2">
-        <p>Möchten Sie begrenzen wie oft Teilnehmerin ja stimmen dürfen?</p>
+        <p>Möchten Sie begrenzen wie oft Teilnehmer ja stimmen dürfen?</p>
         <mat-radio-group formControlName="yesLimitActive">
           <mat-radio-button style="display: block" [value]=true>Ja</mat-radio-button>
           <mat-radio-button style="display: block" [value]=false (click)="sanitiseYesAnswerLimit()">Nein</mat-radio-button>
         </mat-radio-group>
       </div>
       <div *ngIf="generalSubform.get('yesLimitActive')!.value! && generalSubform.get('decision')?.value != 2">
-        <p>Geben Sie hier an, wie oft Ja darf ausgewahlt werden</p>
+        <p>Geben Sie hier an, wie oft Ja ausgewählt werden darf.</p>
         <mat-form-field>
           <input matInput
                  formControlName="yesAnswerLimit"
                  type="number"
-                 [disabled]="!generalSubform.get('yesLimitActive')!.value!"
                  style="text-align: center"
           />
         </mat-form-field>

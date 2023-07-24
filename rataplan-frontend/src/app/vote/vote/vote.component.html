@@ -60,7 +60,7 @@
   </div>
   <div class="centered" style="display: inline-block">
     <p>Keine Eingaben werden als nicht Entschieden gespeichert</p>
-    <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie auf maximal {{vote.voteConfig.yesAnswerLimit!}} Optionen zustimmen</p>
+    <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu maximal {{vote.voteConfig.yesAnswerLimit!}} Optionen zustimmen</p>
   </div>
   <mat-list>
     <mat-list-item *ngFor='let option of (vote?.options || []); let voteIndex=index'>
