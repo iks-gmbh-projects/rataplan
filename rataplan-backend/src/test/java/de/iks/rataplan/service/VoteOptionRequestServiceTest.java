@@ -159,7 +159,6 @@ public class VoteOptionRequestServiceTest {
 		
 		VoteConfig voteConfig = new VoteConfig(
 				new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
-		voteConfig.setId(1);
 
 		Vote vote = new Vote();
 		vote.setId(1);

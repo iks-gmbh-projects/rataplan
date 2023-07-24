@@ -142,8 +142,7 @@ public class Vote implements Serializable {
 		return participants;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "voteConfigId")
+	@Embedded
 	public VoteConfig getVoteConfig() {
 		return voteConfig;
 	}

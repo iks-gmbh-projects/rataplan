@@ -1,7 +1,5 @@
 <dataset>
-  <voteconfig id="1" decisiontype="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndtIme="0" isUrl="0" version="1"/>
-  
-  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" voteconfigId="1" version="1"/>
+  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" decisiontype="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndtIme="0" isUrl="0" version="1"/>
 
   <voteOption id="1" voteId="1" description="iks Hilden" version="1" />
   <voteOption id="2" voteId="1" description="homeoffice" version="1" />

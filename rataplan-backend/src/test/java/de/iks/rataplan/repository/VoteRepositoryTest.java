@@ -2,7 +2,7 @@ package de.iks.rataplan.repository;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
 import static de.iks.rataplan.utils.VoteBuilder.voteOptionList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -93,21 +93,19 @@ public class VoteRepositoryTest {
 	public void getVoteById() throws Exception {
 
 		Vote vote = voteRepository.findOne(1);
-
-		assertEquals(1, vote.getVoteConfig().getId().intValue());
 		assertEquals(DecisionType.DEFAULT, vote.getVoteConfig().getDecisionType());
-		assertEquals(true, vote.getVoteConfig().getVoteOptionConfig().isDescription());
-		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isStartDate());
-		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isStartTime());
-		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isEndDate());
-		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isEndTime());
-		assertEquals(false, vote.getVoteConfig().getVoteOptionConfig().isUrl());
+		assertTrue(vote.getVoteConfig().getVoteOptionConfig().isDescription());
+		assertFalse(vote.getVoteConfig().getVoteOptionConfig().isStartDate());
+		assertFalse(vote.getVoteConfig().getVoteOptionConfig().isStartTime());
+		assertFalse(vote.getVoteConfig().getVoteOptionConfig().isEndDate());
+		assertFalse(vote.getVoteConfig().getVoteOptionConfig().isEndTime());
+		assertFalse(vote.getVoteConfig().getVoteOptionConfig().isUrl());
 
 		assertEquals(1, vote.getId().intValue());
 		assertEquals("Coding Dojo", vote.getTitle().getString());
 		assertEquals("Fun with code", vote.getDescription().getString());
 		assertEquals(IKS_MAIL, vote.getOrganizerMail().getString());
-		assertEquals(false, vote.isNotified());
+		assertFalse(vote.isNotified());
 
 		assertEquals(2, vote.getOptions().size());
 	}
