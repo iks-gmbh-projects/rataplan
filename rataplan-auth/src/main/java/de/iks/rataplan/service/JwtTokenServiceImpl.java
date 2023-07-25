@@ -64,7 +64,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
     }
 
     @Override
-    public Integer getAccountConfirmationClaims(String token) {
+    public Integer getUserIdFromAccountConfirmationToken(String token) {
         final Claims claims;
         try {
             claims = getClaimsFromToken(token);

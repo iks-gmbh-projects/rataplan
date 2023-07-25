@@ -5,7 +5,7 @@ import de.iks.rataplan.dto.UserDTO;
 import java.util.Date;
 
 public interface JwtTokenService {
-    public Integer getAccountConfirmationClaims(String token);
+    public Integer getUserIdFromAccountConfirmationToken(String token);
 
     public String getUsernameFromToken(String token);
 

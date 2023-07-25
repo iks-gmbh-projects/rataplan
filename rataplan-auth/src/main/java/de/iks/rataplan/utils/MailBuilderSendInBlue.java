@@ -47,10 +47,12 @@ public class MailBuilderSendInBlue {
 
         return new SendSmtpEmail()
                 .sender(sender)
+                .to(Collections.singletonList(
+                        new SendSmtpEmailTo()
+                                .email(confirmAccountMailData.getEmailAddress())
+                ))
                 .subject(templateEngine.process("confirmAccount_subject",ctx))
-                .to(Collections
-                        .singletonList(new SendSmtpEmailTo()
-                                .email(confirmAccountMailData.getEmailAddress()))).htmlContent(templateEngine.process("confirmAccount_content",ctx));
+                .htmlContent(templateEngine.process("confirmAccount_content",ctx));
     }
 
 

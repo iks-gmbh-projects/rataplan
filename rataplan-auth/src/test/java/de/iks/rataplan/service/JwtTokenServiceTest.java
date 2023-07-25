@@ -56,7 +56,7 @@ public class JwtTokenServiceTest {
 		user.setId(1);
 
 		String token = jwtTokenService.generateAccountConfirmationToken(user);
-		Integer userId = jwtTokenService.getAccountConfirmationClaims(token);
+		Integer userId = jwtTokenService.getUserIdFromAccountConfirmationToken(token);
 
 		assertNotNull(token);
 		assertTrue(jwtTokenService.isTokenValid(token));

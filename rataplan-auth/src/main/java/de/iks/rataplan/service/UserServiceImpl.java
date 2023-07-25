@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean confirmAccount(String token) {
-        Integer userId = jwtTokenService.getAccountConfirmationClaims(token);
+        Integer userId = jwtTokenService.getUserIdFromAccountConfirmationToken(token);
         User user = getUserFromId(userId);
         if (!user.isAccountConfirmed()) {
             user.setAccountConfirmed(true);
