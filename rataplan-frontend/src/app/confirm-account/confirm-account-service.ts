@@ -11,7 +11,8 @@ import { catchError, of } from 'rxjs';
 export class ConfirmAccountService {
 
 
-  constructor(private matSnackBar: MatSnackBar, private router: Router, private urlService: BackendUrlService, private http: HttpClient) {}
+  constructor(private matSnackBar: MatSnackBar, private router: Router, private urlService: BackendUrlService, private http: HttpClient) {
+  }
 
 
   resendConfirmationEmail(email: string) {
@@ -23,7 +24,7 @@ export class ConfirmAccountService {
       const snackBarConfig: MatSnackBarConfig = new MatSnackBarConfig();
       snackBarConfig.duration = (10000);
       if (successful) {
-        this.matSnackBar.open('Bestätigungsemail erneut geschickt' ,'', snackBarConfig);
+        this.matSnackBar.open('Bestätigungsemail erneut geschickt', '', snackBarConfig);
         this.router.navigate(['login']);
       } else {
         this.matSnackBar.open('Einer Fehler ist aufgetreten', '', snackBarConfig);
@@ -31,17 +32,17 @@ export class ConfirmAccountService {
     });
   }
 
-  confirmAccount(token:string){
+  confirmAccount(token: string) {
     this.urlService.authURL$.pipe(map(link => link + 'confirm-account')).subscribe(link => {
-      const snackBarConfig:MatSnackBarConfig = new MatSnackBarConfig();
+      const snackBarConfig: MatSnackBarConfig = new MatSnackBarConfig();
       snackBarConfig.duration = (10000);
-      this.http.get(link, { headers: new HttpHeaders().set('jwttoken', token) }).subscribe(
+      this.http.post(link, token).subscribe(
         (next) => {
-          this.matSnackBar.open('Konto Bestätigung erfolgreich','',snackBarConfig);
+          this.matSnackBar.open('Konto Bestätigung erfolgreich', '', snackBarConfig);
           this.router.navigate(['/login']);
         },
         (err) => {
-          this.matSnackBar.open('Konto Bestätigung unerfolgreich.\nBitte Loggen Sie sich ein um eine neue Bestätigungsemail zu erhalten','',snackBarConfig);
+          this.matSnackBar.open('Konto Bestätigung unerfolgreich.\nBitte Loggen Sie sich ein um eine neue Bestätigungsemail zu erhalten', '', snackBarConfig);
           this.router.navigate(['/']);
         });
     });
