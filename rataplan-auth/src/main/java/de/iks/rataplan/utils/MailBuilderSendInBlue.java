@@ -36,27 +36,21 @@ public class MailBuilderSendInBlue {
                                 .email(resetPasswordMailData.getMail())
                 ))
                 .subject(templateEngine.process("resetPassword_subject", ctx))
-                .htmlContent(templateEngine.process("resetPassword_content", ctx))
-                ;
+                .htmlContent(templateEngine.process("resetPassword_content", ctx));
     }
 
     public SendSmtpEmail buildAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData) {
+        String confirmAccountLink = baseUrl + "/confirm-account/" + confirmAccountMailData.getToken();
+
+        Context ctx = new Context();
+        ctx.setVariable("link", confirmAccountLink);
+
         return new SendSmtpEmail()
                 .sender(sender)
-                .subject("Konto Bestätigung")
+                .subject(templateEngine.process("confirmAccount_subject",ctx))
                 .to(Collections
                         .singletonList(new SendSmtpEmailTo()
-                                .email(confirmAccountMailData.getEmailAddress()))).htmlContent(" < html >\n" +
-                        " <head > \n" +
-                        "<title > Email Template </title > \n" +
-                        "</head > \n" +
-                        "<body > \n" +
-                        "<h2 > Klicken Sie den Knopf, um Ihr Konto zu aktivieren</h2 >\n " +
-                        "<p > \n" +
-                        "<a href = drumdibum.com/confirm-account/" + confirmAccountMailData.getToken() + "> Konto Bestätigen </a >\n" +
-                        " </p > \n" +
-                        "</body > \n" +
-                        "</html >");
+                                .email(confirmAccountMailData.getEmailAddress()))).htmlContent(templateEngine.process("confirmAccount_content",ctx));
     }
 
 

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import de.iks.rataplan.dto.UserDTO;
-import io.jsonwebtoken.Claims;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,19 +51,16 @@ public class JwtTokenServiceTest {
 	}
 
 	@Test
-	public void generateAccountConfirmationAndValidateUsernameAndEmail(){
+	public void generateAccountConfirmationAndRetrieveId(){
 		UserDTO user = new UserDTO();
-
-		user.setUsername("Peter");
-		user.setMail("Peter@Peter");
+		user.setId(1);
 
 		String token = jwtTokenService.generateAccountConfirmationToken(user);
-		Claims claims = jwtTokenService.getAccountConfirmationClaims(token);
+		Integer userId = jwtTokenService.getAccountConfirmationClaims(token);
 
 		assertNotNull(token);
 		assertTrue(jwtTokenService.isTokenValid(token));
-		assertEquals(claims.get("username"),user.getUsername());
-		assertEquals(claims.get("email"),user.getMail());
+		assertEquals(userId,user.getId());
 	}
 
 }

@@ -4,7 +4,6 @@ import de.iks.rataplan.domain.DeleteUserRequest;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
 import de.iks.rataplan.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -58,10 +57,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean confirmAccount(String token) {
-        Claims claims = jwtTokenService.getAccountConfirmationClaims(token);
-        String email = (String) claims.get("email");
-        User user = getUserFromUsername((String) claims.get("username"));
-        if (user.getMail().equals(cryptoService.encryptDB(email)) && !user.isAccountConfirmed()) {
+        Integer userId = jwtTokenService.getAccountConfirmationClaims(token);
+        User user = getUserFromId(userId);
+        if (!user.isAccountConfirmed()) {
             user.setAccountConfirmed(true);
             userRepository.saveAndFlush(user);
             return true;

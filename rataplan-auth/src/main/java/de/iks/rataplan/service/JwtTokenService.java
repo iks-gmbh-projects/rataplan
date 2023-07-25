@@ -1,12 +1,11 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.dto.UserDTO;
-import io.jsonwebtoken.Claims;
 
 import java.util.Date;
 
 public interface JwtTokenService {
-    public Claims getAccountConfirmationClaims(String token);
+    public Integer getAccountConfirmationClaims(String token);
 
     public String getUsernameFromToken(String token);
 

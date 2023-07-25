@@ -48,10 +48,10 @@ public class RataplanAuthRestController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
     
-    @GetMapping(value = "/confirm-account")
-    public ResponseEntity<Boolean> confirmAccount(@RequestHeader(value = "jwttoken") String token) {
+    @PostMapping(value = "/confirm-account")
+    public ResponseEntity<Boolean> confirmAccount(@RequestBody String token) {
         Boolean accountConfirmed = userService.confirmAccount(token);
-        return new ResponseEntity<>(accountConfirmed, HttpStatus.valueOf(200));
+        return new ResponseEntity<>(accountConfirmed, HttpStatus.OK);
     }
     
     @PostMapping(value = "/resend-confirmation-email")
@@ -59,8 +59,8 @@ public class RataplanAuthRestController {
         UserDTO userDTO = userService.validateResendConfirmationEmailRequest(email);
         if (userDTO != null) {
             sendAccountConfirmationEmail(userDTO);
-            return new ResponseEntity<>(true, HttpStatus.valueOf(200));
-        } else return new ResponseEntity<>(false, HttpStatus.valueOf(500));
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
     private void sendAccountConfirmationEmail(UserDTO userDTO) {

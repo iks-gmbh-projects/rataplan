@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -39,16 +40,13 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
     @Override
     public String generateAccountConfirmationToken(UserDTO userDTO) {
         Claims claims = Jwts.claims();
-        claims.put("email", userDTO.getMail());
-        claims.put("username", userDTO.getUsername());
+        claims.setSubject(userDTO.getId().toString());
         claims.put(CLAIM_PURPOSE, PURPOSE_ACCOUNT_CONFIRMATION);
+        claims.setIssuer(jwtConfig.getIssuer());
         int EXPIRATION_TIME = 30 * 60000;
         Date expirationTime = new Date(System.currentTimeMillis() + EXPIRATION_TIME);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setExpiration(expirationTime)
-                .signWith(SignatureAlgorithm.RS512, cryptoService.idKeyP())
-                .compact();
+        claims.setExpiration(expirationTime);
+        return generateToken(claims);
     }
 
     public Date getTokenExpiration(String token) {
@@ -66,7 +64,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
     }
 
     @Override
-    public Claims getAccountConfirmationClaims(String token) {
+    public Integer getAccountConfirmationClaims(String token) {
         final Claims claims;
         try {
             claims = getClaimsFromToken(token);
@@ -77,11 +75,15 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
             if (!PURPOSE_ACCOUNT_CONFIRMATION.equals(claims.get(CLAIM_PURPOSE))) {
                 throw new InvalidTokenException("Invalid JWT");
             }
+            if (!Objects.equals(claims.getIssuer(),jwtConfig.getIssuer())){
+                throw new InvalidTokenException("Invalid JWT");
+            }
+
+            return Integer.parseInt(claims.getSubject());
 
         } catch (Exception e) {
             throw new InvalidTokenException("Invalid JWT");
         }
-        return claims;
     }
 
     @Override
