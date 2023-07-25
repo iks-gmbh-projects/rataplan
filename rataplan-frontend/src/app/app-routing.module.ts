@@ -2,6 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ConfirmAccountComponent } from './confirm-account/confirm-account/confirm-account.component';
+import {
+  ConfirmAccountInstructionComponent
+} from './confirm-account/confirm-account-instruction/confirm-account-instruction.component';
+import {
+  ResendAccountConfirmationEmailComponent
+} from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -105,6 +112,9 @@ const routes: Routes = [
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'survey', loadChildren: () => import('./survey/survey.module').then(m => m.SurveyModule) },
+  { path: 'confirm-account', component: ConfirmAccountInstructionComponent },
+  { path: 'confirm-account/:token', component: ConfirmAccountComponent },
+  { path: 'resend-confirmation-email', component: ResendAccountConfirmationEmailComponent }
 ];
 
 @NgModule({

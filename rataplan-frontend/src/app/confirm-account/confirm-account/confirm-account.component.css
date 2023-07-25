@@ -1,0 +1,22 @@
+.loading-container {
+  align-items: center;
+  align-self: center;
+  text-align: center;
+  display: block;
+  box-shadow: black;
+  width: fit-content;
+  height: 600px;
+  margin: auto;
+  border-radius: 5px;
+  font: 500 20px/32px Roboto, "Helvetica Neue", sans-serif;
+  padding: 10%;
+}
+
+.confirm-account-header{
+  margin-bottom: 20px;
+}
+
+.centered-spinner{
+  justify-content: center;
+  margin: auto;
+}

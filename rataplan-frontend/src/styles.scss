@@ -27,6 +27,9 @@ body {
   justify-content: space-evenly;
 }
 
+
+
+
 .right {
   float: right;
 }
@@ -142,3 +145,30 @@ body {
 .mat-radio-label-content{
   white-space: break-spaces
 }
+
+@media(max-width: 500px){
+  .password-reset{
+    display: block;
+    padding: 5px;
+    margin: auto;
+    align-self: center;
+  }
+  .registration{
+    display: block;
+    padding-bottom: 5px;
+    margin: auto;
+    align-self: center;
+  }
+  .links{
+    display: block;
+    text-align: center;
+  }
+  .confirm-account{
+    display: block;
+    padding: 5px;
+    margin: auto;
+    align-self: center;
+  }
+
+}
+

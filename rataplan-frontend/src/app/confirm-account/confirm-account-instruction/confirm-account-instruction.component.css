@@ -1,0 +1,45 @@
+.confirm-account-card {
+  align-items: center;
+  align-self: center;
+  text-align: center;
+  display: block;
+  box-shadow: black;
+  width: fit-content;
+  height: 600px;
+  margin: auto;
+  border-radius: 5px;
+  font: 500 20px/32px Roboto, "Helvetica Neue", sans-serif;
+  padding: 10%;
+}
+
+.welcome-header {
+  text-align: center;
+  margin: 0;
+  color: white;
+  background: #3f51b5;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  font: 500 20px/32px Roboto, "Helvetica Neue", sans-serif;
+}
+
+.instruction-container {
+  background: white;
+  padding: 0px 50px;
+}
+
+.greeting{
+  font-size: 18px;
+}
+
+.instruction{
+  font-weight: normal;
+  font-size: 16px;
+}
+
+
+@media (max-width: 1099px) {
+  .confirm-account-card{
+    width: 80%;
+    height: auto;
+  }
+}

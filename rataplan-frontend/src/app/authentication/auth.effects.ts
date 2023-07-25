@@ -51,8 +51,8 @@ export class AuthEffects {
         return this.httpClient.post<FrontendUser>(url, action.payload, { withCredentials: true })
           .pipe(
             map(userData => new RegisterSuccessAction(userData)),
-            catchError(err => of(new RegisterErrorAction(err))),
-            tap(() => this.router.navigateByUrl(action.redirect || '/')),
+            tap(() => this.router.navigateByUrl(action.redirect || '/confirm-account')),
+            catchError(err => of(new RegisterErrorAction(err)))
           );
       }),
     );
