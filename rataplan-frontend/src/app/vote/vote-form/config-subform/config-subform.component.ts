@@ -57,7 +57,7 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
         });
       });
     this.formSub1 = this.fields.isDateChecked.valueChanges.subscribe((enabled: boolean) => {
-      if(enabled) {
+      if (enabled) {
         this.fields.isTimeChecked.enable();
         this.fields.isEndDateChecked.enable();
       } else {
@@ -71,7 +71,7 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
       this.fields.isTimeChecked.valueChanges.pipe(startWith(this.fields.isTimeChecked.value)),
       this.fields.isEndDateChecked.valueChanges.pipe(startWith(this.fields.isEndDateChecked.value))
     ]).subscribe(([timeEnabled, endDateEnabled]: [boolean, boolean]) => {
-      if(timeEnabled || endDateEnabled) {
+      if (timeEnabled || endDateEnabled) {
         this.fields.isEndTimeChecked.enable();
       } else {
         this.fields.isEndTimeChecked.disable({ emitEvent: false });
@@ -95,17 +95,6 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
       url: this.configForm.get('isUrlChecked')?.value || false,
     };
     this.store.dispatch(new SetVoteOptionConfigAction(config));
-    if(
-      config.startDate &&
-      !config.startTime &&
-      !config.endDate &&
-      !config.endTime &&
-      !config.description &&
-      !config.url
-    ) {
-      this.router.navigate(['..', 'datepicker'], { relativeTo: this.activeRoute });
-    } else {
-      this.router.navigate(['..', 'configuration'], { relativeTo: this.activeRoute });
-    }
+    this.router.navigate(['..', 'configuration'], { relativeTo: this.activeRoute });
   }
 }

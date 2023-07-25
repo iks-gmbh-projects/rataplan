@@ -29,7 +29,7 @@
             <mat-icon *ngIf='participant.userId' class='user-icon'>person</mat-icon>
             {{ participant.name }}
           </div>
-          <div *ngIf='!deadlineService.hasDeadlinePassed() && (!participant.userId || participant.userId === currentUser?.id)' class='member-button'>
+          <div *ngIf='!deadlineService.hasDeadlinePassed() && (participant.userId === currentUser?.id)' class='member-button'>
             <button mat-icon-button
                     [disabled]='isPreview'
                     (click)='isPreview || editMember(participant)'>
@@ -98,7 +98,7 @@
         <mat-button-toggle-group style='scale: 90%'>
           <mat-button-toggle (click)='yesButton.disabled || setDecision(option, 1)'
                              [checked]='checkVoteOfMember(option, 1)'
-                             [disabled]='isPreview || deadlineService.hasDeadlinePassed() || isYesVoteLimitMet'
+                             [disabled]='isPreview || deadlineService.hasDeadlinePassed() || isYesVoteLimitMet || isParticipantLimitMet(option)'
                              matTooltip='Ja'
                              matTooltipPosition='above'
                              #yesButton=matButtonToggle>

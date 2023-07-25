@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.m
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../../vote.actions';
 import { combineDateTime } from '../vote-form.service';
+import { ExtraValidators } from '../../../validator/validators';
 
 function extractTime(date: string | undefined | null): string | null {
   if (!date) return null;
@@ -24,6 +25,8 @@ type formValue = {
   endTimeInput: string | null,
   descriptionInput: string | null,
   linkInput: string | null,
+  participantLimitActive: boolean,
+  participantLimit: number | null
 };
 
 @Component({
@@ -41,6 +44,9 @@ export class OverviewSubformComponent implements OnInit {
     description: false,
     url: false,
   };
+
+  participantLimitActive:FormControl = new FormControl(false);
+  participantLimit:FormControl = new FormControl(null, ExtraValidators.participantLimitMoreThanZeroOrNull);
   vote = this.formBuilder.group({
     voteIndex: null,
     startDateInput: null,
@@ -49,6 +55,8 @@ export class OverviewSubformComponent implements OnInit {
     endTimeInput: null,
     descriptionInput: null,
     linkInput: null,
+    participantLimitActive:this.participantLimitActive,
+    participantLimit: this.participantLimit
   });
 
   private storeSub?: Subscription;
@@ -68,6 +76,7 @@ export class OverviewSubformComponent implements OnInit {
     ).subscribe(request => {
       this.voteConfig = request.voteConfig.voteOptionConfig;
       this.voteOptions = request.options;
+      console.log(request.options);
     });
   }
 
@@ -75,6 +84,13 @@ export class OverviewSubformComponent implements OnInit {
     this.vote.reset();
   }
 
+  sanitiseParticipationLimit(checked:boolean) {
+    if (!checked) {
+      this.participantLimit.setValue(null);
+      this.participantLimit.markAsPristine();
+      this.participantLimit.setErrors(null);
+    }
+  }
   addVoteOption() {
     if (!this.isInputInForm()) {
       return;
@@ -93,6 +109,8 @@ export class OverviewSubformComponent implements OnInit {
 
     voteOption.description = input.descriptionInput || undefined;
     voteOption.url = input.linkInput || undefined;
+    voteOption.participantLimitActive = input.participantLimitActive || false;
+    voteOption.participantLimit = input.participantLimitActive ? input.participantLimit : null;
 
     if (input.voteIndex !== null) {
       this.store.dispatch(new EditVoteOptionAction(input.voteIndex, voteOption));
@@ -129,7 +147,9 @@ export class OverviewSubformComponent implements OnInit {
       endTimeInput: extractTime(voteOption.endDate),
       descriptionInput: voteOption.description || null,
       linkInput: voteOption.url || null,
-      voteIndex: index
+      voteIndex: index,
+      participantLimitActive:voteOption.participantLimitActive || false,
+      participantLimit: voteOption.participantLimit || null
     });
   }
 }

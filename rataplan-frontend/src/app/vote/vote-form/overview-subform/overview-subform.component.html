@@ -95,7 +95,7 @@
     </div>
     <div *ngIf='voteConfig.description'>
       <mat-form-field appearance='fill'
-                      >
+      >
         <mat-label>Textfeld</mat-label>
         <input type='text'
                formControlName='descriptionInput'
@@ -107,7 +107,7 @@
     </div>
     <div *ngIf='voteConfig.url'>
       <mat-form-field appearance='fill'
-                      >
+      >
         <mat-label>URL</mat-label>
         <input type='text'
                formControlName='linkInput'
@@ -115,6 +115,19 @@
                matInput
                required>
         <mat-error>{{errorMessageService.genericFormError(vote.get('linkInput'))}}</mat-error>
+      </mat-form-field>
+    </div>
+    <mat-slide-toggle #participationLimitToggle formControlName="participantLimitActive" (click)="sanitiseParticipationLimit(participationLimitToggle.checked)">Möchten Sie die maximal Anzahl Teilnehmerin auf diesen
+      Termin begrenzen?
+    </mat-slide-toggle>
+    <div *ngIf="vote.get('participantLimitActive')!.value!">
+      <p>Geben Sie hier an, die maximale Anzahl Teilnehmerin für diesen Termin</p>
+      <mat-form-field>
+        <input matInput
+               formControlName="participantLimit"
+               type="number"
+               style="text-align: center"
+        />
       </mat-form-field>
     </div>
     <mat-card-actions>
@@ -127,55 +140,53 @@
         {{ vote.get('voteOptionIndex') === null ? 'Hinzufügen' : 'Ändern' }}
       </button>
     </mat-card-actions>
-  </mat-card>
-</div>
-<div style='margin-top: 20px; margin-bottom: 20px'>
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Erstellte Abstimmungsoptionen: {{ voteOptions.length }}
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <ng-template matExpansionPanelContent>
-      <div class="vote-option" *ngFor='let voteOption of voteOptions; let index = index'>
-        <div>
-          <div *ngIf='voteConfig.startDate'>
-            {{ voteOption.startDate | date:(this.voteConfig.startTime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'):undefined:'de' }}
-            <ng-template [ngIf]='voteConfig.endDate || voteConfig.endTime'>
-              {{ voteOption.endDate | date:(this.voteConfig.endTime ? '- dd.MM.yyyy HH:mm' : '- dd.MM.yyyy'):undefined:'de' }}
-            </ng-template>
+    <div style='margin-top: 20px; margin-bottom: 20px'>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Erstellte Abstimmungsoptionen: {{ voteOptions.length }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+          <div class="vote-option" *ngFor='let voteOption of voteOptions; let index = index'>
+            <div>
+              <div *ngIf='voteConfig.startDate'>
+                {{ voteOption.startDate | date:(this.voteConfig.startTime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'):undefined:'de' }}
+                <ng-template [ngIf]='voteConfig.endDate || voteConfig.endTime'>
+                  {{ voteOption.endDate | date:(this.voteConfig.endTime ? '- dd.MM.yyyy HH:mm' : '- dd.MM.yyyy'):undefined:'de' }}
+                </ng-template>
+              </div>
+              <p class="vote-option-description" *ngIf='this.voteConfig.description'>
+                {{ voteOption.description }}
+              </p>
+              <div *ngIf='this.voteConfig.url'>
+                <a [href]='voteOption.url'>Link</a>
+              </div>
+            </div>
+            <div class="vote-option-buttons">
+              <button mat-icon-button
+                      (click)='editVoteOption(index)'>
+                <mat-icon mat-list-icon>edit_square</mat-icon>
+              </button>
+              <button mat-icon-button color="warn"
+                      (click)='deleteVoteOption(index)'>
+                <mat-icon mat-list-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
-          <p class="vote-option-description" *ngIf='this.voteConfig.description'>
-            {{ voteOption.description }}
-          </p>
-          <div *ngIf='this.voteConfig.url'>
-            <a [href]='voteOption.url'>Link</a>
-          </div>
-        </div>
-        <div class="vote-option-buttons">
-          <button mat-icon-button
-                  (click)='editVoteOption(index)'>
-            <mat-icon mat-list-icon>edit_square</mat-icon>
-          </button>
-          <button mat-icon-button color="warn"
-                  (click)='deleteVoteOption(index)'>
-            <mat-icon mat-list-icon>delete</mat-icon>
-          </button>
-        </div>
-      </div>
-    </ng-template>
-  </mat-expansion-panel>
-</div>
-<div>
-  <button mat-raised-button
-          routerLink='../configurationOptions'>Zurück
-  </button>
-  <button [disabled]='this.voteOptions.length == 0'
-          class='right'
-          type='submit'
-          color='primary'
-          mat-raised-button
-          routerLink='../email'>Weiter
-  </button>
-</div>
+        </ng-template>
+      </mat-expansion-panel>
+    </div>
+    <div>
+      <button mat-raised-button
+              routerLink='../configurationOptions'>Zurück
+      </button>
+      <button [disabled]='this.voteOptions.length == 0'
+              class='right'
+              type='submit'
+              color='primary'
+              mat-raised-button
+              routerLink='../email'>Weiter
+      </button>
+    </div>
 

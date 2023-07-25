@@ -62,4 +62,13 @@ export class ExtraValidators {
       else return null;
     };
   }
+
+
+
+  static participantLimitMoreThanZeroOrNull():ValidatorFn {
+    return (c) => {
+      if (c.parent?.get('participantLimitActive')?.value) return c.value > 0 ? null : { 'Teilnehmer Anzahl muss mehr als 0 sein' : true };
+      else return null;
+    };
+  }
 }
