@@ -2,10 +2,17 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
-import { catchError, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 
+
+
+export enum ConfirmationStatus{
+  ACCOUNT_CONFIRMATION_SUCCESSFUL,
+  ACCOUNT_PREVIOUSLY_CONFIRMED,
+  ACCOUNT_CONFIRMATION_UNSUCCESSFUL
+}
 
 @Injectable({ providedIn: 'root' })
 export class ConfirmAccountService {
@@ -32,20 +39,24 @@ export class ConfirmAccountService {
     });
   }
 
-  confirmAccount(token: string) {
-    this.urlService.authURL$.pipe(map(link => link + 'confirm-account')).subscribe(link => {
-      const snackBarConfig: MatSnackBarConfig = new MatSnackBarConfig();
-      snackBarConfig.duration = (10000);
-      this.http.post(link, token).subscribe(
-        (next) => {
-          this.matSnackBar.open('Konto Bestätigung erfolgreich', '', snackBarConfig);
-          this.router.navigate(['/login']);
-        },
-        (err) => {
-          this.matSnackBar.open('Konto Bestätigung unerfolgreich.\nBitte Loggen Sie sich ein um eine neue Bestätigungsemail zu erhalten', '', snackBarConfig);
-          this.router.navigate(['/']);
-        });
-    });
+  confirmAccount(token: string): Observable<number> {
+    return this.urlService.authURL$.pipe(
+      map(link => link + 'confirm-account'),
+      switchMap(link => {
+        const snackBarConfig: MatSnackBarConfig = new MatSnackBarConfig();
+        snackBarConfig.duration = (10000);
+        return this.http.post<number>(link, token).pipe(
+          catchError((err) => of(ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL)),
+          map(response => {
+            if (response !== ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL) {
+              return response ?
+                ConfirmationStatus.ACCOUNT_CONFIRMATION_SUCCESSFUL
+                : ConfirmationStatus.ACCOUNT_PREVIOUSLY_CONFIRMED;
+            }else return ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL;
+          })
+        );
+      })
+    );
   }
 
 }

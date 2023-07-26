@@ -113,8 +113,8 @@ const routes: Routes = [
   { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'survey', loadChildren: () => import('./survey/survey.module').then(m => m.SurveyModule) },
   { path: 'confirm-account', component: ConfirmAccountInstructionComponent },
-  { path: 'confirm-account/:token', component: ConfirmAccountComponent },
-  { path: 'resend-confirmation-email', component: ResendAccountConfirmationEmailComponent }
+  { path: 'confirm-account/:token', component: ConfirmAccountComponent, canActivate: [ AuthGuardService ] },
+  { path: 'resend-confirmation-email', component: ResendAccountConfirmationEmailComponent, canActivate: [ AuthGuardService ] }
 ];
 
 @NgModule({

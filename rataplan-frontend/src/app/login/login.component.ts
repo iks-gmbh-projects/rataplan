@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Subscription } from "rxjs";
-import { LoginData } from "../models/user.model";
-import { ActivatedRoute } from "@angular/router";
-import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../validator/validators";
-import { Store } from "@ngrx/store";
-import { appState } from "../app.reducers";
-import { AuthActions, LoginAction, LoginErrorAction } from "../authentication/auth.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { map, tap } from "rxjs/operators";
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { LoginData } from '../models/user.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../validator/validators';
+import { Store } from '@ngrx/store';
+import { appState } from '../app.reducers';
+import { AuthActions, LoginAction, LoginErrorAction } from '../authentication/auth.actions';
+import { Actions, ofType } from '@ngrx/effects';
+import { map, tap } from 'rxjs/operators';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { CookieBannerComponent } from '../cookie-banner/cookie-banner.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -46,12 +46,12 @@ export class LoginComponent implements OnInit, OnDestroy {
         username: this.inputField.value,
         password: this.password.value
 
-      }
+      };
       if (this.inputField.value.indexOf('@') !== -1) {
         frontendUser = {
           mail: this.inputField.value,
           password: this.password.value
-        }
+        };
       }
       this.isLoading = true;
       this.store.dispatch(new LoginAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
@@ -59,10 +59,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private handleError(errorRes: LoginErrorAction) {
-    if (errorRes.error.error.errorCode === "WRONG_CREDENTIALS") {
-      this.password.setErrors({invalidCredentials: true});
+    if (errorRes.error.error.errorCode === 'WRONG_CREDENTIALS') {
+      this.password.setErrors({ invalidCredentials: true });
+    } else if (errorRes.error.error.errorCode === 'FORBIDDEN') {
+      this.router.navigate(['/confirm-account/']);
     } else {
-      this.snackBar.open("Unbekannter Fehler bei Login", "Ok");
+      this.snackBar.open('Unbekannter Fehler bei Login', 'Ok');
       console.log(errorRes);
     }
   }
@@ -85,22 +87,23 @@ export class LoginComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private bottomSheets: MatBottomSheet,
     private snackBar: MatSnackBar,
-    public readonly errorMessageService: FormErrorMessageService
+    public readonly errorMessageService: FormErrorMessageService,
+    private router: Router
   ) {
   }
 
   ngOnInit(): void {
-    this.busySub = this.store.select("auth").pipe(
+    this.busySub = this.store.select('auth').pipe(
       map(auth => auth.busy)
     ).subscribe(busy => {
       this.isLoading = busy;
     });
 
-    this.cookieSub = this.store.select("cookie").pipe(
+    this.cookieSub = this.store.select('cookie').pipe(
       tap(b => {
-        if(this.cookieInit) {
+        if (this.cookieInit) {
           this.cookieInit = false;
-          if(!b) this.bottomSheets.open(CookieBannerComponent, {disableClose: true});
+          if (!b) this.bottomSheets.open(CookieBannerComponent, { disableClose: true });
         }
       })
     ).subscribe(cookieAllowed => this.cookieAllowed = cookieAllowed);

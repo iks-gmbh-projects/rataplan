@@ -1,8 +1,19 @@
-<div class="loading-container">
+<div *ngIf="!confirmationFailed; else errorMessage" class="loading-container">
   <div>
     <h1 class="confirm-account-header">Anfrage wird verarbeitet</h1>
   </div>
   <div>
-  <mat-spinner class="centered-spinner"></mat-spinner>
+    <mat-spinner class="centered-spinner"></mat-spinner>
   </div>
 </div>
+<ng-template #errorMessage>
+<div class="confirm-account-card">
+  <h2 class="welcome-header">Bestätigung unerfolgreich :(</h2>
+  <div class="instruction-container">
+    <p class="greeting">Beim verifizieren deines Kontos ist ein Fehler aufgetreten</p>
+    <p class="instruction">Möglicher Grund dafür ist ein abgelaufenes Bestätigungstoken.</p>
+    <p class="instruction">Klicken Sie den unteren Knopf, um zur Seite "Bestätigungsmail erneut schicken" zu navigieren.</p>
+    <button mat-raised-button color="primary" routerLink="/resend-confirmation-email">Weiterleiten</button>
+  </div>
+</div>
+</ng-template>

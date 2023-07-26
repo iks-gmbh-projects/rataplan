@@ -1,15 +1,6 @@
 .loading-container {
-  align-items: center;
-  align-self: center;
   text-align: center;
-  display: block;
-  box-shadow: black;
-  width: fit-content;
-  height: 600px;
-  margin: auto;
-  border-radius: 5px;
-  font: 500 20px/32px Roboto, "Helvetica Neue", sans-serif;
-  padding: 10%;
+  padding-top: 10%;
 }
 
 .confirm-account-header{
@@ -19,4 +10,37 @@
 .centered-spinner{
   justify-content: center;
   margin: auto;
+}
+
+.confirm-account-card {
+  text-align: center;
+  font-weight: 500;
+  line-height: 32px;
+  padding: 10%;
+}
+
+.welcome-header {
+  margin: 0;
+  color: white;
+  background: #3f51b5;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.instruction-container {
+  background: white;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 20px;
+}
+
+.greeting{
+  font-size: 18px;
+  margin-top: auto;
+}
+
+.instruction{
+  font-weight: normal;
 }
