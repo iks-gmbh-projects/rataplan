@@ -1,5 +1,6 @@
 package de.iks.rataplan.restservice;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.KeyExchangeConfig;
 import de.iks.rataplan.config.TestConfig;
@@ -10,9 +11,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -26,6 +32,8 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class, TestConfig.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class })
+@DirtiesContext
 public class AuthServiceTest {
 	@Autowired
 	private KeyExchangeConfig keyExchangeConfig;
