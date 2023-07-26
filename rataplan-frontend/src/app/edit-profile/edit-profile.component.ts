@@ -7,18 +7,15 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 
-import { appState } from '../app.reducers';
-import {
-  AuthActions,
-  ChangeProfileDetailsAction,
-} from '../authentication/auth.actions';
+import { AuthActions, ChangeProfileDetailsAction } from '../authentication/auth.actions';
 import { FrontendUser } from '../models/user.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
 import {
-  UsernameEmailValidatorsService
+  UsernameEmailValidatorsService,
 } from '../services/username-email-validators-service/username-email-validators.service';
 import { ExtraValidators } from '../validator/validators';
+import { authFeature } from '../authentication/auth.feature';
 
 @Component({
   selector: 'app-profile',
@@ -35,7 +32,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private store: Store<appState>,
+    private store: Store,
     private actions$: Actions,
     private snackbar: MatSnackBar,
     private emailValidatorsService: UsernameEmailValidatorsService,
@@ -46,7 +43,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userDataSub = this.store.select('auth')
+    this.userDataSub = this.store.select(authFeature.selectAuthState)
       .subscribe(authData => {
         if (this.emailField.value !== '' && this.displayNameField.value !== '') {
           this.snackbar.open('Profil erfolgreich akutalisiert', 'OK');

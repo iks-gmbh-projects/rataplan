@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { filter, map, Subscription } from 'rxjs';
 
-import { appState } from '../../../app.reducers';
 import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../../vote.actions';
 import { combineDateTime } from '../vote-form.service';
+import { voteFeature } from '../../vote.feature';
 
 function extractTime(date: string | undefined | null): string | null {
   if (!date) return null;
@@ -54,7 +54,7 @@ export class OverviewSubformComponent implements OnInit {
   private storeSub?: Subscription;
 
   constructor(
-    private store: Store<appState>,
+    private store: Store,
     private router: Router,
     private formBuilder: FormBuilder,
     public errorMessageService: FormErrorMessageService,
@@ -62,7 +62,7 @@ export class OverviewSubformComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select('vote').pipe(
+    this.storeSub = this.store.select(voteFeature.selectVoteState).pipe(
       filter(request => !!request.vote),
       map(state => state.vote!),
     ).subscribe(request => {

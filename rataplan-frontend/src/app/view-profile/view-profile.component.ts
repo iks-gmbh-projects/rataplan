@@ -1,8 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-
-import { appState } from '../app.reducers';
+import { authFeature } from '../authentication/auth.feature';
 
 @Component({
   selector: 'app-view-profile',
@@ -17,12 +16,12 @@ export class ViewProfileComponent implements OnInit,OnDestroy {
 
   userDataSub?: Subscription;
 
-  constructor(private store: Store<appState>) {
+  constructor(private store: Store) {
 
   }
 
   ngOnInit(): void {
-    this.userDataSub = this.store.select('auth')
+    this.userDataSub = this.store.select(authFeature.selectAuthState)
       .subscribe((authData) => {
         this.userName = authData.user!.username;
         this.displayName = authData.user!.displayname;

@@ -6,13 +6,14 @@ import { ActivatedRoute } from "@angular/router";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
 import { Store } from "@ngrx/store";
-import { appState } from "../app.reducers";
 import { AuthActions, LoginAction, LoginErrorAction } from "../authentication/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { map, tap } from "rxjs/operators";
+import { tap } from "rxjs/operators";
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { CookieBannerComponent } from '../cookie-banner/cookie-banner.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { authFeature } from '../authentication/auth.feature';
+import { cookieFeature } from '../cookie-banner/cookie.feature';
 
 @Component({
   selector: 'app-login',
@@ -79,7 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private store: Store<appState>,
+    private store: Store,
     private actions$: Actions,
     // private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -90,13 +91,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.busySub = this.store.select("auth").pipe(
-      map(auth => auth.busy)
+    this.busySub = this.store.select(authFeature.selectBusy).pipe(
     ).subscribe(busy => {
       this.isLoading = busy;
     });
 
-    this.cookieSub = this.store.select("cookie").pipe(
+    this.cookieSub = this.store.select(cookieFeature.selectCookieState).pipe(
       tap(b => {
         if(this.cookieInit) {
           this.cookieInit = false;

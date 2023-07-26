@@ -4,10 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
-import { appState } from '../../../app.reducers';
 import { Store } from '@ngrx/store';
 import { SetGeneralValuesVoteOptionAction } from '../../vote.actions';
 import { DecisionType } from '../decision-type.enum';
+import { voteFeature } from '../../vote.feature';
 
 @Component({
   selector: 'app-general-subform',
@@ -33,7 +33,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   private storeSub?: Subscription;
 
   constructor(
-    private store: Store<appState>,
+    private store: Store,
     public readonly errorMessageService: FormErrorMessageService,
     private router: Router,
     private activeRoute: ActivatedRoute
@@ -45,7 +45,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select('vote')
+    this.storeSub = this.store.select(voteFeature.selectVoteState)
       .subscribe(state => {
         const vote = state.vote;
         const title = vote?.title;

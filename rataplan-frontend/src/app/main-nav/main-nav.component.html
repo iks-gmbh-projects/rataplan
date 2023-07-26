@@ -7,7 +7,7 @@
       <a mat-list-item routerLink="/" (click)="drawer.close()">Home</a>
       <a *ngIf="!currentUser" mat-list-item routerLink="/register" (click)="drawer.close()">Registrieren</a>
       <a *ngIf="!currentUser" mat-list-item routerLink="/login" (click)="drawer.close()">Login</a>
-      <a mat-list-item routerLink="/create-vote" (click)="drawer.close()">Abstimmung</a>
+      <a mat-list-item routerLink="/vote/create" (click)="drawer.close()">Abstimmung</a>
       <a mat-list-item routerLink="/survey" (click)="drawer.close()">Umfrage</a>
       <a mat-list-item routerLink="/terms-and-conditions" (click)="drawer.close()">AGB</a>
       <a mat-list-item routerLink="/imprint" (click)="drawer.close()">Impressum</a>
@@ -29,7 +29,6 @@
       <button  (click)="onClick()" [matMenuTriggerFor]="menu" #trigger = "matMenuTrigger" class="loginIcon" mat-icon-button color="FFFFFF" aria-label="Example icon button with a home icon">
         <mat-icon *ngIf='!this.currentUser'>login</mat-icon>
         <mat-icon *ngIf='this.currentUser'>perm_identity</mat-icon>
-        <!--dirty hack as there is no decent way to get accurate data about the logged in user through a service-->
       </button>
       <mat-menu #menu="matMenu" >
         <button mat-menu-item routerLink="/view-profile"><mat-icon>account_circle</mat-icon>Profil</button>

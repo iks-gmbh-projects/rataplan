@@ -4,11 +4,11 @@ import { ActionRequiresInit, VoteActions,VoteOptionAction } from './vote.actions
 
 export type voteState = {
   busy: boolean,
-  error?: any,
+  error: any,
 } & ({
-  vote?: undefined,
-  complete?: false,
-  appointmentsChanged?: undefined,
+  vote: undefined,
+  complete: false,
+  appointmentsChanged: undefined,
 } | {
   vote: VoteModel,
   complete: boolean,
@@ -28,16 +28,25 @@ function assembleRequestState(request: VoteModel, appointmentsChanged: boolean):
     complete: isComplete(request),
     appointmentsChanged: appointmentsChanged,
     busy: false,
+    error: undefined,
   };
 }
 
 export function voteReducer(
-  state: voteState = { complete: false, busy: false },
+  state: voteState = {
+    vote: undefined,
+    complete: false,
+    appointmentsChanged: undefined,
+    busy: false,
+    error: undefined,
+  },
   action: VoteOptionAction,
 ): voteState {
   if (ActionRequiresInit[action.type] && !state.vote) {
     return {
+      vote: undefined,
       complete: false,
+      appointmentsChanged: undefined,
       busy: false,
       error: {
         ...state.error,
@@ -57,8 +66,11 @@ export function voteReducer(
   switch (action.type) {
     case VoteActions.INIT:
       return {
+        vote: undefined,
         complete: false,
+        appointmentsChanged: undefined,
         busy: true,
+        error: undefined,
       };
     case VoteActions.INIT_SUCCESS:
       return {
@@ -66,10 +78,13 @@ export function voteReducer(
         complete: isComplete(action.request),
         appointmentsChanged: false,
         busy: false,
+        error: undefined,
       };
     case VoteActions.INIT_ERROR:
       return {
+        vote: undefined,
         complete: false,
+        appointmentsChanged: undefined,
         busy: false,
         error: action.error,
       };
@@ -108,6 +123,7 @@ export function voteReducer(
         complete: false,
         appointmentsChanged: true,
         busy: false,
+        error: undefined,
       };
     case VoteActions.SET_VOTES:
       return assembleRequestState(
@@ -168,6 +184,7 @@ export function voteReducer(
         complete: state.complete!,
         appointmentsChanged: state.appointmentsChanged!,
         busy: false,
+        error: undefined,
       };
     case VoteActions.POST:
       return {
@@ -176,8 +193,11 @@ export function voteReducer(
       };
     case VoteActions.POST_SUCCESS:
       return {
+        vote: undefined,
         complete: false,
+        appointmentsChanged: undefined,
         busy: false,
+        error: undefined,
       };
     case VoteActions.POST_ERROR:
       return {

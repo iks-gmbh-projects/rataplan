@@ -5,9 +5,7 @@ import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, delayWhen, from, of, switchMap, take } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
-import { appState } from '../app.reducers';
-import { deserializeVoteModel,VoteModel } from '../models/vote.model';
+import { deserializeVoteModel, VoteModel } from '../models/vote.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 import {
   InitVoteAction,
@@ -15,8 +13,11 @@ import {
   InitVoteSuccessAction,
   PostVoteErrorAction,
   PostVoteSuccessAction,
-  VoteActions } from './vote.actions';
+  VoteActions,
+} from './vote.actions';
 import { DecisionType } from './vote-form/decision-type.enum';
+import { voteFeature } from './vote.feature';
+import { authFeature } from '../authentication/auth.feature';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,7 @@ import { DecisionType } from './vote-form/decision-type.enum';
 export class VoteEffects {
   constructor(
     private readonly actions$: Actions,
-    private readonly store: Store<appState>,
+    private readonly store: Store,
     private readonly http: HttpClient,
     private readonly router: Router,
     private readonly activeRoute: ActivatedRoute,
@@ -64,11 +65,12 @@ export class VoteEffects {
 
   postVote = createEffect(() => { return this.actions$.pipe(
     ofType(VoteActions.POST),
-    concatLatestFrom(() => this.store.select('vote')),
-    map(([, state]) => state),
-    filter(state => !!state.complete),
+    switchMap(() => this.store.select(voteFeature.selectVoteState).pipe(
+      filter(state => state.complete),
+      take(1),
+    )),
     map(state => ({ request: state.vote!, appointmentsEdited: state.appointmentsChanged })),
-    delayWhen(() => this.store.select('auth').pipe(
+    delayWhen(() => this.store.select(authFeature.selectAuthState).pipe(
       filter(authState => !authState.busy),
       take(1)
     )),

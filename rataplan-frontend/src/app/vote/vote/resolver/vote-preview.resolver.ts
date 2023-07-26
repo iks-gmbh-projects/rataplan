@@ -3,8 +3,8 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@a
 import { Store } from '@ngrx/store';
 import { catchError, EMPTY, filter, map, Observable, take, timeout } from 'rxjs';
 
-import { appState } from '../../../app.reducers';
 import { VoteModel } from '../../../models/vote.model';
+import { voteFeature } from '../../vote.feature';
 
 @Injectable({
   providedIn: 'root',
@@ -13,12 +13,12 @@ export class VotePreviewResolver implements Resolve<VoteModel> {
 
   constructor(
     private router: Router,
-    private store: Store<appState>,
+    private store: Store,
   ) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<VoteModel> {
-    return this.store.select('vote')
+    return this.store.select(voteFeature.selectVoteState)
       .pipe(
         filter(state => state.complete!),
         map(state => state.vote!),

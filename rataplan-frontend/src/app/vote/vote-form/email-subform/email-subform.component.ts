@@ -5,11 +5,10 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { Store } from "@ngrx/store";
 import { Subscription } from 'rxjs';
 import { filter } from "rxjs/operators";
-
-import { appState } from "../../../app.reducers";
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../../../validator/validators";
 import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from "../../vote.actions";
+import { voteFeature } from '../../vote.feature';
 
 @Component({
   selector: 'app-email-subform',
@@ -31,13 +30,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   private storeSub?: Subscription;
 
   constructor(
-    private store: Store<appState>,
+    private store: Store,
     public readonly errorMessageService: FormErrorMessageService
   ) {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select("vote")
+    this.storeSub = this.store.select(voteFeature.selectVoteState)
       .pipe(
         filter(state => !!state.vote),
       ).subscribe(state => {

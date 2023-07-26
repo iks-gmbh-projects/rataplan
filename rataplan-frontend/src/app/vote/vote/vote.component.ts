@@ -3,9 +3,7 @@ import { NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { exhaustMap, filter, map, Subject, take, takeUntil } from 'rxjs';
-
-import { appState } from '../../app.reducers';
+import { exhaustMap, filter, Subject, take, takeUntil } from 'rxjs';
 import { FrontendUser } from '../../models/user.model';
 import { VoteModel } from '../../models/vote.model';
 import { VoteOptionModel } from '../../models/vote-option.model';
@@ -16,6 +14,8 @@ import { PostVoteAction } from '../vote.actions';
 import { DecisionType, VoteOptionDecisionType } from '../vote-form/decision-type.enum';
 import { VoteDecisionSubformComponent } from './member-decision-subform/vote-decision-subform.component';
 import { VoteService } from './vote-service/vote.service';
+import { voteFeature } from '../vote.feature';
+import { authFeature } from '../../authentication/auth.feature';
 
 
 @Component({
@@ -48,13 +48,13 @@ export class VoteComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private voteService: VoteService,
     public deadlineService: DeadlineService,
-    private store: Store<appState>,
+    private store: Store,
     public readonly errorMessageService: FormErrorMessageService,
   ) {
   }
 
   ngOnInit(): void {
-    this.store.select('auth').pipe(
+    this.store.select(authFeature.selectAuthState).pipe(
       filter(state => !state.busy),
       takeUntil(this.destroySubject),
     ).subscribe(state => this.currentUser = state.user);
@@ -73,9 +73,8 @@ export class VoteComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.store.select('vote')
+    this.store.select(voteFeature.selectBusy)
       .pipe(
-        map(voteState => voteState.busy),
         takeUntil(this.destroySubject),
       ).subscribe(busy => this.busy = busy);
   }

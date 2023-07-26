@@ -1,18 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-import { UsernameEmailValidatorsService } from '../services/username-email-validators-service/username-email-validators.service';
+import {
+  UsernameEmailValidatorsService,
+} from '../services/username-email-validators-service/username-email-validators.service';
 import { ActivatedRoute, Router } from "@angular/router";
 import { RegisterData } from "../models/user.model";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
-import { appState } from "../app.reducers";
 import { Store } from "@ngrx/store";
 import { AuthActions, RegisterAction } from "../authentication/auth.actions";
 import { Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { authFeature } from '../authentication/auth.feature';
 
 
 @Component({
@@ -50,7 +52,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private registerService: UsernameEmailValidatorsService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private store: Store<appState>,
+    private store: Store,
     private actions$: Actions,
     private snackbar: MatSnackBar,
     public readonly errorMessages: FormErrorMessageService
@@ -58,7 +60,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.busySub = this.store.select("auth").pipe(
+    this.busySub = this.store.select(authFeature.selectAuthState).pipe(
       map(auth => auth.busy)
     ).subscribe(busy => {
       if (busy) this.registerForm.disable();

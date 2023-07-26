@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
-import { appState } from "../../app.reducers";
 import { Store } from "@ngrx/store";
 import { map } from "rxjs/operators";
 import { InitVoteAction } from "../vote.actions";
+import { voteFeature } from '../vote.feature';
 
 @Component({
   selector: 'app-vote-form',
@@ -21,7 +21,7 @@ export class VoteFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private activeRoute: ActivatedRoute,
-    private store: Store<appState>,
+    private store: Store,
   ) {
     this.redirectParams = activeRoute.url.pipe(
       map(segments => segments.join('/')),
@@ -36,7 +36,7 @@ export class VoteFormComponent implements OnInit, OnDestroy {
       this.editing = !!id;
       this.store.dispatch(new InitVoteAction(id));
     });
-    this.storeSub = this.store.select('vote')
+    this.storeSub = this.store.select(voteFeature.selectVoteState)
       .subscribe(state => {
         this.busy = state.busy;
         if (state.vote) delete this.error;
