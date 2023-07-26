@@ -7,8 +7,13 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.TestConfig;
 import de.iks.rataplan.domain.Vote;
+import de.iks.rataplan.repository.BackendUserAccessRepository;
+import de.iks.rataplan.restservice.AuthService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,10 +24,12 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,8 +40,23 @@ import static org.junit.Assert.assertEquals;
 public class ConsigneeServiceTest {
     private static final String FILE_PATH = PATH + SERVICE + CONSIGNEES;
     
-    @Autowired
+    @Mock
+    private AuthService authService;
+    
     private ConsigneeService voteParticipantService;
+    
+    @Autowired
+    private VoteService voteService;
+    @Autowired
+    private BackendUserAccessRepository backendUserAccessRepository;
+    
+    @Before
+    public void setupMocks() {
+        MockitoAnnotations.initMocks(this);
+        when(authService.fetchUserIdFromEmail("user2@drumdibum.test"))
+            .thenReturn(2);
+        voteParticipantService = new ConsigneeServiceImpl(backendUserAccessRepository, authService, voteService);
+    }
     
     @Test
     @DatabaseSetup(FILE_PATH + FILE_INITIAL)
@@ -43,5 +65,14 @@ public class ConsigneeServiceTest {
         List<Vote> votes = voteParticipantService.getVotesForConsignee(AUTHUSER_1);
         assertEquals("votes.size()", 1, votes.size());
         assertEquals("votes.get(0).getId()", (Integer)1, votes.get(0).getId());
+    }
+    
+    @Test
+    @DatabaseSetup(FILE_PATH + FILE_INITIAL)
+    @ExpectedDatabase(value = FILE_PATH + TRANSCRIBE_CONSIGNEES_TO_BACKEND_USER_ACCESSES + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    public void testTranscribeConsigneesToBackendUserAccesses() {
+        Vote vote = voteService.getVoteById(1);
+        vote.setConsigneeList(Collections.singletonList("user2@drumdibum.test"));
+        voteParticipantService.transcribeConsigneesToBackendUserAccesses(vote);
     }
 }
