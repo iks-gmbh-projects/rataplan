@@ -43,7 +43,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
         claims.setSubject(userDTO.getId().toString());
         claims.put(CLAIM_PURPOSE, PURPOSE_ACCOUNT_CONFIRMATION);
         claims.setIssuer(jwtConfig.getIssuer());
-        int EXPIRATION_TIME = 30 * 60000;
+        int EXPIRATION_TIME = 20000;
         Date expirationTime = new Date(System.currentTimeMillis() + EXPIRATION_TIME);
         claims.setExpiration(expirationTime);
         return generateToken(claims);

@@ -1,6 +1,7 @@
 package de.iks.rataplan.controller;
 
 import de.iks.rataplan.exceptions.InvalidUserDataException;
+import de.iks.rataplan.exceptions.UnconfirmedAccountException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,5 +31,11 @@ public class RataplanAuthExceptionHandler extends ResponseEntityExceptionHandler
 	@ExceptionHandler(InvalidUserDataException.class)
 	public ResponseEntity<?> invalidUserData(InvalidUserDataException e) {
 		return ResponseEntity.badRequest().build();
+	}
+
+	@ExceptionHandler(UnconfirmedAccountException.class)
+	public ResponseEntity<?> unconfirmedAccountException(UnconfirmedAccountException e){
+		Error error = new Error(e.getErrorCode(),e.toString());
+		return new ResponseEntity<>(error,e.getHttpStatus());
 	}
 }
