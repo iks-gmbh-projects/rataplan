@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -231,5 +232,11 @@ public class VoteServiceImpl implements VoteService {
 			.peek(r -> r.setOrganizerMail(null))
 			.forEach(voteRepository::save);
 		backendUserAccessRepository.deleteByUserId(userId);
+	}
+	
+	@Override
+	public Vote addAccess(Vote vote, Collection<? extends BackendUserAccess> backendUserAccesses) {
+		vote.getAccessList().addAll(backendUserAccesses);
+		return voteRepository.saveAndFlush(vote);
 	}
 }
