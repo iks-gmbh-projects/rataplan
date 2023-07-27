@@ -1,8 +1,10 @@
 package de.iks.rataplan.service;
 
-import java.util.List;
-
+import de.iks.rataplan.domain.BackendUserAccess;
 import de.iks.rataplan.domain.Vote;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface VoteService {
     public List<Vote> getVotes();
@@ -15,5 +17,6 @@ public interface VoteService {
     public List<Vote> getVotesWhereUserParticipates(Integer userId);
     public void deleteVote(Vote request);
     public void anonymizeVotes(Integer userId);
+    Vote addAccess(Vote vote, Collection<? extends BackendUserAccess> backendUserAccesses);
 }
 
