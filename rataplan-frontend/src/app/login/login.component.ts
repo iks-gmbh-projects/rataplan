@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { LoginData } from "../models/user.model";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
 import { Store } from "@ngrx/store";
@@ -47,12 +47,12 @@ export class LoginComponent implements OnInit, OnDestroy {
         username: this.inputField.value,
         password: this.password.value
 
-      }
+      };
       if (this.inputField.value.indexOf('@') !== -1) {
         frontendUser = {
           mail: this.inputField.value,
           password: this.password.value
-        }
+        };
       }
       this.isLoading = true;
       this.store.dispatch(new LoginAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
@@ -60,10 +60,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private handleError(errorRes: LoginErrorAction) {
-    if (errorRes.error.error.errorCode === "WRONG_CREDENTIALS") {
-      this.password.setErrors({invalidCredentials: true});
+    if (errorRes.error.error.errorCode === 'WRONG_CREDENTIALS') {
+      this.password.setErrors({ invalidCredentials: true });
+    } else if (errorRes.error.error.errorCode === 'FORBIDDEN') {
+      this.router.navigate(['/confirm-account/']);
     } else {
-      this.snackBar.open("Unbekannter Fehler bei Login", "Ok");
+      this.snackBar.open('Unbekannter Fehler bei Login', 'Ok');
       console.log(errorRes);
     }
   }
@@ -86,7 +88,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private bottomSheets: MatBottomSheet,
     private snackBar: MatSnackBar,
-    public readonly errorMessageService: FormErrorMessageService
+    public readonly errorMessageService: FormErrorMessageService,
+    private router: Router
   ) {
   }
 
@@ -98,9 +101,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.cookieSub = this.store.select(cookieFeature.selectCookieState).pipe(
       tap(b => {
-        if(this.cookieInit) {
+        if (this.cookieInit) {
           this.cookieInit = false;
-          if(!b) this.bottomSheets.open(CookieBannerComponent, {disableClose: true});
+          if (!b) this.bottomSheets.open(CookieBannerComponent, { disableClose: true });
         }
       })
     ).subscribe(cookieAllowed => this.cookieAllowed = cookieAllowed);

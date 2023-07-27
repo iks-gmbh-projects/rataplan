@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { switchMap } from 'rxjs';
 
-import { ConfirmAccountService } from '../confirm-account-service';
+import { ConfirmAccountService, ConfirmationStatus } from '../confirm-account-service';
 
 @Component({
   selector: 'app-confirm-account',
@@ -10,11 +12,31 @@ import { ConfirmAccountService } from '../confirm-account-service';
 })
 export class ConfirmAccountComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private confirmAccountService: ConfirmAccountService) {
+  confirmationFailed = false;
+
+  constructor(private route: ActivatedRoute, private confirmAccountService: ConfirmAccountService, private router: Router, private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => this.confirmAccountService.confirmAccount(params['token']));
+    this.route.params.pipe(
+      switchMap(params => this.confirmAccountService.confirmAccount(params['token']))
+    ).subscribe(confirmed => {
+      const snackbarConfig = new MatSnackBarConfig();
+      snackbarConfig.duration = 10000;
+      switch (confirmed) {
+        case ConfirmationStatus.ACCOUNT_CONFIRMATION_SUCCESSFUL:
+          this.router.navigate(['/login']);
+          this.snackBar.open('Konto Bestätigung erfolgreich', '', snackbarConfig);
+          break;
+        case ConfirmationStatus.ACCOUNT_PREVIOUSLY_CONFIRMED:
+          this.router.navigate(['/login']);
+          this.snackBar.open('Konto wurde schon bestätigt', '', snackbarConfig);
+          break;
+        case ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL:
+          this.confirmationFailed = true;
+          break;
+      }
+    });
   }
 
 
