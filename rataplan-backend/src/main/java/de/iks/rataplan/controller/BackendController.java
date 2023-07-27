@@ -23,7 +23,7 @@ public class BackendController {
     private final AuthService authService;
     private final VoteParticipantService voteParticipantService;
     private final VoteService voteService;
-    
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteData(@PathVariable int userId, @RequestBody String secret) {
         if(!authService.isValidIDToken(secret)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

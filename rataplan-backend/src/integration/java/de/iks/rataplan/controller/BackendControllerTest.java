@@ -63,7 +63,7 @@ public class BackendControllerTest {
     
     @Autowired
     private VoteRepository rawRepository2;
-    
+
     @Before
     public void mockSecret() {
         when(authService.isValidIDToken(Matchers.anyString()))
@@ -87,7 +87,7 @@ public class BackendControllerTest {
         rawRepository1.flush();
         rawRepository2.flush(); //transaction is not automatically flushed by testing environment before comparison
     }
-    
+
     @Test
     @DatabaseSetup(FILE_PATH + ANONYMIZE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + ANONYMIZE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)

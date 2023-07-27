@@ -25,7 +25,7 @@ public class VoteServiceImpl implements VoteService {
     private final VoteRepository voteRepository;
 
 	private final VoteOptionRepository voteOptionRepository;
-	
+
 	private final BackendUserAccessRepository backendUserAccessRepository;
 
     private final MailService mailService;
@@ -61,7 +61,7 @@ public class VoteServiceImpl implements VoteService {
         if (createdVote.getOrganizerMail() != null) {
             mailService.sendMailForVoteCreation(createdVote);
         }
-        if (vote.getConsigneeList().size() > 0) {
+        if (!vote.getConsigneeList().isEmpty()) {
             this.mailService.sendMailForVoteInvitations(vote);
         }
 
@@ -186,7 +186,6 @@ public class VoteServiceImpl implements VoteService {
         } else {
             ret = voteRepository.saveAndFlush(dbVote);
         }
-
 
         return ret;
     }
