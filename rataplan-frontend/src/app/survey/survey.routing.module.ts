@@ -10,6 +10,7 @@ import { SurveyListComponent } from './survey-list/survey-list.component';
 import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
+import { ProfilePasswordAuthService } from '../services/auth-guard-service/profile-password-auth-service';
 
 const surveyRoutes: Routes = [{
   path: '', children: [
@@ -20,19 +21,23 @@ const surveyRoutes: Routes = [{
             { path: '', pathMatch: 'exact', component: SurveyOwnerViewComponent },
             { path: 'results', component: SurveyResultsComponent },
             { path: 'edit', component: SurveyCreateComponent },
-          ]
+          ],
         },
-      ]
+      ],
     },
     { path: 'create', component: SurveyCreateComponent },
     { path: 'list', data: { own: false }, component: SurveyListComponent },
-    { path: 'own', data: { own: true }, component: SurveyListComponent },
-    { path: 'participate/:participationID', resolve: { survey: ParticipationIDSurveyResolver }, component: SurveyFormComponent },
+    { path: 'own', data: { own: true }, component: SurveyListComponent, canActivate: [ProfilePasswordAuthService] },
+    {
+      path: 'participate/:participationID',
+      resolve: { survey: ParticipationIDSurveyResolver },
+      component: SurveyFormComponent,
+    },
     { path: 'missing', component: SurveyMissingComponent },
     { path: 'forbidden', component: SurveyForbiddenComponent },
     { path: 'closed', component: SurveyClosedComponent },
     { path: '', pathMatch: 'exact', redirectTo: 'list' },
-  ]
+  ],
 }];
 
 @NgModule({
@@ -40,7 +45,8 @@ const surveyRoutes: Routes = [{
     RouterModule.forChild(surveyRoutes),
   ],
   exports: [
-    RouterModule
-  ]
+    RouterModule,
+  ],
 })
-export class SurveyRoutingModule { }
+export class SurveyRoutingModule {
+}

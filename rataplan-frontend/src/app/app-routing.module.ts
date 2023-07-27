@@ -43,7 +43,8 @@ const routes: Routes = [
   { path: 'survey', loadChildren: () => import('./survey/survey.module').then(m => m.SurveyModule) },
   { path: 'confirm-account', component: ConfirmAccountInstructionComponent },
   { path: 'confirm-account/:token', component: ConfirmAccountComponent, canActivate: [ AuthGuardService ] },
-  { path: 'resend-confirmation-email', component: ResendAccountConfirmationEmailComponent, canActivate: [ AuthGuardService ] }
+  { path: 'resend-confirmation-email', component: ResendAccountConfirmationEmailComponent, canActivate: [ AuthGuardService ] },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

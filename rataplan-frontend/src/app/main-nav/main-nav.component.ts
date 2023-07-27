@@ -9,6 +9,7 @@ import { Store } from "@ngrx/store";
 import { LogoutAction } from "../authentication/auth.actions";
 import { FrontendUser } from "../models/user.model";
 import { authFeature } from '../authentication/auth.feature';
+import { ProfilePasswordAuthService } from '../services/auth-guard-service/profile-password-auth-service';
 
 @Component({
   selector: 'app-main-nav',
@@ -52,7 +53,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   onClick() {
     if (!this.currentUser) {
       this.trigger?.closeMenu();
-      this.router.navigateByUrl("/login")
+      this.router.navigateByUrl(ProfilePasswordAuthService.createUrlTree(this.router));
     } else {
       this.trigger?.openMenu();
     }

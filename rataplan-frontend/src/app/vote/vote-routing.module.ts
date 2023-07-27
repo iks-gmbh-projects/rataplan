@@ -13,6 +13,7 @@ import { LinkSubformComponent } from './vote-form/link-subform/link-subform.comp
 import { OverviewSubformComponent } from './vote-form/overview-subform/overview-subform.component';
 import { VoteFormComponent } from './vote-form/vote-form.component';
 import { VoteListComponent } from '../vote-list/vote-list.component';
+import { ProfilePasswordAuthService } from '../services/auth-guard-service/profile-password-auth-service';
 
 // function matcherFunction(url: UrlSegment[]) {
 //
@@ -49,7 +50,7 @@ const routes: Routes = [
     ],
   },
   { path: 'links', component: LinkSubformComponent },
-  { path: 'own', component: VoteListComponent },
+  { path: 'own', component: VoteListComponent, canActivate: [ProfilePasswordAuthService] },
   {
     path: 'edit/:id', component: VoteFormComponent,
     children: [
