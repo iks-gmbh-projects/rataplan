@@ -2,14 +2,14 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Store } from "@ngrx/store";
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { filter } from "rxjs/operators";
+import { filter } from 'rxjs/operators';
 
-import { appState } from "../../../app.reducers";
-import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../../../validator/validators";
-import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from "../../vote.actions";
+import { appState } from '../../../app.reducers';
+import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../../../validator/validators';
+import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../../vote.actions';
 
 @Component({
   selector: 'app-email-subform',
@@ -18,9 +18,8 @@ import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from "../../vote.act
 })
 export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
-  busy: boolean = false;
+  busy = false;
   consigneeList: string[] = [];
-  simpleCalendar: boolean = false;
 
   emailSubform = new FormGroup({
     'name': new FormControl(null, ExtraValidators.containsSomeWhitespace),
@@ -37,7 +36,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select("vote")
+    this.storeSub = this.store.select('vote')
       .pipe(
         filter(state => !!state.vote),
       ).subscribe(state => {
@@ -47,12 +46,6 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
         this.emailSubform.get('email')?.setValue(vote.organizerMail);
         this.consigneeList = vote.consigneeList;
         const config = vote.voteConfig.voteOptionConfig;
-        this.simpleCalendar = !!config.startDate &&
-          !config.startTime &&
-          !config.endDate &&
-          !config.endTime &&
-          !config.description &&
-          !config.url;
       });
   }
 
