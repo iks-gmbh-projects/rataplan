@@ -34,6 +34,7 @@ const routes: Routes = [
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'survey', loadChildren: () => import('./survey/survey.module').then(m => m.SurveyModule) },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
