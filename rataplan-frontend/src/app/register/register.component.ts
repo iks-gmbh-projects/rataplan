@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import {
   UsernameEmailValidatorsService,
 } from '../services/username-email-validators-service/username-email-validators.service';
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { RegisterData } from "../models/user.model";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
@@ -20,23 +20,44 @@ import { authFeature } from '../authentication/auth.feature';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
 
-  username: FormControl = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace],
-    ctrl => this.registerService.usernameExists(ctrl));
+  username: FormControl = new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(30),
+      ExtraValidators.cannotContainWhitespace,
+    ],
+    ctrl => this.registerService.usernameExists(ctrl),
+  );
 
-  mail: FormControl = new FormControl('', [Validators.required, Validators.email],
-    ctrl => this.registerService.mailExists(ctrl));
+  mail: FormControl = new FormControl('', [
+      Validators.required,
+      Validators.maxLength(60),
+      Validators.email,
+    ],
+    ctrl => this.registerService.mailExists(ctrl),
+  );
 
-  password = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  confirmPassword = new FormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
-  displayname: FormControl = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
+  password = new FormControl('', [
+    Validators.required,
+    Validators.minLength(3),
+  ]);
+  confirmPassword = new FormControl('', [
+    Validators.required,
+    ExtraValidators.valueMatching(this.password),
+  ]);
+  displayname: FormControl = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(30),
+    ExtraValidators.containsSomeWhitespace,
+  ]);
   hide = true;
   hideConfirm = true;
 
-  registerForm = this.formBuilder.group({
+  registerForm = new FormGroup({
     username: this.username,
     mail: this.mail,
     password: this.password,
@@ -48,26 +69,24 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private errorSub?: Subscription;
 
   constructor(
-    private formBuilder: FormBuilder,
     private registerService: UsernameEmailValidatorsService,
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private store: Store,
     private actions$: Actions,
     private snackbar: MatSnackBar,
-    public readonly errorMessages: FormErrorMessageService
+    public readonly errorMessages: FormErrorMessageService,
   ) {
   }
 
   ngOnInit(): void {
     this.busySub = this.store.select(authFeature.selectAuthState).pipe(
-      map(auth => auth.busy)
+      map(auth => auth.busy),
     ).subscribe(busy => {
-      if (busy) this.registerForm.disable();
+      if(busy) this.registerForm.disable();
       else this.registerForm.enable();
     });
     this.errorSub = this.actions$.pipe(
-      ofType(AuthActions.REGISTER_ERROR_ACTION)
+      ofType(AuthActions.REGISTER_ERROR_ACTION),
     ).subscribe(() => this.snackbar.open("Es ist ein Fehler aufgetreten.", "Ok"));
   }
 
@@ -86,8 +105,5 @@ export class RegisterComponent implements OnInit, OnDestroy {
     };
 
     this.store.dispatch(new RegisterAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
-
-    //should route to profile, which doesnt exist yet
-    //this.router.navigateByUrl('/');
   }
 }

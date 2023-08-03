@@ -18,6 +18,7 @@ export class FormErrorMessageService {
     if (element.hasError("cannotContainWhitespace")) return "Darf keine Leerzeichen enthalten.";
     if (element.hasError("mustContainSomeWhitespace")) return "Muss mindestens ein sichtbares Zeichen enthalten.";
     if (element.hasError("minlength")) return "Benötigt mindestens " + element.getError("minlength").requiredLength + " Zeichen";
+    if (element.hasError("maxlength")) return "Darf maximal " + element.getError("maxlength").requiredLength + " Zeichen haben";
     if (element.hasError("usernameExists")) return "Benutzername wird bereits verwendet.";
     if (element.hasError("mailExists")) return "E-Mail wird bereits verwendet.";
     if (element.hasError("mailDoesNotExist")) return "Es gibt keinen Benutzer mit dieser E-Mail.";
