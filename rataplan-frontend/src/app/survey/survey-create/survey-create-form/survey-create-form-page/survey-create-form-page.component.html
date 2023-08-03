@@ -1,4 +1,4 @@
-<form *ngIf="questionGroup" [formGroup]="questionGroup" (ngSubmit)="submit.emit(false)">
+<form *ngIf="questionGroup" [formGroup]="questionGroup" (ngSubmit)="onSubmit.emit(false)">
   <div class="inputFieldWrapper">
     <mat-form-field class="unlimited" style="margin-top: 1em;" appearance="fill">
       <mat-label>Frageblocküberschrift</mat-label>
@@ -96,7 +96,7 @@
     <div style="flex: 2;"></div>
     <button
       mat-raised-button color="primary" type="button"
-      (click)="submit.emit(true)"
+      (click)="onSubmit.emit(true)"
       [disabled]="questionGroup!.invalid">
       <mat-icon>add</mat-icon>
     </button>

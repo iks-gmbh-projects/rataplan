@@ -12,7 +12,7 @@ export class SurveyCreateFormPageComponent implements OnInit {
   @Input() questionGroup?: FormGroup;
   @Input() lastPage: boolean = true;
   @Input() onlyPage: boolean = true;
-  @Output() readonly submit = new EventEmitter<boolean>();
+  @Output() readonly onSubmit = new EventEmitter<boolean>();
   @Output() readonly remove = new EventEmitter<void>();
   @Output() readonly revert = new EventEmitter<void>();
 

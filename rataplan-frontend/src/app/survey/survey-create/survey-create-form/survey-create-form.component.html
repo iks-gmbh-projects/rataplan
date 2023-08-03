@@ -7,7 +7,7 @@
     [questionGroup]="$any(getQuestionGroups().at(page))"
     [lastPage]="page+1 == getQuestionGroups().length"
     [onlyPage]="getQuestionGroups().length <= 1"
-    (submit)="advanceForm($event)"
+    (onSubmit)="advanceForm($event)"
     (remove)="removeGroup()"
     (revert)="page = page-1"
   ></app-survey-create-form-page>
