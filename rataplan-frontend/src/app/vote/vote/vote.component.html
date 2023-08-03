@@ -50,6 +50,7 @@
       <mat-label>Name</mat-label>
       <input [(ngModel)]='voteParticipant.name'
              required
+             maxlength='100'
              someNonWhitespace
              matInput
              [disabled]='isPreview || !!currentUser'

@@ -22,9 +22,18 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   simpleCalendar: boolean = false;
 
   emailSubform = new FormGroup({
-    'name': new FormControl(null, ExtraValidators.containsSomeWhitespace),
-    'email': new FormControl(null, Validators.email),
-    'consigneeList': new FormControl(null, Validators.email)
+    'name': new FormControl(null, [
+      Validators.maxLength(50),
+      ExtraValidators.containsSomeWhitespace,
+    ]),
+    'email': new FormControl(null, [
+      Validators.maxLength(100),
+      Validators.email,
+    ]),
+    'consigneeList': new FormControl(null, [
+      Validators.maxLength(60),
+      Validators.email,
+    ])
   });
 
   private storeSub?: Subscription;

@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { filter, map, Subscription } from 'rxjs';
 
@@ -31,7 +30,7 @@ type formValue = {
   templateUrl: './overview-subform.component.html',
   styleUrls: ['./overview-subform.component.css'],
 })
-export class OverviewSubformComponent implements OnInit {
+export class OverviewSubformComponent implements OnInit, OnDestroy {
   voteOptions: VoteOptionModel[] = [];
   voteConfig: VoteOptionConfig = {
     startDate: true,
@@ -41,22 +40,24 @@ export class OverviewSubformComponent implements OnInit {
     description: false,
     url: false,
   };
-  vote = this.formBuilder.group({
-    voteIndex: null,
-    startDateInput: null,
-    endDateInput: null,
-    startTimeInput: null,
-    endTimeInput: null,
-    descriptionInput: null,
-    linkInput: null,
+  vote = new FormGroup({
+    voteIndex: new FormControl(null),
+    startDateInput: new FormControl(null),
+    endDateInput: new FormControl(null),
+    startTimeInput: new FormControl(null),
+    endTimeInput: new FormControl(null),
+    descriptionInput: new FormControl(null, [
+      Validators.maxLength(100),
+    ]),
+    linkInput: new FormControl(null, [
+      Validators.max(150),
+    ]),
   });
 
   private storeSub?: Subscription;
 
   constructor(
     private store: Store,
-    private router: Router,
-    private formBuilder: FormBuilder,
     public errorMessageService: FormErrorMessageService,
   ) {
   }
@@ -69,6 +70,10 @@ export class OverviewSubformComponent implements OnInit {
       this.voteConfig = request.voteConfig.voteOptionConfig;
       this.voteOptions = request.options;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.storeSub?.unsubscribe();
   }
 
   clearContent() {
