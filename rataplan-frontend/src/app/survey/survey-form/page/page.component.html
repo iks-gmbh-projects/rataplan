@@ -15,6 +15,7 @@
           ngModel name="text"
           [required]="question.required"
           someNonWhitespace
+          maxlength="1500"
           matInput
           #answerText="ngModel"
         >
@@ -57,6 +58,7 @@
             ngModel
             name="text"
             someNonWhitespace
+            maxlength="1500"
             matInput
             [disabled]="disableTextField(question, modelQuestionGroup.control)"
             #answerText="ngModel"
