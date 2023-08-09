@@ -106,7 +106,7 @@ public class VoteOption implements Serializable {
         return this.vote;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "voteDecisionId.voteOption", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "voteDecisionId.voteOption", orphanRemoval = true, cascade = CascadeType.ALL)
     public List<VoteDecision> getVoteDecisions() {
         return voteDecisions;
     }
