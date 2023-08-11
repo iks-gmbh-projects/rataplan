@@ -31,23 +31,30 @@ public class QuestionGroup extends AbstractEntity {
         this.questions = questions;
     }
 
-    boolean checkIfComplete() {
-        return !this.questions.isEmpty() && this.checkIfQuestionsComplete();
+    void checkIfComplete() throws InvalidSurveyException {
+        if(this.questions.isEmpty()) throw new InvalidSurveyException("Empty question group");
+        this.checkIfQuestionsComplete();
     }
 
-    private boolean checkIfQuestionsComplete() {
-        return this.questions.stream().allMatch(Question::checkIfComplete);
+    private void checkIfQuestionsComplete() throws InvalidSurveyException {
+        for(Question q:this.questions) {
+            q.checkIfComplete();
+        }
     }
 
-    boolean validate() {
-        return validateData() && this.validateQuestions();
+    void validate() throws InvalidSurveyException {
+        this.validateData();
+        this.validateQuestions();
     }
 
-    private boolean validateData() {
-        return this.title != null && this.title.getString().length() <= 255;
+    private void validateData() throws InvalidSurveyException {
+        if(this.title == null) throw new InvalidSurveyException("Question group without title");
+        if(this.title.getString().length() > 255) throw new InvalidSurveyException("Question group title too long");
     }
 
-    private boolean validateQuestions() {
-        return this.questions.stream().allMatch(Question::validate);
+    private void validateQuestions() throws InvalidSurveyException {
+        for(Question q:this.questions) {
+            q.validate();
+        }
     }
 }

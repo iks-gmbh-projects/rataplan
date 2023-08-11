@@ -11,8 +11,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Testing validation of entities")
@@ -24,7 +23,7 @@ class ValidationTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey without QuestionGroup", 1L);
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -42,8 +41,8 @@ class ValidationTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with empty QuestionGroup", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion, questionGroupWithoutQuestion));
-
-        assertFalse(survey.validate());
+        
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -63,8 +62,8 @@ class ValidationTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with no checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
-        assertFalse(survey.validate());
+        
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -88,8 +87,8 @@ class ValidationTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
-        assertFalse(survey.validate());
+        
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -117,8 +116,8 @@ class ValidationTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
-        assertFalse(survey.validate());
+        
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -136,8 +135,8 @@ class ValidationTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
-        assertFalse(survey.validate());
+        
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -156,7 +155,7 @@ class ValidationTest {
 
         survey.setName(null);
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -175,7 +174,7 @@ class ValidationTest {
 
         survey.setEndDate(survey.getStartDate().minusDays(2));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -194,7 +193,7 @@ class ValidationTest {
 
         survey.setStartDate(ZonedDateTime.of(2000, 1, 1, 12, 0, 0, 0, ZoneId.systemDefault()));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -216,7 +215,7 @@ class ValidationTest {
                 .createDefaultSurvey();
         survey.setQuestionGroups(List.of(firstQuestionGroupWithQuestion, secondQuestionGroupWithQuestion));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -235,7 +234,7 @@ class ValidationTest {
                 .createDefaultSurvey();
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -264,7 +263,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -293,7 +292,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -322,7 +321,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -351,7 +350,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -380,7 +379,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertFalse(survey.validate());
+        assertThrows(InvalidSurveyException.class, survey::validate);
     }
 
     @Test
@@ -411,7 +410,7 @@ class ValidationTest {
                 .createSurveyWithDefaultDate(1L, "User missing");
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertTrue(survey.validate());
+        assertDoesNotThrow(survey::validate);
     }
 
     @Test
@@ -442,7 +441,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertTrue(survey.validate());
+        assertDoesNotThrow(survey::validate);
     }
 
     @Test

@@ -33,7 +33,8 @@ public class Checkbox extends AbstractEntity {
         this.hasTextField = hasTextField;
     }
 
-    boolean validate() {
-        return this.text != null && this.text.getString().length() <= 255;
+    void validate() throws InvalidSurveyException {
+        if(this.text == null) throw new InvalidSurveyException("Response option is empty");
+        if(this.text.getString().length() > 255) throw new InvalidSurveyException("Response option too long");
     }
 }

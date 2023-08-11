@@ -34,16 +34,14 @@ public class SurveyServiceImpl implements SurveyService {
     private final AuthService authService;
     private final Random random = new Random();
 
-    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) {
+    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO)
+        throws InvalidSurveyException {
         Survey newSurvey = mapSurveyToEntity(surveyDTO);
-        if (newSurvey.validate()) {
-            generateIds(newSurvey);
-            Survey savedSurvey = saveSurvey(newSurvey);
-            SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
-            return ResponseEntity.ok(completeSurveyDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
+        newSurvey.validate();
+        generateIds(newSurvey);
+        Survey savedSurvey = saveSurvey(newSurvey);
+        SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+        return ResponseEntity.ok(completeSurveyDTO);
     }
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, String jwttoken) {
@@ -199,7 +197,8 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     @Transactional
-    public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken) {
+    public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken)
+        throws InvalidSurveyException {
         final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
         if (optionalSurvey.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -220,7 +219,7 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setAccessId(oldSurvey.getAccessId());
         survey.setParticipationId(oldSurvey.getParticipationId());
         
-        if (!survey.validate()) return ResponseEntity.unprocessableEntity().build();
+        survey.validate();
         
         transferValues(survey, oldSurvey);
         
