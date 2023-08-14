@@ -18,4 +18,6 @@ public interface JwtTokenService {
     public String generateIdToken();
 
     public String generateAccountConfirmationToken(UserDTO userDTO);
+
+    public int getUserIdFromBackendToken(String jwt);
 }

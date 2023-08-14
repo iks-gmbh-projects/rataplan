@@ -22,15 +22,17 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
     private final JwtConfig jwtConfig;
     public static final String CLAIM_PURPOSE = "purpose";
     public static final String CLAIM_USERID = "user_id";
-	public static final String PURPOSE_LOGIN = "login";
+    public static final String PURPOSE_LOGIN = "login";
     public static final String PURPOSE_ID = "id";
     public static final String PURPOSE_ACCOUNT_CONFIRMATION = "account confirmation";
+    private final SigningKeyResolver signingKeyResolver;
 
     @Override
     public String generateLoginToken(UserDTO user) {
         Claims claims = Jwts.claims();
         claims.setSubject(user.getUsername());
-        claims.put(CLAIM_USERID, user.getId());claims.setIssuedAt(new Date());
+        claims.put(CLAIM_USERID, user.getId());
+        claims.setIssuedAt(new Date());
         claims.setIssuer(jwtConfig.getIssuer());
         claims.put(CLAIM_PURPOSE, PURPOSE_LOGIN);
         claims.setExpiration(generateExpirationDate());
@@ -138,5 +140,19 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
         claims.put(CLAIM_PURPOSE, PURPOSE_ID);
         claims.setExpiration(new Date(System.currentTimeMillis() + 60000));
         return generateToken(claims);
+    }
+
+    public int getUserIdFromBackendToken(String jwt) {
+        Claims claims = getClaimsFromBackendToken(jwt);
+        return Integer.parseInt(claims.getSubject());
+    }
+    public Claims getClaimsFromBackendToken(String jwt) {
+        Claims claims = Jwts.parser()
+                .setSigningKeyResolver(signingKeyResolver)
+                .parseClaimsJws(jwt)
+                .getBody();
+        if (!claims.getIssuer().equals("drumdibum-backend")) throw new InvalidTokenException("bad");
+        if (claims.getExpiration().before(new Date())) throw new InvalidTokenException("bad");
+        return claims;
     }
 }
