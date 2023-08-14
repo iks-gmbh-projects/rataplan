@@ -1,0 +1,44 @@
+.inputFieldWrapper {
+  width: 100%;
+}
+
+.newLine {
+  white-space: normal;
+}
+
+form {
+  text-align: start;
+}
+
+.max-width, input {
+  width: 100%;
+}
+
+mat-form-field {
+  width: unset;
+}
+
+.nextContainer {
+  text-align: end;
+}
+
+.bottomspace {
+  margin-bottom: 1ex;
+}
+
+.answerGrid {
+  display: grid;
+  grid-template-columns: auto minmax(min-content, max-content);
+}
+
+.answerField {
+  grid-column: 1;
+}
+
+.answerCheckbox {
+  grid-column: 1 / span 2;
+}
+
+.answerDelete {
+  grid-column: 2;
+}

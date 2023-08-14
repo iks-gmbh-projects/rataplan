@@ -1,0 +1,104 @@
+<form *ngIf="questionGroup" [formGroup]="questionGroup" (ngSubmit)="onSubmit.emit(false)">
+  <div class="inputFieldWrapper">
+    <mat-form-field class="unlimited" style="margin-top: 1em;" appearance="fill">
+      <mat-label>Frageblocküberschrift</mat-label>
+      <textarea maxlength="255" cols="40" class="maxSize" type="text" matInput formControlName="title"></textarea>
+      <mat-error>{{errorMessageService.genericFormError(questionGroup.get('title'))}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div formArrayName="questions">
+    <mat-card class="bottomspace" *ngFor="let question of getQuestions().controls; index as j"
+              [formGroupName]="j">
+      <mat-card-content>
+        <mat-form-field class="unlimited">
+          <mat-label>Frage {{j + 1}}</mat-label>
+          <input type="text" matInput formControlName="text">
+          <mat-error>{{errorMessageService.genericFormError(questionGroup.get(['questions', j, 'text']))}}</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-checkbox formControlName="required">Erforderlich</mat-checkbox>
+        <div>
+          <h3 style="font-weight: normal">Antwortmöglichkeiten</h3>
+          <mat-card-subtitle>Freitext wenn keine gegeben</mat-card-subtitle>
+          <mat-card-content formGroupName="checkboxGroup">
+            <ng-template [ngIf]="getCheckboxes(question).length">
+              <mat-checkbox formControlName="multipleSelect" #multi="matCheckbox">Mehrfachauswahl</mat-checkbox>
+              <br>
+              <ng-template [ngIf]="multi.checked">
+                <mat-form-field class="">
+                  <mat-label>Minimale Auswahlanzahl</mat-label>
+                  <input type="text" inputmode="numeric" matInput formControlName="minSelect">
+                  <mat-error>{{errorMessageService.genericFormError(questionGroup.get(['questions', j, 'checkboxGroup', 'minSelect']))}}</mat-error>
+                </mat-form-field>
+                <br>
+                <mat-form-field class="">
+                  <mat-label>Maximale Auswahlanzahl</mat-label>
+                  <input type="text" inputmode="numeric" matInput formControlName="maxSelect">
+                  <mat-error>{{errorMessageService.genericFormError(questionGroup.get(['questions', j, 'checkboxGroup', 'maxSelect']))}}</mat-error>
+                </mat-form-field>
+              </ng-template>
+              <div formArrayName="checkboxes">
+                <div class="bottomspace answerGrid"
+                     *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k">
+                  <mat-form-field class=" inline-unlimited answerField">
+                    <mat-label>Antwortmöglichkeit {{k + 1}}</mat-label>
+                    <input type="text" matInput formControlName="text">
+                    <mat-error>{{errorMessageService.genericFormError(questionGroup.get(['questions', j, 'checkboxGroup', 'checkboxes', k, 'text']))}}</mat-error>
+                  </mat-form-field>
+                  <button mat-icon-button class="answerDelete" type="button" (click)="getCheckboxes(question).removeAt(k)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                  <br>
+                  <mat-checkbox class="answerCheckbox" formControlName="hasTextField">Freitext</mat-checkbox>
+                </div>
+              </div>
+            </ng-template>
+          </mat-card-content>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button color="warn" type="button" [disabled]="getQuestions().length <= 1"
+                (click)="getQuestions().removeAt(j)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" type="button"
+                (click)="getCheckboxes(question).push(createCheckbox())">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    <div style="display: flex;">
+      <div style="flex: 2;"></div>
+      <button mat-mini-fab color="primary" type="button"
+              (click)="getQuestions().push(createQuestion())">
+        <mat-icon>add</mat-icon>
+      </button>
+      <div style="flex: 2;"></div>
+    </div>
+  </div>
+  <div style="display: flex; margin-bottom: 1ex;">
+    <button type="button" mat-raised-button color="basic" (click)="revert.emit()">
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+    <div style="flex: 2;"></div>
+    <button
+      type="submit" mat-raised-button color="primary"
+      [disabled]="lastPage || questionGroup!.invalid">
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+  </div>
+  <div style="display: flex;">
+    <button
+      mat-raised-button color="warn" type="button" [disabled]="onlyPage"
+      (click)="remove.emit()">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <div style="flex: 2;"></div>
+    <button
+      mat-raised-button color="primary" type="button"
+      (click)="onSubmit.emit(true)"
+      [disabled]="questionGroup!.invalid">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</form>

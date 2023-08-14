@@ -1,13 +1,12 @@
-.bottomSpace {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
 .inputFieldWrapper {
   width: 100%;
 }
 .newLine {
   white-space: normal;
+}
+
+form {
+  text-align: start;
 }
 
 .max-width {
@@ -18,4 +17,8 @@
 
 .max-width mat-form-field input {
   width: 100%;
+}
+
+.nextContainer {
+  text-align: end;
 }

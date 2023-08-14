@@ -10,7 +10,7 @@
             Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
             {{survey.anonymousParticipation ?
             " anonym" :
-            " Angemeldeten"}}</p>
+            " mit Benutzerkonto"}}</p>
         </mat-card-content>
       </mat-card>
     </div>
@@ -21,23 +21,31 @@
   <mat-divider class="bottomspace"></mat-divider>
   <div>
     <div class="size-div">
-    <mat-stepper #stepper="matStepper" orientation="vertical">
-      <mat-step *ngFor="let questionGroup of survey.questionGroups; index as page" [label]="questionGroup.title"
-                #step="matStep">
-        <app-survey-form-page [questionGroup]="questionGroup" [isFirst]="page==0"
-                              (onSubmit)="pageSubmit(stepper, $event)"
-                              (formAfterViewInit)="step.stepControl=$event"
-                              #surveyPage></app-survey-form-page>
-      </mat-step>
-      <mat-step label="Fertig">
-        <button class="left" mat-raised-button color="basic" matStepperPrevious>
-          <mat-icon>navigate_before</mat-icon>
-        </button>
-        <button class="right" mat-raised-button color="primary" [disabled]="isResponseValid | async"
-                (click)="submit(stepper)">Einreichen
-        </button>
-      </mat-step>
-    </mat-stepper>
+      <app-survey-form-page
+        *ngIf="page < survey.questionGroups.length; else finished"
+        [questionGroup]="survey.questionGroups[page]" [isFirst]="page==0"
+        (onSubmit)="pageSubmit($event)"
+        #surveyPage></app-survey-form-page>
+      <ng-template #finished>
+        <h3>Fertig</h3>
+        <div class="bottomSpace">
+          <div class="left">
+            <button
+              class="left" mat-raised-button color="basic"
+              (click)="page = page-1">
+              <mat-icon>navigate_before</mat-icon>
+            </button>
+          </div>
+          <div class="middle"></div>
+          <div class="right">
+            <button
+              class="right" mat-raised-button color="primary"
+              [disabled]="!!(isResponseValid | async)"
+              (click)="submit()">Einreichen
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
   </div>
-</div>
 </div>
