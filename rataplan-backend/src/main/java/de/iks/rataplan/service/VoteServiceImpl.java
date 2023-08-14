@@ -6,18 +6,29 @@ import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.sql.Array;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
+    private final RestTemplate restTemplate;
+
     private final VoteDecisionRepository voteDecisionRepository;
 
     private final VoteRepository voteRepository;
@@ -26,6 +37,9 @@ public class VoteServiceImpl implements VoteService {
 
 	private final BackendUserAccessRepository backendUserAccessRepository;
 
+    private final JwtTokenService jwtTokenService;
+    @Value(value = "${auth.notify.participant.url}")
+    private String backendUrl;
     private final MailService mailService;
 
     private final TokenGeneratorService tokenGeneratorService;
@@ -219,7 +233,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private void transferParticipationLimitSetting(Vote dbVote, Vote newVote) {
-        if (newVote.getOptions() == null ) return;
+        if (newVote.getOptions() == null) return;
         for (VoteOption vo : newVote.getOptions().stream().filter(vo -> vo.getId() != null).collect(Collectors.toList())) {
             VoteOption dbVoteOption = dbVote.getOptions().stream().filter(temp -> temp.getId().intValue() == vo.getId().intValue()).findFirst().orElse(null);
             if (dbVoteOption == null) continue;
@@ -237,10 +251,33 @@ public class VoteServiceImpl implements VoteService {
                     dbVoteOption.getVoteDecisions().stream()
                             .filter(vd -> vd.getDecision() == Decision.ACCEPT || vd.getDecision() == Decision.ACCEPT_IF_NECESSARY)
                             .forEach(d -> d.setDecision(Decision.NO_ANSWER));
+                    notifyParticipantsVoteDeleted(dbVote.getParticipants(), dbVoteOption.getId());
                 }
             }
         }
     }
+
+    private void notifyParticipantsVoteDeleted(List<VoteParticipant> participants, Integer optionId) {
+        List<VoteParticipant> participantsToNotify = participants
+                .stream()
+                .filter(participant -> participant.getUserId() != null)
+                .filter(participant -> participant.getVoteDecisions().stream()
+                        .filter(vd -> Objects.equals(vd.getVoteOption().getId(), optionId))
+                        .filter(vd -> vd.getDecision() != Decision.ACCEPT || vd.getDecision() == Decision.ACCEPT_IF_NECESSARY).count() != 0)
+                .collect(Collectors.toList());
+
+        for (VoteParticipant vp : participantsToNotify) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.set("jwt", this.jwtTokenService.generateAuthBackendParticipantToken(vp.getUserId()));
+            ParticipantDeletionEmailDTO participantDeletionEmailDTO = new ParticipantDeletionEmailDTO(null, vp.getVote().getParticipationToken());
+            HttpEntity<ParticipantDeletionEmailDTO> participantDeletionEmailDTOHttpEntity = new HttpEntity<>(participantDeletionEmailDTO, httpHeaders);
+            restTemplate.exchange(backendUrl
+                    , HttpMethod.POST
+                    , participantDeletionEmailDTOHttpEntity
+                    , ResponseEntity.class);
+        }
+    }
+
 
     @Override
     public void deleteVote(Vote request) {
