@@ -24,6 +24,7 @@ public class CryptoServiceImpl implements CryptoService{
     private final String dbKeyPath;
 
     private Key dbKey;
+    private KeyPair keyPair;
 
     public CryptoServiceImpl(
             @Value("${keys.db.algorithm:AES}") String dbKeyAlgorithm,
@@ -35,12 +36,14 @@ public class CryptoServiceImpl implements CryptoService{
     }
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() throws IOException, NoSuchAlgorithmException {
         byte[] bytes;
         if (dbKeyBytes.isEmpty()) {
             bytes = Files.readAllBytes(Paths.get(dbKeyPath));
         } else bytes = Base64.getDecoder().decode(dbKeyBytes);
         dbKey = new SecretKeySpec(bytes, dbKeyAlgorithm);
+
+        this.keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
     }
 
     @Override
@@ -88,4 +91,15 @@ public class CryptoServiceImpl implements CryptoService{
     public PublicKey authIdKey() {
         return null;
     }
+
+    @Override
+    public PublicKey getPublicKey(){
+        return this.keyPair.getPublic();
+    }
+
+    @Override
+    public PrivateKey getPrivateKey(){
+        return this.keyPair.getPrivate();
+    }
+
 }
