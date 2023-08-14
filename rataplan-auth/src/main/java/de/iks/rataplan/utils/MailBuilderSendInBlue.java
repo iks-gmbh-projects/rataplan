@@ -1,6 +1,7 @@
 package de.iks.rataplan.utils;
 
 import de.iks.rataplan.domain.ConfirmAccountMailData;
+import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,6 +54,22 @@ public class MailBuilderSendInBlue {
                 ))
                 .subject(templateEngine.process("confirmAccount_subject",ctx))
                 .htmlContent(templateEngine.process("confirmAccount_content",ctx));
+    }
+
+    public SendSmtpEmail buildParticipantDeletionEmail(ParticipantDeletionMailData participantDeletionMailData){
+        String voteLink = baseUrl + "/vote/" + participantDeletionMailData.getVote();
+
+        Context ctx = new Context();
+        ctx.setVariable("link", voteLink);
+
+        return new SendSmtpEmail()
+                .sender(sender)
+                .to(Collections.singletonList(
+                        new SendSmtpEmailTo()
+                                .email(participantDeletionMailData.getEmail())
+                ))
+                .subject(templateEngine.process("participantDeletion_subject",ctx))
+                .htmlContent(templateEngine.process("participantDeletion_content",ctx));
     }
 
 

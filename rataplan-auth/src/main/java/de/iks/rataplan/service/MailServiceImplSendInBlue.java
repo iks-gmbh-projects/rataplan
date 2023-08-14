@@ -1,6 +1,7 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.ConfirmAccountMailData;
+import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
 import de.iks.rataplan.utils.MailBuilderSendInBlue;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,12 @@ public class MailServiceImplSendInBlue implements MailService {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
             throw new MailPreparationException(ex);
         }
+    }
+
+    @Override
+    public void notifyParticipantDeletion(ParticipantDeletionMailData participantDeletionMailData) throws ApiException {
+        SendSmtpEmail mail = mailBuilder.buildParticipantDeletionEmail(participantDeletionMailData);
+        transactionalEmailsApi.sendTransacEmail(mail);
     }
 
     private boolean isInProdMode() {
