@@ -20,8 +20,14 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   maxDate: Date;
 
   generalSubform = new FormGroup({
-    'title': new FormControl(null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
-    'description': new FormControl(null),
+    'title': new FormControl(null, [
+      Validators.required,
+      Validators.maxLength(100),
+      ExtraValidators.containsSomeWhitespace
+    ]),
+    'description': new FormControl(null, [
+      Validators.maxLength(1100),
+    ]),
     'deadline': new FormControl(null, Validators.required),
     'decision': new FormControl(0, Validators.required),
     'yesLimitActive': new FormControl(false, Validators.required),

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
@@ -26,12 +26,19 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   userData?: FrontendUser;
   private userDataSub?: Subscription;
   private errorSub?: Subscription;
-  displayNameField = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
-  emailField = new FormControl('', [Validators.required, Validators.email], ctrl => this.checkIfEmailIsAvailable(ctrl));
+  displayNameField = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(30),
+    ExtraValidators.containsSomeWhitespace,
+  ]);
+  emailField = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(60),
+    Validators.email,
+  ], ctrl => this.checkIfEmailIsAvailable(ctrl));
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private store: Store,
     private actions$: Actions,
     private snackbar: MatSnackBar,
@@ -45,12 +52,12 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userDataSub = this.store.select(authFeature.selectAuthState)
       .subscribe(authData => {
-        if (this.emailField.value !== '' && this.displayNameField.value !== '') {
+        if(this.emailField.value !== '' && this.displayNameField.value !== '') {
           this.snackbar.open('Profil erfolgreich akutalisiert', 'OK');
           this.router.navigateByUrl('/view-profile');
         }
         this.userData = authData.user;
-        if (authData.busy) {
+        if(authData.busy) {
           this.displayNameField.disable();
           this.emailField.disable();
         } else {
@@ -86,10 +93,10 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     this.store.dispatch(new ChangeProfileDetailsAction(payload));
   }
 
-  checkIfEmailIsAvailable(ctrl:AbstractControl):Observable<ValidationErrors|null>{
-    if (ctrl.value == this.userData?.mail){
+  checkIfEmailIsAvailable(ctrl: AbstractControl): Observable<ValidationErrors | null> {
+    if(ctrl.value == this.userData?.mail) {
       return of(null);
-    }else {
+    } else {
       return this.emailValidatorsService.mailExists(ctrl);
     }
   }

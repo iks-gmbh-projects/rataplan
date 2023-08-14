@@ -48,8 +48,16 @@ export class SurveyCreateFormComponent {
       id: new FormControl(survey?.id),
       accessId: new FormControl(survey?.accessId),
       participationId: new FormControl(survey?.participationId),
-      name: new FormControl(survey?.name || null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
-      description: new FormControl(survey?.description || null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
+      name: new FormControl(survey?.name || null, [
+        Validators.required,
+        Validators.maxLength(255),
+        ExtraValidators.containsSomeWhitespace
+      ]),
+      description: new FormControl(survey?.description || null, [
+        Validators.required,
+        Validators.maxLength(3000),
+        ExtraValidators.containsSomeWhitespace
+      ]),
       startDate: startDate,
       endDate: endDate,
       openAccess: new FormControl(survey?.openAccess || false),
@@ -61,7 +69,11 @@ export class SurveyCreateFormComponent {
   public createQuestionGroup(questionGroup?: QuestionGroup): FormGroup {
     return new FormGroup({
       id: new FormControl(questionGroup?.id),
-      title: new FormControl(questionGroup?.title || null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
+      title: new FormControl(questionGroup?.title || null, [
+        Validators.required,
+        Validators.maxLength(255),
+        ExtraValidators.containsSomeWhitespace
+      ]),
       questions: new FormArray(questionGroup?.questions?.map(SurveyCreateFormComponent.createQuestion, this) || [SurveyCreateFormComponent.createQuestion()], Validators.required)
     });
   }
@@ -73,7 +85,11 @@ export class SurveyCreateFormComponent {
     minSelect.addValidators(ExtraValidators.valueLessThan(maxSelect));
     return new FormGroup({
       id: new FormControl(question?.id),
-      text: new FormControl(question?.text || null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
+      text: new FormControl(question?.text || null, [
+        Validators.required,
+        Validators.maxLength(255),
+        ExtraValidators.containsSomeWhitespace
+      ]),
       required: new FormControl(question?.required || false),
       checkboxGroup: new FormGroup({
         multipleSelect: new FormControl(question?.checkboxGroup?.multipleSelect || false),
@@ -87,7 +103,11 @@ export class SurveyCreateFormComponent {
   public static createCheckbox(checkbox?: Checkbox): FormGroup {
     return new FormGroup({
       id: new FormControl(checkbox?.id),
-      text: new FormControl(checkbox?.text || null, [Validators.required, ExtraValidators.containsSomeWhitespace]),
+      text: new FormControl(checkbox?.text || null, [
+        Validators.required,
+        Validators.maxLength(255),
+        ExtraValidators.containsSomeWhitespace
+      ]),
       hasTextField: new FormControl(checkbox?.hasTextField || false),
       answers: new FormArray([]),
     });

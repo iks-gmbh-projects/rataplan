@@ -2,7 +2,7 @@
   <div class="inputFieldWrapper">
     <mat-form-field class="unlimited" style="margin-top: 1em;" appearance="fill">
       <mat-label>Frageblocküberschrift</mat-label>
-      <textarea maxlength="255" cols="40" class="maxSize" type="text" matInput formControlName="title"></textarea>
+      <textarea cols="40" class="maxSize" type="text" matInput formControlName="title"></textarea>
       <mat-error>{{errorMessageService.genericFormError(questionGroup.get('title'))}}</mat-error>
     </mat-form-field>
   </div>
