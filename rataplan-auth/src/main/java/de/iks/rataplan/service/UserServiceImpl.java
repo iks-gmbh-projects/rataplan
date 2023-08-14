@@ -280,4 +280,10 @@ public class UserServiceImpl implements UserService {
             throw new UserDeletionException(ex);
         }
     }
+
+    @Override
+    public String getEmailFromId(Integer id){
+        String email = mapToUserDTO(getUserFromId(id)).getMail();
+        return email;
+    }
 }

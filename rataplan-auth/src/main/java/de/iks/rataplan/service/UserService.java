@@ -25,4 +25,7 @@ public interface UserService {
     String getDisplayNameFromId(int id);
     Boolean confirmAccount(String token);
     UserDTO validateResendConfirmationEmailRequest(String email);
+
+    String getEmailFromId(Integer id);
+
 }
