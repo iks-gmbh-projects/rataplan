@@ -1,12 +1,10 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.*;
+import de.iks.rataplan.dto.ParticipantDeletionEmailDTO;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
-import de.iks.rataplan.repository.BackendUserAccessRepository;
-import de.iks.rataplan.repository.VoteDecisionRepository;
-import de.iks.rataplan.repository.VoteOptionRepository;
-import de.iks.rataplan.repository.VoteRepository;
+import de.iks.rataplan.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -154,13 +152,14 @@ public class VoteServiceImpl implements VoteService {
                     dbConfig.setDecisionType(newConfig.getDecisionType());
                 }
             }
-            if(newConfig.getYesLimitActive()) {
-				dbVote.getParticipants().removeIf(voteParticipant -> voteParticipant.getVoteDecisions()
-					.stream()
-					.filter(voteDecision -> voteDecision.getDecision() == Decision.ACCEPT)
-					.count() > newConfig.getYesAnswerLimit()
+            if (newConfig.getYesLimitActive()) {
+                dbVote.getParticipants().removeIf(voteParticipant -> voteParticipant.getVoteDecisions()
+                        .stream()
+                        .filter(voteDecision -> voteDecision.getDecision() == Decision.ACCEPT)
+                        .count() > newConfig.getYesAnswerLimit()
                 );
-			}if (newConfig.getVoteOptionConfig() != null && !dbConfig.getVoteOptionConfig().equals(newConfig.getVoteOptionConfig())) {
+            }
+            if (newConfig.getVoteOptionConfig() != null && !dbConfig.getVoteOptionConfig().equals(newConfig.getVoteOptionConfig())) {
                 dbConfig.setVoteOptionConfig(newConfig.getVoteOptionConfig());
                 dbVote.getOptions().clear();
                 dbVote.getParticipants().clear();
@@ -168,6 +167,7 @@ public class VoteServiceImpl implements VoteService {
         }
         dbVote.setOrganizerName(newVote.getOrganizerName());
         dbVote.setOrganizerMail(newVote.getOrganizerMail());
+        transferParticipationLimitSetting(dbVote, newVote);
 
         Vote ret;
 
@@ -179,8 +179,6 @@ public class VoteServiceImpl implements VoteService {
             removeOptions(newVote, dbVote.getOptions());
 
             addOptions(dbVote, newVote.getOptions());
-
-            validateParticipantConfigAndTransferValues(dbVote, newVote);
 
             ret = voteRepository.findOne(dbVote.getId());
         } else {
@@ -220,16 +218,28 @@ public class VoteServiceImpl implements VoteService {
         }
     }
 
-    private void validateParticipantConfigAndTransferValues(Vote dbVote, Vote newVote) {
-        for (VoteOption vo : newVote.getOptions()) if (!vo.validateParticipantLimitConfig()) throw new MalformedException("bad");
+    private void transferParticipationLimitSetting(Vote dbVote, Vote newVote) {
+        if (newVote.getOptions() == null ) return;
+        for (VoteOption vo : newVote.getOptions().stream().filter(vo -> vo.getId() != null).collect(Collectors.toList())) {
+            VoteOption dbVoteOption = dbVote.getOptions().stream().filter(temp -> temp.getId().intValue() == vo.getId().intValue()).findFirst().orElse(null);
+            if (dbVoteOption == null) continue;
 
-        newVote.getOptions().stream()
-                .filter(voteOption -> dbVote.getOptionById(voteOption.getId()) != null)
-                .forEach(voteOption -> {
-                    VoteOption dbOption = dbVote.getOptionById(voteOption.getId());
-                    dbOption.setParticipantLimitActive(voteOption.isParticipantLimitActive());
-                    dbOption.setParticipantLimit(voteOption.getParticipantLimit());
-                });
+            dbVoteOption.setParticipantLimitActive(vo.isParticipantLimitActive());
+            dbVoteOption.setParticipantLimit(vo.getParticipantLimit());
+            dbVoteOption.validateParticipantLimitConfig();
+
+            if (vo.isParticipantLimitActive()) {
+                long votes = dbVoteOption.getVoteDecisions().stream()
+                        .filter(voteDecision -> voteDecision.getDecision().equals(Decision.ACCEPT))
+                        .count();
+
+                if (votes > vo.getParticipantLimit()) {
+                    dbVoteOption.getVoteDecisions().stream()
+                            .filter(vd -> vd.getDecision() == Decision.ACCEPT || vd.getDecision() == Decision.ACCEPT_IF_NECESSARY)
+                            .forEach(d -> d.setDecision(Decision.NO_ANSWER));
+                }
+            }
+        }
     }
 
     @Override
