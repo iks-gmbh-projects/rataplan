@@ -60,7 +60,7 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
         this.router.navigate(["/survey", "access", surv.accessId], { relativeTo: this.route });
       },
       error: () => {
-        this.survey = survey;
+        this.survey!.questionGroups = survey!.questionGroups;
       }
     });
   }
