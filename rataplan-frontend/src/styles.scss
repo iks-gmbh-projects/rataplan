@@ -134,7 +134,14 @@ body {
   display: flex;
   text-align: center;
   justify-content: center;
+}
 
+.centerText {
+  text-align: center;
+}
+
+.noWrap {
+  white-space: nowrap;
 }
 
 .bold {
