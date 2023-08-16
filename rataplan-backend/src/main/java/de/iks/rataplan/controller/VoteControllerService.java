@@ -72,7 +72,9 @@ public class VoteControllerService {
 
 		Vote newVote = modelMapper.map(creatorVoteDTO, Vote.class);
 		if(creatorVoteDTO.getOptions() == null) newVote.setOptions(null);
+		List<String> consigneeList = newVote.getConsigneeList();
 		newVote = voteService.updateVote(dbVote, newVote);
+		newVote.setConsigneeList(consigneeList);
 		consigneeService.transcribeConsigneesToBackendUserAccesses(newVote);
 
 		return modelMapper.map(newVote, CreatorVoteDTO.class);
