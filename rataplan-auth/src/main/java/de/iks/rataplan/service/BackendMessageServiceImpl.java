@@ -7,7 +7,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -38,14 +37,5 @@ public class BackendMessageServiceImpl implements BackendMessageService {
             String.class,
             userId
         );
-    }
-    
-    @Override
-    public void notifyOnRegister(String email, long userId) {
-        try {
-            template.postForEntity(backendMessageConfig.getOnRegister(), jwtTokenService.generateIdToken(), String.class, userId, email);
-        } catch (RestClientException ex) {
-            log.warn("Unexpected error when notifying rataplan backend of registration", ex);
-        }
     }
 }

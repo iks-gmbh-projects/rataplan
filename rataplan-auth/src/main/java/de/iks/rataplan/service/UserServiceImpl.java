@@ -1,6 +1,8 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.DeleteUserRequest;
+import de.iks.rataplan.domain.PasswordChange;
+import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
 import de.iks.rataplan.repository.UserRepository;
@@ -10,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import de.iks.rataplan.domain.PasswordChange;
-import de.iks.rataplan.domain.User;
 
 
 @Service
@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
             user.setAccountConfirmed(false);
             user.setId(null);
             user = userRepository.saveAndFlush(user);
-            backendMessageService.notifyOnRegister(cryptoService.decryptDB(user.getMail()), user.getId());
             return mapToUserDTO(user);
         }
     }
@@ -198,8 +197,7 @@ public class UserServiceImpl implements UserService {
                     .equals(getUserFromEmail(userDTO.getMail()).getId())) {
                 user.setMail(cryptoService.encryptDB((userDTO.getMail()).toLowerCase().trim()));
                 user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
-                user = userRepository.saveAndFlush(user);
-                backendMessageService.notifyOnRegister(cryptoService.decryptDB(user.getMail()), user.getId());
+                userRepository.saveAndFlush(user);
                 return true;
             }
         }
