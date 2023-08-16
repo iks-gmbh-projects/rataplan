@@ -1,40 +1,70 @@
-<div class='wrapper'>
-  <h2 class='centered'>Erstellte Abstimmungen</h2>
-  <div class='width'>
-    <mat-card class='bottomSpace'
-              *ngFor='let vote of createdVotes'>
-      <mat-card-title>{{vote.title}}</mat-card-title>
-      <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
-      <mat-card-content>{{vote.description}}</mat-card-content>
-      <mat-card-actions>
-        <a mat-raised-button
-           color='primary'
-           [routerLink]="['/vote', vote.participationToken || vote.id]">
-          Anzeigen
-        </a>
-        <a *ngIf='!vote.expired && vote.editToken'
-           mat-raised-button
-           color='primary'
-           [routerLink]="['/vote', 'edit', vote.editToken]">
-          Editieren
-        </a>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-  <h2 class='centered'>Teilgenommene Abstimmungen</h2>
-  <div class='width'>
-    <mat-card class='bottomSpace'
-              *ngFor='let vote of participatedVotes'>
-      <mat-card-title>{{vote.title}}</mat-card-title>
-      <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
-      <mat-card-content>{{vote.description}}</mat-card-content>
-      <mat-card-actions>
-        <a mat-raised-button
-           color='primary'
-           [routerLink]="['/vote', vote.participationToken || vote.id]">
-          Anzeigen
-        </a>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-</div>
+<mat-tab-group dynamicHeight>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class='centered'>Erstellt</span>
+    </ng-template>
+    <div class='wrapper'>
+      <mat-card class='width'
+                *ngFor='let vote of createdVotes'>
+        <mat-card-title>{{vote.title}}</mat-card-title>
+        <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+        <mat-card-content>{{vote.description}}</mat-card-content>
+        <mat-card-actions>
+          <a mat-raised-button
+             color='primary'
+             [routerLink]="['/vote', vote.participationToken || vote.id]">
+            Anzeigen
+          </a>
+          <a *ngIf='!vote.expired && vote.editToken'
+             mat-raised-button
+             color='primary'
+             [routerLink]="['/vote', 'edit', vote.editToken]">
+            Editieren
+          </a>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class='centered' [matBadge]='consignedVotes.length' matBadgeOverlap='false'
+            [matBadgeHidden]='consignedVotes.length == 0'>Einladungen</span>
+    </ng-template>
+    <div class='wrapper'>
+      <mat-card class='width'
+                *ngFor='let vote of consignedVotes'>
+        <mat-card-title>{{vote.title}}</mat-card-title>
+        <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+        <mat-card-content>{{vote.description}}</mat-card-content>
+        <mat-card-actions>
+          <a mat-raised-button
+             color='primary'
+             [routerLink]="['/vote', vote.participationToken || vote.id]">
+            Anzeigen
+          </a>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span class='centered'>Teilnahmen</span>
+    </ng-template>
+    <div class='wrapper'>
+      <mat-card class='width'
+                *ngFor='let vote of participatedVotes'>
+        <mat-card-title>{{vote.title}}</mat-card-title>
+        <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
+        <mat-card-content>{{vote.description}}</mat-card-content>
+        <mat-card-actions>
+          <a mat-raised-button
+             color='primary'
+             [routerLink]="['/vote', vote.participationToken || vote.id]">
+            Anzeigen
+          </a>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+<mat-spinner class='centered' *ngIf='ready != 7'></mat-spinner>

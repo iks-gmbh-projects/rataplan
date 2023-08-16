@@ -92,6 +92,10 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   }
 
   sendEndOfVoteOption() {
+    const consigneeForm = this.emailSubform.get('consigneeList');
+    if(consigneeForm?.valid && consigneeForm.value && !this.consigneeList.includes(consigneeForm.value)) {
+      this.consigneeList = [...this.consigneeList, consigneeForm.value];
+    }
     this.setEmailForm();
     this.store.dispatch(new PostVoteAction());
   }
