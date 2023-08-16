@@ -31,6 +31,8 @@ public class Controller {
     private final VoteParticipantControllerService voteParticipantControllerService;
 
     private final GeneralControllerService generalControllerService;
+    
+    private final VoteConsigneeControllerService voteConsigneeControllerService;
 
     @ApiResponses({@ApiResponse(code = 200, message = "OK")})
     @RequestMapping(value = "/*", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -162,4 +164,9 @@ public class Controller {
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
+    @GetMapping("/users/votes/consigns")
+    public ResponseEntity<List<VoteDTO>> getVotesWhereUserIsConsignee(
+        @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
+        return ResponseEntity.ok(voteConsigneeControllerService.getVotesWhereUserIsConsignee(jwtToken));
+    }
 }

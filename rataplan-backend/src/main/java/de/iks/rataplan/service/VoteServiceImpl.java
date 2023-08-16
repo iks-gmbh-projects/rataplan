@@ -62,7 +62,7 @@ public class VoteServiceImpl implements VoteService {
 		if (createdVote.getOrganizerMail() != null) {
 			mailService.sendMailForVoteCreation(createdVote);
 		}
-		if (vote.getConsigneeList().size() > 0) {
+		if (!vote.getConsigneeList().isEmpty()) {
 			this.mailService.sendMailForVoteInvitations(vote);
 		}
 
@@ -219,12 +219,12 @@ public class VoteServiceImpl implements VoteService {
 	}
 	
 	@Override
-	public void deleteVote(Vote request) {
-		voteRepository.delete(request);
+	public void deleteVotes(int userId) {
+		voteRepository.deleteAllByUserId(userId);
 	}
 	
 	@Override
-	public void anonymizeVotes(Integer userId) {
+	public void anonymizeVotes(int userId) {
 		getVotesForUser(userId)
 			.stream()
 			.peek(r -> r.setUserId(null))

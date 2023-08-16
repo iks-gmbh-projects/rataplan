@@ -17,6 +17,8 @@ public final class TestConstants {
 	public static final String PATH = "classpath:test/db";
 
 	// Paths (used to find files)
+	public static final String CONSIGNEES = "/consignees";
+	public static final String TRANSCRIBE_CONSIGNEES_TO_BACKEND_USER_ACCESSES = "/transcribeConsigneesToBackendUserAccesses";
 	public static final String VOTE_PARTICIPANTS = "/voteParticipants";
 	public static final String VOTES = "/votes";
 	public static final String AUTHORIZATION = "/authorization";

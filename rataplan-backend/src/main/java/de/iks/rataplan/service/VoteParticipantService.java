@@ -16,5 +16,5 @@ public interface VoteParticipantService {
 			VoteParticipant dbVoteParticipant, VoteParticipant newVoteParticipant
     );
 	
-	public void anonymizeParticipant(int memberId);
+	public void anonymizeParticipants(int userId);
 }
