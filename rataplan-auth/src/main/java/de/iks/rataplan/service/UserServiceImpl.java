@@ -44,7 +44,9 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setAccountConfirmed(false);
             user.setId(null);
-            return mapToUserDTO(userRepository.saveAndFlush(user));
+            user = userRepository.saveAndFlush(user);
+            backendMessageService.notifyOnRegister(cryptoService.decryptDB(user.getMail()), user.getId());
+            return mapToUserDTO(user);
         }
     }
 
@@ -196,7 +198,8 @@ public class UserServiceImpl implements UserService {
                     .equals(getUserFromEmail(userDTO.getMail()).getId())) {
                 user.setMail(cryptoService.encryptDB((userDTO.getMail()).toLowerCase().trim()));
                 user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
-                userRepository.saveAndFlush(user);
+                user = userRepository.saveAndFlush(user);
+                backendMessageService.notifyOnRegister(cryptoService.decryptDB(user.getMail()), user.getId());
                 return true;
             }
         }
