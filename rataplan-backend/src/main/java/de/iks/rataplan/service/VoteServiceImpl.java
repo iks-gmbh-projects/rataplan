@@ -240,7 +240,6 @@ public class VoteServiceImpl implements VoteService {
 
             dbVoteOption.setParticipantLimitActive(vo.isParticipantLimitActive());
             dbVoteOption.setParticipantLimit(vo.getParticipantLimit());
-            dbVoteOption.validateParticipantLimitConfig();
 
             if (vo.isParticipantLimitActive()) {
                 long votes = dbVoteOption.getVoteDecisions().stream()
