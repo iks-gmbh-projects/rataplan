@@ -2,6 +2,7 @@ package de.iks.rataplan.service;
 
 import de.iks.rataplan.exceptions.CryptoException;
 
+import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public class MockCryptoService implements CryptoService {
@@ -17,6 +18,16 @@ public class MockCryptoService implements CryptoService {
 
     @Override
     public PublicKey authIdKey() {
+        return null;
+    }
+
+    @Override
+    public PublicKey getPublicKey() {
+        return null;
+    }
+
+    @Override
+    public PrivateKey getPrivateKey() {
         return null;
     }
 }

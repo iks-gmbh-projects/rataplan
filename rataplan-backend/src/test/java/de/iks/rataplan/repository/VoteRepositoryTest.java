@@ -51,7 +51,7 @@ public class VoteRepositoryTest {
 	@ExpectedDatabase(value = FILE_PATH + CREATE + "/simple"
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createVoteWithDefaultConfigAndTwoOptions() throws Exception {
-		System.out.print(cryptoService.decryptDB(voteRepository.getOne(14).getParticipationToken()));
+//		System.out.print(cryptoService.decryptDB(voteRepository.getOne(14).getParticipationToken()));
 		Vote vote = createSimpleVote();
 
 		voteRepository.saveAndFlush(vote);

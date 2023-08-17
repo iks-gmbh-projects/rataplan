@@ -71,7 +71,7 @@ public final class TestConstants {
 				new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT, false, null));
 
 		vote.setOptions(voteOptionList(new VoteOption(new EncryptedString("iks Hilden", false), vote),
-				new VoteOption(new EncryptedString("homeoffice", false), vote)));
+				new VoteOption(new EncryptedString("homeoffice", false), vote,false,null)));
 		return vote;
 	}
 }

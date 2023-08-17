@@ -37,7 +37,7 @@ public class VoteDecisionDTOTest {
 
     @Test
     public void mapToDTO_VoteDecision_mapped() {
-        VoteOption voteOption = new VoteOption(new Timestamp(123123L), new EncryptedString("iks Hilden", false), null);
+        VoteOption voteOption = new VoteOption(new Timestamp(123123L), new EncryptedString("iks Hilden", false),null,false,null);
         voteOption.setId(1);
 
         VoteParticipant member = new VoteParticipant(new EncryptedString("Hans", false), null);
