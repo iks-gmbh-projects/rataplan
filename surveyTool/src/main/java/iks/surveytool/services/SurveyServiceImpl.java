@@ -328,12 +328,10 @@ public class SurveyServiceImpl implements SurveyService {
             Checkbox toCheckbox = it.next();
             Checkbox fromCheckbox = fromMap.get(toCheckbox.getId());
             if(fromCheckbox == null) {
-                log.debug("Deleted Checkbox Id: {}", toCheckbox.getId());
                 it.remove();
                 checkboxRepository.delete(toCheckbox);
                 continue;
             }
-            log.debug("Edited Checkbox Id: {}", toCheckbox.getId());
             toCheckbox.setText(fromCheckbox.getText());
             toCheckbox.setHasTextField(fromCheckbox.isHasTextField());
         }
