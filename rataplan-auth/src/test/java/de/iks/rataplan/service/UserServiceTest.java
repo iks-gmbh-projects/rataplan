@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -196,5 +197,11 @@ public class UserServiceTest {
 		userService.confirmAccount(token);
 
 		assertTrue(userService.getUserFromUsername("fritz").isAccountConfirmed());
+	}
+
+	@Test
+	@DatabaseSetup(value = USER_FILE_INITIAL)
+	public void getEmailFromId(){
+		Assert.assertEquals("peter@sch.mitz",userService.getUserFromId(1).getMail());
 	}
 }

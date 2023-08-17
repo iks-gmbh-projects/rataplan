@@ -44,7 +44,6 @@ public class RataplanAuthCommController {
         if(user == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(user.getId());
     }
-}
 
     @PostMapping("/notify-participant/delete")
     public ResponseEntity<Boolean> notifyParticipant(@RequestHeader String jwt, @RequestBody ParticipantDeletionMailData participantDeletionMailData) throws IOException, ApiException {
