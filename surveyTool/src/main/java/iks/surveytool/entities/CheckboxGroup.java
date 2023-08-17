@@ -34,37 +34,37 @@ public class CheckboxGroup extends AbstractEntity {
         this.checkboxes = checkboxes;
     }
 
-    void checkIfComplete() throws InvalidSurveyException {
-        if(checkboxes.isEmpty()) throw new InvalidSurveyException("No checkboxes to choose from");
+    void checkIfComplete() throws InvalidEntityException {
+        if(checkboxes.isEmpty()) throw new InvalidEntityException("No checkboxes to choose from", this);
     }
 
-    void validate(boolean questionRequired) throws InvalidSurveyException {
+    void validate(boolean questionRequired) throws InvalidEntityException {
         this.validateData(questionRequired);
         this.validateCheckboxes();
     }
 
-    private void validateData(boolean questionRequired) throws InvalidSurveyException {
+    private void validateData(boolean questionRequired) throws InvalidEntityException {
         this.checkMinMaxSelect(questionRequired);
         this.checkNumberOfCheckboxes();
     }
 
-    private void checkMinMaxSelect(boolean questionRequired) throws InvalidSurveyException {
+    private void checkMinMaxSelect(boolean questionRequired) throws InvalidEntityException {
         if(this.minSelect > this.maxSelect) {
-            throw new InvalidSurveyException("Minimum Selection exceeds Maximum Selection");
+            throw new InvalidEntityException("Minimum Selection exceeds Maximum Selection", this);
         }
         if(this.minSelect < (questionRequired && this.multipleSelect ? 1 : 0)) {
-            throw new InvalidSurveyException("Minimum Selection too low");
+            throw new InvalidEntityException("Minimum Selection too low", this);
         }
-        if(this.maxSelect < 2) throw new InvalidSurveyException("Max selection less than 2");
+        if(this.maxSelect < 2) throw new InvalidEntityException("Max selection less than 2", this);
     }
 
-    private void checkNumberOfCheckboxes() throws InvalidSurveyException {
+    private void checkNumberOfCheckboxes() throws InvalidEntityException {
         if(this.checkboxes.size() < (this.multipleSelect ? this.maxSelect : 2)) {
-            throw new InvalidSurveyException("Number of options is less than the number of options that can be chosen at once");
+            throw new InvalidEntityException("Number of options is less than the number of options that can be chosen at once", this);
         }
     }
 
-    private void validateCheckboxes() throws InvalidSurveyException {
+    private void validateCheckboxes() throws InvalidEntityException {
         for (Checkbox c : this.checkboxes) {
             c.validate();
         }

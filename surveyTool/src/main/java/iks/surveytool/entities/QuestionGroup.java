@@ -30,28 +30,28 @@ public class QuestionGroup extends AbstractEntity {
         this.questions = questions;
     }
 
-    void checkIfComplete() throws InvalidSurveyException {
-        if(this.questions.isEmpty()) throw new InvalidSurveyException("Empty question group");
+    void checkIfComplete() throws InvalidEntityException {
+        if(this.questions.isEmpty()) throw new InvalidEntityException("Empty question group", this);
         this.checkIfQuestionsComplete();
     }
 
-    private void checkIfQuestionsComplete() throws InvalidSurveyException {
+    private void checkIfQuestionsComplete() throws InvalidEntityException {
         for(Question q:this.questions) {
             q.checkIfComplete();
         }
     }
 
-    void validate() throws InvalidSurveyException {
+    void validate() throws InvalidEntityException {
         this.validateData();
         this.validateQuestions();
     }
 
-    private void validateData() throws InvalidSurveyException {
-        if(this.title == null) throw new InvalidSurveyException("Question group without title");
-        if(this.title.getString().length() > 255) throw new InvalidSurveyException("Question group title too long");
+    private void validateData() throws InvalidEntityException {
+        if(this.title == null) throw new InvalidEntityException("Question group without title", this);
+        if(this.title.getString().length() > 255) throw new InvalidEntityException("Question group title too long", this);
     }
 
-    private void validateQuestions() throws InvalidSurveyException {
+    private void validateQuestions() throws InvalidEntityException {
         for(Question q:this.questions) {
             q.validate();
         }

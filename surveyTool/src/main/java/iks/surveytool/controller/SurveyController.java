@@ -3,7 +3,7 @@ package iks.surveytool.controller;
 import iks.surveytool.domain.AuthUser;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
-import iks.surveytool.entities.InvalidSurveyException;
+import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.services.AuthService;
 import iks.surveytool.services.SurveyService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class SurveyController {
     public ResponseEntity<SurveyOverviewDTO> createSurvey(
         @RequestBody CompleteSurveyDTO surveyDTO,
         @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
-    ) throws InvalidSurveyException {
+    ) throws InvalidEntityException {
         if (jwttoken == null) surveyDTO.setUserId(null);
         else {
             final AuthUser user = authService.getUserData(jwttoken);
@@ -43,7 +43,7 @@ public class SurveyController {
         @RequestParam String accessId,
         @RequestBody CompleteSurveyDTO surveyDTO,
         @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
-    ) throws InvalidSurveyException {
+    ) throws InvalidEntityException {
         if(!surveyDTO.valid()) return ResponseEntity.badRequest().build();
         return surveyService.processEditSurveyByAccessId(accessId, surveyDTO, jwttoken);
     }

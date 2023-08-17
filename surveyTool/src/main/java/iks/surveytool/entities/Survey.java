@@ -64,45 +64,45 @@ public class Survey extends AbstractEntity {
         this.questionGroups = questionGroups;
     }
 
-    public void validate() throws InvalidSurveyException {
+    public void validate() throws InvalidEntityException {
         this.checkIfComplete();
         this.checkIfDataIsValid();
     }
 
-    private void checkIfComplete() throws InvalidSurveyException {
-        if(this.questionGroups.isEmpty()) throw new InvalidSurveyException("No question groups");
+    private void checkIfComplete() throws InvalidEntityException {
+        if(this.questionGroups.isEmpty()) throw new InvalidEntityException("No question groups", this);
         this.checkIfQuestionGroupsComplete();
     }
 
-    private void checkIfQuestionGroupsComplete() throws InvalidSurveyException {
+    private void checkIfQuestionGroupsComplete() throws InvalidEntityException {
         for(QuestionGroup qg:this.questionGroups) {
             qg.checkIfComplete();
         }
     }
 
-    private void checkIfDataIsValid() throws InvalidSurveyException {
+    private void checkIfDataIsValid() throws InvalidEntityException {
         this.validateData();
         this.validateQuestionGroups();
     }
 
-    private void validateData() throws InvalidSurveyException {
+    private void validateData() throws InvalidEntityException {
         this.checkNameAndDescription();
         this.checkTimeframe();
     }
 
-    private void checkNameAndDescription() throws InvalidSurveyException {
-        if(this.name == null) throw new InvalidSurveyException("Name is empty");
-        if(this.name.getString().length() > 255) throw new InvalidSurveyException("Name too long");
-        if(this.description.getString().length() > 3000) throw new InvalidSurveyException("Description too long");
+    private void checkNameAndDescription() throws InvalidEntityException {
+        if(this.name == null) throw new InvalidEntityException("Name is empty", this);
+        if(this.name.getString().length() > 255) throw new InvalidEntityException("Name too long", this);
+        if(this.description.getString().length() > 3000) throw new InvalidEntityException("Description too long", this);
         
     }
 
-    private void checkTimeframe() throws InvalidSurveyException {
-        if(this.startDate == null) throw new InvalidSurveyException("Start Date missing");
-        if(this.endDate == null) throw new InvalidSurveyException("End Date missing");
-        if(!dateTimeTodayOrInFuture(this.startDate)) throw new InvalidSurveyException("Start Date is in the past");
-        if(!dateTimeInFuture(this.endDate)) throw new InvalidSurveyException("End Date is in the past");
-        if(!startDateBeforeEndDate()) throw new InvalidSurveyException("End Date is before Start Date");
+    private void checkTimeframe() throws InvalidEntityException {
+        if(this.startDate == null) throw new InvalidEntityException("Start Date missing", this);
+        if(this.endDate == null) throw new InvalidEntityException("End Date missing", this);
+        if(!dateTimeTodayOrInFuture(this.startDate)) throw new InvalidEntityException("Start Date is in the past", this);
+        if(!dateTimeInFuture(this.endDate)) throw new InvalidEntityException("End Date is in the past", this);
+        if(!startDateBeforeEndDate()) throw new InvalidEntityException("End Date is before Start Date", this);
     }
 
     private boolean startDateBeforeEndDate() {
@@ -117,7 +117,7 @@ public class Survey extends AbstractEntity {
         return dateTime.isAfter(ZonedDateTime.now().minusDays(1));
     }
 
-    private void validateQuestionGroups() throws InvalidSurveyException {
+    private void validateQuestionGroups() throws InvalidEntityException {
         for(QuestionGroup qg:this.questionGroups) {
             qg.validate();
         }

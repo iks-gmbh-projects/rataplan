@@ -39,7 +39,7 @@ public class SurveyServiceImpl implements SurveyService {
     private final Random random = new Random();
 
     public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO)
-        throws InvalidSurveyException {
+        throws InvalidEntityException {
         Survey newSurvey = mapSurveyToEntity(surveyDTO);
         newSurvey.validate();
         generateIds(newSurvey);
@@ -202,7 +202,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken)
-        throws InvalidSurveyException {
+        throws InvalidEntityException {
         final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
         if (optionalSurvey.isEmpty()) {
             return ResponseEntity.notFound().build();

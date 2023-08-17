@@ -39,20 +39,20 @@ public class Question extends AbstractEntity {
         this.hasCheckbox = hasCheckbox;
     }
 
-    void checkIfComplete() throws InvalidSurveyException {
+    void checkIfComplete() throws InvalidEntityException {
         if (this.hasCheckbox) {
-            if(this.checkboxGroup == null) throw new InvalidSurveyException("Has Checkbox is true but Checkbox is missing");
+            if(this.checkboxGroup == null) throw new InvalidEntityException("Has Checkbox is true but Checkbox is missing", this);
             checkboxGroup.checkIfComplete();
         }
     }
 
-    void validate() throws InvalidSurveyException {
+    void validate() throws InvalidEntityException {
         this.validateData();
         if(this.hasCheckbox) checkboxGroup.validate(this.required);
     }
 
-    private void validateData() throws InvalidSurveyException {
-        if(this.text == null) throw new InvalidSurveyException("Question text missing");
-        if(this.text.getString().length() > 500) throw new InvalidSurveyException("Question text too long");
+    private void validateData() throws InvalidEntityException {
+        if(this.text == null) throw new InvalidEntityException("Question text missing", this);
+        if(this.text.getString().length() > 500) throw new InvalidEntityException("Question text too long", this);
     }
 }

@@ -23,7 +23,7 @@ class ValidationTest {
         Survey survey = new SurveyBuilder()
                 .createSurveyWithUserAndDefaultDate(1L, "Survey without QuestionGroup", 1L);
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -42,7 +42,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with empty QuestionGroup", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion, questionGroupWithoutQuestion));
         
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -63,7 +63,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with no checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
         
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -88,7 +88,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
         
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -117,7 +117,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
         
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -136,7 +136,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
         
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -155,7 +155,7 @@ class ValidationTest {
 
         survey.setName(null);
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -174,7 +174,7 @@ class ValidationTest {
 
         survey.setEndDate(survey.getStartDate().minusDays(2));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -193,7 +193,7 @@ class ValidationTest {
 
         survey.setStartDate(ZonedDateTime.of(2000, 1, 1, 12, 0, 0, 0, ZoneId.systemDefault()));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -215,7 +215,7 @@ class ValidationTest {
                 .createDefaultSurvey();
         survey.setQuestionGroups(List.of(firstQuestionGroupWithQuestion, secondQuestionGroupWithQuestion));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -234,7 +234,7 @@ class ValidationTest {
                 .createDefaultSurvey();
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -263,7 +263,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -292,7 +292,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -321,7 +321,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -350,7 +350,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
@@ -379,7 +379,7 @@ class ValidationTest {
                 .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
 
-        assertThrows(InvalidSurveyException.class, survey::validate);
+        assertThrows(InvalidEntityException.class, survey::validate);
     }
 
     @Test
