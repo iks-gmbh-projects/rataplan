@@ -24,8 +24,7 @@ public class CheckboxGroup extends AbstractEntity {
     @JoinColumn(name = "questionId", nullable = false)
     private Question question;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "checkboxGroupId")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "checkboxGroup")
     private List<Checkbox> checkboxes;
 
     public CheckboxGroup(boolean multipleSelect, int minSelect, int maxSelect, List<Checkbox> checkboxes) {

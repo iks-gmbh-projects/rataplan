@@ -4,8 +4,7 @@ import iks.surveytool.domain.AuthUser;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.*;
-import iks.surveytool.repositories.SurveyRepository;
-import iks.surveytool.repositories.SurveyResponseRepository;
+import iks.surveytool.repositories.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -22,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +29,10 @@ import java.util.stream.Collectors;
 @Log4j2
 public class SurveyServiceImpl implements SurveyService {
     private final SurveyRepository surveyRepository;
+    private final QuestionGroupRepository questionGroupRepository;
+    private final QuestionRepository questionRepository;
+    private final CheckboxGroupRepository checkboxGroupRepository;
+    private final CheckboxRepository checkboxRepository;
     private final SurveyResponseRepository surveyResponseRepository;
     private final ModelMapper modelMapper;
     private final AuthService authService;
@@ -239,7 +243,7 @@ public class SurveyServiceImpl implements SurveyService {
 
         Map<Boolean, List<QuestionGroup>> fromGroups = from.getQuestionGroups()
             .stream()
-            .collect(Collectors.partitioningBy(qg -> qg.getId() != null));
+            .collect(Collectors.partitioningBy(idExistsIn(to.getQuestionGroups())));
         Map<Long, QuestionGroup> fromMap = fromGroups.get(true)
             .stream()
             .collect(Collectors.toMap(
@@ -253,6 +257,7 @@ public class SurveyServiceImpl implements SurveyService {
             QuestionGroup fromQuestionGroup = fromMap.get(toQuestionGroup.getId());
             if(fromQuestionGroup == null) {
                 it.remove();
+                questionGroupRepository.delete(toQuestionGroup);
                 continue;
             }
             transferValues(fromQuestionGroup, toQuestionGroup);
@@ -266,7 +271,7 @@ public class SurveyServiceImpl implements SurveyService {
         
         Map<Boolean, List<Question>> fromQuestions = from.getQuestions()
             .stream()
-            .collect(Collectors.partitioningBy(q -> q.getId() != null));
+            .collect(Collectors.partitioningBy(idExistsIn(to.getQuestions())));
         Map<Long, Question> fromMap = fromQuestions.get(true)
             .stream()
             .collect(Collectors.toMap(
@@ -280,6 +285,7 @@ public class SurveyServiceImpl implements SurveyService {
             Question fromQuestion = fromMap.get(toQuestion.getId());
             if(fromQuestion == null) {
                 it.remove();
+                questionRepository.delete(toQuestion);
                 continue;
             }
             transferValues(fromQuestion, toQuestion);
@@ -296,8 +302,9 @@ public class SurveyServiceImpl implements SurveyService {
         if(to.getCheckboxGroup() != null && from.getCheckboxGroup() != null) {
             transferValues(from.getCheckboxGroup(), to.getCheckboxGroup());
         } else {
-            to.setCheckboxGroup(from.getCheckboxGroup());
             if(from.getCheckboxGroup() != null) from.getCheckboxGroup().setQuestion(to);
+            if(to.getCheckboxGroup() != null) checkboxGroupRepository.delete(to.getCheckboxGroup());
+            to.setCheckboxGroup(from.getCheckboxGroup());
         }
     }
     
@@ -308,7 +315,7 @@ public class SurveyServiceImpl implements SurveyService {
         
         Map<Boolean, List<Checkbox>> fromQuestions = from.getCheckboxes()
             .stream()
-            .collect(Collectors.partitioningBy(q -> q.getId() != null));
+            .collect(Collectors.partitioningBy(idExistsIn(to.getCheckboxes())));
         Map<Long, Checkbox> fromMap = fromQuestions.get(true)
             .stream()
             .collect(Collectors.toMap(
@@ -321,14 +328,26 @@ public class SurveyServiceImpl implements SurveyService {
             Checkbox toCheckbox = it.next();
             Checkbox fromCheckbox = fromMap.get(toCheckbox.getId());
             if(fromCheckbox == null) {
+                log.debug("Deleted Checkbox Id: {}", toCheckbox.getId());
                 it.remove();
+                checkboxRepository.delete(toCheckbox);
                 continue;
             }
+            log.debug("Edited Checkbox Id: {}", toCheckbox.getId());
             toCheckbox.setText(fromCheckbox.getText());
             toCheckbox.setHasTextField(fromCheckbox.isHasTextField());
         }
+        fromQuestions.get(false).forEach(c -> {
+            c.setCheckboxGroup(to);
+            c.setId(null);
+        });
         to.getCheckboxes().addAll(fromQuestions.get(false));
-        fromQuestions.get(false).forEach(c -> c.setCheckboxGroup(to));
+    }
+    
+    private static <T extends AbstractEntity> Predicate<T> idExistsIn(Collection<T> collection) {
+        return e -> e.getId() != null && collection.stream()
+            .map(T::getId)
+            .anyMatch(e.getId()::equals);
     }
 
     @Override

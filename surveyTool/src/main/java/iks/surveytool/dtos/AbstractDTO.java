@@ -12,7 +12,7 @@ abstract class AbstractDTO {
     public abstract void trimAndNull();
     
     protected static String trimAndNull(String s) {
-        if(s.isBlank()) return null;
+        if(s == null || s.isBlank()) return null;
         return s.trim();
     }
     

@@ -21,8 +21,7 @@ public class QuestionGroup extends AbstractEntity {
     @JoinColumn(name = "surveyId", nullable = false)
     private Survey survey;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "questionGroupId", nullable = false, insertable = false, updatable = false)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "questionGroup")
     @OrderBy("id")
     private List<Question> questions;
 
