@@ -61,6 +61,7 @@ import { OverviewSubformComponent } from './vote/vote-form/overview-subform/over
 import { VoteFormComponent } from './vote/vote-form/vote-form.component';
 import { VoteListComponent } from './vote-list/vote-list.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
 
 registerLocaleData(localeDE);
 
@@ -93,6 +94,7 @@ registerLocaleData(localeDE);
     DeleteProfileComponent,
     VoteListComponent,
     ViewProfileComponent,
+    ConfirmChoiceComponent
   ],
   imports: [
     BrowserModule,

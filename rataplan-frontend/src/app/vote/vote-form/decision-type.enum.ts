@@ -30,3 +30,8 @@ export function deserializeVoteOptionDecisionType(decisionType: SerializedVoteOp
     return VoteOptionDecisionType[decisionType];
   }
 }
+
+export enum CONFIRM_CHOICE_OPTIONS{
+  PARTICIPANT_LIMIT
+}
+
