@@ -39,10 +39,10 @@ public class VoteControllerService {
         }
 
         Vote vote = modelMapper.map(creatorVoteDTO, Vote.class);
+		voteService.createVote(vote);
 		if(authUser != null) vote.setAccessList(Collections.singletonList(
-			new BackendUserAccess(null, authUser.getId(), true, false)
+			new BackendUserAccess(vote.getId(), authUser.getId(), true, false)
 		));
-        voteService.createVote(vote);
 
 		return modelMapper.map(vote, CreatorVoteDTO.class);
 	}
