@@ -44,7 +44,7 @@
           </mat-error>
         </div>
         <ng-template #singleSelect>
-          <mat-radio-group  ngModel name="checkboxId" [required]="question.required">
+          <mat-radio-group ngModel [ngModelOptions]="{name: 'checkboxId'}" [required]="question.required">
             <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
               <mat-radio-button class="newLine" [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button>
               <br>
