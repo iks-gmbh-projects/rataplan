@@ -10,6 +10,6 @@ import lombok.Setter;
 public class ParticipantDeletionMailData {
 
     private String email;
-    private String vote;
+    private String voteToken;
 
 }

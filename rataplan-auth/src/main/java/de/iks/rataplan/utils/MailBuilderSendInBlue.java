@@ -57,7 +57,7 @@ public class MailBuilderSendInBlue {
     }
 
     public SendSmtpEmail buildParticipantDeletionEmail(ParticipantDeletionMailData participantDeletionMailData){
-        String voteLink = baseUrl + "/vote/" + participantDeletionMailData.getVote();
+        String voteLink = baseUrl + "/vote/" + participantDeletionMailData.getVoteToken();
 
         Context ctx = new Context();
         ctx.setVariable("link", voteLink);

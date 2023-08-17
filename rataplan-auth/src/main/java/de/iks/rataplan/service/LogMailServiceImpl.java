@@ -26,6 +26,6 @@ public class LogMailServiceImpl implements MailService {
 
     @Override
     public void notifyParticipantDeletion(ParticipantDeletionMailData participantDeletionMailData) {
-        log.info(baseUrl + "/vote/" + participantDeletionMailData.getVote());
+        log.info(baseUrl + "/vote/" + participantDeletionMailData.getVoteToken());
     }
 }
