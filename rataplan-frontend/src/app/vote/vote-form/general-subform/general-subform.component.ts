@@ -8,6 +8,7 @@ import { Store } from '@ngrx/store';
 import { SetGeneralValuesVoteOptionAction } from '../../vote.actions';
 import { DecisionType } from '../decision-type.enum';
 import { voteFeature } from '../../vote.feature';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-general-subform',
@@ -39,6 +40,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   private storeSub?: Subscription;
 
   constructor(
+    private snackBar: MatSnackBar,
     private store: Store,
     public readonly errorMessageService: FormErrorMessageService,
     private router: Router,
@@ -51,24 +53,29 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVoteState)
-      .subscribe(state => {
-        const vote = state.vote;
-        const title = vote?.title;
-        const deadline = vote?.deadline;
-        const decision = vote?.voteConfig?.decisionType;
+    this.storeSub = this.store.select(voteFeature.selectVote)
+      .subscribe({
+        next: vote => {
+          const title = vote?.title;
+          const deadline = vote?.deadline;
+          const decision = vote?.voteConfig?.decisionType;
         const yesLimitActive = vote?.voteConfig.yesLimitActive;
         const yesAnswerLimit = vote?.voteConfig.yesAnswerLimit;
-        if (title || deadline) {
-          this.generalSubform.get('title')?.setValue(title);
-          this.generalSubform.get('description')?.setValue(vote.description);
-          this.generalSubform.get('deadline')?.setValue(deadline);
-          this.generalSubform.get('decision')?.setValue(decision);
+          if (title || deadline) {
+            this.generalSubform.get('title')?.setValue(title);
+            this.generalSubform.get('description')?.setValue(vote.description);
+            this.generalSubform.get('deadline')?.setValue(deadline);
+            this.generalSubform.get('decision')?.setValue(decision);
           this.generalSubform.get('yesAnswerLimit')?.setValue(yesAnswerLimit);
           this.generalSubform.get('yesLimitActive')?.setValue(yesLimitActive);
-        }
-        if (this.generalSubform.get('description')?.value) {
-          this.showDescription = true;
+          }
+          if (this.generalSubform.get('description')?.value) {
+            this.showDescription = true;
+          }
+        },
+        error: err => {
+          this.snackBar.open("Unbekannter Fehler beim Laden der Abstimmungsdaten", "OK");
+          console.log(err);
         }
       });
   }

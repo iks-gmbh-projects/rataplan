@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Survey } from '../survey.model';
 import { SurveyService } from '../survey.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-survey-create',
@@ -16,7 +17,12 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
 
   private sub?: Subscription;
 
-  constructor(private surveys: SurveyService, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private snackBar: MatSnackBar,
+    private surveys: SurveyService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   public ngOnInit(): void {
     this.survey = this.route.snapshot.data['survey'];
@@ -59,8 +65,10 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
       next: surv => {
         this.router.navigate(["/survey", "access", surv.accessId], { relativeTo: this.route });
       },
-      error: () => {
+      error: err => {
         this.survey!.questionGroups = survey!.questionGroups;
+        this.snackBar.open("Unbekannter Fehler beim Erstellen der Umfrage", "OK");
+        console.log(err);
       }
     });
   }

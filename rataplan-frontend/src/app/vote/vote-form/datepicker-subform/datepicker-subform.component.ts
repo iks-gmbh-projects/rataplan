@@ -28,10 +28,10 @@ export class DatepickerSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVoteState)
+    this.storeSub = this.store.select(voteFeature.selectVote)
       .pipe(
-        filter(state => !!state.vote),
-        map(state => state.vote!.options)
+        filter(vote => !!vote),
+        map(vote => vote!.options)
       ).subscribe(voteOptions => {
         this.daysSelected = voteOptions;
         this.calendar?.updateTodaysDate();

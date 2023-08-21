@@ -16,6 +16,7 @@ import { VoteDecisionSubformComponent } from './member-decision-subform/vote-dec
 import { VoteService } from './vote-service/vote.service';
 import { voteFeature } from '../vote.feature';
 import { authFeature } from '../../authentication/auth.feature';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 const decisionCycle = {
   [VoteOptionDecisionType.NO_ANSWER]: VoteOptionDecisionType.ACCEPT,
@@ -51,6 +52,7 @@ export class VoteComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
+    private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private voteService: VoteService,
     public deadlineService: DeadlineService,
@@ -102,18 +104,30 @@ export class VoteComponent implements OnInit, OnDestroy {
     }
     this.voteService.addVoteParticipant(this.vote!, this.voteParticipant)
       .pipe(takeUntil(this.destroySubject))
-      .subscribe(participant => {
-        this.vote!.participants.push(participant);
-        this.resetVote();
+      .subscribe({
+        next: participant => {
+          this.vote!.participants.push(participant);
+          this.resetVote();
+        },
+        error: err => {
+          this.snackBar.open("Unbekannter Fehler beim Abstimmen", "OK");
+          console.log(err);
+        },
       });
   }
 
   updateVote() {
     this.voteService.updateVoteParticipant(this.vote!, this.voteParticipant)
       .pipe(takeUntil(this.destroySubject))
-      .subscribe(() => {
-        this.resetVote();
-        this.isEditMember = false;
+      .subscribe({
+        next: () => {
+          this.resetVote();
+          this.isEditMember = false;
+        },
+        error: err => {
+          this.snackBar.open("Unbekannter Fehler beim Ändern der Stimme", "OK");
+          console.log(err);
+        },
       });
   }
 
@@ -246,10 +260,16 @@ export class VoteComponent implements OnInit, OnDestroy {
         exhaustMap(() => this.voteService.getVoteByParticipationToken(this.vote!.participationToken!)),
         take(1),
       )
-      .subscribe((updatedRequest: VoteModel) => {
-        this.isEditMember = false;
-        this.resetVote();
-        this.vote = updatedRequest;
+      .subscribe({
+        next: (updatedRequest: VoteModel) => {
+          this.isEditMember = false;
+          this.resetVote();
+          this.vote = updatedRequest;
+        },
+        error: err => {
+          this.snackBar.open("Unbekannter Fehler beim löschen der Stimme", "OK");
+          console.log(err);
+        },
       });
   }
 

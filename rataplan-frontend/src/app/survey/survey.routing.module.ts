@@ -10,6 +10,7 @@ import { SurveyListComponent } from './survey-list/survey-list.component';
 import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
+import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unknown-error.component';
 import { ProfilePasswordAuthService } from '../services/auth-guard-service/profile-password-auth-service';
 
 const surveyRoutes: Routes = [{
@@ -35,6 +36,7 @@ const surveyRoutes: Routes = [{
     },
     { path: 'missing', component: SurveyMissingComponent },
     { path: 'forbidden', component: SurveyForbiddenComponent },
+    { path: 'unknown', component: SurveyUnknownErrorComponent },
     { path: 'closed', component: SurveyClosedComponent },
     { path: '', pathMatch: 'exact', redirectTo: 'list' },
   ],

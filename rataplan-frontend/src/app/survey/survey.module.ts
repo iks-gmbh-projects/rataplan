@@ -20,6 +20,7 @@ import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyCreateFormHeadComponent } from './survey-create/survey-create-form/survey-create-form-head/survey-create-form-head.component';
 import { SurveyCreateFormPageComponent } from './survey-create/survey-create-form/survey-create-form-page/survey-create-form-page.component';
+import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unknown-error.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { SurveyCreateFormPageComponent } from './survey-create/survey-create-for
     SurveyMissingComponent,
     SurveyForbiddenComponent,
     SurveyAnswerComponent,
+    SurveyUnknownErrorComponent,
     SurveyCreateFormHeadComponent,
     SurveyCreateFormPageComponent,
   ],

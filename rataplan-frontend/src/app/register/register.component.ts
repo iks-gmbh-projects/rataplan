@@ -11,7 +11,6 @@ import { ExtraValidators } from "../validator/validators";
 import { Store } from "@ngrx/store";
 import { AuthActions, RegisterAction } from "../authentication/auth.actions";
 import { Subscription } from "rxjs";
-import { map } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { authFeature } from '../authentication/auth.feature';
@@ -79,12 +78,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.busySub = this.store.select(authFeature.selectAuthState).pipe(
-      map(auth => auth.busy),
-    ).subscribe(busy => {
-      if(busy) this.registerForm.disable();
-      else this.registerForm.enable();
-    });
+    this.busySub = this.store.select(authFeature.selectBusy)
+      .subscribe(busy => {
+        if(busy) this.registerForm.disable();
+        else this.registerForm.enable();
+      });
     this.errorSub = this.actions$.pipe(
       ofType(AuthActions.REGISTER_ERROR_ACTION),
     ).subscribe(() => this.snackbar.open("Es ist ein Fehler aufgetreten.", "Ok"));
