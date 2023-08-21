@@ -25,6 +25,12 @@ function minControlValueValidator(min: AbstractControl): ValidatorFn {
   styleUrls: ['./survey-create-form.component.css']
 })
 export class SurveyCreateFormComponent {
+  public static get yesterday(): Date {
+    let date = new Date();
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }
+
   private _survey?: Survey;
   public get survey() {
     return this._survey;
@@ -42,7 +48,7 @@ export class SurveyCreateFormComponent {
   constructor(public readonly errorMessageService: FormErrorMessageService) { }
 
   private createSurvey(survey?: Survey): UntypedFormGroup {
-    const startDate = new UntypedFormControl(survey?.startDate || null, [Validators.required, Validators.min(Date.now()-24*3600000)]);
+    const startDate = new UntypedFormControl(survey?.startDate || null, [Validators.required, Validators.min(SurveyCreateFormComponent.yesterday.getTime())]);
     const endDate = new UntypedFormControl(survey?.endDate || null, [Validators.required, minControlValueValidator(startDate)]);
     return new UntypedFormGroup({
       id: new UntypedFormControl(survey?.id),

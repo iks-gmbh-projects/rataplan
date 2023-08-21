@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
 import { UntypedFormGroup } from '@angular/forms';
+import { SurveyCreateFormComponent } from '../survey-create-form.component';
 
 @Component({
   selector: 'app-survey-create-form-head',
@@ -12,10 +13,7 @@ export class SurveyCreateFormHeadComponent implements OnInit {
   @Output() readonly submit = new EventEmitter<void>();
 
   public get yesterday(): Date {
-    let ms = Date.now();
-    ms -= 24*3600000;
-    ms -= ms % 60000;
-    return new Date(ms);
+    return SurveyCreateFormComponent.yesterday;
   }
 
   constructor(
