@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
@@ -19,6 +19,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   readonly DecisionType = DecisionType;
   minDate: Date;
   maxDate: Date;
+  minYesLimit!:number;
 
   generalSubform = new FormGroup({
     'title': new FormControl(null, [
@@ -32,7 +33,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     'deadline': new FormControl(null, Validators.required),
     'decision': new FormControl(0, Validators.required),
     'yesLimitActive': new FormControl(false, Validators.required),
-    'yesAnswerLimit': new FormControl(null, ExtraValidators.yesAnswerLimitMoreThanZeroOrNull())
+    'yesAnswerLimit': new FormControl(null,[ExtraValidators.yesAnswerLimitMoreThanZeroOrNull(),Validators.min(this.minYesLimit)])
   });
 
   showDescription = false;
@@ -72,6 +73,9 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
           if (this.generalSubform.get('description')?.value) {
             this.showDescription = true;
           }
+
+          this.minYesLimit = vote!.voteConfig!.yesAnswerLimit! || 0;
+          console.log(this.minYesLimit);
         },
         error: err => {
           this.snackBar.open("Unbekannter Fehler beim Laden der Abstimmungsdaten", "OK");
@@ -119,6 +123,17 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     console.log(this.generalSubform.get('deadline'));
     console.log(this.generalSubform.get('yesAnswerLimit'));
     console.log(this.generalSubform.get('yesLimitActive'));
+    console.log(this.generalSubform)
     this.router.navigate(['..', 'configurationOptions'], { relativeTo: this.activeRoute });
+  }
+
+  static yesAnswerLimitMoreThanZeroOrNull(currentLimit:number | null):ValidatorFn {
+    return (c) => {
+      console.log(c.value);
+      console.log(currentLimit);
+      if (currentLimit === null) return null;
+      if (c.parent?.get('yesLimitActive')?.value) return c.value >= currentLimit ? null : { 'invalid yes answer limit' : true };
+      else return null;
+    };
   }
 }

@@ -2,7 +2,7 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Store } from "@ngrx/store";
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { filter } from "rxjs/operators";
 import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
@@ -18,9 +18,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
-  busy: boolean = false;
+  busy = false;
   consigneeList: string[] = [];
-  simpleCalendar: boolean = false;
 
   emailSubform = new FormGroup({
     'name': new FormControl(null, [
@@ -58,13 +57,6 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
         this.emailSubform.get('name')?.setValue(vote.organizerName);
         this.emailSubform.get('email')?.setValue(vote.organizerMail);
         this.consigneeList = vote.consigneeList;
-        const config = vote.voteConfig.voteOptionConfig;
-        this.simpleCalendar = !!config.startDate &&
-          !config.startTime &&
-          !config.endDate &&
-          !config.endTime &&
-          !config.description &&
-          !config.url;
         if(state.error !== this.lastError) {
           this.lastError = state.error;
           if(state.error) {

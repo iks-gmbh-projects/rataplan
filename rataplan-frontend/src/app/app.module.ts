@@ -48,6 +48,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
 import { notificationFeature } from './notification/notification.feature';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
 
 registerLocaleData(localeDE);
 
@@ -73,7 +75,8 @@ registerLocaleData(localeDE);
     CookieBannerComponent,
     ConfirmAccountInstructionComponent,
     ConfirmAccountComponent,
-    ResendAccountConfirmationEmailComponent
+    ResendAccountConfirmationEmailComponent,
+    ConfirmChoiceComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,10 +105,11 @@ registerLocaleData(localeDE);
     StoreModule.forFeature(notificationFeature),
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,
+    MatSlideToggleModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
-    { provide: DateAdapter, useClass: EUDateAdapter }
+    { provide: DateAdapter, useClass: EUDateAdapter },
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

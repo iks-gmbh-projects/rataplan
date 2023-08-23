@@ -30,7 +30,7 @@
             {{ participant.name }}
           </div>
           <div
-            *ngIf='!deadlineService.hasDeadlinePassed() && (!participant.userId || participant.userId === currentUser?.id)'
+            *ngIf='!deadlineService.hasDeadlinePassed() && (participant.userId === currentUser?.id)'
             class='member-button'>
             <button mat-icon-button
                     [disabled]='isPreview'

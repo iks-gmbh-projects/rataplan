@@ -95,7 +95,7 @@
     </div>
     <div *ngIf='voteConfig.description'>
       <mat-form-field appearance='fill'
-                      >
+      >
         <mat-label>Textfeld</mat-label>
         <input type='text'
                formControlName='descriptionInput'
@@ -107,7 +107,7 @@
     </div>
     <div *ngIf='voteConfig.url'>
       <mat-form-field appearance='fill'
-                      >
+      >
         <mat-label>URL</mat-label>
         <input type='text'
                formControlName='linkInput'
@@ -115,6 +115,21 @@
                matInput
                required>
         <mat-error>{{errorMessageService.genericFormError(vote.get('linkInput'))}}</mat-error>
+      </mat-form-field>
+    </div>
+    <mat-slide-toggle #participationLimitToggle formControlName="participantLimitActive"
+                      (click)="sanitiseParticipationLimit(participationLimitToggle.checked)">Möchten Sie die maximal
+      Anzahl Teilnehmerin auf diesen
+      Termin begrenzen?
+    </mat-slide-toggle>
+    <div *ngIf="vote.get('participantLimitActive')!.value!">
+      <p>Geben Sie hier an, die maximale Anzahl Teilnehmerin für diesen Termin</p>
+      <mat-form-field>
+        <input matInput
+               formControlName="participantLimit"
+               type="number"
+               style="text-align: center"
+        />
       </mat-form-field>
     </div>
     <mat-card-actions>

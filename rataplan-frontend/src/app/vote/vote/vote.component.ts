@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgModel } from '@angular/forms';
+import { NgModel, ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -43,7 +43,6 @@ export class VoteComponent implements OnInit, OnDestroy {
   busy = false;
   isEditMember = false;
   isYesVoteLimitMet!: boolean;
-  yesVoteCount = 0;
   votes: Map<number, boolean> = new Map<number, boolean>();
   @ViewChild('nameField') nameField?: NgModel;
 
@@ -188,6 +187,7 @@ export class VoteComponent implements OnInit, OnDestroy {
       case VoteOptionDecisionType.ACCEPT_IF_NECESSARY:
         return this.vote!.voteConfig.decisionType == DecisionType.EXTENDED
       case VoteOptionDecisionType.ACCEPT:
+        if(this.isParticipantLimitMet(vote)) return false;
         if(!this.vote!.voteConfig.yesLimitActive) return true;
         return this.voteParticipant.decisions
           .map(d => d.decision)
@@ -308,4 +308,22 @@ export class VoteComponent implements OnInit, OnDestroy {
     this.busy = true;
     this.store.dispatch(new PostVoteAction());
   }
+
+  isParticipantLimitMet(voteOption:VoteOptionModel){
+    if (!voteOption.participantLimitActive) return false;
+    const voteDecisions = this.vote.participants
+      .flatMap(participant => participant.decisions)
+      .filter(decision => decision.decision === 1 &&  decision.optionId === voteOption.id)
+      .length;
+    return !(voteDecisions < voteOption.participantLimit!);
+  }
+
+  static yesAnswerLimitMoreThanZeroOrNull():ValidatorFn {
+    return (c) => {
+      if (c.parent?.get('yesLimitActive')?.value) return c.value > 0 ? null : { 'invalid yes answer limit' : true };
+      else return null;
+    };
+  }
+
+
 }

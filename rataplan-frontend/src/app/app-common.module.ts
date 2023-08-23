@@ -28,6 +28,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 const declarations = [
   DisplayNamePipe,
@@ -57,6 +58,7 @@ const imports = [
   MatSortModule,
   MatCheckboxModule,
   MatRadioModule,
+  MatSlideToggleModule,
   MatDividerModule,
   MatChipsModule,
   MatListModule,
