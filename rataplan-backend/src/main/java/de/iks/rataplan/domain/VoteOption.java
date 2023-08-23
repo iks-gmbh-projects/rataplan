@@ -37,6 +37,23 @@ public class VoteOption implements Serializable {
     private Vote vote;
     private List<VoteDecision> voteDecisions = new ArrayList<>();
 
+    private boolean participantLimitActive;
+    private Integer participantLimit;
+
+    public VoteOption(Timestamp startDate, EncryptedString description, Vote vote, Boolean participantLimitActive, Integer participantLimit) {
+        this.startDate = startDate;
+        this.description = description;
+        this.vote = vote;
+        this.participantLimit = participantLimit;
+        this.participantLimitActive = participantLimitActive;
+    }
+
+    public VoteOption(EncryptedString description, Vote vote, Boolean participantLimitActive, Integer participantLimit) {
+        this.description = description;
+        this.vote = vote;
+        this.participantLimit = participantLimit;
+        this.participantLimitActive = participantLimitActive;
+    }
     public VoteOption(Timestamp startDate, EncryptedString description, Vote vote) {
         this.startDate = startDate;
         this.description = description;
@@ -103,7 +120,7 @@ public class VoteOption implements Serializable {
         return this.vote;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "voteDecisionId.voteOption", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "voteDecisionId.voteOption", orphanRemoval = true, cascade = CascadeType.ALL)
     public List<VoteDecision> getVoteDecisions() {
         return voteDecisions;
     }
@@ -116,8 +133,14 @@ public class VoteOption implements Serializable {
 					!config.isDescription() && (this.description != null)) {
 				return false;
 			}
-			return true;
+			return validateParticipantLimitConfig();
 		}
 		return false;
 	}
+
+    public boolean validateParticipantLimitConfig(){
+        if (!this.participantLimitActive && this.participantLimit == null) return true;
+        else if (this.participantLimitActive  && this.participantLimit != null && this.participantLimit > 0) return true;
+        return false;
+    }
 }

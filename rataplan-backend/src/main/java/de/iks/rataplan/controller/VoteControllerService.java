@@ -130,7 +130,6 @@ public class VoteControllerService {
 		} else if(vote.getUserId() != null) {
 			throw new RequiresAuthorizationException();
 		}
-		
 		return modelMapper.map(vote, CreatorVoteDTO.class);
 	}
 }

@@ -15,12 +15,14 @@ import static de.iks.rataplan.testutils.TestConstants.UPDATE;
 import static de.iks.rataplan.testutils.TestConstants.createSimpleVote;
 import static de.iks.rataplan.utils.VoteBuilder.voteOptionList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.iks.rataplan.domain.*;
+import de.iks.rataplan.repository.VoteRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,9 @@ public class VoteOptionRequestServiceTest {
 
 	@Autowired
 	private VoteService voteService;
+
+    @Autowired
+    VoteRepository voteRepository;
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
@@ -178,14 +183,14 @@ public class VoteOptionRequestServiceTest {
 
 		vote.setParticipants(voteParticipants);
 
-		VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote);
-		voteOption1.setVote(vote);
+        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote,false,null);
+        voteOption1.setVote(vote);
 
-		VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote);
-		voteOption2.setVote(vote);
+        VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote,false,null);
+        voteOption2.setVote(vote);
 
-		VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), vote);
-		voteOption3.setVote(vote);
+        VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), vote, false,null);
+        voteOption3.setVote(vote);
 
 		vote.setOptions(voteOptionList(voteOption1, voteOption2, voteOption3));
 
@@ -218,5 +223,173 @@ public class VoteOptionRequestServiceTest {
 		vote.setDeadline(new Date(DATE_2050_10_10));
 		voteService.updateVote(oldVote, vote);
 	}
+
+    @Test(expected = MalformedException.class)
+    public void createVoteShouldFailMisconfiguredParticipantLimitActiveFalseParticipantLimitNotNull() {
+        VoteConfig voteConfig = new VoteConfig(
+                new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
+
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
+        vote.setVoteConfig(voteConfig);
+
+        VoteOption voteOption = new VoteOption(new EncryptedString("universe", false), vote);
+
+        voteOption.setVote(vote);
+
+        vote.setOptions(voteOptionList(voteOption));
+
+        voteOption.setVote(vote);
+        voteOption.setParticipantLimit(10);
+        voteOption.setParticipantLimitActive(false);
+        voteService.createVote(vote);
+    }
+
+    @Test(expected = MalformedException.class)
+    public void createVoteShouldFailParticipantLimitActiveFalseParticipationLimitNull() {
+        VoteConfig voteConfig = new VoteConfig(
+                new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
+
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
+        vote.setVoteConfig(voteConfig);
+
+        VoteOption voteOption = new VoteOption(new EncryptedString("universe", false), vote);
+
+        voteOption.setParticipantLimitActive(true);
+        voteOption.setParticipantLimit(null);
+        voteOption.setVote(vote);
+
+        vote.setOptions(voteOptionList(voteOption));
+
+        voteOption.setVote(vote);
+        voteService.createVote(vote);
+    }
+
+
+    @Test(expected = MalformedException.class)
+    @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
+    public void updateVoteShouldFailMisconfiguredParticipantLimitActiveFalseParticipantLimitNotNull() {
+        Vote oldVote = voteService.getVoteById(1);
+
+        VoteConfig voteConfig = new VoteConfig(
+                new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
+
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
+        vote.setVoteConfig(voteConfig);
+
+        VoteParticipant voteParticipant = new VoteParticipant();
+        voteParticipant.setId(1);
+        voteParticipant.setName(new EncryptedString("RubberBandMan", false));
+        voteParticipant.setVote(vote);
+
+        List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
+        voteParticipants.add(voteParticipant);
+
+        vote.setParticipants(voteParticipants);
+
+        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote);
+        voteOption1.setVote(vote);
+
+        VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote,false,5);
+        voteOption2.setVote(vote);
+
+        vote.setOptions(voteOptionList(voteOption1, voteOption2));
+
+        voteService.updateVote(oldVote, vote);
+    }
+
+    @Test(expected = MalformedException.class)
+    @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
+    public void updateVoteShouldFailParticipantLimitNullParticipationLimitActive() {
+        Vote oldVote = voteService.getVoteById(1);
+
+        VoteConfig voteConfig = new VoteConfig(
+                new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
+
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
+        vote.setVoteConfig(voteConfig);
+
+        VoteParticipant voteParticipant = new VoteParticipant();
+        voteParticipant.setId(1);
+        voteParticipant.setName(new EncryptedString("RubberBandMan", false));
+        voteParticipant.setVote(vote);
+
+        List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
+        voteParticipants.add(voteParticipant);
+
+        vote.setParticipants(voteParticipants);
+
+        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote, true, null);
+        voteOption1.setVote(vote);
+
+        VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote);
+        voteOption2.setVote(vote);
+
+        vote.setOptions(voteOptionList(voteOption1, voteOption2));
+
+        voteService.updateVote(oldVote, vote);
+    }
+
+    @Test
+    @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
+    public void yesVotesResetWhenNewVoteLimitLessThanVoteCount() {
+
+        Vote oldVote = voteService.getVoteById(1);
+
+        VoteConfig voteConfig = new VoteConfig(
+                new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT);
+
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
+        vote.setVoteConfig(voteConfig);
+
+        VoteParticipant voteParticipant = new VoteParticipant();
+        voteParticipant.setId(1);
+        voteParticipant.setName(new EncryptedString("RubberBandMan", false));
+        voteParticipant.setVote(vote);
+
+        List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
+        voteParticipants.add(voteParticipant);
+
+        vote.setParticipants(voteParticipants);
+
+        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote, true,1);
+        voteOption1.setVote(vote);
+
+        vote.setOptions(voteOptionList(voteOption1));
+
+        Vote updatedVote = voteService.updateVote(oldVote, vote);
+        assertTrue(
+                updatedVote.getParticipants()
+                        .stream()
+                        .flatMap(p -> p.getVoteDecisions().stream())
+                        .filter(d -> d.getDecision().getValue() == 1)
+                        .noneMatch(d -> d.getVoteOption().getId() == 1)
+        );
+    }
+
 
 }

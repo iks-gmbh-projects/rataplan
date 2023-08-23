@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import de.iks.rataplan.domain.*;
+import de.iks.rataplan.service.CryptoServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +43,15 @@ public class VoteRepositoryTest {
 
 	@Autowired
 	private VoteRepository voteRepository;
+	@Autowired
+	private CryptoServiceImpl cryptoService;
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + "/simple"
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
 	public void createVoteWithDefaultConfigAndTwoOptions() throws Exception {
-
+//		System.out.print(cryptoService.decryptDB(voteRepository.getOne(14).getParticipationToken()));
 		Vote vote = createSimpleVote();
 
 		voteRepository.saveAndFlush(vote);
