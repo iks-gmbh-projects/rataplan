@@ -2,10 +2,17 @@ package de.iks.rataplan.service;
 
 import de.iks.rataplan.exceptions.CryptoException;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import javax.annotation.PostConstruct;
+import java.security.*;
 
 public class MockCryptoService implements CryptoService {
+    private KeyPair keyPair;
+    
+    @PostConstruct
+    public void init() throws NoSuchAlgorithmException {
+        this.keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+    }
+    
     @Override
     public String encryptDB(String raw) throws CryptoException {
         return raw;
@@ -23,11 +30,11 @@ public class MockCryptoService implements CryptoService {
 
     @Override
     public PublicKey getPublicKey() {
-        return null;
+        return keyPair.getPublic();
     }
 
     @Override
     public PrivateKey getPrivateKey() {
-        return null;
+        return keyPair.getPrivate();
     }
 }
