@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnDestroy,OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { filter, Subscription } from 'rxjs';
+import { filter, Observable, of, Subscription } from 'rxjs';
 
 import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../../vote.actions';
+import { voteFeature } from '../../vote.feature';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
 import { combineDateTime } from '../vote-form.service';
-import { voteFeature } from '../../vote.feature';
 
 function extractTime(date: string | undefined | null): string | null {
   if (!date) return null;
@@ -100,7 +100,6 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
 
   clearContent() {
     this.vote.reset();
-    this.editIndex = null;
   }
 
   sanitiseParticipationLimit(checked: boolean) {
@@ -115,41 +114,35 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       return;
     }
     const input: formValue = this.vote.value;
-    const updateOption = () => {
-      const voteOption: VoteOptionModel = {};
-      voteOption.startDate = combineDateTime(
-        input.startDateInput, input.startTimeInput,
-      )!;
-      if (this.voteConfig.endDate || this.voteConfig.endTime) {
-        voteOption.endDate = combineDateTime(
-          input.endDateInput || input.startDateInput, input.endTimeInput,
-        )!;
+    let proceed: Observable<boolean> = of(true);
+    if (input.voteIndex != null && input.participantLimitActive) {
+      if (input.participantLimit! < this.originalParticipationLimit.get(this.voteOptions[input.voteIndex].id!)!) {
+        proceed = this.dialog.open(ConfirmChoiceComponent, { data: { option: CONFIRM_CHOICE_OPTIONS.PARTICIPANT_LIMIT }}).afterClosed();
       }
-      voteOption.description = input.descriptionInput || undefined;
-      voteOption.url = input.linkInput || undefined;
-      voteOption.participantLimitActive = input.participantLimitActive || false;
-      voteOption.participantLimit = input.participantLimitActive ? input.participantLimit : null;
-      voteOption.id = this.editIndex === null ? undefined : this.voteOptions[this.editIndex!].id;
-      if (voteOption.id !== undefined) {
-        this.store.dispatch(new EditVoteOptionAction(input.voteIndex!, voteOption));
-      } else {
-        this.store.dispatch(new AddVoteOptionsAction(voteOption));
+    }
+    proceed.subscribe(proceed => {
+      if(proceed) {
+        const voteOption: VoteOptionModel = {};
+        voteOption.startDate = combineDateTime(
+          input.startDateInput, input.startTimeInput,
+        )!;
+        if (this.voteConfig.endDate || this.voteConfig.endTime) {
+          voteOption.endDate = combineDateTime(
+            input.endDateInput || input.startDateInput, input.endTimeInput,
+          )!;
+        }
+        voteOption.description = input.descriptionInput || undefined;
+        voteOption.url = input.linkInput || undefined;
+        voteOption.participantLimitActive = input.participantLimitActive || false;
+        voteOption.participantLimit = input.participantLimitActive ? input.participantLimit : null;
+        if (input.voteIndex !== null) {
+          this.store.dispatch(new EditVoteOptionAction(input.voteIndex!, voteOption));
+        } else {
+          this.store.dispatch(new AddVoteOptionsAction(voteOption));
+        }
       }
       this.clearContent();
-    };
-    if (this.editIndex != null && input.participantLimitActive) {
-      if (input.participantLimit! < this.originalParticipationLimit.get(this.voteOptions[this.editIndex].id!)!) {
-        this.dialog.open(ConfirmChoiceComponent, { data: { option: CONFIRM_CHOICE_OPTIONS.PARTICIPANT_LIMIT }}).afterClosed()
-          .subscribe(choice => {
-            if (choice){
-              const key = this.voteOptions[this.editIndex!].id;
-              this.originalParticipationLimit.set(key!,-1);
-              updateOption();
-            }
-            else this.clearContent();
-          });
-      } else updateOption();
-    } else updateOption();
+    });
   }
 
   isInputInForm() {
@@ -180,8 +173,5 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       participantLimitActive: voteOption.participantLimitActive || false,
       participantLimit: voteOption.participantLimit || null,
     });
-    if (voteOption.id) this.editIndex = index;
   }
-
-  editIndex: number | null = null;
 }

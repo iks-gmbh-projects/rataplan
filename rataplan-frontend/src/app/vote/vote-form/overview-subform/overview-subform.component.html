@@ -139,7 +139,7 @@
       <button mat-button
               [disabled]='vote.invalid || vote.untouched'
               (click)='addVoteOption()'>
-        {{ vote.get('voteOptionIndex') === null ? 'Hinzufügen' : 'Ändern' }}
+        {{ vote.value.voteIndex === null ? 'Hinzufügen' : 'Ändern' }}
       </button>
     </mat-card-actions>
   </mat-card>
