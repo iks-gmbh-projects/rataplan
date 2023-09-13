@@ -19,7 +19,7 @@ const surveyRoutes: Routes = [{
       path: 'access', children: [
         {
           path: ':accessID', resolve: { survey: AccessIDSurveyResolver }, runGuardsAndResolvers: 'always', children: [
-            { path: '', pathMatch: 'exact', component: SurveyOwnerViewComponent },
+            { path: '', pathMatch: 'full', component: SurveyOwnerViewComponent },
             { path: 'results', component: SurveyResultsComponent },
             { path: 'edit', component: SurveyCreateComponent },
           ],
@@ -38,7 +38,7 @@ const surveyRoutes: Routes = [{
     { path: 'forbidden', component: SurveyForbiddenComponent },
     { path: 'unknown', component: SurveyUnknownErrorComponent },
     { path: 'closed', component: SurveyClosedComponent },
-    { path: '', pathMatch: 'exact', redirectTo: 'list' },
+    { path: '', pathMatch: 'full', redirectTo: 'list' },
   ],
 }];
 
