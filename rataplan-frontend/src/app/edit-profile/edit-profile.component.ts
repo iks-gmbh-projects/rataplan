@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, ValidationErrors, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
@@ -24,12 +24,12 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   userData?: FrontendUser;
   private userDataSub?: Subscription;
   private errorSub?: Subscription;
-  displayNameField = new FormControl('', [
+  displayNameField = new UntypedFormControl('', [
     Validators.required,
     Validators.maxLength(30),
     ExtraValidators.containsSomeWhitespace,
   ]);
-  emailField = new FormControl('', [
+  emailField = new UntypedFormControl('', [
     Validators.required,
     Validators.maxLength(60),
     Validators.email,

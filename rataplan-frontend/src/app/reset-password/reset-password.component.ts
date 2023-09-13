@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ResetPasswordDataModel } from '../models/reset-password-data.model';
@@ -18,8 +18,8 @@ import { Subscription } from "rxjs";
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
 
-  password = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  confirmPassword = new FormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
+  password = new UntypedFormControl('', [Validators.required, Validators.minLength(3)]);
+  confirmPassword = new UntypedFormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
   hide = true;
   hideConfirm = true;
 
@@ -30,7 +30,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   private errorSub?: Subscription;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: UntypedFormBuilder,
               private store: Store,
               private actions$: Actions,
               private route: ActivatedRoute,

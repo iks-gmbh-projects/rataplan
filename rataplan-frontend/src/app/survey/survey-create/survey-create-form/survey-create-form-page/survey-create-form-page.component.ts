@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
 import { SurveyCreateFormComponent } from '../survey-create-form.component';
 
@@ -9,7 +9,7 @@ import { SurveyCreateFormComponent } from '../survey-create-form.component';
   styleUrls: ['./survey-create-form-page.component.css']
 })
 export class SurveyCreateFormPageComponent implements OnInit {
-  @Input() questionGroup?: FormGroup;
+  @Input() questionGroup?: UntypedFormGroup;
   @Input() lastPage: boolean = true;
   @Input() onlyPage: boolean = true;
   @Output() readonly onSubmit = new EventEmitter<boolean>();
@@ -23,12 +23,12 @@ export class SurveyCreateFormPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public getQuestions(): FormArray {
-    return this.questionGroup?.get("questions") as FormArray;
+  public getQuestions(): UntypedFormArray {
+    return this.questionGroup?.get("questions") as UntypedFormArray;
   }
 
-  public getCheckboxes(question: AbstractControl): FormArray {
-    return question?.get(["checkboxGroup", "checkboxes"]) as FormArray;
+  public getCheckboxes(question: AbstractControl): UntypedFormArray {
+    return question?.get(["checkboxGroup", "checkboxes"]) as UntypedFormArray;
   }
 
   readonly createQuestion = SurveyCreateFormComponent.createQuestion;

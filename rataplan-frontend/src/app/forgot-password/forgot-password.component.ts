@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 
 import { ForgotPasswordService } from '../services/forgot-password-service/forgot-password.service';
 import { UsernameEmailValidatorsService } from '../services/username-email-validators-service/username-email-validators.service';
@@ -13,14 +13,14 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 })
 export class ForgotPasswordComponent implements OnInit {
 
-  mail: FormControl = new FormControl('', [Validators.required, Validators.email]);
+  mail: UntypedFormControl = new UntypedFormControl('', [Validators.required, Validators.email]);
 
   forgotPasswordForm = this.formBuilder.group({
     mail: this.mail,
   });
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private registerService: UsernameEmailValidatorsService,
     private forgotPasswordService: ForgotPasswordService,
     public readonly errorMessageService: FormErrorMessageService,

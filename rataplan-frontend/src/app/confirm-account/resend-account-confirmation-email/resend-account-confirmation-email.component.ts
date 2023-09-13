@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 import { FormErrorMessageService } from '../../services/form-error-message-service/form-error-message.service';
 import { ConfirmAccountService } from '../confirm-account-service';
@@ -11,11 +11,11 @@ import { ConfirmAccountService } from '../confirm-account-service';
 })
 export class ResendAccountConfirmationEmailComponent  {
 
-  form!: FormGroup;
+  form!: UntypedFormGroup;
 
   constructor(public errorMessageService: FormErrorMessageService, private confirmAccountService: ConfirmAccountService) {
-    this.form = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email])
+    this.form = new UntypedFormGroup({
+      email: new UntypedFormControl('', [Validators.required, Validators.email])
     });
   }
 

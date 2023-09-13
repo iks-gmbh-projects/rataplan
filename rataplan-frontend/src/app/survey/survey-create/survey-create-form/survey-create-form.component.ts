@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
   ValidationErrors,
   ValidatorFn,
   Validators,
@@ -35,64 +35,64 @@ export class SurveyCreateFormComponent {
     this.formGroup = this.createSurvey(this._survey);
   }
   @Output() public readonly onSubmit: EventEmitter<Survey> = new EventEmitter<Survey>();
-  public formGroup?: FormGroup = this.createSurvey(this.survey);
+  public formGroup?: UntypedFormGroup = this.createSurvey(this.survey);
 
   public page: number = -1;
 
   constructor(public readonly errorMessageService: FormErrorMessageService) { }
 
-  private createSurvey(survey?: Survey): FormGroup {
-    const startDate = new FormControl(survey?.startDate || null, [Validators.required, Validators.min(Date.now()-24*3600000)]);
-    const endDate = new FormControl(survey?.endDate || null, [Validators.required, minControlValueValidator(startDate)]);
-    return new FormGroup({
-      id: new FormControl(survey?.id),
-      accessId: new FormControl(survey?.accessId),
-      participationId: new FormControl(survey?.participationId),
-      name: new FormControl(survey?.name || null, [
+  private createSurvey(survey?: Survey): UntypedFormGroup {
+    const startDate = new UntypedFormControl(survey?.startDate || null, [Validators.required, Validators.min(Date.now()-24*3600000)]);
+    const endDate = new UntypedFormControl(survey?.endDate || null, [Validators.required, minControlValueValidator(startDate)]);
+    return new UntypedFormGroup({
+      id: new UntypedFormControl(survey?.id),
+      accessId: new UntypedFormControl(survey?.accessId),
+      participationId: new UntypedFormControl(survey?.participationId),
+      name: new UntypedFormControl(survey?.name || null, [
         Validators.required,
         Validators.maxLength(255),
         ExtraValidators.containsSomeWhitespace
       ]),
-      description: new FormControl(survey?.description || null, [
+      description: new UntypedFormControl(survey?.description || null, [
         Validators.required,
         Validators.maxLength(3000),
         ExtraValidators.containsSomeWhitespace
       ]),
       startDate: startDate,
       endDate: endDate,
-      openAccess: new FormControl(survey?.openAccess || false),
-      anonymousParticipation: new FormControl(survey?.anonymousParticipation || false),
-      questionGroups: new FormArray(survey?.questionGroups.map(this.createQuestionGroup, this) || [this.createQuestionGroup()], Validators.required)
+      openAccess: new UntypedFormControl(survey?.openAccess || false),
+      anonymousParticipation: new UntypedFormControl(survey?.anonymousParticipation || false),
+      questionGroups: new UntypedFormArray(survey?.questionGroups.map(this.createQuestionGroup, this) || [this.createQuestionGroup()], Validators.required)
     })
   }
 
-  public createQuestionGroup(questionGroup?: QuestionGroup): FormGroup {
-    return new FormGroup({
-      id: new FormControl(questionGroup?.id),
-      title: new FormControl(questionGroup?.title || null, [
+  public createQuestionGroup(questionGroup?: QuestionGroup): UntypedFormGroup {
+    return new UntypedFormGroup({
+      id: new UntypedFormControl(questionGroup?.id),
+      title: new UntypedFormControl(questionGroup?.title || null, [
         Validators.required,
         Validators.maxLength(255),
         ExtraValidators.containsSomeWhitespace
       ]),
-      questions: new FormArray(questionGroup?.questions?.map(SurveyCreateFormComponent.createQuestion, this) || [SurveyCreateFormComponent.createQuestion()], Validators.required)
+      questions: new UntypedFormArray(questionGroup?.questions?.map(SurveyCreateFormComponent.createQuestion, this) || [SurveyCreateFormComponent.createQuestion()], Validators.required)
     });
   }
 
-  public static createQuestion(question?: Question): FormGroup {
-    const checkboxes= new FormArray(question?.checkboxGroup?.checkboxes?.map(SurveyCreateFormComponent.createCheckbox, this) || []);
-    const minSelect = new FormControl(question?.checkboxGroup?.minSelect || 0, [ExtraValidators.integer, Validators.min(0), ExtraValidators.indexValue(checkboxes, true)]);
-    const maxSelect = new FormControl(question?.checkboxGroup?.maxSelect || 2, [ExtraValidators.integer, Validators.min(1), ExtraValidators.valueGreaterThan(minSelect), ExtraValidators.indexValue(checkboxes, true)]);
+  public static createQuestion(question?: Question): UntypedFormGroup {
+    const checkboxes= new UntypedFormArray(question?.checkboxGroup?.checkboxes?.map(SurveyCreateFormComponent.createCheckbox, this) || []);
+    const minSelect = new UntypedFormControl(question?.checkboxGroup?.minSelect || 0, [ExtraValidators.integer, Validators.min(0), ExtraValidators.indexValue(checkboxes, true)]);
+    const maxSelect = new UntypedFormControl(question?.checkboxGroup?.maxSelect || 2, [ExtraValidators.integer, Validators.min(1), ExtraValidators.valueGreaterThan(minSelect), ExtraValidators.indexValue(checkboxes, true)]);
     minSelect.addValidators(ExtraValidators.valueLessThan(maxSelect));
-    return new FormGroup({
-      id: new FormControl(question?.id),
-      text: new FormControl(question?.text || null, [
+    return new UntypedFormGroup({
+      id: new UntypedFormControl(question?.id),
+      text: new UntypedFormControl(question?.text || null, [
         Validators.required,
         Validators.maxLength(255),
         ExtraValidators.containsSomeWhitespace
       ]),
-      required: new FormControl(question?.required || false),
-      checkboxGroup: new FormGroup({
-        multipleSelect: new FormControl(question?.checkboxGroup?.multipleSelect || false),
+      required: new UntypedFormControl(question?.required || false),
+      checkboxGroup: new UntypedFormGroup({
+        multipleSelect: new UntypedFormControl(question?.checkboxGroup?.multipleSelect || false),
         minSelect: minSelect,
         maxSelect: maxSelect,
         checkboxes: checkboxes,
@@ -100,16 +100,16 @@ export class SurveyCreateFormComponent {
     });
   }
 
-  public static createCheckbox(checkbox?: Checkbox): FormGroup {
-    return new FormGroup({
-      id: new FormControl(checkbox?.id),
-      text: new FormControl(checkbox?.text || null, [
+  public static createCheckbox(checkbox?: Checkbox): UntypedFormGroup {
+    return new UntypedFormGroup({
+      id: new UntypedFormControl(checkbox?.id),
+      text: new UntypedFormControl(checkbox?.text || null, [
         Validators.required,
         Validators.maxLength(255),
         ExtraValidators.containsSomeWhitespace
       ]),
-      hasTextField: new FormControl(checkbox?.hasTextField || false),
-      answers: new FormArray([]),
+      hasTextField: new UntypedFormControl(checkbox?.hasTextField || false),
+      answers: new UntypedFormArray([]),
     });
   }
 
@@ -124,8 +124,8 @@ export class SurveyCreateFormComponent {
     if(this.page >= arr.length) this.page = arr.length-1;
   }
 
-  public getQuestionGroups(): FormArray {
-    return this.formGroup?.get("questionGroups") as FormArray;
+  public getQuestionGroups(): UntypedFormArray {
+    return this.formGroup?.get("questionGroups") as UntypedFormArray;
   }
 
   public preview(): void {

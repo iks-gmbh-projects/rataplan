@@ -1,6 +1,6 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -21,16 +21,16 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   busy = false;
   consigneeList: string[] = [];
 
-  emailSubform = new FormGroup({
-    'name': new FormControl(null, [
+  emailSubform = new UntypedFormGroup({
+    'name': new UntypedFormControl(null, [
       Validators.maxLength(50),
       ExtraValidators.containsSomeWhitespace,
     ]),
-    'email': new FormControl(null, [
+    'email': new UntypedFormControl(null, [
       Validators.maxLength(100),
       Validators.email,
     ]),
-    'consigneeList': new FormControl(null, [
+    'consigneeList': new UntypedFormControl(null, [
       Validators.maxLength(60),
       Validators.email,
     ])

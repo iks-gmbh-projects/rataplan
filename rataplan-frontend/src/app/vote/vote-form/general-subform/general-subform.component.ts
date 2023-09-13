@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
@@ -21,19 +21,19 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   maxDate: Date;
   minYesLimit!:number;
 
-  generalSubform = new FormGroup({
-    'title': new FormControl(null, [
+  generalSubform = new UntypedFormGroup({
+    'title': new UntypedFormControl(null, [
       Validators.required,
       Validators.maxLength(100),
       ExtraValidators.containsSomeWhitespace
     ]),
-    'description': new FormControl(null, [
+    'description': new UntypedFormControl(null, [
       Validators.maxLength(1100),
     ]),
-    'deadline': new FormControl(null, Validators.required),
-    'decision': new FormControl(0, Validators.required),
-    'yesLimitActive': new FormControl(false, Validators.required),
-    'yesAnswerLimit': new FormControl(null,[ExtraValidators.yesAnswerLimitMoreThanZeroOrNull(),Validators.min(this.minYesLimit)])
+    'deadline': new UntypedFormControl(null, Validators.required),
+    'decision': new UntypedFormControl(0, Validators.required),
+    'yesLimitActive': new UntypedFormControl(false, Validators.required),
+    'yesAnswerLimit': new UntypedFormControl(null,[ExtraValidators.yesAnswerLimitMoreThanZeroOrNull(),Validators.min(this.minYesLimit)])
   });
 
   showDescription = false;

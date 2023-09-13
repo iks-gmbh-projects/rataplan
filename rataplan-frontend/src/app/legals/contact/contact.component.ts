@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContactService } from '../../services/contact-service/contact.service';
@@ -15,9 +15,9 @@ export class ContactComponent implements OnInit {
 
   snackbarMessage = 'Nachricht erfolgreich versandt!';
   snackbarNoAction: undefined;
-  senderMail = new FormControl('', [Validators.required, Validators.email]);
-  subject = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
-  content = new FormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
+  senderMail = new UntypedFormControl('', [Validators.required, Validators.email]);
+  subject = new UntypedFormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
+  content = new UntypedFormControl('', [Validators.required, ExtraValidators.containsSomeWhitespace]);
 
   contact = this.formBuilder.group({
     senderMail: this.senderMail,
@@ -28,7 +28,7 @@ export class ContactComponent implements OnInit {
 
   constructor(
     private contactService: ContactService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private _snackBar: MatSnackBar,
     public readonly errorMessageService: FormErrorMessageService
   ) {

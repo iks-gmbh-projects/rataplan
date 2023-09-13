@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { deletionChoices } from "../models/delete-profile.model";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -17,10 +17,10 @@ import { authFeature } from '../authentication/auth.feature';
 })
 export class DeleteProfileComponent implements OnInit, OnDestroy {
   busy: boolean = false;
-  readonly formGroup = new FormGroup({
-    backendChoice: new FormControl("DELETE", Validators.required),
-    surveyToolChoice: new FormControl("DELETE", Validators.required),
-    password: new FormControl(null, Validators.required),
+  readonly formGroup = new UntypedFormGroup({
+    backendChoice: new UntypedFormControl("DELETE", Validators.required),
+    surveyToolChoice: new UntypedFormControl("DELETE", Validators.required),
+    password: new UntypedFormControl(null, Validators.required),
   });
 
   private busySub?: Subscription;

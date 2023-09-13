@@ -1,5 +1,5 @@
 import { Component, OnDestroy,OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { filter, Observable, of, Subscription } from 'rxjs';
@@ -47,16 +47,16 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     url: false,
   };
 
-  participantLimitActive: FormControl = new FormControl(false);
-  participantLimit: FormControl = new FormControl(null, [Validators.min(1)]);
-  vote = new FormGroup({
-    voteIndex: new FormControl(null),
-    startDateInput: new FormControl(null),
-    endDateInput: new FormControl(null),
-    startTimeInput: new FormControl(null),
-    endTimeInput: new FormControl(null),
-    descriptionInput: new FormControl(null),
-    linkInput: new FormControl(null),
+  participantLimitActive: UntypedFormControl = new UntypedFormControl(false);
+  participantLimit: UntypedFormControl = new UntypedFormControl(null, [Validators.min(1)]);
+  vote = new UntypedFormGroup({
+    voteIndex: new UntypedFormControl(null),
+    startDateInput: new UntypedFormControl(null),
+    endDateInput: new UntypedFormControl(null),
+    startTimeInput: new UntypedFormControl(null),
+    endTimeInput: new UntypedFormControl(null),
+    descriptionInput: new UntypedFormControl(null),
+    linkInput: new UntypedFormControl(null),
     participantLimitActive: this.participantLimitActive,
     participantLimit: this.participantLimit
   });

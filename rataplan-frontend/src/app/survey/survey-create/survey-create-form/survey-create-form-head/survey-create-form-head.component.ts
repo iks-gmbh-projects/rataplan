@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-survey-create-form-head',
@@ -8,7 +8,7 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./survey-create-form-head.component.css']
 })
 export class SurveyCreateFormHeadComponent implements OnInit {
-  @Input("form") formGroup?: FormGroup;
+  @Input("form") formGroup?: UntypedFormGroup;
   @Output() readonly submit = new EventEmitter<void>();
 
   public get yesterday(): Date {

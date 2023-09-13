@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { LoginData } from "../models/user.model";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -27,10 +27,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   cookieAllowed = false;
   cookieInit = true;
   isLoading = false;
-  readonly inputField = new FormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
-  readonly password = new FormControl('', [Validators.required]);
+  readonly inputField = new UntypedFormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
+  readonly password = new UntypedFormControl('', [Validators.required]);
 
-  readonly loginForm = new FormGroup({
+  readonly loginForm = new UntypedFormGroup({
     inputField: this.inputField,
     password: this.password
   });

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 import {
   UsernameEmailValidatorsService,
@@ -23,7 +23,7 @@ import { authFeature } from '../authentication/auth.feature';
 })
 export class RegisterComponent implements OnInit, OnDestroy {
 
-  username: FormControl = new FormControl('', [
+  username: UntypedFormControl = new UntypedFormControl('', [
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(30),
@@ -32,7 +32,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     ctrl => this.registerService.usernameExists(ctrl),
   );
 
-  mail: FormControl = new FormControl('', [
+  mail: UntypedFormControl = new UntypedFormControl('', [
       Validators.required,
       Validators.maxLength(60),
       Validators.email,
@@ -40,15 +40,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
     ctrl => this.registerService.mailExists(ctrl),
   );
 
-  password = new FormControl('', [
+  password = new UntypedFormControl('', [
     Validators.required,
     Validators.minLength(3),
   ]);
-  confirmPassword = new FormControl('', [
+  confirmPassword = new UntypedFormControl('', [
     Validators.required,
     ExtraValidators.valueMatching(this.password),
   ]);
-  displayname: FormControl = new FormControl('', [
+  displayname: UntypedFormControl = new UntypedFormControl('', [
     Validators.required,
     Validators.maxLength(30),
     ExtraValidators.containsSomeWhitespace,
@@ -56,7 +56,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   hide = true;
   hideConfirm = true;
 
-  registerForm = new FormGroup({
+  registerForm = new UntypedFormGroup({
     username: this.username,
     mail: this.mail,
     password: this.password,

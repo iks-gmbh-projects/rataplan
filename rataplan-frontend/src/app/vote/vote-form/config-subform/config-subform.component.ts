@@ -1,5 +1,5 @@
 import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { combineLatest, startWith, Subscription } from 'rxjs';
@@ -19,20 +19,20 @@ import { voteFeature } from '../../vote.feature';
 })
 export class ConfigSubformComponent implements OnInit, OnDestroy {
   private readonly fields = {
-    isDateChecked: new FormControl(false),
-    isTimeChecked: new FormControl(false),
-    isEndDateChecked: new FormControl(false),
-    isEndTimeChecked: new FormControl(false),
-    isDescriptionChecked: new FormControl(false),
-    isUrlChecked: new FormControl(false),
+    isDateChecked: new UntypedFormControl(false),
+    isTimeChecked: new UntypedFormControl(false),
+    isEndDateChecked: new UntypedFormControl(false),
+    isEndTimeChecked: new UntypedFormControl(false),
+    isDescriptionChecked: new UntypedFormControl(false),
+    isUrlChecked: new UntypedFormControl(false),
   };
-  configForm = new FormGroup(this.fields);
+  configForm = new UntypedFormGroup(this.fields);
   private storeSub?: Subscription;
   private formSub1?: Subscription;
   private formSub2?: Subscription;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router: Router,
     private activeRoute: ActivatedRoute,
     private store: Store
