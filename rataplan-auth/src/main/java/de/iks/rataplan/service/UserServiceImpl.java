@@ -217,7 +217,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserFromId(int id) {
-        return userRepository.findOne(id);
+        return userRepository.findById(id).get();
     }
 
     @Override
@@ -275,7 +275,7 @@ public class UserServiceImpl implements UserService {
             );
         }
         try {
-            this.userRepository.delete(user.getId());
+            this.userRepository.deleteById(user.getId());
         } catch (DataAccessException ex) {
             throw new UserDeletionException(ex);
         }
