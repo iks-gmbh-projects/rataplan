@@ -20,24 +20,10 @@
 		<dbunit.spring.test.version>1.3.0</dbunit.spring.test.version>
         <jjwt.version>0.6.0</jjwt.version>
 		<springfox.swagger2.version>2.7.0</springfox.swagger2.version>
-		<!--<sendgrid.version>4.0.1</sendgrid.version>-->
 		<sendinblue.version>6.0.0</sendinblue.version>
 	</properties>
 
 	<dependencies>
-		<!-- API, java.xml.bind module -->
-		<dependency>
-			<groupId>jakarta.xml.bind</groupId>
-			<artifactId>jakarta.xml.bind-api</artifactId>
-			<version>2.3.2</version>
-		</dependency>
-
-		<!-- Runtime, com.sun.xml.bind module -->
-		<dependency>
-			<groupId>org.glassfish.jaxb</groupId>
-			<artifactId>jaxb-runtime</artifactId>
-			<version>2.3.2</version>
-		</dependency>
 		<!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,6 +52,7 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+            <version>4.2.0</version>
 		</dependency>
 		
 		<!-- PostgreSQL -->
@@ -107,12 +94,6 @@
 	        <artifactId>jjwt</artifactId>
 	        <version>${jjwt.version}</version>
 	    </dependency>
-	    
-		<!-- Gson -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
 	    
 		<!-- Swagger -->
 		<dependency>
@@ -156,27 +137,8 @@
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<mainClass>de.iks.rataplan.Main</mainClass>
-					<layout>JAR</layout>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
