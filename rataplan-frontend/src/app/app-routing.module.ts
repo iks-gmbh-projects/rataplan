@@ -22,6 +22,7 @@ import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
 import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
+import { VersionComponent } from './version/version.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
 
 const routes: Routes = [
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'imprint', component: ImprintComponent },
   { path: 'privacy', component: PrivacyComponent },
   { path: 'contact', component: ContactComponent },
+  { path: 'changes', component: VersionComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuardService] },
   { path: 'forgot-password', component: ForgotPasswordComponent },

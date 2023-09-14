@@ -4,6 +4,7 @@ import localeDE from '@angular/common/locales/de';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -50,6 +51,7 @@ import { MatListModule } from '@angular/material/list';
 import { notificationFeature } from './notification/notification.feature';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
+import { VersionComponent } from './version/version.component';
 
 registerLocaleData(localeDE);
 
@@ -77,6 +79,7 @@ registerLocaleData(localeDE);
     ConfirmAccountComponent,
     ResendAccountConfirmationEmailComponent,
     ConfirmChoiceComponent,
+    VersionComponent,
   ],
   imports: [
     BrowserModule,
@@ -99,6 +102,7 @@ registerLocaleData(localeDE);
     NgxMaterialTimepickerModule,
     MatBottomSheetModule,
     MatDialogModule,
+    MatExpansionModule,
     StoreModule.forRoot({}),
     StoreModule.forFeature(authFeature),
     StoreModule.forFeature(cookieFeature),
