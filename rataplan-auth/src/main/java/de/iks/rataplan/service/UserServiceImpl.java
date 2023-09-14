@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final SurveyToolMessageService surveyToolMessageService;
 
-    private final CryptoServiceImpl cryptoService;
+    private final CryptoService cryptoService;
 
     private final BackendMessageService backendMessageService;
 

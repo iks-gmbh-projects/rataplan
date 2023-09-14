@@ -25,7 +25,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
     public static final String PURPOSE_LOGIN = "login";
     public static final String PURPOSE_ID = "id";
     public static final String PURPOSE_ACCOUNT_CONFIRMATION = "account confirmation";
-    private final SigningKeyResolver signingKeyResolver;
+    private final io.jsonwebtoken.SigningKeyResolver signingKeyResolver;
 
     @Override
     public String generateLoginToken(UserDTO user) {

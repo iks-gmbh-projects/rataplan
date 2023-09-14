@@ -11,7 +11,7 @@ public interface AuthTokenService {
 
     int getIdFromAuthToken(String token);
 
-    int deleteById(int userId);
+    void deleteById(int userId);
 
     boolean verifyAuthToken(String token);
 }

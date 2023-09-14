@@ -37,12 +37,12 @@ public class RataplanAuthRestController {
 
     private final CookieBuilder cookieBuilder;
 
-    @RequestMapping(value = "*", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "*", method = RequestMethod.OPTIONS)
     public ResponseEntity<?> handle() {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/users/register", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/users/register")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO user) {
         UserDTO userDTO = userService.registerUser(user);
         sendAccountConfirmationEmail(userDTO);

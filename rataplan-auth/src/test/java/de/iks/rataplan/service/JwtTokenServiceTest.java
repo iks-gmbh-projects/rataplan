@@ -1,33 +1,21 @@
 package de.iks.rataplan.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import de.iks.rataplan.dto.UserDTO;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import static org.junit.jupiter.api.Assertions.*;
 
-import de.iks.rataplan.config.AppConfig;
-import de.iks.rataplan.config.TestConfig;
-
-@ActiveProfiles("test")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class, TestConfig.class })
-@Transactional
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
-		TransactionalTestExecutionListener.class, DbUnitTestExecutionListener.class })
+@SpringBootTest
+@TestExecutionListeners(
+    value = TransactionDbUnitTestExecutionListener.class,
+    mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
+)
 public class JwtTokenServiceTest {
 
 	@Autowired

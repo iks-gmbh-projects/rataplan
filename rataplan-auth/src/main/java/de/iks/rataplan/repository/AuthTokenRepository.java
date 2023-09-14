@@ -11,8 +11,6 @@ public interface AuthTokenRepository extends JpaRepository<AuthToken, Integer> {
 
     AuthToken findByToken(String token);
 
-    int deleteById(int userId);
-
     int deleteAllByCreatedDateTimeIsBefore(Date date);
 
 }

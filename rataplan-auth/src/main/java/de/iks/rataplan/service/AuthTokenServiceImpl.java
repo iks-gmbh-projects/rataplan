@@ -4,9 +4,9 @@ import de.iks.rataplan.domain.AuthToken;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.exceptions.InvalidUserDataException;
 import de.iks.rataplan.repository.AuthTokenRepository;
-import de.iks.rataplan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Random;
@@ -19,7 +19,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     private final AuthTokenRepository authTokenRepository;
 
-    private final CryptoServiceImpl cryptoService;
+    private final CryptoService cryptoService;
 
     @Value("${token.lifetime}")
     private int tokenLifetime;
@@ -35,7 +35,6 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         while (authTokenRepository.findByToken(token) != null) {
             token = generateAuthToken(6);
         }
-        authTokenRepository.deleteById(id);
         AuthToken authToken = new AuthToken(id, token);
         return authTokenRepository.save(authToken);
     }
@@ -68,8 +67,10 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     }
 
     @Override
-    public int deleteById(int userId) {
-        return authTokenRepository.deleteById(userId);
+    public void deleteById(int userId) {
+        try {
+            authTokenRepository.deleteById(userId);
+        } catch(EmptyResultDataAccessException ex) {}
     }
 
 }
