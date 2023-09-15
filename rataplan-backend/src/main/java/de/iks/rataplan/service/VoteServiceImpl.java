@@ -130,7 +130,7 @@ public class VoteServiceImpl implements VoteService {
     
     @Override
     public List<Vote> getVotesWhereUserParticipates(Integer userId) {
-        return voteRepository.findDistinctByParticipants_UserIdContaining(userId);
+        return voteRepository.findDistinctByParticipantIn(userId);
     }
     
     @Override

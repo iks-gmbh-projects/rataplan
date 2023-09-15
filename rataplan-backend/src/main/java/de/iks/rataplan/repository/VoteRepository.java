@@ -1,6 +1,7 @@
 package de.iks.rataplan.repository;
 
 import de.iks.rataplan.domain.Vote;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,7 +14,8 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
 	
 	int deleteAllByUserId(Integer userId);
 	
-	List<Vote> findDistinctByParticipants_UserIdContaining(Integer userId);
+    @Query("SELECT DISTINCT v FROM Vote v WHERE :userId IN (SELECT p.id FROM v.participants p)")
+	List<Vote> findDistinctByParticipantIn(Integer userId);
 	
 	List<Vote> findByDeadlineBeforeAndNotifiedFalse(Date deadline);// find by deadline == xx and organizermail not null
 
