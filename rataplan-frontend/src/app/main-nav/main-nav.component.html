@@ -1,8 +1,12 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport
-               [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-               [mode]="(isHandset$ | async) ? 'over' : 'over'">
-    <mat-toolbar color="primary">drumdibum</mat-toolbar>
+  <mat-sidenav
+    #drawer class="sidenav" fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'over'"
+  >
+    <mat-toolbar color="primary">
+      <a class="side-menu-title" routerLink="" (click)="drawer.close()">drumdibum</a>
+    </mat-toolbar>
     <mat-nav-list>
       <a mat-list-item routerLink="/" (click)="drawer.close()">Home</a>
       <a *ngIf="!currentUser" mat-list-item routerLink="/register" (click)="drawer.close()">Registrieren</a>
@@ -21,15 +25,25 @@
         type="button"
         aria-label="Toggle sidenav"
         mat-icon-button
-        (click)="drawer.toggle()">
+        (click)="drawer.toggle()"
+      >
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>drumdibum</span>
       <span class="fillRemainingSpace"></span>
-      <button (click)="onClick()" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" class="loginIcon" mat-icon-button
-              color="FFFFFF" aria-label="Example icon button with a home icon">
-        <mat-icon *ngIf='!this.currentUser'>login</mat-icon>
-        <mat-icon *ngIf='this.currentUser' [matBadge]="notificationCount" [matBadgeHidden]="!notificationCount" matBadgeColor="warn" matBadgeOverlap="false" matBadgeSize="small">
+      <button
+        (click)="onClick()" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" class="loginIcon" mat-icon-button
+        color="FFFFFF" aria-label="Example icon button with a home icon"
+      >
+        <mat-icon *ngIf="!this.currentUser">login</mat-icon>
+        <mat-icon
+          *ngIf="this.currentUser"
+          [matBadge]="notificationCount"
+          [matBadgeHidden]="!notificationCount"
+          matBadgeColor="warn"
+          matBadgeOverlap="false"
+          matBadgeSize="small"
+        >
           perm_identity
         </mat-icon>
       </button>
@@ -43,7 +57,13 @@
           Meine Umfragen
         </button>
         <button mat-menu-item routerLink="/vote/own">
-          <mat-icon [matBadge]="notificationState[notificationTypeConsignee] || 0" [matBadgeHidden]="!notificationState[notificationTypeConsignee]" matBadgeSize="small" matBadgeOverlap="false">campaign</mat-icon>
+          <mat-icon
+            [matBadge]="notificationState[notificationTypeConsignee] || 0"
+            [matBadgeHidden]="!notificationState[notificationTypeConsignee]"
+            matBadgeSize="small"
+            matBadgeOverlap="false"
+          >campaign
+          </mat-icon>
           Meine Abstimmungen
         </button>
         <button mat-menu-item routerLink="/" (click)="onLogout()">
