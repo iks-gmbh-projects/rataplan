@@ -3,6 +3,9 @@
     color: white;
 }
 
+mat-sidenav-content {
+    overflow: unset;
+}
 
 
 
