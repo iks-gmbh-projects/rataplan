@@ -6,31 +6,34 @@ import { HttpClient } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
 import { catchError, Observable, of } from 'rxjs';
 
-
-
-export enum ConfirmationStatus{
+export enum ConfirmationStatus {
   ACCOUNT_CONFIRMATION_SUCCESSFUL,
   ACCOUNT_PREVIOUSLY_CONFIRMED,
   ACCOUNT_CONFIRMATION_UNSUCCESSFUL
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class ConfirmAccountService {
-
-
-  constructor(private matSnackBar: MatSnackBar, private router: Router, private urlService: BackendUrlService, private http: HttpClient) {
+  
+  constructor(
+    private matSnackBar: MatSnackBar,
+    private router: Router,
+    private urlService: BackendUrlService,
+    private http: HttpClient,
+  )
+  {
   }
-
-
+  
   resendConfirmationEmail(email: string) {
-    this.urlService.authURL$.pipe(
-      map(link => link + 'resend-confirmation-email'),
+    this.urlService.authBackendURL('resend-confirmation-email').pipe(
       switchMap(link => this.http.post(link, email)),
-      catchError(() => of(false))
+      catchError(() => of(false)),
     ).subscribe(successful => {
       const snackBarConfig: MatSnackBarConfig = new MatSnackBarConfig();
-      snackBarConfig.duration = (10000);
-      if (successful) {
+      snackBarConfig.duration = (
+        10000
+      );
+      if(successful) {
         this.matSnackBar.open('Bestätigungsemail erneut geschickt', '', snackBarConfig);
         this.router.navigate(['login']);
       } else {
@@ -38,25 +41,26 @@ export class ConfirmAccountService {
       }
     });
   }
-
+  
   confirmAccount(token: string): Observable<number> {
-    return this.urlService.authURL$.pipe(
-      map(link => link + 'confirm-account'),
+    return this.urlService.authBackendURL('confirm-account').pipe(
       switchMap(link => {
         const snackBarConfig: MatSnackBarConfig = new MatSnackBarConfig();
-        snackBarConfig.duration = (10000);
+        snackBarConfig.duration = (
+          10000
+        );
         return this.http.post<number>(link, token).pipe(
-          catchError((err) => of(ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL)),
+          catchError(() => of(ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL)),
           map(response => {
-            if (response !== ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL) {
+            if(response !== ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL) {
               return response ?
                 ConfirmationStatus.ACCOUNT_CONFIRMATION_SUCCESSFUL
                 : ConfirmationStatus.ACCOUNT_PREVIOUSLY_CONFIRMED;
-            }else return ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL;
-          })
+            } else return ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL;
+          }),
         );
-      })
+      }),
     );
   }
-
+  
 }

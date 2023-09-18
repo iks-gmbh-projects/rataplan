@@ -11,19 +11,18 @@ import { BackendUrlService } from '../../../services/backend-url-service/backend
   providedIn: 'root',
 })
 export class VoteService {
-  readonly url$: Observable<string>;
 
-  constructor(private http: HttpClient, urlService: BackendUrlService) {
-    this.url$ = urlService.voteURL$.pipe(
-      map(s => s + 'votes/')
-    );
+  constructor(
+    private readonly http: HttpClient,
+    private readonly urlService: BackendUrlService
+  ) {
   }
 
   getVoteByParticipationToken(participationToken: string): Observable<VoteModel> {
-    return this.url$.pipe(
+    return this.urlService.voteBackendURL('votes', participationToken).pipe(
       exhaustMap(url => {
         return this.http.get<VoteModel<true>>(
-          url + participationToken,
+          url,
           {
             headers: new HttpHeaders({
               'Content-Type': 'application/json;charset=utf-8',
@@ -35,13 +34,13 @@ export class VoteService {
   }
 
   addVoteParticipant(vote: VoteModel, voteParticipant: VoteParticipantModel): Observable<VoteParticipantModel> {
-    const token = this.getParticipationToken(vote);
+    const token = this.getParticipationToken(vote)!;
     const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }), withCredentials: true };
 
-    return this.url$.pipe(
+    return this.urlService.voteBackendURL('votes', token, 'participants').pipe(
       exhaustMap(url => {
         return this.http.post<VoteParticipantModel<true>>(
-          url + token + '/participants', voteParticipant, httpOptions);
+          url, voteParticipant, httpOptions);
       }),
       map(member => ({
         ...member,
@@ -51,12 +50,12 @@ export class VoteService {
   }
 
   updateVoteParticipant(vote: VoteModel, voteParticipant: VoteParticipantModel): Observable<VoteParticipantModel> {
-    const token = this.getParticipationToken(vote);
+    const token = this.getParticipationToken(vote)!;
 
-    return this.url$.pipe(
+    return this.urlService.voteBackendURL('votes', token, 'participants', voteParticipant.id!).pipe(
       exhaustMap(url => {
         return this.http.put<VoteParticipantModel<true>>(
-          url + token + '/participants/' + voteParticipant.id,
+          url,
           voteParticipant,
           {
             withCredentials: true,
@@ -73,12 +72,12 @@ export class VoteService {
   }
 
   deleteVoteParticipant(vote: VoteModel, voteParticipant: VoteParticipantModel): Observable<string> {
-    const token = this.getParticipationToken(vote);
+    const token = this.getParticipationToken(vote)!;
 
-    return this.url$.pipe(
+    return this.urlService.voteBackendURL('votes', token, 'participants', voteParticipant.id!).pipe(
       exhaustMap(url => {
         return this.http.delete(
-          url + token + '/participants/' + voteParticipant.id,
+          url,
           {
             withCredentials: true,
             responseType: 'text',
