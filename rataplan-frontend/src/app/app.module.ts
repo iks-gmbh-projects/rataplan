@@ -5,6 +5,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -51,6 +52,7 @@ import { MatListModule } from '@angular/material/list';
 import { notificationFeature } from './notification/notification.feature';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
+import { FeedbackComponent } from './feedback/feedback.component';
 
 registerLocaleData(localeDE);
 
@@ -78,6 +80,7 @@ registerLocaleData(localeDE);
     ConfirmAccountComponent,
     ResendAccountConfirmationEmailComponent,
     ConfirmChoiceComponent,
+    FeedbackComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,6 +93,7 @@ registerLocaleData(localeDE);
     MatButtonModule,
     MatRadioModule,
     MatInputModule,
+    MatSelectModule,
     MatProgressSpinnerModule,
     MatListModule,
     MatToolbarModule,
