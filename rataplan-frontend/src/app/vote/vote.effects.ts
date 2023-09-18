@@ -30,9 +30,10 @@ export class VoteEffects {
     private readonly router: Router,
     private readonly activeRoute: ActivatedRoute,
     private readonly urlService: BackendUrlService,
-  ) {
+  )
+  {
   }
-
+  
   initVote = createEffect(() => {
     return this.actions$.pipe(
       ofType(VoteActions.INIT),
@@ -55,8 +56,8 @@ export class VoteEffects {
           participants: [],
           consigneeList: [],
         }));
-        else return this.urlService.voteURL$.pipe(
-          switchMap(url => this.http.get<VoteModel<true>>(url + '/votes/edit/' + action.id, { withCredentials: true })),
+        else return this.urlService.voteBackendURL('votes', 'edit', action.id).pipe(
+          switchMap(url => this.http.get<VoteModel<true>>(url, {withCredentials: true})),
           map(deserializeVoteModel),
           map(request => new InitVoteSuccessAction(request)),
           catchError(err => of(new InitVoteErrorAction(err))),
@@ -64,42 +65,56 @@ export class VoteEffects {
       }),
     );
   });
-
+  
   postVote = createEffect(() => {
     return this.actions$.pipe(
       ofType(VoteActions.POST),
       switchMap(() => this.store.select(voteFeature.selectVoteState).pipe(
-      filter(state => state.complete),
-      take(1),
-    )),
-      map(state => ({ request: state.vote!, appointmentsEdited: state.appointmentsChanged })),
+        filter(state => state.complete),
+        take(1),
+      )),
+      map(state => (
+        {request: state.vote!, appointmentsEdited: state.appointmentsChanged}
+      )),
       delayWhen(() => this.store.select(authFeature.selectAuthState).pipe(
         filter(authState => !authState.busy),
         take(1),
       )),
-      concatLatestFrom(() => this.urlService.voteURL$),
+      concatLatestFrom(request => {
+        if(request.request.id) {
+          return this.urlService.voteBackendURL(
+            'votes',
+            'edit',
+            (
+              request.request.editToken ?? request.request.id!
+            ),
+          );
+        } else {
+          return this.urlService.voteBackendURL('votes');
+        }
+      }),
       map(([request, url]) => {
         if(request.request.id) {
-          const sanatizedRequest: Partial<VoteModel> = { ...request.request };
+          const sanatizedRequest: Partial<VoteModel> = {...request.request};
           if(!request.appointmentsEdited) {
             delete sanatizedRequest.options;
             delete sanatizedRequest.participants;
           }
           return {
             editToken: request.request.editToken || request.request.id?.toString(),
-            request: this.http.put<VoteModel<true>>(url + 'votes/edit/' + (request.request.editToken || request.request.id), sanatizedRequest, { withCredentials: true }),
+            request: this.http.put<VoteModel<true>>(url, sanatizedRequest, {withCredentials: true}),
           };
         }
-        return { request: this.http.post<VoteModel<true>>(url + 'votes', request.request, { withCredentials: true }) };
+        return {request: this.http.post<VoteModel<true>>(url, request.request, {withCredentials: true})};
       }),
-      switchMap(({ request, editToken }) => request.pipe(
+      switchMap(({request, editToken}) => request.pipe(
         map(deserializeVoteModel),
         map(created => new PostVoteSuccessAction(created, editToken)),
         catchError(err => of(new PostVoteErrorAction(err))),
       )),
     );
   });
-
+  
   successFullPost = createEffect(() => {
     return this.actions$.pipe(
       ofType(VoteActions.POST_SUCCESS),
@@ -111,5 +126,5 @@ export class VoteEffects {
       })),
       switchMap(from),
     );
-  }, { dispatch: false });
+  }, {dispatch: false});
 }
