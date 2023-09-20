@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import de.iks.rataplan.domain.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;

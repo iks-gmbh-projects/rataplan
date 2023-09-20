@@ -1,55 +1,35 @@
 package de.iks.rataplan.service;
 
-import static de.iks.rataplan.testutils.TestConstants.VOTE_PARTICIPANTS;
-import static de.iks.rataplan.testutils.TestConstants.CREATE;
-import static de.iks.rataplan.testutils.TestConstants.DELETE;
-import static de.iks.rataplan.testutils.TestConstants.EXPIRED;
-import static de.iks.rataplan.testutils.TestConstants.FILE_EXPECTED;
-import static de.iks.rataplan.testutils.TestConstants.FILE_INITIAL;
-import static de.iks.rataplan.testutils.TestConstants.PATH;
-import static de.iks.rataplan.testutils.TestConstants.SERVICE;
-import static de.iks.rataplan.testutils.TestConstants.UPDATE;
-
 import de.iks.rataplan.domain.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
+import de.iks.rataplan.exceptions.ForbiddenException;
+import de.iks.rataplan.exceptions.MalformedException;
+import de.iks.rataplan.repository.VoteRepository;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import de.iks.rataplan.config.AppConfig;
-import de.iks.rataplan.config.TestConfig;
-import de.iks.rataplan.exceptions.ForbiddenException;
-import de.iks.rataplan.exceptions.MalformedException;
-import de.iks.rataplan.repository.VoteRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.util.*;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@ActiveProfiles("test")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, TestConfig.class})
-@Transactional
+import static de.iks.rataplan.testutils.TestConstants.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@SpringBootTest
 @TestExecutionListeners(
-    {
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class
-    }
+    value = {DbUnitTestExecutionListener.class, TransactionalTestExecutionListener.class},
+    mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
+@Transactional
 public class VoteOptionMemberServiceTest {
     
     private static final String FILE_PATH = PATH + SERVICE + VOTE_PARTICIPANTS;
@@ -84,7 +64,7 @@ public class VoteOptionMemberServiceTest {
         voteParticipantService.createParticipant(vote, participant);
     }
     
-    @Test(expected = MalformedException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
     public void addParticipantShouldFailMoreYesChoicesThanPermitted() {
         Vote vote = voteRepository.findById(1).orElseThrow();
@@ -105,11 +85,12 @@ public class VoteOptionMemberServiceTest {
         
         participant.getVoteDecisions().add(decision);
         participant.getVoteDecisions().add(decision2);
-        
-        voteParticipantService.createParticipant(vote, participant);
+        assertThrows(MalformedException.class, () -> {
+            voteParticipantService.createParticipant(vote, participant);
+        });
     }
     
-    @Test(expected = MalformedException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
     public void updateParticipantShouldFailWithMoreYesChoicesThanPermitted() {
         Vote vote = new Vote(
@@ -140,11 +121,12 @@ public class VoteOptionMemberServiceTest {
             .collect(Collectors.toList()));
         
         VoteParticipant dbParticipant = voteRepository.findById(1).orElseThrow().getParticipantById(1);
-        
-        voteParticipantService.updateParticipant(vote, dbParticipant, participant);
+        assertThrows(MalformedException.class, () -> {
+            voteParticipantService.updateParticipant(vote, dbParticipant, participant);
+        });
     }
     
-    @Test(expected = MalformedException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
     public void createParticipantWithYesVoteShouldFailParticipantLimitFull() {
         Vote vote = voteRepository.findById(1).orElseThrow();
@@ -156,10 +138,12 @@ public class VoteOptionMemberServiceTest {
             .stream()
             .map(option -> new VoteDecision(Decision.ACCEPT, option, participant))
             .collect(Collectors.toList()));
-        voteParticipantService.createParticipant(vote, participant);
+        
+        assertThrows(MalformedException.class, () -> {
+            voteParticipantService.createParticipant(vote, participant);
+        });
     }
-    
-    @Test(expected = MalformedException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
     public void updateParticipantWithYesVoteShouldFailParticipantLimitFullAndPreviousVoteNotYes() {
         Vote vote = voteRepository.findById(1).orElseThrow();
@@ -170,10 +154,12 @@ public class VoteOptionMemberServiceTest {
             .stream()
             .map(option -> new VoteDecision(Decision.ACCEPT, option, participant))
             .collect(Collectors.toList()));
-        voteParticipantService.updateParticipant(vote, dbParticipant, participant);
+        assertThrows(MalformedException.class, () -> {
+            voteParticipantService.updateParticipant(vote, dbParticipant, participant);
+        });
     }
     
-    @Test(expected = MalformedException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
     public void addParticipantShouldFailTooManyOptions() {
         Vote vote = voteRepository.findById(1).orElseThrow();
@@ -199,10 +185,12 @@ public class VoteOptionMemberServiceTest {
         participant.getVoteDecisions().add(decision3);
         participant.setVote(vote);
         
-        voteParticipantService.createParticipant(vote, participant);
+        assertThrows(MalformedException.class, () -> {
+            voteParticipantService.createParticipant(vote, participant);
+        });
     }
     
-    @Test(expected = ForbiddenException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + CREATE + EXPIRED + FILE_INITIAL)
     public void addParticipantShouldFailRequestIsExpired() {
         Vote vote = voteRepository.findById(1).orElseThrow();
@@ -222,7 +210,9 @@ public class VoteOptionMemberServiceTest {
         participant.getVoteDecisions().add(decision2);
         participant.setVote(vote);
         
-        voteParticipantService.createParticipant(vote, participant);
+        assertThrows(ForbiddenException.class, () -> {
+            voteParticipantService.createParticipant(vote, participant);
+        });
     }
     
     @Test
@@ -236,13 +226,15 @@ public class VoteOptionMemberServiceTest {
         voteParticipantService.deleteParticipant(vote, voteParticipant);
     }
     
-    @Test(expected = ForbiddenException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + DELETE + EXPIRED + FILE_INITIAL)
     public void deleteParticipantShouldFailRequestIsExpired() {
         Vote vote = voteRepository.findById(1).orElseThrow();
         
         VoteParticipant voteParticipant = vote.getParticipantById(2);
-        voteParticipantService.deleteParticipant(vote, voteParticipant);
+        assertThrows(ForbiddenException.class, () -> {
+            voteParticipantService.deleteParticipant(vote, voteParticipant);
+        });
     }
     
     @Test
@@ -261,7 +253,7 @@ public class VoteOptionMemberServiceTest {
         voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
     }
     
-    @Test(expected = MalformedException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
     @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void updateParticipantShouldFailTooManyDecisions() {
@@ -276,10 +268,12 @@ public class VoteOptionMemberServiceTest {
         // this decision should not exist
         newVoteParticipant.getVoteDecisions().add(decision2);
         
-        voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
+        assertThrows(MalformedException.class, () -> {
+            voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
+        });
     }
     
-    @Test(expected = ForbiddenException.class)
+    @Test
     @DatabaseSetup(FILE_PATH + UPDATE + EXPIRED + FILE_INITIAL)
     @ExpectedDatabase(
         value = FILE_PATH + UPDATE + EXPIRED + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT
@@ -296,6 +290,8 @@ public class VoteOptionMemberServiceTest {
         // this decision should not exist
         newVoteParticipant.getVoteDecisions().add(decision2);
         
-        voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
+        assertThrows(ForbiddenException.class, () -> {
+            voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
+        });
     }
 }

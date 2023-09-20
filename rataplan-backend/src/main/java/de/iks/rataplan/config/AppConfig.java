@@ -22,10 +22,7 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.util.List;
 
-@Profile({"dev", "prod", "test", "integration"})
 @Configuration
-@PropertySource({"classpath:/application.properties"})
-@ComponentScan(basePackages = "de.iks.rataplan")
 @EnableTransactionManagement
 @RequiredArgsConstructor
 public class AppConfig {

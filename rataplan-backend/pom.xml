@@ -58,6 +58,7 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope> <!-- Lombok is only needed during compilation -->
 			<optional>true</optional>
+			<version>1.18.22</version>
 		</dependency>
 
 		<!-- Flyway -->

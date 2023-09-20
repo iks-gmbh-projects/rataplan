@@ -1,22 +1,15 @@
 package de.iks.rataplan.restservice;
 
-import de.iks.rataplan.config.AppConfig;
 import de.iks.rataplan.config.KeyExchangeConfig;
-import de.iks.rataplan.config.TestConfig;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import io.jsonwebtoken.*;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -24,19 +17,15 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import static de.iks.rataplan.testutils.TestConstants.AUTHUSER_1;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ActiveProfiles("test")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, TestConfig.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class})
-@DirtiesContext
+@SpringBootTest
 public class AuthServiceTest {
     @Autowired
     private KeyExchangeConfig keyExchangeConfig;
     
-    @Autowired
+    @MockBean
     private SigningKeyResolver keyResolver;
     
     @Autowired
@@ -44,7 +33,7 @@ public class AuthServiceTest {
     
     private KeyPair keyPair;
     
-    @Before
+    @BeforeEach
     public void initKeys() throws NoSuchAlgorithmException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(2048);
@@ -74,12 +63,10 @@ public class AuthServiceTest {
         assertEquals(AUTHUSER_1, authService.getUserData(token));
     }
     
-    @Test(expected = InvalidTokenException.class)
-    public void getUserDataShouldFailInvalidToken() {
-        authService.getUserData("blashgiodrfngslkshdr");
-    }
+    @Test
+    public void getUserDataShouldFailInvalidToken() {Assertions.assertThrows(InvalidTokenException.class,() -> authService.getUserData("blashgiodrfngslkshdr"));}
     
-    @Test(expected = InvalidTokenException.class)
+    @Test()
     public void getUserDataShouldFailUnsignedToken() {
         Claims claims = Jwts.claims();
         claims.setIssuer("test");
@@ -90,7 +77,6 @@ public class AuthServiceTest {
         keyExchangeConfig.setValidIssuer("test");
         
         String token = Jwts.builder().setClaims(claims).compact();
-        
-        authService.getUserData(token);
+        assertThrows(InvalidTokenException.class, () -> authService.getUserData(token));
     }
 }

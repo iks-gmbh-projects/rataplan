@@ -2,10 +2,11 @@ package de.iks.rataplan.controller;
 
 import de.iks.rataplan.dto.PublicKeyExchangeDTO;
 import de.iks.rataplan.restservice.AuthService;
-import de.iks.rataplan.service.CryptoServiceImpl;
+import de.iks.rataplan.service.CryptoService;
 import de.iks.rataplan.service.VoteParticipantService;
 import de.iks.rataplan.service.VoteService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class BackendController {
     private final AuthService authService;
     private final VoteParticipantService voteParticipantService;
     private final VoteService voteService;
-    private final CryptoServiceImpl cryptoService;
+    private final CryptoService cryptoService;
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteData(@PathVariable int userId, @RequestBody String secret) {
         if(!authService.isValidIDToken(secret)) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
