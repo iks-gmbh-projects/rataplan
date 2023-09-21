@@ -6,6 +6,7 @@ import de.iks.rataplan.domain.User;
 import de.iks.rataplan.exceptions.CryptoException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -29,14 +30,14 @@ public class CryptoServiceImpl implements CryptoService {
     private final IDKeyConfig id;
     private Key dbKey;
     private KeyPair idKey;
-
+    
     @PostConstruct
     public void init() throws IOException, NoSuchAlgorithmException {
         {
             log.info("Loading DB key");
             byte[] bytes;
             final String encKey = db.getKey();
-            if (encKey == null) {
+            if(encKey == null) {
                 bytes = Files.readAllBytes(Paths.get(db.getPath()));
             } else bytes = Base64.getDecoder().decode(encKey);
             dbKey = new SecretKeySpec(bytes, db.getAlgorithm());
@@ -50,48 +51,47 @@ public class CryptoServiceImpl implements CryptoService {
             log.info("ID keys loaded");
         }
     }
-
     @Override
-    public String encryptDB(String raw) throws CryptoException {
-        if (raw == null) return null;
+    public byte[] decryptDBRaw(String raw) throws CryptoException {
+        if(raw == null) return null;
         try {
             final Cipher cipher = Cipher.getInstance(dbKey.getAlgorithm());
             cipher.init(Cipher.ENCRYPT_MODE, dbKey);
-            return Base64.getEncoder().encodeToString(
-                cipher.doFinal(
-                    raw.getBytes(StandardCharsets.UTF_8)
-                )
-            );
-        } catch (InvalidKeyException |
-                 NoSuchAlgorithmException |
-                 NoSuchPaddingException |
-                 IllegalBlockSizeException |
-                 BadPaddingException ex) {
+            return cipher.doFinal(raw.getBytes(StandardCharsets.UTF_8));
+        } catch(InvalidKeyException |
+            NoSuchAlgorithmException |
+            NoSuchPaddingException |
+            IllegalBlockSizeException |
+            BadPaddingException ex) {
             throw new CryptoException(ex);
         }
     }
-
     @Override
-    public String decryptDB(String encrypted) throws CryptoException {
-        if (encrypted == null) return null;
+    public String encryptDB(String raw) throws CryptoException {
+        if(raw == null) return null;
+        return Base64.getEncoder().encodeToString(decryptDBRaw(raw));
+    }
+    @Override
+    public String decryptDBRaw(byte[] encrypted) throws CryptoException {
+        if(encrypted == null) return null;
         try {
             final Cipher cipher = Cipher.getInstance(dbKey.getAlgorithm());
             cipher.init(Cipher.DECRYPT_MODE, dbKey);
-            return new String(
-                cipher.doFinal(
-                    Base64.getDecoder().decode(encrypted)
-                ),
-                StandardCharsets.UTF_8
-            );
-        } catch (InvalidKeyException |
-                 NoSuchAlgorithmException |
-                 NoSuchPaddingException |
-                 IllegalBlockSizeException |
-                 BadPaddingException ex) {
+            return new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
+        } catch(InvalidKeyException |
+            NoSuchAlgorithmException |
+            NoSuchPaddingException |
+            IllegalBlockSizeException |
+            BadPaddingException ex) {
             throw new CryptoException(ex);
         }
     }
-
+    @Override
+    public String decryptDB(String encrypted) throws CryptoException {
+        if(encrypted == null) return null;
+        return decryptDBRaw(Base64.getDecoder().decode(encrypted));
+    }
+    
     @Override
     public User ensureEncrypted(User user) throws CryptoException {
         if(user != null && !user.isEncrypted()) {
@@ -102,12 +102,12 @@ public class CryptoServiceImpl implements CryptoService {
         }
         return user;
     }
-
+    
     @Override
     public PublicKey idKey() {
         return idKey.getPublic();
     }
-
+    
     @Override
     public PrivateKey idKeyP() {
         return idKey.getPrivate();

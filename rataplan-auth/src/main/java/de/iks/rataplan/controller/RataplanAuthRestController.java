@@ -1,13 +1,16 @@
 package de.iks.rataplan.controller;
 
 import de.iks.rataplan.domain.*;
+import de.iks.rataplan.dto.FeedbackDTO;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.RataplanAuthException;
 import de.iks.rataplan.exceptions.UserDeletionException;
-import de.iks.rataplan.service.AuthTokenService;
-import de.iks.rataplan.service.MailService;
+import de.iks.rataplan.service.*;
 import de.iks.rataplan.utils.CookieBuilder;
 import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,218 +18,225 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import de.iks.rataplan.exceptions.InvalidTokenException;
-import de.iks.rataplan.service.JwtTokenService;
-import de.iks.rataplan.service.UserService;
-import org.springframework.web.client.ResourceAccessException;
 
+import org.springframework.web.client.ResourceAccessException;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1")
+@Slf4j
 public class RataplanAuthRestController {
-
+    
     private final UserService userService;
-
+    
     private final AuthTokenService authTokenService;
-
+    
     private final MailService mailService;
-
+    
     private final JwtTokenService jwtTokenService;
-
+    
+    private final FeedbackService feedbackService;
+    
     private static final String JWT_COOKIE_NAME = "jwttoken";
-
+    
     private final CookieBuilder cookieBuilder;
-
+    
     @RequestMapping(value = "*", method = RequestMethod.OPTIONS)
     public ResponseEntity<?> handle() {
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @PostMapping(value = "/users/register")
+    
+    @PostMapping("/users/register")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO user) {
         UserDTO userDTO = userService.registerUser(user);
         sendAccountConfirmationEmail(userDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-    @PostMapping(value = "/confirm-account")
+    
+    @PostMapping("/confirm-account")
     public ResponseEntity<Boolean> confirmAccount(@RequestBody String token) {
         Boolean accountConfirmed = userService.confirmAccount(token);
         return new ResponseEntity<>(accountConfirmed, HttpStatus.OK);
     }
-
-    @PostMapping(value = "/resend-confirmation-email")
+    
+    @PostMapping("/resend-confirmation-email")
     ResponseEntity<Boolean> resendConfirmationEmail(@RequestBody String email) {
         try {
             UserDTO userDTO = userService.validateResendConfirmationEmailRequest(email);
-            if (userDTO == null) return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
+            if(userDTO == null) return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
             sendAccountConfirmationEmail(userDTO);
             return new ResponseEntity<>(true, HttpStatus.OK);
-        } catch (NullPointerException e) {
+        } catch(NullPointerException e) {
             return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
         }
     }
-
+    
     private void sendAccountConfirmationEmail(UserDTO userDTO) {
         String jwt = jwtTokenService.generateAccountConfirmationToken(userDTO);
         ConfirmAccountMailData confirmAccountMailData = new ConfirmAccountMailData(jwt, userDTO.getMail());
         mailService.sendAccountConfirmationEmail(confirmAccountMailData);
     }
-
-    @PostMapping(value = "/users/mailExists")
+    
+    @PostMapping("/users/mailExists")
     public boolean checkIfMailExists(@RequestBody String mail) {
         return userService.checkIfMailExists(mail);
     }
-
-    @PostMapping(value = "/users/usernameExists")
+    
+    @PostMapping("/users/usernameExists")
     public boolean checkIfUsernameExists(@RequestBody String username) {
         return userService.checkIfUsernameExists(username);
     }
-
-    @PostMapping(value = "/users/login", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    
+    @PostMapping("/users/login")
     public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO user) {
         UserDTO userDTO = userService.loginUser(user);
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
-
+        
         return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
     }
-
+    
     @GetMapping("/users/logout")
     public ResponseEntity<Boolean> logoutUser(
-            @CookieValue(value = JWT_COOKIE_NAME) String tokenCookie
-    ) {
+        @CookieValue(value = JWT_COOKIE_NAME) String tokenCookie
+    )
+    {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Set-Cookie", cookieBuilder.generateCookieValue(tokenCookie, true));
-
+        
         return ResponseEntity.ok().headers(responseHeaders).body(true);
     }
-
-    @DeleteMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    
+    @DeleteMapping("/users/profile")
     public ResponseEntity<?> deleteUserData(
-            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-            @RequestBody DeleteUserRequest request
-    ) {
+        @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+        @RequestBody DeleteUserRequest request
+    )
+    {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         String username = jwtTokenService.getUsernameFromToken(token);
         User dbUser = userService.getUserFromUsername(username);
         userService.verifyPasswordOrThrow(dbUser, request.getPassword());
         try {
             userService.deleteUser(dbUser, request);
-        } catch (UserDeletionException | ResourceAccessException ex) {
+        } catch(UserDeletionException | ResourceAccessException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
-
+        
         return logoutUser(token);
     }
-
-    @GetMapping(value = "/users/profile", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    
+    @GetMapping("/users/profile")
     public ResponseEntity<UserDTO> getUserData(
-            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie
-    ) {
+        @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie
+    )
+    {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         String username = jwtTokenService.getUsernameFromToken(token);
         UserDTO userDTO = userService.getUserDTOFromUsername(username);
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
-
+        
         return new ResponseEntity<>(userDTO, responseHeaders, HttpStatus.OK);
     }
-
+    
     @PostMapping(
-            value = "/users/profile/updateProfileDetails",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
+        value = "/users/profile/updateProfileDetails",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Boolean> updateProfileDetails(
-            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-            @RequestBody UserDTO userDTO
-    ) {
+        @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+        @RequestBody UserDTO userDTO
+    )
+    {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         userDTO.setUsername(jwtTokenService.getUsernameFromToken((token)));
-        if (userService.checkIfUsernameExists(userDTO.getUsername())) {
+        if(userService.checkIfUsernameExists(userDTO.getUsername())) {
             boolean success = userService.updateProfileDetails(userDTO);
             return new ResponseEntity<>(success, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
         }
-
     }
-
-    @PostMapping(
-            value = "/users/profile/changePassword",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    
+    @PostMapping("/users/profile/changePassword")
     public ResponseEntity<Boolean> changePassword(
-            @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-            @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-            @RequestBody PasswordChange passwords
-    ) {
+        @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+        @RequestBody PasswordChange passwords
+    )
+    {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         String username = jwtTokenService.getUsernameFromToken(token);
         boolean success = this.userService.changePassword(username, passwords);
-
+        
         return new ResponseEntity<>(success, HttpStatus.OK);
     }
-
+    
     @PostMapping("/users/forgotPassword")
     public boolean sendForgotPasswordMail(@RequestBody String mail) {
         AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
-
+        
         ResetPasswordMailData resetPasswordMailData = new ResetPasswordMailData();
         resetPasswordMailData.setMail(mail);
         resetPasswordMailData.setToken(response.getToken());
-
+        
         mailService.sendMailForResetPassword(resetPasswordMailData);
         return true;
     }
-
-    @PostMapping(
-            value = "/users/resetPassword",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    
+    @PostMapping("/users/resetPassword")
     public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
-        if (this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
+        if(this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
             int userId = this.authTokenService.getIdFromAuthToken(resetPasswordData.getToken());
             User user = this.userService.getUserFromId(userId);
             boolean success = this.userService.changePasswordByToken(user, resetPasswordData.getPassword());
             this.authTokenService.deleteById(userId);
             return new ResponseEntity<>(success, HttpStatus.OK);
         }
-
+        
         return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
-
+    
     private String validateTokenOrThrow(String cookieToken, String headerToken) throws RataplanAuthException {
         String token;
-        if (headerToken == null) token = cookieToken;
-        else if (cookieToken == null) token = headerToken;
-        else if (cookieToken.equals(headerToken)) token = cookieToken;
+        if(headerToken == null) token = cookieToken;
+        else if(cookieToken == null) token = headerToken;
+        else if(cookieToken.equals(headerToken)) token = cookieToken;
         else throw new RataplanAuthException("Different tokens provided by cookie and header.");
-        if (!jwtTokenService.isTokenValid(token)) {
+        if(!jwtTokenService.isTokenValid(token)) {
             throw new InvalidTokenException("Invalid token");
         }
         return token;
     }
-
+    
     private HttpHeaders createResponseHeaders(UserDTO user) {
         HttpHeaders responseHeaders = new HttpHeaders();
-
+        
         String token = jwtTokenService.generateLoginToken(user);
         responseHeaders.set(JWT_COOKIE_NAME, token);
         responseHeaders.add("Set-Cookie", cookieBuilder.generateCookieValue(token, false));
-
+        
         return responseHeaders;
     }
-
-
+    
     @GetMapping("/users/displayName/{userId}")
     public ResponseEntity<?> getDisplayName(@PathVariable int userId) {
         String displayName = userService.getDisplayNameFromId(userId);
-        if (displayName == null) return ResponseEntity.notFound().build();
+        if(displayName == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(displayName);
+    }
+    
+    @PostMapping("/feedback")
+    public ResponseEntity<?> postFeedback(@RequestBody FeedbackDTO feedback) {
+        try {
+            log.info("incoming feedback: {}", feedback);
+            feedbackService.acceptFeedback(feedback);
+        } catch(RataplanAuthException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+        return ResponseEntity.ok(feedback);
     }
 }
