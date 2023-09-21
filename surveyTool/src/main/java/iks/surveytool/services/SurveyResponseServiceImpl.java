@@ -8,6 +8,7 @@ import iks.surveytool.repositories.SurveyRepository;
 import iks.surveytool.repositories.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
 import org.apache.logging.log4j.Level;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -29,11 +30,11 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     private final SurveyRepository surveyRepository;
     private final AuthService authService;
     private final ModelMapper modelMapper;
-
+    
     @Transactional
     public ResponseEntity<SurveyResponseDTO> processSurveyResponseDTOs(SurveyResponseDTO surveyResponseDTO) {
         SurveyResponse surveyResponse = modelMapper.map(surveyResponseDTO, SurveyResponse.class);
-        if (surveyResponse.validate()) {
+        if(surveyResponse.validate() && validateUniqueParticipation(surveyResponse)) {
             SurveyResponse savedAnswers = saveSurveyResponse(surveyResponse);
             SurveyResponseDTO savedAnswerDTOs = modelMapper.map(savedAnswers, SurveyResponseDTO.class);
             return ResponseEntity.ok(savedAnswerDTOs);
@@ -41,17 +42,26 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
     }
-
+    
+    @Override
+    public boolean validateUniqueParticipation(SurveyResponse surveyResponse) {
+        if(surveyResponse.getUserId() != null) {
+            return !surveyResponseRepository.existsBySurveyIdAndAndUserId(surveyResponse.getSurvey().getId(),
+                surveyResponse.getUserId()
+            );
+        }
+        return true;
+    }
+    
     private SurveyResponse saveSurveyResponse(SurveyResponse response) {
         return surveyResponseRepository.save(response);
     }
-
+    
     private List<SurveyResponseDTO> mapSurveyResponsesToDTO(List<SurveyResponse> answers) {
-        Type answerDTOList = new TypeToken<List<SurveyResponseDTO>>() {
-        }.getType();
+        Type answerDTOList = new TypeToken<List<SurveyResponseDTO>>() {}.getType();
         return modelMapper.map(answers, answerDTOList);
     }
-
+    
     @Transactional
     public ResponseEntity<List<SurveyResponseDTO>> processSurveyResponseDTOs(String accessId, String authToken) {
         final Optional<Survey> optSurvey = surveyRepository.findSurveyByAccessId(accessId);
@@ -60,23 +70,24 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
         if(survey.getUserId() != null) {
             final AuthUser user = authService.getUserData(authToken);
             if(user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            if(survey.getUserId().longValue() != user.getId().longValue()) return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            if(survey.getUserId().longValue() != user.getId().longValue())
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(mapSurveyResponsesToDTOBySurvey(survey));
     }
-
+    
     private List<SurveyResponseDTO> mapSurveyResponsesToDTOBySurvey(Survey survey) {
         List<SurveyResponse> answers = findSurveyResponsesBySurvey(survey);
         return mapSurveyResponsesToDTO(answers);
     }
-
+    
     private List<SurveyResponse> findSurveyResponsesBySurvey(Survey survey) {
         return surveyResponseRepository.findAllBySurvey(survey);
     }
-
+    
     @Override
     public ResponseEntity<?> deleteSurveyResponsesByUserId(long id) {
-        try{
+        try {
             surveyResponseRepository.deleteAllByUserId(id);
             return ResponseEntity.accepted().body(id);
         } catch(DataAccessException ex) {
@@ -84,7 +95,7 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
             return ResponseEntity.internalServerError().body(ex.getMostSpecificCause().getMessage());
         }
     }
-
+    
     @Override
     public ResponseEntity<?> anonymizeSurveyResponsesByUserId(long id) {
         try {
