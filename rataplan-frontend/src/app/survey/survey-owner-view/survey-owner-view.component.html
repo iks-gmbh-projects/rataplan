@@ -11,7 +11,7 @@
       </p>
     </mat-card-content>
     <mat-card-actions>
-      <a mat-raised-button color="link" [routerLink]="['/survey','participate', survey.participationId]">
+      <a mat-raised-button color="link" [routerLink]="['/survey','participate', survey.participationId]" target="_blank">
         <mat-icon>open_in_new</mat-icon>
       </a>
       <!--ugly workaround for missing angular feature-->
@@ -22,7 +22,7 @@
       <a mat-raised-button color="primary" routerLink="edit" *ngIf="!expired">
         <mat-icon>edit</mat-icon>
       </a>
-      <a mat-raised-button color="primary" routerLink="results">
+      <a mat-raised-button color="primary" routerLink="results" target="_blank">
         <mat-icon>analytics</mat-icon>
       </a>
     </mat-card-actions>
