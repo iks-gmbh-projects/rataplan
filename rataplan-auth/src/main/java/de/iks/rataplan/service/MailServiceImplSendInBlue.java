@@ -1,18 +1,23 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.ConfirmAccountMailData;
+import de.iks.rataplan.domain.FeedbackCategory;
 import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
+import de.iks.rataplan.dto.FeedbackDTO;
 import de.iks.rataplan.utils.MailBuilderSendInBlue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
 import sendinblue.ApiException;
 import sibApi.TransactionalEmailsApi;
 import sibModel.SendSmtpEmail;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Primary
 @Service
@@ -20,11 +25,8 @@ import sibModel.SendSmtpEmail;
 @ConditionalOnBean(TransactionalEmailsApi.class)
 @Slf4j
 public class MailServiceImplSendInBlue implements MailService {
-    
     private final MailBuilderSendInBlue mailBuilder;
     private final TransactionalEmailsApi transactionalEmailsApi;
-    
-    private final Environment environment;
     
     @Override
     public void sendMailForResetPassword(ResetPasswordMailData resetPasswordMailData) {
@@ -50,12 +52,24 @@ public class MailServiceImplSendInBlue implements MailService {
     }
 
     @Override
-    public void notifyParticipantDeletion(ParticipantDeletionMailData participantDeletionMailData) throws ApiException {
+    public void notifyParticipantDeletion(ParticipantDeletionMailData participantDeletionMailData) {
         SendSmtpEmail mail = mailBuilder.buildParticipantDeletionEmail(participantDeletionMailData);
-        transactionalEmailsApi.sendTransacEmail(mail);
+        try {
+            transactionalEmailsApi.sendTransacEmail(mail);
+        } catch (ApiException ex) {
+            log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
+            throw new RuntimeException(ex);
+        }
     }
-
-    private boolean isInProdMode() {
-        return "true".equals(environment.getProperty("RATAPLAN.PROD"));
+    
+    @Override
+    public void sendFeedbackReport(Map<FeedbackCategory, ? extends List<? extends FeedbackDTO>> feedback) {
+        SendSmtpEmail mail = mailBuilder.buildFeedbackReportMail(feedback);
+        try {
+            transactionalEmailsApi.sendTransacEmail(mail);
+        } catch (ApiException ex) {
+            log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
+            throw new RuntimeException(ex);
+        }
     }
 }

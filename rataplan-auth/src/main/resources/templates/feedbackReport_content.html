@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<body>
+<h2>Feedback Report</h2>
+<th:block th:each="category : ${feedbackMap}">
+    <h3 th:text="${category.getKey().name()}"></h3>
+    <ul>
+        <li th:each="feedback : ${category.getValue()}">
+            <span th:text="${'*'.repeat(feedback.getRating())}"></span>
+            <span th:text="${feedback.getTitle()}"></span>
+            <p th:text="${feedback.getText()}"></p>
+        </li>
+    </ul>
+</th:block>
+</body>
+</html>

@@ -2,9 +2,13 @@ package de.iks.rataplan.dto;
 
 import de.iks.rataplan.domain.FeedbackCategory;
 import de.iks.rataplan.exceptions.RataplanAuthException;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FeedbackDTO {
     private String title;
     private String text;

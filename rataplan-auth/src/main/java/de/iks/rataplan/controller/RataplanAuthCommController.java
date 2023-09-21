@@ -8,7 +8,6 @@ import de.iks.rataplan.service.JwtTokenService;
 import de.iks.rataplan.service.MailService;
 import de.iks.rataplan.service.UserService;
 import lombok.RequiredArgsConstructor;
-import sendinblue.ApiException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class RataplanAuthCommController {
     public ResponseEntity<Boolean> notifyParticipant(
         @RequestHeader String jwt,
         @RequestBody ParticipantDeletionMailData participantDeletionMailData
-    ) throws ApiException
+    )
     {
         Integer userId = jwtTokenService.getUserIdFromBackendToken(jwt);
         String email = userService.getEmailFromId(userId);

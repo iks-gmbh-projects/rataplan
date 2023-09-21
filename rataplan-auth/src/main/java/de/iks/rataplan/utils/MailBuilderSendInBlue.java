@@ -1,19 +1,24 @@
 package de.iks.rataplan.utils;
 
 import de.iks.rataplan.domain.ConfirmAccountMailData;
+import de.iks.rataplan.domain.FeedbackCategory;
 import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
+import de.iks.rataplan.dto.FeedbackDTO;
 import lombok.RequiredArgsConstructor;
+import sibModel.SendSmtpEmail;
+import sibModel.SendSmtpEmailSender;
+import sibModel.SendSmtpEmailTo;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Collections;
-
-import sibModel.SendSmtpEmail;
-import sibModel.SendSmtpEmailSender;
-import sibModel.SendSmtpEmailTo;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +28,8 @@ public class MailBuilderSendInBlue {
 
     private final TemplateEngine templateEngine;
     private final SendSmtpEmailSender sender;
+    @Value("${mail.feedback:}")
+    private List<String> feedbackReceivers;
 
     public SendSmtpEmail buildMailForResetPassword(ResetPasswordMailData resetPasswordMailData) {
         String resetPasswordLink = baseUrl + "/reset-password?token=" + resetPasswordMailData.getToken();
@@ -71,8 +78,23 @@ public class MailBuilderSendInBlue {
                 .subject(templateEngine.process("participantDeletion_subject",ctx))
                 .htmlContent(templateEngine.process("participantDeletion_content",ctx));
     }
-
-
+    public SendSmtpEmail buildFeedbackReportMail(
+        Map<FeedbackCategory,? extends List<? extends FeedbackDTO>> feedback
+    ) {
+        Context ctx = new Context();
+        ctx.setVariable("feedbackMap", feedback);
+        
+        return new SendSmtpEmail()
+            .sender(sender)
+            .to(
+                feedbackReceivers.stream()
+                    .map(e -> new SendSmtpEmailTo().email(e))
+                    .collect(Collectors.toUnmodifiableList())
+            )
+            .subject("Feedback Report")
+            .htmlContent(templateEngine.process("feedbackReport_content", ctx));
+    }
+    
     // f�r plain/text ist "\r\n" in Java ein Zeilenumbruch
 //	private String createPlainContent(String url, String adminUrl) {
 //		return "Hallo! \r\n\r\n\r\n"

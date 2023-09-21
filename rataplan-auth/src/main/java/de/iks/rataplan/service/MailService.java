@@ -1,13 +1,17 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.ConfirmAccountMailData;
+import de.iks.rataplan.domain.FeedbackCategory;
 import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
-import sendinblue.ApiException;
+import de.iks.rataplan.dto.FeedbackDTO;
+
+import java.util.List;
+import java.util.Map;
 
 public interface MailService {
-    public void sendMailForResetPassword(ResetPasswordMailData resetPasswordMailData);
-
-    public void sendAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData);
-    public void notifyParticipantDeletion(ParticipantDeletionMailData participantDeletionMailData) throws ApiException;
+    void sendMailForResetPassword(ResetPasswordMailData resetPasswordMailData);
+    void sendAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData);
+    void notifyParticipantDeletion(ParticipantDeletionMailData participantDeletionMailData);
+    void sendFeedbackReport(Map<FeedbackCategory, ? extends List<? extends FeedbackDTO>> feedback);
 }
