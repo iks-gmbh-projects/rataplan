@@ -12,3 +12,7 @@ form {
     margin-right: auto;
     margin-top: 1rem;
 }
+
+mat-icon {
+    cursor: pointer;
+}
