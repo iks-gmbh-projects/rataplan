@@ -1,13 +1,15 @@
 <div class="centered">
   <div>
     <a class="button" mat-raised-button color="primary" routerLink="../create">Erstellen</a>
-    <button mat-raised-button aria-label="Neu Laden" [disabled]="busy" type="button"
-            (click)="updateList()">
+    <button
+      mat-raised-button aria-label="Neu Laden" [disabled]="busy" type="button"
+      (click)="updateList()"
+    >
       <mat-icon>{{error ? 'sync_problem' : 'sync'}}</mat-icon>
     </button>
   </div>
   <div>
-    <h2>Öffentliche Umfragen</h2>
+    <h2>{{isOwn ? 'Eigene' : 'Öffentliche'}} Umfragen</h2>
   </div>
   <div class="width">
     <mat-spinner *ngIf="busy; else done"></mat-spinner>
@@ -20,20 +22,31 @@
             - {{survey.endDate | date:'dd.LL.yyyy'}}</mat-card-subtitle>
           <mat-card-content>{{survey.description}}</mat-card-content>
           <mat-card-actions>
-            <a *ngIf="!isOwn; else ownerActions" mat-raised-button color="primary"
-               [routerLink]="['..','participate',survey.participationId]">Teilnehmen</a>
+            <a
+              *ngIf="!isOwn; else ownerActions" mat-raised-button color="primary"
+              [routerLink]="['..','participate',survey.participationId]"
+            >Teilnehmen</a>
             <ng-template #ownerActions>
               <a mat-raised-button color="link" [routerLink]="['/survey','participate', survey.participationId]">
                 <mat-icon>open_in_new</mat-icon>
               </a>
               <!--ugly workaround for missing angular feature-->
-              <a style="display:none" [routerLink]="['/survey','participate', survey.participationId]"
-                 #participationLink></a>
-              <button mat-raised-button color="basic"
-                      (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')">
+              <a
+                style="display:none" [routerLink]="['/survey','participate', survey.participationId]"
+                #participationLink
+              ></a>
+              <button
+                mat-raised-button color="basic"
+                (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')"
+              >
                 <mat-icon>content_copy</mat-icon>
               </button>
-              <a mat-raised-button color="primary" [routerLink]="['/survey','access',survey.accessId,'edit']" *ngIf="!expired(survey)">
+              <a
+                mat-raised-button
+                color="primary"
+                [routerLink]="['/survey','access',survey.accessId,'edit']"
+                *ngIf="!expired(survey)"
+              >
                 <mat-icon>edit</mat-icon>
               </a>
               <a mat-raised-button color="primary" [routerLink]="['/survey','access',survey.accessId,'results']">
