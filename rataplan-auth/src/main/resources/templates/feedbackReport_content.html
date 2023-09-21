@@ -6,7 +6,7 @@
     <h3 th:text="${category.getKey().name()}"></h3>
     <ul>
         <li th:each="feedback : ${category.getValue()}">
-            <span th:text="${'*'.repeat(feedback.getRating())}"></span>
+            <span th:utext="${'&#x2605;'.repeat(feedback.getRating()) + '&#x2606;'.repeat(5 - feedback.getRating())}"></span>
             <span th:text="${feedback.getTitle()}"></span>
             <p th:text="${feedback.getText()}"></p>
         </li>
