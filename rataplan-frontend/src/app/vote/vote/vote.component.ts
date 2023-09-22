@@ -173,10 +173,10 @@ export class VoteComponent implements OnInit, OnDestroy {
     });
   }
   
-  setParticipantNumber(vote: VoteOptionModel, participants: number) {
+  setParticipantNumber(vote: VoteOptionModel, participants: number|`${number}`) {
     const index = this.vote!.options.indexOf(vote);
     const voteDecision = this.voteParticipant.decisions[index];
-    voteDecision.participants = participants;
+    voteDecision.participants = Number(participants);
   }
   
   cycleDecision(vote: VoteOptionModel): void {
