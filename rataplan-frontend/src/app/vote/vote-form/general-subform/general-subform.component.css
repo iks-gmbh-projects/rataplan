@@ -2,5 +2,7 @@ button {
   margin-bottom: 1rem;
 }
 
-
+button>.mat-button-wrapper {
+  vertical-align: middle;
+}
 

@@ -90,9 +90,6 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
 
   addAndDeleteDescription() {
     this.showDescription = !this.showDescription;
-    if (!this.showDescription) {
-      this.generalSubform.get('description')?.setValue(null);
-    }
   }
 
   sanitiseYesAnswerLimit() {
@@ -113,7 +110,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     }
     this.store.dispatch(new SetGeneralValuesVoteOptionAction({
       title: this.generalSubform.value.title,
-      description: this.generalSubform.value.description,
+      description: this.showDescription ? this.generalSubform.value.description : null,
       deadline: new Date(this.generalSubform.value.deadline),
       decisionType: this.generalSubform.value.decision,
       yesLimitActive: this.generalSubform.value.yesLimitActive,
