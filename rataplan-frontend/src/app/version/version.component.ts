@@ -9,5 +9,5 @@ import { patchNotes } from './patch.notes';
 export class VersionComponent {
   readonly patchNotes = Object.entries(patchNotes)
       .map(([version, notes]) => ({version, releaseDate: notes.releaseDate, notes: notes.changes}))
-      .sort((a, b) => a.releaseDate.getTime() - b.releaseDate.getTime());
+      .sort((a, b) => b.releaseDate.getTime() - a.releaseDate.getTime());
 }
