@@ -22,6 +22,7 @@ import { authFeature } from '../authentication/auth.feature';
 })
 export class EditProfileComponent implements OnInit, OnDestroy {
   userData?: FrontendUser;
+  busy = false;
   private userDataSub?: Subscription;
   private errorSub?: Subscription;
   displayNameField = new UntypedFormControl('', [
@@ -53,6 +54,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl('/view-profile');
         }
         this.userData = authData.user;
+        this.busy = authData.busy
         if(authData.busy) {
           this.displayNameField.disable();
           this.emailField.disable();
