@@ -9,22 +9,25 @@
   </button>
   <a routerLink="/" class="side-menu-title" (click)="drawer.close()">drumdibum</a>
   <span class="fillRemainingSpace"></span>
-  <button
-    (click)="onClick()" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" class="loginIcon" mat-icon-button
-    color="FFFFFF" aria-label="Example icon button with a home icon"
-  >
-    <mat-icon *ngIf="!this.currentUser">login</mat-icon>
-    <mat-icon
-      *ngIf="this.currentUser"
-      [matBadge]="notificationCount"
-      [matBadgeHidden]="!notificationCount"
-      matBadgeColor="warn"
-      matBadgeOverlap="false"
-      matBadgeSize="small"
+  <mat-spinner *ngIf="busy; else profile" diameter="24" class="invertedPrimary"></mat-spinner>
+  <ng-template #profile>
+    <button
+      (click)="onClick()" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" class="loginIcon" mat-icon-button
+      color="FFFFFF" aria-label="Example icon button with a home icon"
     >
-      perm_identity
-    </mat-icon>
-  </button>
+      <mat-icon *ngIf="!this.currentUser">login</mat-icon>
+      <mat-icon
+        *ngIf="this.currentUser"
+        [matBadge]="notificationCount"
+        [matBadgeHidden]="!notificationCount"
+        matBadgeColor="warn"
+        matBadgeOverlap="false"
+        matBadgeSize="small"
+      >
+        perm_identity
+      </mat-icon>
+    </button>
+  </ng-template>
   <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="/view-profile">
       <mat-icon>account_circle</mat-icon>

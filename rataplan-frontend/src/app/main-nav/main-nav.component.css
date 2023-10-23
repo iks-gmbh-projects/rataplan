@@ -7,5 +7,7 @@ mat-sidenav-content {
     overflow: unset;
 }
 
-
+.invertedPrimary ::ng-deep circle {
+    stroke: white;
+}
 
