@@ -13,9 +13,12 @@
         Zurück
       </button>
       <div class="middle"></div>
-      <button class="right" mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
-        Erstellen
-      </button>
+      <div class="right">
+        <mat-spinner *ngIf="busy" diameter="24"></mat-spinner>
+        <button mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
+          Erstellen
+        </button>
+      </div>
     </div>
   </mat-card>
 </div>

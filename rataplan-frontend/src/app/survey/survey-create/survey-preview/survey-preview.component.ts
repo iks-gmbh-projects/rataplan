@@ -10,6 +10,7 @@ export class SurveyPreviewComponent {
   @Input() public survey?:Survey;
   public page = 0;
   @Output() public readonly onSubmit = new EventEmitter<Survey>();
+  @Input() public busy: boolean = false;
 
   constructor() { }
 
