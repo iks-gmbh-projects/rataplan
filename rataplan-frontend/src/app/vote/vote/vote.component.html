@@ -132,15 +132,18 @@
     </div>
   </div>
   <div class="fill-width" *ngIf="!isPreview; else previewButtons">
-    <button
-      *ngIf="!deadlineService.hasDeadlinePassed()"
-      class="vote-button"
-      type="submit"
-      color="primary"
-      mat-raised-button
-      (click)="saveVote()"
-    >{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
-    </button>
+    <div class="vote-button-container">
+      <mat-spinner *ngIf="submitBusy" diameter="24" class="button-spinner"></mat-spinner>
+      <button
+        *ngIf="!deadlineService.hasDeadlinePassed()"
+        class="vote-button"
+        type="submit"
+        color="primary"
+        mat-raised-button
+        (click)="saveVote()"
+      >{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
+      </button>
+    </div>
   </div>
   <ng-template #previewButtons>
     <div class="fill-width">
