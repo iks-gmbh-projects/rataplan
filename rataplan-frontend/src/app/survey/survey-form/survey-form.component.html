@@ -38,6 +38,7 @@
           </div>
           <div class="middle"></div>
           <div class="right">
+            <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
             <button
               class="right" mat-raised-button color="primary"
               [disabled]="!!(isResponseValid | async)"

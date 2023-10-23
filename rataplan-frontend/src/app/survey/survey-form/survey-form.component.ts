@@ -17,6 +17,7 @@ import { PageComponent } from './page/page.component';
 export class SurveyFormComponent implements OnInit, OnDestroy {
   public survey?: Survey;
   public page = 0;
+  public busy = false;
   private answers: { [key: string | number]: Answer } = {};
   private sub?: Subscription;
   private readonly pagesSubject = new ReplaySubject<QueryList<PageComponent>>(1);
@@ -71,14 +72,17 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
   public submit(): void {
     if (!this.survey) return;
     if (this.page >= this.survey.questionGroups.length) {
+      this.busy = true;
       this.surveys.answerSurvey({
         surveyId: this.survey.id!,
         answers: this.answers,
       }).subscribe({
         next: () => {
+          this.busy = false;
           this.dialogs.open(SurveyAnswerComponent);
         },
         error: () => {
+          this.busy = false;
           this.page--;
           this.snackBars.open("Fehler beim Hochladen der Antwort.", "OK");
         },
