@@ -1,23 +1,22 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgModel, ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { exhaustMap, filter, Subject, take, takeUntil } from 'rxjs';
+import { authFeature } from '../../authentication/auth.feature';
 import { FrontendUser } from '../../models/user.model';
 import { VoteDecisionModel } from '../../models/vote-decision.model';
-import { VoteModel } from '../../models/vote.model';
 import { VoteOptionModel } from '../../models/vote-option.model';
 import { VoteParticipantModel } from '../../models/vote-participant.model';
-import { DeadlineService } from '../../services/deadline-service/deadline.service';
+import { VoteModel } from '../../models/vote.model';
 import { FormErrorMessageService } from '../../services/form-error-message-service/form-error-message.service';
-import { PostVoteAction } from '../vote.actions';
 import { DecisionType, VoteOptionDecisionType } from '../vote-form/decision-type.enum';
+import { PostVoteAction } from '../vote.actions';
+import { voteFeature } from '../vote.feature';
 import { VoteDecisionSubformComponent } from './member-decision-subform/vote-decision-subform.component';
 import { VoteService } from './vote-service/vote.service';
-import { voteFeature } from '../vote.feature';
-import { authFeature } from '../../authentication/auth.feature';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 const decisionCycle = {
   [VoteOptionDecisionType.NO_ANSWER]: VoteOptionDecisionType.ACCEPT,
@@ -55,7 +54,6 @@ export class VoteComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private voteService: VoteService,
-    public deadlineService: DeadlineService,
     private store: Store,
     public readonly errorMessageService: FormErrorMessageService,
   )
@@ -71,8 +69,7 @@ export class VoteComponent implements OnInit, OnDestroy {
     this.route.data.subscribe(({isPreview, vote}) => {
       this.isPreview = isPreview;
       this.vote = vote;
-      this.deadlineService.setDeadline(new Date(vote.deadline));
-      if(!this.deadlineService.hasDeadlinePassed()) {
+      if(!this.hasDeadlinePassed()) {
         this.setVoteOptions();
       }
       this.userVoted = this.vote!.participants.some(participant =>
@@ -335,6 +332,15 @@ export class VoteComponent implements OnInit, OnDestroy {
     return !(
       voteDecisions < voteOption.participantLimit!
     );
+  }
+  
+  hasDeadlinePassed(): boolean {
+    const deadline = new Date(this.vote.deadline);
+    if (!deadline) {
+      throw new Error('Deadline has not been set.');
+    }
+    deadline.setDate(deadline.getDate()+1);
+    return deadline.getTime() < Date.now();
   }
   
   static yesAnswerLimitMoreThanZeroOrNull(): ValidatorFn {

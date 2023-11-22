@@ -9,7 +9,7 @@
     <mat-card-subtitle>
       Abstimmung aktiv bis: {{ vote?.deadline | date:'dd MMMM yyyy':'+0200':'de' }}
     </mat-card-subtitle>
-    <mat-card-subtitle *ngIf="deadlineService.hasDeadlinePassed()">
+    <mat-card-subtitle *ngIf="hasDeadlinePassed()">
       <span class="mat-error">Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
     </mat-card-subtitle>
     <div *ngIf="vote?.organizerName">
@@ -30,7 +30,7 @@
             {{ participant.name }}
           </div>
           <div
-            *ngIf="!deadlineService.hasDeadlinePassed() && (participant.userId === currentUser?.id)"
+            *ngIf="!hasDeadlinePassed() && (participant.userId === currentUser?.id)"
             class="member-button"
           >
             <button
@@ -52,7 +52,7 @@
       </mat-list>
     </mat-expansion-panel>
   </div>
-  <div *ngIf="!deadlineService.hasDeadlinePassed()">
+  <div *ngIf="!hasDeadlinePassed()">
     <mat-form-field appearance="fill">
       <mat-label>Name</mat-label>
       <input
@@ -121,7 +121,7 @@
             [class]="desc.class"
             [matTooltip]="desc.tooltip || ''"
             matTooltipPosition="above"
-            (click)="isPreview || deadlineService.hasDeadlinePassed() || cycleDecision(option); selectionButton.checked = false"
+            (click)="isPreview || hasDeadlinePassed() || cycleDecision(option); selectionButton.checked = false"
             [disabled]="!!desc.disabled"
             #selectionButton
           >
@@ -133,7 +133,7 @@
   </div>
   <div class="fill-width" *ngIf="!isPreview; else previewButtons">
     <button
-      *ngIf="!deadlineService.hasDeadlinePassed()"
+      *ngIf="!hasDeadlinePassed()"
       class="vote-button"
       type="submit"
       color="primary"
