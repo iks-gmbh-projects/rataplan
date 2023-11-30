@@ -24,6 +24,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   userData?: FrontendUser;
   busy = false;
   private userDataSub?: Subscription;
+  private successSub?: Subscription;
   private errorSub?: Subscription;
   displayNameField = new UntypedFormControl('', [
     Validators.required,
@@ -49,12 +50,8 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userDataSub = this.store.select(authFeature.selectAuthState)
       .subscribe(authData => {
-        if(this.emailField.value !== '' && this.displayNameField.value !== '') {
-          this.snackbar.open('Profil erfolgreich akutalisiert', 'OK');
-          this.router.navigateByUrl('/view-profile');
-        }
         this.userData = authData.user;
-        this.busy = authData.busy
+        this.busy = authData.busy;
         if(authData.busy) {
           this.displayNameField.disable();
           this.emailField.disable();
@@ -70,6 +67,12 @@ export class EditProfileComponent implements OnInit, OnDestroy {
           this.emailField.enable();
         }
       });
+    this.successSub = this.actions$.pipe(
+      ofType(AuthActions.CHANGE_PROFILE_DETAILS_SUCCESS_ACTION),
+    ).subscribe(() => {
+      this.snackbar.open('Profil erfolgreich akutalisiert', 'OK');
+      this.router.navigateByUrl('/view-profile');
+    });
     this.errorSub = this.actions$.pipe(
       ofType(AuthActions.CHANGE_PROFILE_DETAILS_ERROR_ACTION),
     ).subscribe(() => this.snackbar.open('Fehler beim Ändern der Daten', 'Ok'));
@@ -78,6 +81,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.userDataSub?.unsubscribe();
+    this.successSub?.unsubscribe();
     this.errorSub?.unsubscribe();
   }
 
