@@ -21,12 +21,13 @@
       <mat-error>{{errorMessageService.genericFormError(emailField)}}</mat-error>
     </mat-form-field>
   </form>
-  <div>
-    <button  mat-raised-button color="warn" style="margin: 10px"
+  <div class="button-container">
+    <button  mat-raised-button color="warn"
              routerLink="/view-profile">Zurück
     </button>
-    <button mat-raised-button color="primary"
-            [disabled]="displayNameField.invalid || emailField.invalid" style="margin: 10px" (click)="updateProfile()">
+    <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
+    <button mat-raised-button color="primary" [style]="busy ? '' : 'margin-left: 36px'"
+            [disabled]="displayNameField.invalid || emailField.invalid" (click)="updateProfile()">
       Speichern
     </button>
   </div>

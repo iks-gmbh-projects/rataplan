@@ -41,6 +41,7 @@ export class VoteComponent implements OnInit, OnDestroy {
   
   isPreview = false;
   busy = false;
+  submitBusy = false;
   isEditMember = false;
   isYesVoteLimitMet!: boolean;
   votes: Map<number, boolean> = new Map<number, boolean>();
@@ -100,14 +101,17 @@ export class VoteComponent implements OnInit, OnDestroy {
       this.resetVote();
       return;
     }
+    this.submitBusy = true;
     this.voteService.addVoteParticipant(this.vote!, this.voteParticipant)
       .pipe(takeUntil(this.destroySubject))
       .subscribe({
         next: participant => {
+          this.submitBusy = false;
           this.vote!.participants.push(participant);
           this.resetVote();
         },
         error: err => {
+          this.submitBusy = false;
           this.snackBar.open('Unbekannter Fehler beim Abstimmen', 'OK');
           console.log(err);
         },
@@ -115,14 +119,17 @@ export class VoteComponent implements OnInit, OnDestroy {
   }
   
   updateVote() {
+    this.submitBusy = true;
     this.voteService.updateVoteParticipant(this.vote!, this.voteParticipant)
       .pipe(takeUntil(this.destroySubject))
       .subscribe({
         next: () => {
+          this.submitBusy = false;
           this.resetVote();
           this.isEditMember = false;
         },
         error: err => {
+          this.submitBusy = false;
           this.snackBar.open('Unbekannter Fehler beim Ändern der Stimme', 'OK');
           console.log(err);
         },

@@ -29,6 +29,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     );
   
   currentUser?: FrontendUser;
+  busy: boolean = false;
   notificationCount: number = 0;
   notificationState: {[type: string]: number} = {};
   readonly notificationTypeConsignee = voteNotificationtypes.consigns;
@@ -52,8 +53,11 @@ export class MainNavComponent implements OnInit, OnDestroy {
   {}
   
   ngOnInit() {
-    this.loggedInSub = this.store.select(authFeature.selectUser)
-      .subscribe(user => this.currentUser = user);
+    this.loggedInSub = this.store.select(authFeature.selectAuthState)
+      .subscribe(state => {
+        this.currentUser = state.user;
+        this.busy = state.busy;
+      });
     this.notificationSub = this.store.select(notificationFeature.selectNotificationState)
       .subscribe(n => {
         this.notificationState = n;

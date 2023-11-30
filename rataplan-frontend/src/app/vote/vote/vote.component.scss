@@ -29,9 +29,10 @@
   width: 100%;
 }
 
-.vote-button {
-  margin-top: 20px;
+.vote-button-container {
   float: right;
+  padding-top: 20px;
+  display: flex;
 }
 
 .vote-change-button {

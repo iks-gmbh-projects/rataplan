@@ -21,6 +21,7 @@ export const AuthActions = {
   CHANGE_PROFILE_DETAILS_ERROR_ACTION: '[Auth] Change Profile Details Error',
   UPDATE_USERDATA_ACTION: '[Auth] Update Userdata',
   UPDATE_USERDATA_SUCCESS_ACTION: '[Auth] Update Userdata Success',
+  UPDATE_USERDATA_ERROR_ACTION: '[Auth] Update Userdata Error',
   LOGOUT_ACTION: '[Auth] Logout',
   DELETE_USER_ACTION: '[Auth] Delete User',
   DELETE_USER_SUCCESS_ACTION: '[Auth] Delete User Success',
@@ -156,6 +157,16 @@ export class UpdateUserdataSuccessAction implements Action {
   }
 }
 
+export class UpdateUserdataErrorAction implements Action {
+  
+  readonly type = AuthActions.UPDATE_USERDATA_ERROR_ACTION;
+  
+  constructor(
+    readonly error: any,
+  ) {
+  }
+}
+
 export class LogoutAction implements Action {
   readonly type = AuthActions.LOGOUT_ACTION;
 }
@@ -198,6 +209,7 @@ export type AuthActions =
   | ChangeProfileDetailsErrorAction
   | UpdateUserdataAction
   | UpdateUserdataSuccessAction
+  | UpdateUserdataErrorAction
   | LogoutAction
   | DeleteUserAction
   | DeleteUserSuccessAction

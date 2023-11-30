@@ -14,6 +14,7 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
   public survey?: Survey;
   public preview: boolean = false;
   private isEdit: boolean = false;
+  public busy: boolean = false;
 
   private sub?: Subscription;
 
@@ -57,15 +58,18 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.busy = true;
     (
       this.isEdit ?
         this.surveys.editSurvey(survey!) :
         this.surveys.createSurvey(survey!)
     ).subscribe({
       next: surv => {
+        this.busy = false;
         this.router.navigate(["/survey", "access", surv.accessId], { relativeTo: this.route });
       },
       error: err => {
+        this.busy = false;
         this.survey!.questionGroups = survey!.questionGroups;
         this.snackBar.open("Unbekannter Fehler beim Erstellen der Umfrage", "OK");
         console.log(err);

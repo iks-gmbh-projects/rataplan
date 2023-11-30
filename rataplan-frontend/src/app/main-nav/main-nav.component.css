@@ -25,4 +25,7 @@ mat-sidenav {
 }
 
 
+.invertedPrimary ::ng-deep circle {
+    stroke: white;
+}
 

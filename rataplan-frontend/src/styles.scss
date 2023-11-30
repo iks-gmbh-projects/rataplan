@@ -105,6 +105,11 @@ body {
   text-align: right;
 }
 
+mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
+  margin: 6px;
+  display: inline-block;
+}
+
 /* Main-Nav */
 
 .sidenav-container {
