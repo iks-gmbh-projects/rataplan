@@ -11,6 +11,7 @@ import {
 } from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { FeedbackComponent } from './feedback/feedback.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ConditionsComponent } from './legals/conditions/conditions.component';
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'privacy', component: PrivacyComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'changes', component: VersionComponent },
+  { path: 'feedback', component: FeedbackComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuardService] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
