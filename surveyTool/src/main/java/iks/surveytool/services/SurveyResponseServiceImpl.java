@@ -34,13 +34,15 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     @Transactional
     public ResponseEntity<SurveyResponseDTO> processSurveyResponseDTOs(SurveyResponseDTO surveyResponseDTO) {
         SurveyResponse surveyResponse = modelMapper.map(surveyResponseDTO, SurveyResponse.class);
-        if(surveyResponse.validate() && validateUniqueParticipation(surveyResponse)) {
-            SurveyResponse savedAnswers = saveSurveyResponse(surveyResponse);
-            SurveyResponseDTO savedAnswerDTOs = modelMapper.map(savedAnswers, SurveyResponseDTO.class);
-            return ResponseEntity.ok(savedAnswerDTOs);
-        } else {
+        if(!surveyResponse.validate()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
+        if(!validateUniqueParticipation(surveyResponse)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        SurveyResponse savedAnswers = saveSurveyResponse(surveyResponse);
+        SurveyResponseDTO savedAnswerDTOs = modelMapper.map(savedAnswers, SurveyResponseDTO.class);
+        return ResponseEntity.ok(savedAnswerDTOs);
     }
     
     @Override
