@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -81,10 +82,12 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
           this.busy = false;
           this.dialogs.open(SurveyAnswerComponent);
         },
-        error: () => {
+        error: (err:HttpErrorResponse) => {
           this.busy = false;
           this.page--;
-          this.snackBars.open("Fehler beim Hochladen der Antwort.", "OK");
+          if(err.status === 409) this.snackBars.open('Einreichung unerfolgreich, Teilnahme bereits vorhanden', 'OK');
+          if(err.status === 422) this.snackBars.open('Einreichung unerfolgreich, Antwort oder Survey war ungültig', 'OK');
+          else this.snackBars.open('Fehler beim Hochladen der Ant wort.', 'OK');
         },
       });
     }
