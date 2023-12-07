@@ -85,9 +85,17 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
         error: (err:HttpErrorResponse) => {
           this.busy = false;
           this.page--;
-          if(err.status === 409) this.snackBars.open('Einreichung unerfolgreich, Teilnahme bereits vorhanden', 'OK');
-          if(err.status === 422) this.snackBars.open('Einreichung unerfolgreich, Antwort oder Survey war ungültig', 'OK');
-          else this.snackBars.open('Fehler beim Hochladen der Ant wort.', 'OK');
+          switch(err.status) {
+          case 409:
+            this.snackBars.open('Sie haben bereits teilgenommen.', 'OK');
+            break;
+          case 422:
+            this.snackBars.open('Hochladen nicht erfolgreich, Antwort oder Umfrage war ungültig.', 'OK');
+            break;
+          default:
+            this.snackBars.open('Fehler beim Hochladen der Antwort: '+err.status, 'OK');
+            break;
+          }
         },
       });
     }
