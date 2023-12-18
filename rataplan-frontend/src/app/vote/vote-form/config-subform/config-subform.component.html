@@ -38,14 +38,14 @@
   <div class="button-space">
     <button
       mat-raised-button
-      routerLink='../general'>Zurück
+      routerLink='../general'><mat-icon>navigate_before</mat-icon>
     </button>
     <button [disabled]='this.configForm.invalid'
             class='right'
             type='button'
             color='primary'
             mat-raised-button
-            (click)='nextPage()'>Weiter
+            (click)='nextPage()'><mat-icon>navigate_next</mat-icon>
     </button>
   </div>
 
