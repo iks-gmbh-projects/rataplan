@@ -110,6 +110,10 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
   display: inline-block;
 }
 
+.mat-dialog-container {
+  height: auto !important;
+}
+
 /* Main-Nav */
 
 .sidenav-container {
