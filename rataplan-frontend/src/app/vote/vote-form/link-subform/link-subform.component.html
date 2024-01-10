@@ -1,0 +1,20 @@
+<div class="wrapper">
+  <h2>Abstimmungslinks</h2>
+  <div>
+    <p>Sie können nun folgenden Link an die Teilnehmer senden:</p>
+    <span>
+      <a [routerLink]='participationLink' #participation>{{ host + participationLink }}</a>
+      <button mat-icon-button [cdkCopyToClipboard]="participation.href">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </span>
+    <p>Hier können Sie die Abstimmung bearbeiten:</p>
+    <span>
+      <a [routerLink]='editLink' #edit>{{ host + editLink }}</a>
+      <button mat-icon-button [cdkCopyToClipboard]="edit.href">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </span>
+    <h5>(Links speichern, da diese ansonsten verloren gehen)</h5>
+  </div>
+</div>

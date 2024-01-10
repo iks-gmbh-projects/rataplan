@@ -1,0 +1,40 @@
+.wrapper {
+  padding: 1em;
+}
+
+.parent-div {
+  max-width: 300px;
+  width: 100%;
+  margin: auto;
+}
+
+.size-div{
+  max-width: 500px;
+  width: 100%;
+  margin: auto;
+}
+
+.button-div {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.bottomSpace {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.inputFieldWrapper {
+  width: 100%;
+}
+.newLine {
+  white-space: normal;
+}
+
+.max-width mat-form-field input {
+  width: 100%;
+}
+
+

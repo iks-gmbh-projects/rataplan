@@ -1,0 +1,218 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+$line-height: 36px;
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-form-field {
+  width: 80vw;
+  max-width: 400px;
+}
+
+.mat-form-field.unlimited {
+  display: block;
+}
+
+.mat-form-field.unlimited, .mat-form-field.inline-unlimited {
+  max-width: unset;
+}
+
+.username {
+  margin-top: 21.5px;
+}
+
+.links {
+  display: flex;
+  width: 80vw;
+  max-width: 400px;
+  justify-content: space-evenly;
+}
+
+.button {
+  display: flex;
+  justify-content: flex-end;
+  width: 80vw;
+  max-width: 400px;
+  margin-top: 1rem;
+  max-height: $line-height;
+
+  button #icon {
+    max-height: 100%;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.wrapper {
+  padding: 0 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/*VoteOption*/
+
+
+/*Survey */
+
+.width {
+  width: 400px;
+  max-width: 80%;
+}
+
+.padded {
+  margin: 2rem;
+}
+
+*:has(>.left,>.middle,>.right) {
+  display: flex;
+}
+
+.left, .middle, .right {
+  position: relative;
+  display: inline-flex;
+}
+
+.left {
+  text-align: left;
+}
+
+.middle {
+  flex-grow: 1;
+}
+
+.right {
+  text-align: right;
+}
+
+mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
+  margin: 6px;
+  display: inline-block;
+}
+
+.mat-dialog-container {
+  height: auto !important;
+}
+
+/* Main-Nav */
+
+.sidenav-container {
+  min-height: calc(100% - 64px);
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.fillRemainingSpace {
+  flex: 1 1 auto;
+}
+
+.button-space {
+  margin-top: 1rem;
+}
+
+.submit-button {
+  margin-left: 1rem;
+}
+
+/* Homepage*/
+
+.neue-abstimmung {
+  width: 40%;
+  margin-left: 30%;
+  margin-right: 30%;
+}
+
+.logo {
+  width: 40%;
+  margin-left: 30%;
+  margin-right: 30%;
+}
+
+/* Legals*/
+
+.inner {
+  padding: 0 10px;
+}
+
+.legals-wrapper {
+  //overflow-y: scroll;
+  padding: 0 min(10%, 30%);
+}
+
+.centered {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.centerText {
+  text-align: center;
+}
+
+.noWrap {
+  white-space: nowrap;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+
+.mat-radio-label-content{
+  white-space: break-spaces
+}
+
+@media(max-width: 500px){
+  .password-reset{
+    display: block;
+    padding: 5px;
+    margin: auto;
+    align-self: center;
+  }
+  .registration{
+    display: block;
+    padding-bottom: 5px;
+    margin: auto;
+    align-self: center;
+  }
+  .links{
+    display: block;
+    text-align: center;
+  }
+  .confirm-account{
+    display: block;
+    padding: 5px;
+    margin: auto;
+    align-self: center;
+  }
+
+}
+

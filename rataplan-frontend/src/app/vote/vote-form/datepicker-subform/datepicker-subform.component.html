@@ -1,0 +1,32 @@
+
+<div>
+  <label>Bitte wählen Sie die Tage an denen ein Event geplant ist</label>
+</div>
+<div>
+  <mat-card class="calendar-card">
+    <mat-calendar #calendar
+                  [minDate]="minDate"
+                  [maxDate]="maxDate"
+                  (selectedChange)="select($event)"
+                  [dateClass]="isSelected">
+    </mat-calendar>
+  </mat-card>
+  <div class="button-space">
+    <button
+
+      mat-raised-button
+      routerLink="../configurationOptions"
+    ><mat-icon>navigate_before</mat-icon>
+    </button>
+    <button
+      [disabled]="!daysSelected.length"
+      class="right"
+      type="button"
+      color="primary"
+      mat-raised-button
+      routerLink="../email"
+    ><mat-icon>navigate_next</mat-icon>
+    </button>
+  </div>
+</div>
+

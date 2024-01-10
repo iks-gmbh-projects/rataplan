@@ -1,0 +1,13 @@
+<h1 class="centered">Änderungen</h1>
+<mat-accordion multi>
+  <mat-expansion-panel *ngFor="let version of patchNotes">
+    <mat-expansion-panel-header>
+      <h3>{{version.releaseDate.toLocaleDateString('de')}} - Version {{version.version}}</h3>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <ul>
+        <li *ngFor="let change of version.notes">{{change}}</li>
+      </ul>
+    </ng-template>
+  </mat-expansion-panel>
+</mat-accordion>

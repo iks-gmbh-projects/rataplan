@@ -1,0 +1,83 @@
+:has(>.center,>.right) {
+  display: grid;
+  grid-template-columns: minmax(min-content, max-content) auto minmax(min-content, max-content);
+}
+
+.left, .center, .right {
+  align-self: center;
+  border-top: 1rem;
+  border-bottom: 1rem;
+}
+
+.left {
+  grid-column: 1;
+}
+
+.center {
+  grid-column: 2;
+}
+
+.right {
+  grid-column: 3;
+}
+
+.break-text {
+  word-break: break-word;
+}
+
+.fill-width {
+  width: 100%;
+}
+
+.vote-button-container {
+  float: right;
+  padding-top: 20px;
+  display: flex;
+}
+
+.vote-change-button {
+  margin-top: 20px;
+}
+
+.back-button {
+  margin-top: 20px;
+}
+
+::ng-deep .member {
+  > span {
+    justify-content: space-between;
+  }
+}
+
+.icon-name {
+    display: flex;
+    align-items: center;
+}
+
+.user-icon {
+  padding-right: 10px;
+}
+
+.topspace {
+  margin-top: 1rem;
+}
+
+.checkedAccept {
+  background-color: limegreen;
+}
+
+.checkedAcceptIfNecessary {
+  background-color: yellow;
+}
+
+.checkedDecline {
+  background-color: red;
+}
+
+.checkedNoAnswer {
+  background-color: lightgray;
+}
+
+.checkedAccept, .checkedAcceptIfNecessary, .checkedDecline, .checkedNoAnswer {
+  scale: 90%;
+}

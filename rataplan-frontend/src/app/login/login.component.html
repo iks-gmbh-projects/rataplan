@@ -1,0 +1,35 @@
+<form class="form-container" (ngSubmit)="login()">
+  <div class="content">
+    <div>
+      <h1>Login</h1>
+    </div>
+    <div class="username">
+      <mat-form-field appearance="fill">
+        <mat-label>Benutzername/Email</mat-label>
+        <input matInput placeholder="Benutzername/E-Mail"
+               autocomplete="off"
+               pattern="\S+"
+               [formControl]="inputField">
+        <mat-error>{{errorMessageService.genericFormError(inputField)}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="password">
+      <mat-form-field appearance="fill">
+        <mat-label>Passwort</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text' "
+               placeholder="Password" [formControl]="password">
+        <mat-error>{{errorMessageService.genericFormError(password)}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="links">
+      <a class="registration" routerLink="/register" queryParamsHandling="merge">Registrieren</a>
+      <a class="password-reset" routerLink="/forgot-password">Passwort vergessen</a>
+      <a class="confirm-account" routerLink="/resend-confirmation-email">Konto bestätigen</a>
+    </div>
+    <div class="button">
+      <mat-spinner *ngIf="isLoading" diameter="30"></mat-spinner>
+      <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="isLoading || !cookieAllowed || loginForm.invalid">Einloggen</button>
+    </div>
+  </div>
+  <mat-error ></mat-error>
+</form>

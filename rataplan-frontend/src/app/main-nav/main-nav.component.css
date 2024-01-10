@@ -1,0 +1,31 @@
+.side-menu-title{
+    text-decoration: none;
+    color: white;
+}
+
+mat-sidenav-content {
+    overflow: unset;
+}
+
+mat-sidenav {
+    overflow-x: hidden;
+}
+
+.bottom-links {
+    position: absolute;
+    margin-top: auto;
+    bottom: 0px;
+    line-break: anywhere;
+}
+
+.bottom-links a {
+    font-size: smaller;
+    color: darkgrey;
+    margin-left: 0.5em;
+}
+
+
+.invertedPrimary ::ng-deep circle {
+    stroke: white;
+}
+

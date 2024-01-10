@@ -1,0 +1,24 @@
+<div class="content">
+  <mat-card class="width" *ngIf="survey">
+    <mat-card-content>
+      <app-survey-form-page
+        [preview]="true"
+        [questionGroup]="previewify(survey.questionGroups[page])"
+        [isFirst]="page==0"
+        (onSubmit)="changePage($event)"
+      ></app-survey-form-page>
+    </mat-card-content>
+    <div>
+      <button class="left" mat-raised-button color="primary" (click)="onSubmit.emit()">
+        Zurück
+      </button>
+      <div class="middle"></div>
+      <div class="right">
+        <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
+        <button mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
+          Erstellen
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>

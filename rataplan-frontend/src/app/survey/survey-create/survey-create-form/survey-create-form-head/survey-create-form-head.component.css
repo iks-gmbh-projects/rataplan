@@ -1,0 +1,24 @@
+.inputFieldWrapper {
+  width: 100%;
+}
+.newLine {
+  white-space: normal;
+}
+
+form {
+  text-align: start;
+}
+
+.max-width {
+  width: 400px;
+  max-width: 80%;
+  margin-left: 7%;
+}
+
+.max-width mat-form-field input {
+  width: 100%;
+}
+
+.nextContainer {
+  text-align: end;
+}

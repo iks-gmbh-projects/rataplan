@@ -1,0 +1,11 @@
+<dataset>
+  <vote title="RAW__##__Coding Dojo" description="RAW__##__Fun with code" organizerMail="RAW__##__iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" decisionType="1" isDescription="1" isStartDate="1" isStartTime="1" isEndDate="1" isEndTime="1" isUrl="1"/>
+
+  <voteOption description="RAW__##__Let's Do Something" url="RAW__##__www.maybe.here" startDate="2050-11-11 11:11:00" endDate="2050-12-12 12:12:00" />
+
+  <voteParticipant />
+  
+  <voteDecision />
+  
+  <backendUserAccess />
+</dataset>

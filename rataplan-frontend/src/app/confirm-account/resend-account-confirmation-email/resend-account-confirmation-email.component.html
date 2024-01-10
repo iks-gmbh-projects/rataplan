@@ -1,0 +1,23 @@
+<div class="content">
+  <h1 class="headline">Bestätigungsemail erneut schicken</h1>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="email">
+      <mat-form-field appearance="fill">
+        <mat-label>E-Mail</mat-label>
+        <input matInput
+               placeholder="Geben Sie Ihre Emailaddresse ein"
+               formControlName="email">
+        <mat-error>{{errorMessageService.genericFormError(form.get('email')!)}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="submit-container">
+      <button type="submit"
+              class="submit-button"
+              mat-raised-button
+              color="primary"
+              [disabled]="form.invalid">
+        Abschicken
+      </button>
+    </div>
+  </form>
+</div>

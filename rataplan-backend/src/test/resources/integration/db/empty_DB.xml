@@ -1,0 +1,12 @@
+<dataset>
+  <vote />
+
+  <voteParticipant />
+  
+  <voteOption />
+
+  <voteDecision />
+  
+  <backendUserAccess />
+
+</dataset>

@@ -1,0 +1,17 @@
+.wrapper {
+  padding: 1em;
+}
+
+.bottomspace {
+  margin-bottom: 1ex;
+}
+
+.middle{
+  display: flex;
+  justify-content: center;
+}
+
+.mat-table {
+  overflow-x: scroll;
+}
+

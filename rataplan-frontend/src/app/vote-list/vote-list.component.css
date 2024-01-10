@@ -1,0 +1,14 @@
+mat-card {
+  margin-bottom: 1ex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wrapper {
+  padding: 1em;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -1,0 +1,30 @@
+<div class="wrapper">
+  <mat-card *ngIf="survey">
+    <mat-card-title>{{survey.name}}</mat-card-title>
+    <mat-card-content>
+      <p>{{survey.description}}</p>
+      <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
+      <p>
+        Teilnahme
+        {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
+        {{survey.anonymousParticipation ? "anonym" : ""}}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-raised-button color="link" [routerLink]="['/survey','participate', survey.participationId]" target="_blank">
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+      <!--ugly workaround for missing angular feature-->
+      <a style="display:none" [routerLink]="['/survey','participate', survey.participationId]" #participationLink></a>
+      <button mat-raised-button color="basic" (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      <a mat-raised-button color="primary" routerLink="edit" *ngIf="!expired">
+        <mat-icon>edit</mat-icon>
+      </a>
+      <a mat-raised-button color="primary" routerLink="results" target="_blank">
+        <mat-icon>analytics</mat-icon>
+      </a>
+    </mat-card-actions>
+  </mat-card>
+</div>

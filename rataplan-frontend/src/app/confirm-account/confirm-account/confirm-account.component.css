@@ -1,0 +1,46 @@
+.loading-container {
+  text-align: center;
+  padding-top: 10%;
+}
+
+.confirm-account-header{
+  margin-bottom: 20px;
+}
+
+.centered-spinner{
+  justify-content: center;
+  margin: auto;
+}
+
+.confirm-account-card {
+  text-align: center;
+  font-weight: 500;
+  line-height: 32px;
+  padding: 10%;
+}
+
+.welcome-header {
+  margin: 0;
+  color: white;
+  background: #3f51b5;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.instruction-container {
+  background: white;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 20px;
+}
+
+.greeting{
+  font-size: 18px;
+  margin-top: auto;
+}
+
+.instruction{
+  font-weight: normal;
+}
