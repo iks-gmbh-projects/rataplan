@@ -11,10 +11,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class Main {
+public class RataplanBackendMain {
 	
 	public static void main(String[] args) {
-		SpringApplication app = new SpringApplication(Main.class);
+		SpringApplication app = new SpringApplication(RataplanBackendMain.class);
 		app.addListeners(new ApplicationPidFileWriter());
 		app.run(args);
 	}

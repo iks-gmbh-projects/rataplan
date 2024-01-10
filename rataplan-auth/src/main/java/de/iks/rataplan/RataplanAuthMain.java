@@ -13,11 +13,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableScheduling
 @Slf4j
 @EnableWebMvc
-public class Main
+public class RataplanAuthMain
 {
     public static void main(String[] args) {
         log.info(SpringVersion.getVersion());
-        SpringApplication app = new SpringApplication(Main.class);
+        SpringApplication app = new SpringApplication(RataplanAuthMain.class);
         app.addListeners(new ApplicationPidFileWriter());
         app.run(args);
     }
