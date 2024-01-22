@@ -52,7 +52,7 @@ public class CryptoServiceImpl implements CryptoService {
         }
     }
     @Override
-    public byte[] decryptDBRaw(String raw) throws CryptoException {
+    public byte[] encryptDBRaw(String raw) throws CryptoException {
         if(raw == null) return null;
         try {
             final Cipher cipher = Cipher.getInstance(dbKey.getAlgorithm());
@@ -69,7 +69,7 @@ public class CryptoServiceImpl implements CryptoService {
     @Override
     public String encryptDB(String raw) throws CryptoException {
         if(raw == null) return null;
-        return Base64.getEncoder().encodeToString(decryptDBRaw(raw));
+        return Base64.getEncoder().encodeToString(encryptDBRaw(raw));
     }
     @Override
     public String decryptDBRaw(byte[] encrypted) throws CryptoException {

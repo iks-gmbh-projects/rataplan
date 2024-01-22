@@ -24,8 +24,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     public void acceptFeedback(FeedbackDTO feedback) {
         feedback.assertValid();
         Feedback entity = new Feedback(
-            cryptoService.decryptDBRaw(feedback.getTitle()),
-            cryptoService.decryptDBRaw(feedback.getText()),
+            cryptoService.encryptDBRaw(feedback.getTitle()),
+            cryptoService.encryptDBRaw(feedback.getText()),
             feedback.getRating(),
             feedback.getCategory()
         );
