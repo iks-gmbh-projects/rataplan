@@ -11,6 +11,7 @@ import {
 } from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { EmailNotificationSettingsComponent } from './email-notification-settings/email-notification-settings.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { HomepageComponent } from './homepage/homepage.component';
@@ -41,6 +42,7 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'view-profile', component: ViewProfileComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'edit-profile', component: EditProfileComponent, canActivate: [ProfilePasswordAuthService] },
+  { path: 'email-settings',  component: EmailNotificationSettingsComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ProfilePasswordAuthService] },

@@ -40,6 +40,7 @@ import { cookieFeature } from './cookie-banner/cookie.feature';
 import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { emailNotificationSettingsFeature } from './email-notification-settings/state/email-notification-settings.feature';
 import { EUDateAdapter } from './eu-date-adapter';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -57,6 +58,7 @@ import { VersionComponent } from './version/version.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
 import { FeedbackDialogComponent } from './dialogs/feedback-dialog/feedback-dialog.component';
+import { EmailNotificationSettingsComponent } from './email-notification-settings/email-notification-settings.component';
 
 registerLocaleData(localeDE);
 
@@ -87,6 +89,7 @@ registerLocaleData(localeDE);
     FeedbackComponent,
     VersionComponent,
     FeedbackDialogComponent,
+    EmailNotificationSettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -115,6 +118,7 @@ registerLocaleData(localeDE);
     StoreModule.forRoot({}),
     StoreModule.forFeature(authFeature),
     StoreModule.forFeature(cookieFeature),
+    StoreModule.forFeature(emailNotificationSettingsFeature),
     StoreModule.forFeature(notificationFeature),
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,

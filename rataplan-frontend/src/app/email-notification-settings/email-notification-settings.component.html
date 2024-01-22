@@ -1,0 +1,80 @@
+<div class="content">
+  <div>
+    <h1 class="headline">Benachrichtigungseinstellungen</h1>
+  </div>
+  <form [formGroup]="form">
+    <span class="column1"></span>
+    <span class="column2">Übergeordnet</span>
+    <span class="column3">Unterdrücken</span>
+    <span class="column4">Sofort senden</span>
+    <span class="column5">Täglich senden</span>
+    <span class="column6">Wöchentlich senden</span>
+    <div>
+      <mat-radio-group formControlName="defaultCycle">
+        <span class="column1">
+            <mat-label>Standard</mat-label>
+        </span>
+        <mat-radio-button class="column3" [value]="EmailCycle.SUPPRESS">
+        </mat-radio-button>
+        <mat-radio-button class="column4" [value]="EmailCycle.INSTANT">
+        </mat-radio-button>
+        <mat-radio-button class="column5" [value]="EmailCycle.DAILY_DIGEST">
+        </mat-radio-button>
+        <mat-radio-button class="column6" [value]="EmailCycle.WEEKLY_DIGEST">
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <hr>
+    <div *ngFor="let category of ((notificationTypeService.categoryTypes$ | async) ?? {}) | keyvalue">
+      <div formGroupName="categorySettings">
+        <mat-radio-group [formControlName]="category.key">
+          <span class="column1">
+            <mat-label [textContent]="notificationCategoryTranslations[category.key] ?? category.key"></mat-label>
+          </span>
+          <mat-radio-button class="column2" [value]="null">
+          </mat-radio-button>
+          <mat-radio-button class="column3" [value]="EmailCycle.SUPPRESS">
+          </mat-radio-button>
+          <mat-radio-button class="column4" [value]="EmailCycle.INSTANT">
+          </mat-radio-button>
+          <mat-radio-button class="column5" [value]="EmailCycle.DAILY_DIGEST">
+          </mat-radio-button>
+          <mat-radio-button class="column6" [value]="EmailCycle.WEEKLY_DIGEST">
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div formGroupName="typeSettings">
+        <mat-radio-group *ngFor="let type of category.value" [formControlName]="type">
+          <span class="column1">
+            <mat-icon>subdirectory_arrow_right</mat-icon>
+            <mat-label [textContent]="notificationTypeTranslations[type] ?? type"></mat-label>
+          </span>
+          <mat-radio-button class="column2" [value]="null">
+          </mat-radio-button>
+          <mat-radio-button class="column3" [value]="EmailCycle.SUPPRESS">
+          </mat-radio-button>
+          <mat-radio-button class="column4" [value]="EmailCycle.INSTANT">
+          </mat-radio-button>
+          <mat-radio-button class="column5" [value]="EmailCycle.DAILY_DIGEST">
+          </mat-radio-button>
+          <mat-radio-button class="column6" [value]="EmailCycle.WEEKLY_DIGEST">
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+  </form>
+  <div class="button-container">
+    <button
+      mat-raised-button color="warn"
+      routerLink="/view-profile"
+    >Zurück
+    </button>
+    <mat-spinner *ngIf="busy$ | async" diameter="24" class="button-spinner"></mat-spinner>
+    <button
+      mat-raised-button color="primary" [style]="(busy$ | async) ? '' : 'margin-left: 36px'"
+      [disabled]="form.invalid" (click)="updateSettings()"
+    >
+      Speichern
+    </button>
+  </div>
+</div>
