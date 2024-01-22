@@ -30,8 +30,7 @@ public class ContactServiceImpl implements ContactService {
         Contact inserted = contactRepository.saveAndFlush(Contact.builder()
             .owner(currentUser)
             .user(userService.getUserFromId(userId))
-            .build()
-        );
+            .build());
         return inserted.getUser().getId();
     }
     
@@ -63,10 +62,7 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional
     public void deleteContact(User currentUser, int toDelete) {
-        contactRepository.deleteById(new ContactId(
-            currentUser,
-            userService.getUserFromId(toDelete)
-        ));
+        contactRepository.deleteById(new ContactId(currentUser, userService.getUserFromId(toDelete)));
     }
     @Override
     @Transactional
@@ -89,22 +85,32 @@ public class ContactServiceImpl implements ContactService {
     }
     @Override
     @Transactional
-    public ContactGroupDTO updateGroup(User currentUser, ContactGroupDTO group) {
-        Optional<ContactGroup> entity = contactGroupRepository.findById(group.getId())
-            .filter(currentUser::owns);
-        entity.ifPresent(grp -> {
-            if(group.getName() != null) grp.setName(cryptoService.encryptDBRaw(group.getName()));
-            if(group.getContacts() != null) grp.setContacts(toContactSet(currentUser, group.getContacts()));
-        });
-        return entity.map(contactGroupRepository::saveAndFlush)
-            .map(this::toDTO)
+    public ContactGroupDTO renameGroup(User currentUser, long groupId, String newName) {
+        Optional<ContactGroup> entity = contactGroupRepository.findById(groupId).filter(currentUser::owns);
+        entity.ifPresent(grp -> grp.setName(cryptoService.encryptDBRaw(newName)));
+        return entity.map(contactGroupRepository::saveAndFlush).map(this::toDTO).orElse(null);
+    }
+    @Override
+    @Transactional
+    public ContactGroupDTO addToGroup(User currentUser, long groupId, int contactId) {
+        return contactRepository.findById(new ContactId(currentUser, userService.getUserFromId(contactId)))
+            .flatMap(ctc -> {
+                Optional<ContactGroup> entity = contactGroupRepository.findById(groupId).filter(currentUser::owns);
+                entity.ifPresent(grp -> grp.getContacts().add(ctc));
+                return entity.map(contactGroupRepository::saveAndFlush).map(this::toDTO);
+            })
             .orElse(null);
     }
     @Override
+    @Transactional
+    public ContactGroupDTO removeFromGroup(User currentUser, long groupId, int contactId) {
+        Optional<ContactGroup> entity = contactGroupRepository.findById(groupId).filter(currentUser::owns);
+        entity.ifPresent(grp -> grp.getContacts().removeIf(ctc -> Objects.equals(ctc.getUser().getId(), contactId)));
+        return entity.map(contactGroupRepository::saveAndFlush).map(this::toDTO).orElse(null);
+    }
+    @Override
     public void deleteGroup(User currentUser, long idToDelete) {
-        contactGroupRepository.findById(idToDelete)
-            .filter(currentUser::owns)
-            .ifPresent(contactGroupRepository::delete);
+        contactGroupRepository.findById(idToDelete).filter(currentUser::owns).ifPresent(contactGroupRepository::delete);
         contactGroupRepository.flush();
     }
 }
