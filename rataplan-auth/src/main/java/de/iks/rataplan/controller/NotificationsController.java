@@ -19,7 +19,7 @@ import static de.iks.rataplan.controller.RataplanAuthRestController.JWT_COOKIE_N
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/notifications")
+@RequestMapping("/v1/notifications")
 public class NotificationsController {
     private final JwtTokenService jwtTokenService;
     private final NotificationService notificationService;
