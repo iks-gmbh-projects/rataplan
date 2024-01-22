@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule } from '@angular-material-components/datetime-picker';
+import { NgChartsModule } from 'ng2-charts';
 
 import { AppCommonModule } from '../app-common.module';
 import { DateRangeComponent } from './date-range/date-range.component';
@@ -46,6 +47,7 @@ import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unkno
     SurveyRoutingModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
+    NgChartsModule,
   ],
   providers: [
     SurveyService,
