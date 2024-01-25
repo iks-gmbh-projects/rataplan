@@ -5,9 +5,10 @@
   </head>
   <body>
      <h1>Hallo!</h1><br><br>
-     <p>Sie wurden soeben zu einer Terminanfrage eingeladen.</p>
+     <p>Sie wurden soeben<th:block th:text="${organizer} ? ' von '+${organizer} : ''"></th:block> zu einer Terminanfrage eingeladen.</p>
      <p>Jetzt müssen Sie nur noch abstimmen:</p>
      <a th:href="@{${url}}" th:text="${url}"></a><br><br><br>
+     <p th:if="${message}" th:text="${message}"></p>
      <p>Vielen Dank, dass Sie drumdibum benutzen.</p>
   </body>
 </html>
