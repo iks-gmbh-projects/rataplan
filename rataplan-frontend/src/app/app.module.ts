@@ -36,6 +36,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ConfirmAccountComponent } from './confirm-account/confirm-account/confirm-account.component';
 import { ConfirmAccountInstructionComponent } from './confirm-account/confirm-account-instruction/confirm-account-instruction.component';
 import { ResendAccountConfirmationEmailComponent } from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
+import { contactsFeature } from './contact-list/contacts.feature';
 import { cookieFeature } from './cookie-banner/cookie.feature';
 import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
@@ -59,6 +60,9 @@ import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
 import { FeedbackDialogComponent } from './dialogs/feedback-dialog/feedback-dialog.component';
 import { EmailNotificationSettingsComponent } from './email-notification-settings/email-notification-settings.component';
+import { ContactListComponent } from './contact-list/contact-list.component';
+import { AddContactComponent } from './contact-list/add-contact/add-contact.component';
+import { GroupDisplayComponent } from './contact-list/group-display/group-display.component';
 
 registerLocaleData(localeDE);
 
@@ -90,6 +94,9 @@ registerLocaleData(localeDE);
     VersionComponent,
     FeedbackDialogComponent,
     EmailNotificationSettingsComponent,
+    ContactListComponent,
+    AddContactComponent,
+    GroupDisplayComponent,
   ],
   imports: [
     BrowserModule,
@@ -117,6 +124,7 @@ registerLocaleData(localeDE);
     MatExpansionModule,
     StoreModule.forRoot({}),
     StoreModule.forFeature(authFeature),
+    StoreModule.forFeature(contactsFeature),
     StoreModule.forFeature(cookieFeature),
     StoreModule.forFeature(emailNotificationSettingsFeature),
     StoreModule.forFeature(notificationFeature),

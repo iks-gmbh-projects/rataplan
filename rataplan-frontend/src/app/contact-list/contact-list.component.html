@@ -1,0 +1,16 @@
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let group of ((groups | async) ?? [])">
+    <mat-expansion-panel-header>
+      <mat-panel-title [textContent]="group.name"></mat-panel-title>
+      <button mat-raised-button (click)="addToGroup(group)">Auswahl Hinzufügen</button>
+    </mat-expansion-panel-header>
+    <app-group-display [contacts]="group.contacts"></app-group-display>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Ohne Gruppe</mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-group-display [contacts]="(ungrouped | async) ?? []"></app-group-display>
+  </mat-expansion-panel>
+</mat-accordion>
+<button mat-button color="primary" (click)="addContact()">Add Contact</button>

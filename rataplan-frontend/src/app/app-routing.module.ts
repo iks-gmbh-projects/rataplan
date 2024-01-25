@@ -9,6 +9,7 @@ import {
 import {
   ResendAccountConfirmationEmailComponent
 } from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
+import { ContactListComponent } from './contact-list/contact-list.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { EmailNotificationSettingsComponent } from './email-notification-settings/email-notification-settings.component';
@@ -46,6 +47,7 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ProfilePasswordAuthService] },
+  { path: 'contacts', component: ContactListComponent, canActivate: [ProfilePasswordAuthService] },
   { path: 'survey', loadChildren: () => import('./survey/survey.module').then(m => m.SurveyModule) },
   { path: 'confirm-account', component: ConfirmAccountInstructionComponent },
   { path: 'confirm-account/:token', component: ConfirmAccountComponent, canActivate: [ AuthGuardService ] },
