@@ -28,9 +28,10 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Date deadline,
         String organizerName,
         String organizerMail,
-        VoteConfig voteConfig
+        VoteConfig voteConfig,
+        String personalisedInvitation
     ) {
-        super(id, title, description, deadline, organizerName, organizerMail, voteConfig);
+        super(id, title, description, deadline, organizerName, organizerMail, voteConfig,  personalisedInvitation);
     }
     
     public CreatorVoteDTO(
@@ -40,9 +41,10 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         String organizerName,
         String organizerMail,
         VoteConfig voteConfig,
-        List<String> consigneeList
+        List<String> consigneeList,
+        String personalisedInvitation
     ) {
-        super(title, description, deadline, organizerName, organizerMail, voteConfig);
+        super(title, description, deadline, organizerName, organizerMail, voteConfig, personalisedInvitation);
         this.consigneeList = consigneeList;
     }
     
@@ -52,9 +54,10 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Date deadline,
         String organizerName,
         String organizerMail,
-        VoteConfig voteConfig
+        VoteConfig voteConfig,
+        String personalisedInvitation
     ) {
-        super(title, description, deadline, organizerName, organizerMail, voteConfig);
+        super(title, description, deadline, organizerName, organizerMail, voteConfig, personalisedInvitation);
     }
     
     @Override

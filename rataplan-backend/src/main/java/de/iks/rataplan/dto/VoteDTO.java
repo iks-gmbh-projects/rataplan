@@ -27,19 +27,22 @@ public class VoteDTO implements Serializable {
     private VoteConfig voteConfig = new VoteConfig();
     private List<VoteOptionDTO> options;
     private List<VoteParticipantDTO> participants;
+    private String personalisedInvitation;
+    
 
-    public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, VoteConfig voteConfig) {
-        this(title, description, deadline, organizerName, organizerMail, voteConfig);
+    public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, VoteConfig voteConfig,  String personalisedInvitation) {
+        this(title, description, deadline, organizerName, organizerMail, voteConfig,personalisedInvitation);
         this.id = id;
     }
     
-    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, VoteConfig voteConfig) {
+    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, VoteConfig voteConfig, String personalisedInvitation) {
         this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.organizerName = organizerName;
         this.organizerMail = organizerMail;
         this.voteConfig = voteConfig;
+        this.personalisedInvitation = personalisedInvitation;
     }
     
     private static boolean nonNullAndBlank(String s) {
