@@ -1,45 +1,52 @@
-
 <form [formGroup]="emailSubform">
-<div>
-  <mat-form-field appearance="fill">
-    <mat-label>Name</mat-label>
-    <input matInput
-           autocomplete="off"
-           type="text"
-           formControlName="name">
-    <mat-error>{{errorMessageService.genericFormError(emailSubform.get('name'))}}</mat-error>
-  </mat-form-field>
-</div>
-<div>
-  <mat-form-field appearance="fill">
-    <mat-label>E-Mail</mat-label>
-    <input matInput
-           autocomplete="off"
-           formControlName="email">
-    <mat-error>{{errorMessageService.genericFormError(emailSubform.get('email'))}}</mat-error>
-  </mat-form-field>
-</div>
-<div>
-  <mat-checkbox>Für das nächste Mal speichern</mat-checkbox>
-</div>
   <div>
-    <mat-form-field appearance='fill'>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        autocomplete="off"
+        type="text"
+        formControlName="name"
+      >
+      <mat-error>{{errorMessageService.genericFormError(emailSubform.get('name'))}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>E-Mail</mat-label>
+      <input
+        matInput
+        autocomplete="off"
+        formControlName="email"
+      >
+      <mat-error>{{errorMessageService.genericFormError(emailSubform.get('email'))}}</mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-checkbox>Für das nächste Mal speichern</mat-checkbox>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
       <mat-label>Personen per E-Mail einladen</mat-label>
       <mat-chip-list #chipList>
-        <mat-chip *ngFor='let email of consigneeList'
-                  (removed)='remove(email)'
-                  (blur)='true'>
+        <mat-chip
+          *ngFor="let email of consigneeList"
+          (removed)="remove(email)"
+          (blur)="true"
+        >
           {{ email }}
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
           </button>
         </mat-chip>
-        <input placeholder='weitere E-Mails...'
-               type='email'
-               formControlName='consigneeList'
-               [matChipInputFor]='chipList'
-               [matChipInputSeparatorKeyCodes]='separatorKeysCodes'
-               (matChipInputTokenEnd)='add($event)'>
+        <input
+          placeholder="weitere E-Mails..."
+          type="email"
+          formControlName="consigneeList"
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)"
+        >
       </mat-chip-list>
     </mat-form-field>
     <mat-error *ngIf='!emailSubform.get("consigneeList")?.valid'>
@@ -47,23 +54,60 @@
     </mat-error>
   </div>
   <div>
-    <button mat-raised-button
-            routerLink='../configuration'
-            (click)="setEmailForm()"><mat-icon>navigate_before</mat-icon>
+    <div *ngIf="personaliseEmailPermitted">
+      <button
+        *ngIf="!personaliseEmailActive; else personaliseEmailContainer"
+        mat-raised-button
+        class="personalise-email-button"
+        color="primary"
+        (click)="personaliseEmail()"
+      >
+        Einlaungstext personalisieren
+      </button>
+    </div>
+    <ng-template #personaliseEmailContainer>
+      <mat-form-field appearance="fill">
+        <mat-label>Personalisierte Nachricht</mat-label>
+        <textarea
+          matInput formControlName="personalisedInvitation"
+        ></textarea>
+      </mat-form-field>
+      <div>
+        <button
+          class="personalise-email-button"
+          mat-raised-button
+          color="warn"
+          (click)="personaliseEmail()"
+        >Einladung Verwerfen
+        </button>
+      </div>
+    </ng-template>
+  </div>
+  <div>
+    <button
+      mat-raised-button
+      routerLink="../configuration"
+      (click)="setEmailForm()"
+    >
+      <mat-icon>navigate_before</mat-icon>
     </button>
     <div class="right">
-      <button type='button'
-              color='primary'
-              mat-raised-button
-              [disabled]='!emailSubform.valid'
-              routerLink='../preview'
-              (click)=setEmailForm()>Vorschau
+      <button
+        type="button"
+        color="primary"
+        mat-raised-button
+        [disabled]="!emailSubform.valid"
+        routerLink="../preview"
+        (click)=setEmailForm()
+      >Vorschau
       </button>
-      <button type='button'
-              color='primary'
-              mat-raised-button
-              [disabled]='!emailSubform.valid'
-              (click)=sendEndOfVoteOption()>Fertig
+      <button
+        type="button"
+        color="primary"
+        mat-raised-button
+        [disabled]="!emailSubform.valid"
+        (click)=sendEndOfVoteOption()
+      >Fertig
       </button>
     </div>
   </div>

@@ -148,6 +148,7 @@ export class SetOrganizerInfoVoteOptionAction implements Action {
       name?: string,
       email?: string,
       consigneeList: string[],
+      personalisedInvitation?:string
     }
   ) {
   }

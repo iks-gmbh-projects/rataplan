@@ -4,10 +4,10 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { filter } from "rxjs/operators";
-import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../../../validator/validators";
-import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from "../../vote.actions";
+import { filter } from 'rxjs/operators';
+import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../../../validator/validators';
+import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../../vote.actions';
 import { voteFeature } from '../../vote.feature';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -20,7 +20,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
   busy = false;
   consigneeList: string[] = [];
-
+  personaliseEmailActive = false;
   emailSubform = new UntypedFormGroup({
     'name': new UntypedFormControl(null, [
       Validators.maxLength(50),
@@ -33,11 +33,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     'consigneeList': new UntypedFormControl(null, [
       Validators.maxLength(60),
       Validators.email,
-    ])
+    ]),
+    'personalisedInvitation': new UntypedFormControl(
+      null),
   });
-
+  
   private storeSub?: Subscription;
-
+  
   constructor(
     private snackBar: MatSnackBar,
     private store: Store,
@@ -66,16 +68,17 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
         }
       });
   }
-
+  
   ngOnDestroy(): void {
     this.storeSub?.unsubscribe();
   }
-
+  
   setEmailForm() {
     this.store.dispatch(new SetOrganizerInfoVoteOptionAction({
       name: this.emailSubform.get('name')?.value || undefined,
       email: this.emailSubform.get('email')?.value || undefined,
       consigneeList: this.consigneeList,
+      personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value
     }));
   }
 
@@ -99,7 +102,12 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     if(consigneeForm?.valid && consigneeForm.value && !this.consigneeList.includes(consigneeForm.value)) {
       this.consigneeList = [...this.consigneeList, consigneeForm.value];
     }
+    if(!this.personaliseEmailActive) this.emailSubform.get('personalisedInvitation')?.setValue(undefined);
     this.setEmailForm();
     this.store.dispatch(new PostVoteAction());
+  }
+  
+  personaliseEmail() {
+    this.personaliseEmailActive = this.personaliseEmailActive ? false : true;
   }
 }

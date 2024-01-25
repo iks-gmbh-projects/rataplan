@@ -24,6 +24,8 @@ export type VoteModel<serialized extends boolean = false> = {
   voteConfig: VoteConfig<serialized>;
   options: VoteOptionModel<serialized>[];
   participants: VoteParticipantModel<serialized>[];
+  
+  personalisedInvitation?:string;
 };
 
 export function deserializeVoteModel(request: VoteModel<boolean>): VoteModel {
