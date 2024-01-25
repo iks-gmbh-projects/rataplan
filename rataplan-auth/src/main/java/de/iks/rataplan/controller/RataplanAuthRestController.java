@@ -37,7 +37,7 @@ public class RataplanAuthRestController {
     
     private final FeedbackService feedbackService;
     
-    private static final String JWT_COOKIE_NAME = "jwttoken";
+    public static final String JWT_COOKIE_NAME = "jwttoken";
     
     private final CookieBuilder cookieBuilder;
     

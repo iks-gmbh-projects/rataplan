@@ -1,0 +1,4 @@
+<dataset>
+	<rataplanuser id="1" username="peter" mail="peter@sch.mitz" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="peter" encrypted="true" accountConfirmed="true" />
+	<rataplanuser id="2" username="hans" mail="hans@mei.er" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="hans" encrypted="true" accountConfirmed="true" />
+</dataset>
