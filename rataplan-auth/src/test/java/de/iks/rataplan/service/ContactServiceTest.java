@@ -140,7 +140,11 @@ public class ContactServiceTest {
         
         AllContactsDTO allContacts2 = contactService.getContacts(2);
         assertNotNull(allContacts);
-        assertIterableEquals(List.of(),  allContacts2.getGroups());
+        assertIterableEquals(List.of(new ContactGroupDTO(
+            2L,
+            "oldGroup",
+            List.of()
+        )),  allContacts2.getGroups());
         assertIterableEquals(List.of(1), allContacts2.getUngrouped());
     }
     
