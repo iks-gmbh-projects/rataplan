@@ -78,6 +78,7 @@ public class RataplanAssert {
 				request.getVoteConfig().getVoteOptionConfig());
 		assertEquals("VoteDTO.config.decisionType", dtoRequest.getVoteConfig().getDecisionType(),
 				request.getVoteConfig().getDecisionType());
+        assertEquals(dtoRequest.getPersonalisedInvitation(),request.getPersonalisedInvitation());
 		if(dtoRequest.getOptions() == null) assertNull("VoteDTO.options", request.getOptions());
 		else assertEquals("VoteDTO.options.size", dtoRequest.getOptions().size(),
 				request.getOptions().size());

@@ -4,7 +4,6 @@ import de.iks.rataplan.domain.*;
 import de.iks.rataplan.service.CryptoService;
 import de.iks.rataplan.testutils.RataplanAssert;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -18,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -53,7 +52,8 @@ public class CreatorVoteDTOTest {
             new Date(1234567890L),
             IKS_NAME,
             IKS_MAIL,
-            new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT)
+            new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT),
+            "message"
         );
         
         Vote vote = mapper.map(dtoVote, Vote.class);
@@ -74,13 +74,13 @@ public class CreatorVoteDTOTest {
         
         RataplanAssert.assertVote(vote, dtoVote);
         
-        VoteOption[] voteOptions = vote.getOptions().toArray(new VoteOption[vote.getOptions().size()]);
-        VoteOptionDTO[] dtoOptions = dtoVote.getOptions().toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
+        VoteOption[] voteOptions = vote.getOptions().toArray(new VoteOption[0]);
+        VoteOptionDTO[] dtoOptions = dtoVote.getOptions().toArray(new VoteOptionDTO[0]);
         
-        Assertions.assertEquals(voteOptions[0].getVote().getId(), dtoOptions[0].getVoteId());
-        Assertions.assertEquals(voteOptions[0].getStartDate(), dtoOptions[0].getStartDate());
-        Assertions.assertEquals(voteOptions[0].getId(), dtoOptions[0].getId());
-        Assertions.assertEquals(voteOptions[0].getDescription().getString(), dtoOptions[0].getDescription());
+        assertEquals(voteOptions[0].getVote().getId(), dtoOptions[0].getVoteId());
+        assertEquals(voteOptions[0].getStartDate(), dtoOptions[0].getStartDate());
+        assertEquals(voteOptions[0].getId(), dtoOptions[0].getId());
+        assertEquals(voteOptions[0].getDescription().getString(), dtoOptions[0].getDescription());
     }
     
     @Test
@@ -92,7 +92,8 @@ public class CreatorVoteDTOTest {
             new Date(1234567890L),
             IKS_NAME,
             IKS_MAIL,
-            new VoteConfig(config, DecisionType.EXTENDED)
+            new VoteConfig(config, DecisionType.EXTENDED),
+            "message"
         );
         dtoVote.setId(1);
         VoteOptionDTO dtoOption = new VoteOptionDTO(new Timestamp(123123123L), "iks Hilden");
@@ -103,13 +104,13 @@ public class CreatorVoteDTOTest {
         
         RataplanAssert.assertVoteDTO(dtoVote, vote);
         
-        VoteOptionDTO[] dtoOptions = dtoVote.getOptions().toArray(new VoteOptionDTO[dtoVote.getOptions().size()]);
-        VoteOption[] voteOptions = vote.getOptions().toArray(new VoteOption[vote.getOptions().size()]);
+        VoteOptionDTO[] dtoOptions = dtoVote.getOptions().toArray(new VoteOptionDTO[0]);
+        VoteOption[] voteOptions = vote.getOptions().toArray(new VoteOption[0]);
         
-        Assertions.assertEquals(dtoOptions[0].getVoteId(), voteOptions[0].getVote().getId());
-        Assertions.assertEquals(dtoOptions[0].getStartDate(), voteOptions[0].getStartDate());
-        Assertions.assertEquals(dtoOptions[0].getId(), voteOptions[0].getId());
-        Assertions.assertEquals(dtoOptions[0].getDescription(), voteOptions[0].getDescription().getString());
+        assertEquals(dtoOptions[0].getVoteId(), voteOptions[0].getVote().getId());
+        assertEquals(dtoOptions[0].getStartDate(), voteOptions[0].getStartDate());
+        assertEquals(dtoOptions[0].getId(), voteOptions[0].getId());
+        assertEquals(dtoOptions[0].getDescription(), voteOptions[0].getDescription().getString());
     }
     
     @Test
@@ -155,12 +156,12 @@ public class CreatorVoteDTOTest {
         RataplanAssert.assertVote(vote, dtoVote);
         
         VoteParticipant[] memberList = vote.getParticipants()
-            .toArray(new VoteParticipant[vote.getParticipants().size()]);
+            .toArray(new VoteParticipant[0]);
         VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
-            .toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
+            .toArray(new VoteParticipantDTO[0]);
         
         for(int i = 0; i < memberList.length; i++) {
-            Assertions.assertEquals(memberList[i].getVoteDecisions().size(),
+            assertEquals(memberList[i].getVoteDecisions().size(),
                 participantDTOList[i].getDecisions().size());
         }
     }
@@ -172,7 +173,8 @@ public class CreatorVoteDTOTest {
             new Date(123456789L),
             IKS_NAME,
             IKS_MAIL,
-            new VoteConfig(new VoteOptionConfig(true, false, true, true, false, false), DecisionType.NUMBER)
+            new VoteConfig(new VoteOptionConfig(true, false, true, true, false, false), DecisionType.NUMBER),
+            "message"
         );
         dtoVote.setId(1);
         
@@ -210,12 +212,12 @@ public class CreatorVoteDTOTest {
         RataplanAssert.assertVoteDTO(dtoVote, vote);
         
         VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
-            .toArray(new VoteParticipantDTO[dtoVote.getParticipants().size()]);
+            .toArray(new VoteParticipantDTO[0]);
         VoteParticipant[] memberList = vote.getParticipants()
-            .toArray(new VoteParticipant[vote.getParticipants().size()]);
+            .toArray(new VoteParticipant[0]);
         
         for(int i = 0; i < participantDTOList.length; i++) {
-            Assertions.assertEquals(participantDTOList[i].getDecisions().size(),
+            assertEquals(participantDTOList[i].getDecisions().size(),
                 memberList[i].getVoteDecisions().size());
         }
     }
