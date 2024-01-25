@@ -1,28 +1,49 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.JwtConfig;
 import de.iks.rataplan.dto.UserDTO;
+import io.jsonwebtoken.Claims;
 
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestExecutionListeners;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@TestExecutionListeners(
-    value = TransactionDbUnitTestExecutionListener.class,
-    mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
-)
+@ExtendWith(MockitoExtension.class)
 public class JwtTokenServiceTest {
-
-	@Autowired
+    @Mock
+    private io.jsonwebtoken.SigningKeyResolver signingKeyResolver;
+    @Mock
+    private CryptoService cryptoService;
 	private JwtTokenService jwtTokenService;
+    
+    @BeforeEach
+    void setup() throws NoSuchAlgorithmException {
+        jwtTokenService = new JwtTokenServiceImpl(
+            cryptoService, new JwtConfig(), signingKeyResolver
+        );
+        KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
+        gen.initialize(2048);
+        KeyPair idKey = gen.generateKeyPair();
+        KeyPair signingKey = gen.generateKeyPair();
+        lenient().when(cryptoService.idKey()).thenReturn(idKey.getPublic());
+        lenient().when(cryptoService.idKeyP()).thenReturn(idKey.getPrivate());
+        lenient().when(signingKeyResolver.resolveSigningKey(Mockito.any(), Mockito.any(Claims.class)))
+            .thenReturn(signingKey.getPublic());
+        
+    }
 
 	@Test
-	public void generateTokenAndValidateTokenAndGetUsernameFromToken() {
+	void generateTokenAndValidateTokenAndGetUsernameFromToken() {
 		UserDTO user = new UserDTO();
 
 		user.setUsername("Peter");
@@ -39,7 +60,7 @@ public class JwtTokenServiceTest {
 	}
 
 	@Test
-	public void generateAccountConfirmationAndRetrieveId(){
+	void generateAccountConfirmationAndRetrieveId(){
 		UserDTO user = new UserDTO();
 		user.setId(1);
 
