@@ -1,4 +1,13 @@
 <dataset>
 	<rataplanuser id="1" username="cGV0ZXI=" mail="cGV0ZXJAc2NoLm1pdHo=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="cGV0ZXI=" accountConfirmed="true" />
 	<rataplanuser id="2" username="aGFucw==" mail="aGFuc0BtZWkuZXI=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="aGFucw==" accountConfirmed="true" />
+    <rataplanuser id="3" username="am9obg==" mail="am9obkBzbS5pdGg=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="am9obg==" accountConfirmed="false" />
+
+    <contact id="1" ownerId="1" userId="1"/>
+    <contact id="2" ownerId="2" userId="2"/>
+    <contact id="3" ownerId="1" userId="3"/>
+    <contactGroup id="1" ownerId="1" name="b2xkR3JvdXA="/>
+    <contactGroup id="2" ownerId="2" name="b2xkR3JvdXA="/>
+    <contactGroup id="3" ownerId="1" name="ZW1wdHlHcm91cA=="/>
+    <contactGroupContent groupId="1" groupOwnerId="1" contactId="1" contactOwnerId="1"/>
 </dataset>
