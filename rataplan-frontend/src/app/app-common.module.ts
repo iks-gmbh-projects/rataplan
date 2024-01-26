@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
 import { DisplayNamePipe } from './pipes/display-name.pipe';
 import { NoWhitespaceDirective } from "./validator/no-whitespace.directive";
 import { SomeNonWhitespaceDirective } from "./validator/some-non-whitespace.directive";
@@ -37,6 +38,7 @@ const declarations = [
   CheckboxCountMinDirective,
   CheckboxCountMaxDirective,
   IntegerDirective,
+  ConfirmDialogComponent,
 ];
 
 const imports = [

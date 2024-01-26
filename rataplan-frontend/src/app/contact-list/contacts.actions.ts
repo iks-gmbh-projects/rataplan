@@ -14,5 +14,7 @@ export const contactActions = createActionGroup({
     'create group': props<{name: string}>(),
     'rename group': props<{id: string|number, name: string}>(),
     'delete group': props<{id: string|number}>(),
+    'add to group': props<{groupId: string|number, contactId: string|number}>(),
+    'remove from group': props<{groupId: string|number, contactId: string|number}>(),
   },
 });

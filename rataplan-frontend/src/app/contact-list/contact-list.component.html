@@ -1,16 +1,50 @@
-<mat-accordion>
-  <mat-expansion-panel *ngFor="let group of ((groups | async) ?? [])">
-    <mat-expansion-panel-header>
-      <mat-panel-title [textContent]="group.name"></mat-panel-title>
-      <button mat-raised-button (click)="addToGroup(group)">Auswahl Hinzufügen</button>
-    </mat-expansion-panel-header>
-    <app-group-display [contacts]="group.contacts"></app-group-display>
-  </mat-expansion-panel>
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>Ohne Gruppe</mat-panel-title>
-    </mat-expansion-panel-header>
-    <app-group-display [contacts]="(ungrouped | async) ?? []"></app-group-display>
-  </mat-expansion-panel>
-</mat-accordion>
-<button mat-button color="primary" (click)="addContact()">Add Contact</button>
+<div class="content">
+  <mat-accordion multi="true" displayMode="flat" class="width">
+    <mat-expansion-panel *ngFor="let group of ((groups | async) ?? [])">
+      <mat-expansion-panel-header>
+        <mat-panel-title [textContent]="group.name"></mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <app-group-display [contacts]="group.contacts" [menu]="groupMenu"></app-group-display>
+        <mat-action-row>
+          <button mat-icon-button (click)="editGroup(group)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="removeGroup(group)">
+            <mat-icon>group_remove</mat-icon>
+          </button>
+        </mat-action-row>
+      </ng-template>
+    </mat-expansion-panel>
+    <mat-expansion-panel *ngIf="(ungrouped | async)?.length" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Ohne Gruppe</mat-panel-title>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <app-group-display
+          [contacts]="(ungrouped | async) ?? []"
+          [menu]="(groups | async)?.length ? groupMenu : null"
+        ></app-group-display>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <span class="right">
+    <button mat-icon-button (click)="addContact()">
+      <mat-icon>person_add_alt</mat-icon>
+    </button>
+    <button mat-icon-button (click)="editGroup()">
+      <mat-icon>group_add</mat-icon>
+    </button>
+  </span>
+</div>
+<mat-menu #groupMenu>
+  <ng-template matMenuContent let-contact="contact">
+    <mat-checkbox
+      *ngFor="let group of ((groups | async) ?? [])"
+      [checked]="containsContact(group, contact)"
+      (change)="assignGroup(group, contact, $event.checked)"
+    >
+      {{ group.name }}
+    </mat-checkbox>
+  </ng-template>
+</mat-menu>
