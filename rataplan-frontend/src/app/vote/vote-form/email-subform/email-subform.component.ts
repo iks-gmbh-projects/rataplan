@@ -8,6 +8,8 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { authFeature } from '../../../authentication/auth.feature';
 import { VoteNotificationSettings } from '../../../models/vote.model';
+import { contactsFeature } from '../../../contact-list/contacts.feature';
+import { ContactGroup } from '../../../models/contact.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
 import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../../vote.actions';
@@ -24,6 +26,9 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
   busy = false;
   consigneeList: string[] = [];
+  contactList: (string|number)[] = [];
+  groupList: ContactGroup[] = [];
+
   isEditing: boolean = false;
   $isLoggedIn: Observable<boolean>;
   $needsEmail: Observable<boolean>;
@@ -53,12 +58,15 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   
   private storeSub?: Subscription;
   
+  readonly allGroups$: Observable<ContactGroup[]>;
+  readonly ungrouped$: Observable<(string|number)[]>;
   constructor(
     private snackBar: MatSnackBar,
     private store: Store,
-    public readonly errorMessageService: FormErrorMessageService,
-  )
-  {
+    public readonly errorMessageService: FormErrorMessageService
+  ) {
+    this.allGroups$ = this.store.select(contactsFeature.selectGroups);
+    this.ungrouped$ = this.store.select(contactsFeature.selectUngrouped);
     this.$isLoggedIn = this.store.select(authFeature.selectUser).pipe(
       map(u => !!u),
     );
@@ -120,6 +128,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     }));
   }
   
+  removeGroup(group: ContactGroup): void {
+    this.groupList = this.groupList.filter(g => g.id !== group.id);
+  }
+  
+  removeContact(contact: string|number): void {
+    this.contactList = this.contactList.filter(c => c !== contact);
+  }
   remove(email: string) {
     const index = this.consigneeList.indexOf(email);
     if(index >= 0) {
@@ -127,6 +142,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     }
   }
   
+  addGroup(group: ContactGroup): void {
+    this.groupList = [...this.groupList, group];
+  }
+  
+  addContact(contact: string|number): void {
+    this.contactList = [...this.contactList, contact];
+  }
   add(email: MatChipInputEvent) {
     if(email.value && this.consigneeList.indexOf(email.value) < 0 && this.emailSubform.get('consigneeList')?.valid) {
       this.consigneeList = [...this.consigneeList, email.value.toLowerCase()];
