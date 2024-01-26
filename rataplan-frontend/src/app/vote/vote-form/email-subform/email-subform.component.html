@@ -1,26 +1,30 @@
 <div class="centered">
   <form [formGroup]="emailSubform" class="left-bound">
-  <div>
-    <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
-      <input
-        matInput
-        autocomplete="off"
-        type="text"
-        formControlName="name"
-      >
-      <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('name')) }}</mat-error>
-    </mat-form-field>
-  </div>
-  <div *ngIf="!($isLoggedIn | async)" formGroupName="notificationSettings">
-    <mat-checkbox formControlName="sendLinkMail">Sende mir die Links in einer Email</mat-checkbox><br>
-    <mat-checkbox formControlName="notifyParticipation">Informiere mich per Email über Teilnahmen</mat-checkbox><br>
-    <mat-checkbox formControlName="notifyExpiration">Informiere mich per Email über das Ende der Abstimmung</mat-checkbox><br>
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input
+          matInput
+          autocomplete="off"
+          type="text"
+          formControlName="name"
+        >
+        <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('name')) }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div *ngIf="!($isLoggedIn | async)" formGroupName="notificationSettings">
+      <mat-checkbox formControlName="sendLinkMail">Sende mir die Links in einer Email</mat-checkbox>
+      <br>
+      <mat-checkbox formControlName="notifyParticipation">Informiere mich per Email über Teilnahmen</mat-checkbox>
+      <br>
+      <mat-checkbox formControlName="notifyExpiration">Informiere mich per Email über das Ende der Abstimmung
+      </mat-checkbox>
+      <br>
       <mat-form-field *ngIf="$needsEmail | async" appearance="fill">
-      <mat-label>E-Mail</mat-label>
-      <input
-        matInput
-        formControlName="recipientEmail"
+        <mat-label>E-Mail</mat-label>
+        <input
+          matInput
+          formControlName="recipientEmail"
         >
         <mat-error>{{ errorMessageService.genericFormError(emailSubform.get(['notificationSettings', 'recipientEmail'])) }}</mat-error>
       </mat-form-field>
@@ -33,9 +37,30 @@
         <mat-label>Personen per E-Mail einladen</mat-label>
         <mat-chip-list #chipList>
           <mat-chip
+            *ngFor="let group of groupList"
+            (removed)="removeGroup(group)"
+          >
+            <mat-icon matChipAvatar>group</mat-icon>
+            {{ group.name }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+          <mat-chip
+            *ngFor="let contact of contactList"
+            (removed)="removeContact(contact)"
+          >
+            <mat-icon matChipAvatar>person</mat-icon>
+            <span>
+            <span [textContent]="contact | displayName | async"></span>
+          </span>
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+          <mat-chip
             *ngFor="let email of consigneeList"
             (removed)="remove(email)"
-            (blur)="true"
           >
             {{ email }}
             <button matChipRemove>
@@ -55,6 +80,9 @@
       <mat-error *ngIf='!emailSubform.get("consigneeList")?.valid'>
         Bitte geben Sie gültige Emails an
       </mat-error>
+      <button mat-icon-button [matMenuTriggerFor]="groupMenu">
+        <mat-icon>group_add</mat-icon>
+      </button>
     </div>
     <div>
       <div *ngIf="!isEditing && ($isLoggedIn | async)">
@@ -87,13 +115,14 @@
       </div>
     </div>
     <div class="navigate-submit-multiple-button-space">
-    <button mat-raised-button
-      routerLink="../configuration"
-      (click)="setEmailForm()"
-    >
-      <mat-icon>navigate_before</mat-icon>
-    </button>
-    <div >
+      <button
+        mat-raised-button
+        routerLink="../configuration"
+        (click)="setEmailForm()"
+      >
+        <mat-icon>navigate_before</mat-icon>
+      </button>
+      <div class="right">
         <button
           type="button"
           color="primary"
@@ -114,4 +143,38 @@
       </div>
     </div>
   </form>
+  <mat-menu #groupMenu>
+    <button
+      *ngFor="let group of ((allGroups$ | async) ?? [])"
+      mat-menu-item
+      [matMenuTriggerFor]="contactSubmenu"
+      [matMenuTriggerData]="{group}"
+    >
+      <mat-icon>group</mat-icon>
+      <span [textContent]="group.name"></span>
+    </button>
+    <button
+      *ngIf="(ungrouped$ | async)?.length"
+      mat-menu-item
+      [matMenuTriggerFor]="contactSubmenu"
+      [matMenuTriggerData]="{group:{contacts:(ungrouped$ | async)}}"
+    >
+      Gruppenlos
+    </button>
+  </mat-menu>
+  
+  <mat-menu #contactSubmenu>
+    <ng-template matMenuContent let-group="group">
+      <button mat-menu-item *ngIf="group.id" (click)="addGroup(group)">
+        <mat-icon>group_add</mat-icon>
+        Gruppe Einladen
+      </button>
+      <button mat-menu-item *ngFor="let contact of group.contacts" (click)="addContact(contact)">
+        <mat-icon>person_add_alt</mat-icon>
+        <span>
+        <span [textContent]="contact | displayName | async"></span>
+      </span>
+      </button>
+    </ng-template>
+  </mat-menu>
 </div>
