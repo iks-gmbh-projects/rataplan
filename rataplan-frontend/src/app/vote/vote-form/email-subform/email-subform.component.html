@@ -35,7 +35,7 @@
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Personen per E-Mail einladen</mat-label>
-        <mat-chip-list #chipList>
+        <mat-chip-list #chipList formControlName="consigneeList">
           <mat-chip
             *ngFor="let group of groupList"
             (removed)="removeGroup(group)"
@@ -54,35 +54,35 @@
             <span>
             <span [textContent]="contact | displayName | async"></span>
           </span>
-            <button matChipRemove>
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-          <mat-chip
-            *ngFor="let email of consigneeList"
-            (removed)="remove(email)"
-          >
-            {{ email }}
-            <button matChipRemove>
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-          <input
-            placeholder="weitere E-Mails..."
-            type="email"
-            formControlName="consigneeList"
-            [matChipInputFor]="chipList"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            (matChipInputTokenEnd)="add($event)"
-          >
-        </mat-chip-list>
-      </mat-form-field>
-      <mat-error *ngIf='!emailSubform.get("consigneeList")?.valid'>
-        Bitte geben Sie gültige Emails an
-      </mat-error>
-      <button mat-icon-button [matMenuTriggerFor]="groupMenu">
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <mat-chip
+          *ngFor="let email of consigneeList"
+          (removed)="remove(email)"
+        >
+          {{ email }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <input
+          placeholder="weitere E-Mails..."
+          type="email"
+          formControlName="consigneeList"
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)"
+        >
+      </mat-chip-list>
+      <button mat-icon-button matSuffix [matMenuTriggerFor]="groupMenu">
         <mat-icon>group_add</mat-icon>
       </button>
+    </mat-form-field>
+    <mat-error *ngIf='!emailSubform.get("consigneeList")?.valid'>
+      Bitte geben Sie gültige Emails an
+    </mat-error>
     </div>
     <div>
       <div *ngIf="!isEditing && ($isLoggedIn | async)">
