@@ -34,12 +34,12 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   $needsEmail: Observable<boolean>;
   personaliseEmailActive = false;
   emailSubform = new FormGroup({
-    'name': new FormControl<string | null>(null, [
+    'name': new FormControl<string|null>(null, [
       Validators.maxLength(50),
       ExtraValidators.containsSomeWhitespace,
     ]),
     'notificationSettings': new FormGroup({
-      'recipientEmail': new FormControl<string | null>(null, [
+      'recipientEmail': new FormControl<string|null>(null, [
         Validators.maxLength(100),
         Validators.email,
       ]),
@@ -47,7 +47,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       'notifyParticipation': new FormControl<boolean>(false),
       'notifyExpiration': new FormControl<boolean>(false),
     }),
-    'consigneeList': new FormControl<string | null>(null, [
+    'consigneeList': new FormControl<string|null>(null, [
       Validators.maxLength(60),
       Validators.email,
     ]),
@@ -123,7 +123,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     this.store.dispatch(new SetOrganizerInfoVoteOptionAction({
       name: this.emailSubform.get('name')?.value || undefined,
       notificationSettings: this.validateNotificationSettings(this.emailSubform.get('notificationSettings')?.value),
-      consigneeList: this.consigneeList,
+      consigneeList: [
+        // ...[
+        //   ...this.groupList.flatMap(g => g.contacts),
+        //   ...this.contactList
+        // ].map(c => c.mail),
+        ...this.consigneeList
+      ],
       personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value ?? undefined,
     }));
   }
