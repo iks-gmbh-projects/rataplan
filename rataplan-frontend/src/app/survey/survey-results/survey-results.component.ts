@@ -1,9 +1,42 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ChartData } from 'chart.js';
+import { ChartData, Color } from 'chart.js';
 import { Subscription } from 'rxjs';
 import { Question, Survey, SurveyResponse } from '../survey.model';
 import { SurveyService } from '../survey.service';
+
+const reds: Color[] = [
+  '#800000',
+  '#e6194B',
+]
+
+const greens: Color[] = [
+  '#3cb44b',
+  '#aaffc3',
+];
+
+const colors: Color[] = [
+  '#4363d8',
+  '#f58231',
+  '#ffe119',
+  '#42d4f4',
+  '#f032e6',
+  '#fabed4',
+  '#469990',
+  '#dcbeff',
+  '#9A6324',
+  '#fffac8',
+  '#000075',
+  '#a9a9a9',
+  '#ffffff',
+  '#000000',
+];
+
+function* inf<T>(it: Iterable<T>): Generator<T> {
+  while(true) {
+    for(const v of it) yield v;
+  }
+}
 
 @Component({
   selector: 'app-survey-results',
@@ -34,13 +67,6 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
   public ngOnChanges(changes: SimpleChanges): void {
     console.log(changes);
   }
-  
-  public checkboxChecked(response: SurveyResponse, questionId: string | number, checkboxId: string | number): boolean {
-    return (
-      response.answers[questionId].checkboxes || {}
-    )[checkboxId];
-  }
-  
   private fetchAnswers(survey: Survey): void {
     if(this.survey === survey) return;
     this.busy = true;
@@ -79,6 +105,10 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
           if(!question.id || !question.checkboxGroup?.checkboxes) continue;
           const dataset: number[] = [];
           const datalabels: string[] = [];
+          const datacolors: Color[] = [];
+          const red = inf(reds);
+          const green = inf(greens);
+          const other = inf(colors);
           for(const checkbox of question.checkboxGroup.checkboxes) {
             if(!checkbox.id) continue;
             let count = 0;
@@ -88,12 +118,18 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
             }
             dataset.push(count);
             datalabels.push(checkbox.text);
+            if(/ja|yes/i.test(checkbox.text)) datacolors.push(green.next().value);
+            else if(/nein|no/i.test(checkbox.text)) datacolors.push(red.next().value);
+            else datacolors.push(other.next().value);
           }
-          if(dataset.reduce((a, v) => a+v, 0) === 0) continue;
+          if(dataset.reduce((a, v) => a + v, 0) === 0) continue;
           this.data[question.id] = {
-            datasets: [{data: dataset}],
+            datasets: [{
+              data: dataset,
+              backgroundColor: datacolors,
+            }],
             labels: datalabels,
-          }
+          };
         }
       },
       error: err => {
