@@ -15,11 +15,11 @@
             <div *ngIf="error; else success">Fehler beim Laden der Daten</div>
             <ng-template #success>
               <div class="bottomspace" *ngFor="let group of survey.questionGroups">
-                <h4>{{ 'g' + group.title }}</h4>
+                <h4>{{ group.title }}</h4>
                 <div class="bottomspace" *ngFor="let question of group.questions">
                   <mat-expansion-panel *ngIf="question.id">
                     <mat-expansion-panel-header>
-                      <mat-panel-title>{{ 'b' + question.text }}</mat-panel-title>
+                      <mat-panel-title>{{ question.text }}</mat-panel-title>
                     </mat-expansion-panel-header>
                     <canvas *ngIf="data[question.id]" baseChart type="pie" [data]="data[question.id]"></canvas>
                     <div class="mat-table">
