@@ -181,6 +181,17 @@ export class VoteComponent implements OnInit, OnDestroy {
     });
   }
   
+  countParticipants(option: VoteOptionModel): `${number} (${number})`|`${number}` {
+    const decisions = this.vote.participants.map(p => p.decisions.find(v => v.optionId === option.id)!);
+    const accepted = decisions.reduce((a, d) => a+(
+        (d.decision ?? VoteOptionDecisionType.ACCEPT) === VoteOptionDecisionType.ACCEPT
+          ? d.participants ?? 1
+          : 0
+      ), 0);
+    if(this.vote.voteConfig.decisionType !== DecisionType.EXTENDED) return `${accepted}`;
+    return `${accepted} (${decisions.reduce((a, d) => a+(d.decision === VoteOptionDecisionType.ACCEPT_IF_NECESSARY ? 1 : 0), accepted)})`;
+  }
+  
   setParticipantNumber(vote: VoteOptionModel, participants: number | `${number}`) {
     const index = this.vote!.options.indexOf(vote);
     const voteDecision = this.voteParticipant.decisions[index];

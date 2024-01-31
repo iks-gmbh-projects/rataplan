@@ -93,10 +93,12 @@
         <div class="right centerText noWrap">
           <button
             mat-icon-button
-            (click)="openDialog(option)"
-          >
-            <mat-icon>info</mat-icon>
-          </button>
+            class="verticalCenter"
+          (click)="openDialog(option)"
+        >
+          <mat-icon>info</mat-icon>
+        </button>
+        <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option)"></span>
           <mat-form-field
             *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
             appearance="fill"
