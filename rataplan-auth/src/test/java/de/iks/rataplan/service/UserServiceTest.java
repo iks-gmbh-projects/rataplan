@@ -1,8 +1,11 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.JwtConfig;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
+import de.iks.rataplan.repository.UserRepository;
+import io.jsonwebtoken.SigningKeyResolver;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -12,11 +15,17 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestExecutionListeners;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -25,8 +34,19 @@ import static de.iks.rataplan.testutils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(
+    classes = {
+        UserServiceImpl.class,
+        JwtTokenServiceImpl.class,
+        DataSourceAutoConfiguration.class,
+        HibernateJpaAutoConfiguration.class,
+        FlywayAutoConfiguration.class,
+        JwtConfig.class,
+        BCryptPasswordEncoder.class
+    }
+)
+@EntityScan(basePackageClasses = User.class)
+@EnableJpaRepositories(basePackageClasses = UserRepository.class)
 @TestExecutionListeners(
     value = TransactionDbUnitTestExecutionListener.class,
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
@@ -44,14 +64,25 @@ public class UserServiceTest {
     private JwtTokenService jwtTokenService;
     @MockBean
     private CryptoService cryptoService;
+    @MockBean
+    private SurveyToolMessageService stms;
+    @MockBean
+    private BackendMessageService bms;
+    @MockBean
+    private SigningKeyResolver skr;
     
     @BeforeEach
     public void setup() throws NoSuchAlgorithmException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         KeyPair keyPair = kpg.generateKeyPair();
-        when(cryptoService.encryptDB(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
-        when(cryptoService.decryptDB(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
-        when(cryptoService.ensureEncrypted(isA(User.class))).thenAnswer(invocation -> invocation.getArgument(0, User.class));
+        when(cryptoService.encryptDBRaw(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class)
+            .getBytes(StandardCharsets.UTF_8));
+        when(cryptoService.encryptDB(anyString())).thenCallRealMethod();
+        when(cryptoService.decryptDBRaw(any())).thenAnswer(invocation -> new String(invocation.getArgument(
+            0,
+            byte[].class
+        ), StandardCharsets.UTF_8));
+        when(cryptoService.decryptDB(any())).thenCallRealMethod();
         when(cryptoService.idKeyP()).thenReturn(keyPair.getPrivate());
         when(cryptoService.idKey()).thenReturn(keyPair.getPublic());
     }
@@ -80,36 +111,36 @@ public class UserServiceTest {
     @DatabaseSetup(USER_FILE_INITIAL)
     @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserShouldFailUsernameAlreadyExists() {
-        assertThrows(UsernameAlreadyInUseException.class, () -> {
-            userService.registerUser(new UserDTO(1, "PeTEr", "peter", "neuerpeter@sch.mitz", "password"));
-        });
+        assertThrows(UsernameAlreadyInUseException.class,
+            () -> userService.registerUser(new UserDTO(1, "PeTEr", "peter", "neuerpeter@sch.mitz", "password"))
+        );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
     @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserShouldFailMailAlreadyExists() {
-        assertThrows(MailAlreadyInUseException.class, () -> {
-            userService.registerUser(new UserDTO(1, "neuerpeter", "peter", "PEtEr@scH.MiTz", "password"));
-        });
+        assertThrows(MailAlreadyInUseException.class,
+            () -> userService.registerUser(new UserDTO(1, "neuerpeter", "peter", "PEtEr@scH.MiTz", "password"))
+        );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
     @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserShouldFailUsernameOnlyWhitespace() {
-        assertThrows(InvalidUserDataException.class, () -> {
-            userService.registerUser(new UserDTO(1, "  ", "peter", "neuerpeter@sch.mitz", "password"));
-        });
+        assertThrows(InvalidUserDataException.class,
+            () -> userService.registerUser(new UserDTO(1, "  ", "peter", "neuerpeter@sch.mitz", "password"))
+        );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
     @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void registerUserShouldFailEmailOnlyWhitespace() {
-        assertThrows(InvalidUserDataException.class, () -> {
-            userService.registerUser(new UserDTO(1, "neuerpeter", "peter", "  ", "password"));
-        });
+        assertThrows(InvalidUserDataException.class,
+            () -> userService.registerUser(new UserDTO(1, "neuerpeter", "peter", "  ", "password"))
+        );
     }
     
     @Test
@@ -125,27 +156,27 @@ public class UserServiceTest {
     @DatabaseSetup(USER_FILE_INITIAL)
     @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void loginUserWithUsernameShouldFailUsernameDoesNotExist() {
-        assertThrows(WrongCredentialsException.class, () -> {
-            userService.loginUser(new UserDTO(1, "DoesNotExist", null, null, "geheim"));
-        });
+        assertThrows(WrongCredentialsException.class,
+            () -> userService.loginUser(new UserDTO(1, "DoesNotExist", null, null, "geheim"))
+        );
     }
     
     @Test
     @DatabaseSetup(ENCRYPTED_USER_FILE_INITIAL)
     @ExpectedDatabase(value = ENCRYPTED_USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void loginUserWithUsernameShouldFailUsernameDoesNotExist2() {
-        assertThrows(WrongCredentialsException.class, () -> {
-            userService.loginUser(new UserDTO(1, "/L81z0oXEO3vgkU25CCiIw==", null, null, "geheim"));
-        });
+        assertThrows(WrongCredentialsException.class,
+            () -> userService.loginUser(new UserDTO(1, "/L81z0oXEO3vgkU25CCiIw==", null, null, "geheim"))
+        );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
     @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void loginUserWithUsernameShouldFailWrongPassword() {
-        assertThrows(WrongCredentialsException.class, () -> {
-            userService.loginUser(new UserDTO(1, "PEtEr", null, null, "wrongPassword"));
-        });
+        assertThrows(WrongCredentialsException.class,
+            () -> userService.loginUser(new UserDTO(1, "PEtEr", null, null, "wrongPassword"))
+        );
     }
     
     @Test
@@ -162,27 +193,27 @@ public class UserServiceTest {
     @DatabaseSetup(USER_FILE_INITIAL)
     @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void loginUserWithMailShouldFailWrongPassword() {
-        assertThrows(WrongCredentialsException.class, () -> {
-            userService.loginUser(new UserDTO(1, null, null, "peter@sch.mitz", "wrongPassword"));
-        });
+        assertThrows(WrongCredentialsException.class,
+            () -> userService.loginUser(new UserDTO(1, null, null, "peter@sch.mitz", "wrongPassword"))
+        );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
     @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void loginUserWithMailShouldFailMailDoesNotExist() {
-        assertThrows(WrongCredentialsException.class, () -> {
-            userService.loginUser(new UserDTO(1, null, null, "does@not.exist", "wrongPassword"));
-        });
+        assertThrows(WrongCredentialsException.class,
+            () -> userService.loginUser(new UserDTO(1, null, null, "does@not.exist", "wrongPassword"))
+        );
     }
     
     @Test
     @DatabaseSetup(ENCRYPTED_USER_FILE_INITIAL)
     @ExpectedDatabase(value = ENCRYPTED_USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
     public void loginUserWithUsernameShouldFailMailDoesNotExist2() {
-        assertThrows(WrongCredentialsException.class, () -> {
-            userService.loginUser(new UserDTO(1, "KoBbpLwGdBuAgJDBBIYmfQ==", null, null, "geheim"));
-        });
+        assertThrows(WrongCredentialsException.class,
+            () -> userService.loginUser(new UserDTO(1, "KoBbpLwGdBuAgJDBBIYmfQ==", null, null, "geheim"))
+        );
     }
     
     @Test
@@ -205,9 +236,9 @@ public class UserServiceTest {
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
     public void loginShouldFailIfAccountNotConfirmed() {
-        assertThrows(UnconfirmedAccountException.class, () -> {
-            userService.loginUser(new UserDTO(3, "john", null, null, "geheim"));
-        });
+        assertThrows(UnconfirmedAccountException.class,
+            () -> userService.loginUser(new UserDTO(3, "john", null, null, "geheim"))
+        );
     }
     
     @Test
@@ -237,6 +268,6 @@ public class UserServiceTest {
     @Test
     @DatabaseSetup(value = USER_FILE_INITIAL)
     public void getEmailFromId() {
-        assertEquals("peter@sch.mitz", userService.getUserFromId(1).getMail());
+        assertEquals("peter@sch.mitz", cryptoService.decryptDB(userService.getUserFromId(1).getMail()));
     }
 }

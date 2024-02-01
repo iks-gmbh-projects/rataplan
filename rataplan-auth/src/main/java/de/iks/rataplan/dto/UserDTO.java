@@ -1,11 +1,8 @@
 package de.iks.rataplan.dto;
 
-import de.iks.rataplan.domain.User;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class UserDTO {
 
     private Integer id;
@@ -17,23 +14,19 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(int id, String userName, String displayName, String mail) {
+    public UserDTO(Integer id, String userName, String displayName, String mail) {
         this.id = id;
         this.username = userName;
         this.displayname = displayName;
         this.mail = mail;
     }
 
-    public UserDTO(int id, String userName, String displayName, String mail, String password) {
+    public UserDTO(Integer id, String userName, String displayName, String mail, String password) {
         this.id = id;
         this.username = userName;
         this.displayname = displayName;
         this.mail = mail;
         this.password = password;
-    }
-
-    public UserDTO(User user) {
-        this(user.getId(), user.getUsername(), user.getDisplayname(), user.getMail());
     }
 
     public void trimUserCredentials() {

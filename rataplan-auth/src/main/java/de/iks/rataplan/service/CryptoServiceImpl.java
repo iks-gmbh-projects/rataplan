@@ -1,8 +1,7 @@
 package de.iks.rataplan.service;
 
-import de.iks.rataplan.config.IDKeyConfig;
 import de.iks.rataplan.config.DBKeyConfig;
-import de.iks.rataplan.domain.User;
+import de.iks.rataplan.config.IDKeyConfig;
 import de.iks.rataplan.exceptions.CryptoException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,11 +66,6 @@ public class CryptoServiceImpl implements CryptoService {
         }
     }
     @Override
-    public String encryptDB(String raw) throws CryptoException {
-        if(raw == null) return null;
-        return Base64.getEncoder().encodeToString(encryptDBRaw(raw));
-    }
-    @Override
     public String decryptDBRaw(byte[] encrypted) throws CryptoException {
         if(encrypted == null) return null;
         try {
@@ -85,22 +79,6 @@ public class CryptoServiceImpl implements CryptoService {
             BadPaddingException ex) {
             throw new CryptoException(ex);
         }
-    }
-    @Override
-    public String decryptDB(String encrypted) throws CryptoException {
-        if(encrypted == null) return null;
-        return decryptDBRaw(Base64.getDecoder().decode(encrypted));
-    }
-    
-    @Override
-    public User ensureEncrypted(User user) throws CryptoException {
-        if(user != null && !user.isEncrypted()) {
-            user.setMail(encryptDB(user.getMail()));
-            user.setUsername(encryptDB(user.getUsername()));
-            user.setDisplayname(encryptDB(user.getDisplayname()));
-            user.setEncrypted(true);
-        }
-        return user;
     }
     
     @Override

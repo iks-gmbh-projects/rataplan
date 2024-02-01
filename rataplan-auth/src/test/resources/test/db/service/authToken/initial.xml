@@ -1,7 +1,7 @@
 <dataset>
-	<rataplanuser id="1" username="peter" mail="peter@sch.mitz" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="peter" encrypted="false" version="1" accountconfirmed="true"/>
-	<rataplanuser id="2" username="hans" mail="hans@mei.er" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="hans" encrypted="false" version="1" accountconfirmed="true"/>
-	<rataplanuser id="3" username="/L81z0oXEO3vgkU25CCiIw==" mail="KoBbpLwGdBuAgJDBBIYmfQ==" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="/L81z0oXEO3vgkU25CCiIw==" encrypted="true" version="1" accountconfirmed="true" />
+	<rataplanuser id="1" username="cGV0ZXI=" mail="cGV0ZXJAc2NoLm1pdHo=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="cGV0ZXI=" version="1" accountconfirmed="true"/>
+	<rataplanuser id="2" username="aGFucw==" mail="aGFuc0BtZWkuZXI=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="aGFucw==" version="1" accountconfirmed="true"/>
+	<rataplanuser id="3" username="/L81z0oXEO3vgkU25CCiIw==" mail="KoBbpLwGdBuAgJDBBIYmfQ==" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="/L81z0oXEO3vgkU25CCiIw==" version="1" accountconfirmed="true" />
 
     <auth_token/>
 </dataset>

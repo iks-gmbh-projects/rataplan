@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -54,9 +55,12 @@ public class RataplanAuthRestControllerIT {
     
     @BeforeEach
     void setup() throws NoSuchAlgorithmException {
-        lenient().when(cryptoService.ensureEncrypted(any())).thenCallRealMethod();
-        lenient().when(cryptoService.encryptDB(anyString())).then(a -> a.getArgument(0));
-        lenient().when(cryptoService.decryptDB(anyString())).then(a -> a.getArgument(0));
+        lenient().when(cryptoService.encryptDBRaw(anyString()))
+            .then(a -> a.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8));
+        lenient().when(cryptoService.decryptDBRaw(any(byte[].class)))
+            .then(a -> new String(a.getArgument(0), StandardCharsets.UTF_8));
+        lenient().when(cryptoService.decryptDB(any())).thenCallRealMethod();
+        lenient().when(cryptoService.encryptDB(anyString())).thenCallRealMethod();
         
         KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
         gen.initialize(2048);

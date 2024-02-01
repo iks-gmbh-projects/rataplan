@@ -1,5 +1,5 @@
 <dataset>
-	<rataplanuser username="peter" mail="peter@sch.mitz" displayname="peter" encrypted="true" accountConfirmed="true" />
-	<rataplanuser username="hans" mail="hans@mei.er" displayname="hans" encrypted="true" accountConfirmed="true" />
-	<rataplanuser username="fritz" mail="fritz@fri.tte" displayname="fritz" encrypted="true" accountConfirmed="false" />
+	<rataplanuser username="cGV0ZXI=" mail="cGV0ZXJAc2NoLm1pdHo=" displayname="cGV0ZXI=" accountConfirmed="true" />
+	<rataplanuser username="aGFucw==" mail="aGFuc0BtZWkuZXI=" displayname="aGFucw==" accountConfirmed="true" />
+	<rataplanuser username="ZnJpdHo=" mail="ZnJpdHpAZnJpLnR0ZQ==" displayname="ZnJpdHo=" accountConfirmed="false" />
 </dataset>
