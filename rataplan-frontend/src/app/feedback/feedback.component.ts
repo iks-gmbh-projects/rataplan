@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { catchError, of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { catchError, of, Subscription } from 'rxjs';
 
 import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
 import { FeedbackCategory, FeedbackService } from './feedback.service';
@@ -11,7 +12,7 @@ import { FeedbackCategory, FeedbackService } from './feedback.service';
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.css'],
 })
-export class FeedbackComponent {
+export class FeedbackComponent implements OnInit, OnDestroy {
   readonly form = new FormGroup({
     title: new FormControl<string>('', Validators.required),
     text: new FormControl<string>('', Validators.required),
@@ -21,14 +22,45 @@ export class FeedbackComponent {
   
   readonly categories = FeedbackCategory;
   readonly ratings = [1, 2, 3, 4, 5] as const;
+  private routeSub?: Subscription;
   
   constructor(
     private readonly feedbackService: FeedbackService,
     readonly errorMessageService: FormErrorMessageService,
-    private matSnackBar: MatSnackBar,
+    private readonly matSnackBar: MatSnackBar,
+    private readonly route: ActivatedRoute,
   )
   {
   }
+  
+  public ngOnInit(): void {
+    this.routeSub = this.route.queryParams.subscribe(({rating, category} : {[name: string]: string}) => {
+      const patch: {
+        rating?: number,
+        category?: FeedbackCategory,
+      } = {};
+      if(/[0-5]/.test(rating)) patch.rating = Number(rating);
+      if(/[0-9]+/.test(category)) {
+        patch.category = Number(category);
+      } else {
+        const catStr = category?.toUpperCase();
+        switch(catStr) {
+        case 'GENERAL':
+        case 'VOTE':
+        case 'SURVEY':
+          patch.category = FeedbackCategory[catStr];
+          break;
+        }
+      }
+      this.form.patchValue(patch);
+    })
+  }
+  
+  public ngOnDestroy(): void {
+    this.routeSub?.unsubscribe();
+  }
+  
+  
   
   setRating(rating: number) {
     const ratingControl = this.form.get('rating')!;

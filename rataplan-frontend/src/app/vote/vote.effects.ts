@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, delayWhen, from, of, switchMap, take } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
+import { FeedbackDialogComponent } from '../dialogs/feedback-dialog/feedback-dialog.component';
 import { deserializeVoteModel, VoteModel } from '../models/vote.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 import {
@@ -30,6 +32,7 @@ export class VoteEffects {
     private readonly router: Router,
     private readonly activeRoute: ActivatedRoute,
     private readonly urlService: BackendUrlService,
+    private readonly dialog: MatDialog,
   )
   {
   }
@@ -125,6 +128,8 @@ export class VoteEffects {
         },
       })),
       switchMap(from),
+      filter(succ => succ),
+      tap(() => this.dialog.open(FeedbackDialogComponent)),
     );
   }, {dispatch: false});
 }

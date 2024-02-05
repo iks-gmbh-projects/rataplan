@@ -27,6 +27,7 @@ import { StoreModule } from '@ngrx/store';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 import { environment } from '../environments/environment';
+import { AppCommonModule } from './app-common.module';
 import { AppComponent } from './app.component';
 import { appEffects } from './app.effects';
 import { AppRoutingModule } from './app-routing.module';
@@ -55,6 +56,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { VersionComponent } from './version/version.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
+import { FeedbackDialogComponent } from './dialogs/feedback-dialog/feedback-dialog.component';
 
 registerLocaleData(localeDE);
 
@@ -84,6 +86,7 @@ registerLocaleData(localeDE);
     ConfirmChoiceComponent,
     FeedbackComponent,
     VersionComponent,
+    FeedbackDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -116,6 +119,7 @@ registerLocaleData(localeDE);
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,
     MatSlideToggleModule,
+    AppCommonModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
