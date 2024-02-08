@@ -9,6 +9,8 @@ import de.iks.rataplan.repository.NotificationRepository;
 import de.iks.rataplan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationCategoryRepository notificationCategoryRepository;
     private final NotificationRepository notificationRepository;
@@ -28,10 +31,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional(readOnly = true)
     public NotificationSettingsDTO getNotificationSettings(int userId) {
-        return getNotificationSettings(userRepository.getReferenceById(userId));
+        return userRepository.findById(userId).map(NotificationServiceImpl::getNotificationSettings).orElse(null);
     }
     
-    private NotificationSettingsDTO getNotificationSettings(User user) {
+    private static NotificationSettingsDTO getNotificationSettings(User user) {
         NotificationSettingsDTO ret = new NotificationSettingsDTO();
         ret.setDefaultSettings(user.getDefaultEmailCycle());
         ret.setCategorySettings(user.getNotificationSettings()
@@ -103,7 +106,8 @@ public class NotificationServiceImpl implements NotificationService {
         );
     }
     private NotificationMailData toMailData(Notification notification) {
-        return new NotificationMailData(cryptoService.decryptDB(notification.getSubject()),
+        return new NotificationMailData(
+            cryptoService.decryptDB(notification.getSubject()),
             Objects.requireNonNullElseGet(notification.getFullContent(),
                 () -> cryptoService.decryptDB(notification.getContent())
             )
@@ -114,9 +118,18 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendSummary(Set<EmailCycle> sendCycle) {
         sendCycle.parallelStream()
             .flatMap(notificationRepository::findCycleNotifications)
-            .collect(Collectors.groupingBy(this::getNotificationMail,
-                Collectors.mapping(this::toMailData, Collectors.toUnmodifiableList())
-            ))
-            .forEach(mailService::sendNotificationSummary);
+            .collect(Collectors.groupingBy(this::getNotificationMail))
+            .forEach((mail, notifications) -> {
+                mailService.sendNotificationSummary(
+                    mail,
+                    notifications.stream()
+                        .map(this::toMailData)
+                        .collect(Collectors.toUnmodifiableList())
+                );
+                notificationRepository.deleteAllByIdInBatch(notifications.stream()
+                    .map(Notification::getId)
+                    .collect(Collectors.toUnmodifiableList())
+                );
+            });
     }
 }
