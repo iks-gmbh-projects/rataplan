@@ -5,8 +5,13 @@
     <notification_category id="1" name="general" version="1"/>
     <notification_category id="2" name="test" version="1"/>
     <notification_category id="3" name="basic" version="1"/>
-    <notification_setting userId="1" categoryId="1" emailCycle="0"/>
-    <notification_setting userId="1" categoryId="2" emailCycle="2"/>
+    <notification_category_setting userId="1" categoryId="1" emailCycle="0"/>
+    <notification_category_setting userId="1" categoryId="2" emailCycle="2"/>
 
-    <notification_queue id="1" recipientId="1" categoryId="2" subject="VGVzdE5vdGlmaWNhdGlvbg==" content="VGVzdE5vdGlmaWNhdGlvbkNvbnRlbnQ="/>
+    <notification_type id="1" categoryId="1" name="general" version="1"/>
+    <notification_type id="2" categoryId="2" name="test" version="1"/>
+    <notification_type id="3" categoryId="3" name="basic" version="1"/>
+
+
+    <notification_queue id="1" recipientId="1" typeId="2" subject="VGVzdE5vdGlmaWNhdGlvbg==" content="VGVzdE5vdGlmaWNhdGlvbkNvbnRlbnQ="/>
 </dataset>

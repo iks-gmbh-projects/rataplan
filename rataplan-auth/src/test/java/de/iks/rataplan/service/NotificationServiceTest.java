@@ -84,7 +84,8 @@ public class NotificationServiceTest {
     void testGetNotificationSettings() {
         assertEquals(
             new NotificationSettingsDTO(EmailCycle.INSTANT,
-                Map.ofEntries(Map.entry("general", EmailCycle.SUPPRESS), Map.entry("test", EmailCycle.DAILY_DIGEST))
+                Map.ofEntries(Map.entry("general", EmailCycle.SUPPRESS), Map.entry("test", EmailCycle.DAILY_DIGEST)),
+                Map.ofEntries()
             ),
             notificationService.getNotificationSettings(1)
         );
@@ -98,16 +99,18 @@ public class NotificationServiceTest {
     
     @Test
     void testUpdateNotificationSettings() {
-        Map<String, EmailCycle> settings = Map.ofEntries(Map.entry("general", EmailCycle.INSTANT),
+        Map<String, EmailCycle> catSettings = Map.ofEntries(Map.entry("general", EmailCycle.INSTANT),
             Map.entry("test", EmailCycle.WEEKLY_DIGEST)
         );
+        Map<String, EmailCycle> typeSettings = Map.ofEntries();
         NotificationSettingsDTO response = notificationService.updateNotificationSettings(
             1,
-            new NotificationSettingsDTO(EmailCycle.SUPPRESS, settings)
+            new NotificationSettingsDTO(EmailCycle.SUPPRESS, catSettings, typeSettings)
         );
         assertNotNull(response);
         assertEquals(EmailCycle.SUPPRESS, response.getDefaultSettings());
-        assertEquals(settings, response.getCategorySettings());
+        assertEquals(catSettings, response.getCategorySettings());
+        assertEquals(typeSettings, response.getTypeSettings());
         
         assertEquals(response, notificationService.getNotificationSettings(1));
         
