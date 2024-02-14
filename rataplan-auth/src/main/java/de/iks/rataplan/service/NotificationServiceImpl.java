@@ -6,6 +6,7 @@ import de.iks.rataplan.dto.NotificationDTO;
 import de.iks.rataplan.dto.NotificationSettingsDTO;
 import de.iks.rataplan.repository.NotificationCategoryRepository;
 import de.iks.rataplan.repository.NotificationRepository;
+import de.iks.rataplan.repository.NotificationTypeRepository;
 import de.iks.rataplan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationCategoryRepository notificationCategoryRepository;
+    private final NotificationTypeRepository notificationTypeRepository;
     private final NotificationRepository notificationRepository;
     
     private final UserRepository userRepository;
@@ -37,7 +40,12 @@ public class NotificationServiceImpl implements NotificationService {
     private static NotificationSettingsDTO getNotificationSettings(User user) {
         NotificationSettingsDTO ret = new NotificationSettingsDTO();
         ret.setDefaultSettings(user.getDefaultEmailCycle());
-        ret.setCategorySettings(user.getNotificationSettings()
+        ret.setCategorySettings(user.getNotificationCategorySettings()
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(e -> e.getKey().getName(), Entry::getValue))
+        );
+        ret.setTypeSettings(user.getNotificationTypeSettings()
             .entrySet()
             .stream()
             .collect(Collectors.toMap(e -> e.getKey().getName(), Map.Entry::getValue)));
@@ -49,12 +57,20 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationSettingsDTO updateNotificationSettings(int userId, NotificationSettingsDTO settings) {
         User user = userRepository.getReferenceById(userId);
         if(settings.getDefaultSettings() != null) user.setDefaultEmailCycle(settings.getDefaultSettings());
-        if(settings.getCategorySettings() != null) user.setNotificationSettings(settings.getCategorySettings()
+        if(settings.getCategorySettings() != null) user.setNotificationCategorySettings(settings.getCategorySettings()
             .entrySet()
             .stream()
             .collect(Collectors.toMap(e -> notificationCategoryRepository.findByName(e.getKey()).orElseThrow(),
                 Map.Entry::getValue
             )));
+        if(settings.getCategorySettings() != null) user.setNotificationTypeSettings(settings.getTypeSettings()
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(
+                e -> notificationTypeRepository.findByName(e.getKey()).orElseThrow(),
+                Entry::getValue
+            ))
+        );
         
         user = userRepository.saveAndFlush(user);
         
@@ -87,13 +103,13 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
     private Notification fromDTO(NotificationDTO notificationDTO) {
-        NotificationCategory category = notificationCategoryRepository.findByName(notificationDTO.getCategory())
+        NotificationType type = notificationTypeRepository.findByName(notificationDTO.getType())
             .orElseThrow();
         try {
             if(notificationDTO.getRecipientId() == null) throw new NoSuchElementException();
             return new Notification(notificationDTO.getRecipientEmail(),
                 userRepository.findById(notificationDTO.getRecipientId()).orElseThrow(),
-                category,
+                type,
                 cryptoService.encryptDB(notificationDTO.getSubject()),
                 cryptoService.encryptDB(notificationDTO.getSummaryContent()),
                 notificationDTO.getContent()
@@ -101,7 +117,8 @@ public class NotificationServiceImpl implements NotificationService {
         } catch(NoSuchElementException ex) {
             if(notificationDTO.getRecipientEmail() == null) throw ex;
             return new Notification(notificationDTO.getRecipientEmail(),
-                category,
+                null,
+                type,
                 cryptoService.encryptDB(notificationDTO.getSubject()),
                 null,
                 notificationDTO.getContent()
