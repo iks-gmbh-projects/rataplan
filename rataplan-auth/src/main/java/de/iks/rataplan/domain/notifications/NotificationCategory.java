@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -33,5 +34,8 @@ public class NotificationCategory {
     
     @Column(name = "name", unique = true, updatable = false)
     private String name;
-    private boolean suppressAnonymous;
+    
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @MapKey
+    private Map<Long, NotificationType> types;
 }

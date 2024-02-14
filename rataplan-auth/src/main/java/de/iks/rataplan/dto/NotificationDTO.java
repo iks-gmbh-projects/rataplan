@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class NotificationDTO {
     private Integer recipientId;
     private String recipientEmail;
-    private String category;
+    private String type;
     private String subject;
     private String content;
     private String summaryContent;

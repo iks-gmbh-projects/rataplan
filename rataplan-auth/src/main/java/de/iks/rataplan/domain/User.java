@@ -2,6 +2,7 @@ package de.iks.rataplan.domain;
 
 import de.iks.rataplan.domain.notifications.EmailCycle;
 import de.iks.rataplan.domain.notifications.NotificationCategory;
+import de.iks.rataplan.domain.notifications.NotificationType;
 import lombok.*;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -51,12 +52,18 @@ public class User implements Serializable {
     private EmailCycle defaultEmailCycle;
     
     @ElementCollection
-    @CollectionTable(name = "notification_setting", joinColumns = @JoinColumn(name = "userId"))
+    @CollectionTable(name = "notification_category_setting", joinColumns = @JoinColumn(name = "userId"))
     @MapKeyJoinColumn(name = "categoryId")
     @Column(name = "emailCycle")
-    private Map<NotificationCategory, EmailCycle> notificationSettings;
+    private Map<NotificationCategory, EmailCycle> notificationCategorySettings;
+    
+    @ElementCollection
+    @CollectionTable(name = "notification_type_setting", joinColumns = @JoinColumn(name = "userId"))
+    @MapKeyJoinColumn(name = "typeId")
+    @Column(name = "emailCycle")
+    private Map<NotificationType, EmailCycle> notificationTypeSettings;
 
     public User(Integer id, byte[] mail, byte[] username, String password, byte[] displayname) {
-        this(null, null, null, id, mail, username, password, displayname, false, EmailCycle.INSTANT, null);
+        this(null, null, null, id, mail, username, password, displayname, false, EmailCycle.INSTANT, null, null);
     }
 }

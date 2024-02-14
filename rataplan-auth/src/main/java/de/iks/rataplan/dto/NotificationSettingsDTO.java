@@ -13,4 +13,5 @@ import java.util.Map;
 public class NotificationSettingsDTO {
     private EmailCycle defaultSettings;
     private Map<String, EmailCycle> categorySettings;
+    private Map<String, EmailCycle> typeSettings;
 }

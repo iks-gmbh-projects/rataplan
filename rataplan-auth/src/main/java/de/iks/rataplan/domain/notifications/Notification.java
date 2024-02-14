@@ -28,8 +28,8 @@ public class Notification {
     private User recipient;
     
     @ManyToOne
-    @JoinColumn(name = "categoryId")
-    private NotificationCategory category;
+    @JoinColumn(name = "typeId")
+    private NotificationType type;
     
     @CreationTimestamp
     @Column(name = "creationTime", updatable = false)
@@ -41,27 +41,23 @@ public class Notification {
     private String fullContent;
     
     public Notification(
-        String recipientMail,
-        User recipient,
-        NotificationCategory category,
-        byte[] subject,
-        byte[] content,
-        String fullContent
+        String recipientMail, User recipient, NotificationType type, byte[] subject, byte[] content, String fullContent
     )
     {
-        this(null, recipientMail, recipient, category, null, subject, content, fullContent);
+        this(null, recipientMail, recipient, type, null, subject, content, fullContent);
     }
     
     public Notification(
-        String recipient, NotificationCategory category, byte[] subject, byte[] content, String fullContent
+        String recipient, NotificationType type, byte[] subject, byte[] content, String fullContent
     )
     {
-        this(null, recipient, null, category, null, subject, content, fullContent);
+        this(null, recipient, null, type, null, subject, content, fullContent);
     }
     
     public EmailCycle getCycle() {
-        if(recipient == null) return category.isSuppressAnonymous() ? EmailCycle.SUPPRESS : EmailCycle.INSTANT;
-        return Optional.ofNullable(recipient.getNotificationSettings().get(category))
+        if(recipient == null) return type.isSuppressAnonymous() ? EmailCycle.SUPPRESS : EmailCycle.INSTANT;
+        return Optional.ofNullable(recipient.getNotificationTypeSettings().get(type))
+            .or(() -> Optional.ofNullable(recipient.getNotificationCategorySettings().get(type.getCategory())))
             .orElse(recipient.getDefaultEmailCycle());
     }
 }
