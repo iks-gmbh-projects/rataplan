@@ -43,8 +43,7 @@ public class NotificationServiceImpl implements NotificationService {
         ret.setCategorySettings(user.getNotificationCategorySettings()
             .entrySet()
             .stream()
-            .collect(Collectors.toMap(e -> e.getKey().getName(), Entry::getValue))
-        );
+            .collect(Collectors.toMap(e -> e.getKey().getName(), Entry::getValue)));
         ret.setTypeSettings(user.getNotificationTypeSettings()
             .entrySet()
             .stream()
@@ -52,6 +51,21 @@ public class NotificationServiceImpl implements NotificationService {
         return ret;
     }
     
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, List<String>> getNotificationTypes() {
+        return notificationCategoryRepository.findAll()
+            .stream()
+            .collect(Collectors.groupingBy(NotificationCategory::getName,
+                Collectors.mapping(NotificationCategory::getTypes,
+                    Collectors.mapping(Map::values,
+                        Collectors.flatMapping(Collection::stream,
+                            Collectors.mapping(NotificationType::getName, Collectors.toUnmodifiableList())
+                        )
+                    )
+                )
+            ));
+    }
     @Override
     @Transactional
     public NotificationSettingsDTO updateNotificationSettings(int userId, NotificationSettingsDTO settings) {
@@ -66,19 +80,15 @@ public class NotificationServiceImpl implements NotificationService {
         if(settings.getCategorySettings() != null) user.setNotificationTypeSettings(settings.getTypeSettings()
             .entrySet()
             .stream()
-            .collect(Collectors.toMap(
-                e -> notificationTypeRepository.findByName(e.getKey()).orElseThrow(),
+            .collect(Collectors.toMap(e -> notificationTypeRepository.findByName(e.getKey()).orElseThrow(),
                 Entry::getValue
-            ))
-        );
+            )));
         
         user = userRepository.saveAndFlush(user);
         
-        notificationRepository.deleteAllByIdInBatch(
-            notificationRepository.findCycleNotifications(EmailCycle.SUPPRESS)
-                .map(Notification::getId)
-                .collect(Collectors.toUnmodifiableList())
-        );
+        notificationRepository.deleteAllByIdInBatch(notificationRepository.findCycleNotifications(EmailCycle.SUPPRESS)
+            .map(Notification::getId)
+            .collect(Collectors.toUnmodifiableList()));
         
         sendSummary(Set.of(EmailCycle.INSTANT));
         
@@ -131,8 +141,7 @@ public class NotificationServiceImpl implements NotificationService {
         );
     }
     private NotificationMailData toMailData(Notification notification) {
-        return new NotificationMailData(
-            cryptoService.decryptDB(notification.getSubject()),
+        return new NotificationMailData(cryptoService.decryptDB(notification.getSubject()),
             Objects.requireNonNullElseGet(notification.getFullContent(),
                 () -> cryptoService.decryptDB(notification.getContent())
             )
@@ -145,16 +154,12 @@ public class NotificationServiceImpl implements NotificationService {
             .flatMap(notificationRepository::findCycleNotifications)
             .collect(Collectors.groupingBy(this::getNotificationMail))
             .forEach((mail, notifications) -> {
-                mailService.sendNotificationSummary(
-                    mail,
-                    notifications.stream()
-                        .map(this::toMailData)
-                        .collect(Collectors.toUnmodifiableList())
+                mailService.sendNotificationSummary(mail,
+                    notifications.stream().map(this::toMailData).collect(Collectors.toUnmodifiableList())
                 );
                 notificationRepository.deleteAllByIdInBatch(notifications.stream()
                     .map(Notification::getId)
-                    .collect(Collectors.toUnmodifiableList())
-                );
+                    .collect(Collectors.toUnmodifiableList()));
             });
     }
 }
