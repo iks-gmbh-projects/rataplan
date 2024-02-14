@@ -58,6 +58,14 @@ public class NotificationServiceImpl implements NotificationService {
         
         user = userRepository.saveAndFlush(user);
         
+        notificationRepository.deleteAllByIdInBatch(
+            notificationRepository.findCycleNotifications(EmailCycle.SUPPRESS)
+                .map(Notification::getId)
+                .collect(Collectors.toUnmodifiableList())
+        );
+        
+        sendSummary(Set.of(EmailCycle.INSTANT));
+        
         return getNotificationSettings(user);
     }
     
@@ -116,7 +124,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void sendSummary(Set<EmailCycle> sendCycle) {
-        sendCycle.parallelStream()
+        sendCycle.stream()
             .flatMap(notificationRepository::findCycleNotifications)
             .collect(Collectors.groupingBy(this::getNotificationMail))
             .forEach((mail, notifications) -> {

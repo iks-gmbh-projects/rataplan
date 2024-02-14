@@ -24,7 +24,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -59,10 +61,17 @@ public class NotificationServiceTest {
     @MockBean
     private CryptoService cryptoService;
     @Autowired
+    private PlatformTransactionManager transactionManager;
+    @Autowired
+    private NotificationRepository notificationRepository;
+    @Autowired
     private NotificationService notificationService;
+    
+    private TransactionTemplate tt;
     
     @BeforeEach
     void setup() {
+        tt = new TransactionTemplate(transactionManager);
         lenient().when(cryptoService.decryptDBRaw(any()))
             .then(a -> new String(a.getArgument(0), StandardCharsets.UTF_8));
         lenient().when(cryptoService.decryptDB(any())).thenCallRealMethod();
@@ -101,6 +110,11 @@ public class NotificationServiceTest {
         assertEquals(settings, response.getCategorySettings());
         
         assertEquals(response, notificationService.getNotificationSettings(1));
+        
+        tt.executeWithoutResult(s -> {
+            assertTrue(notificationRepository.findCycleNotifications(EmailCycle.SUPPRESS).findAny().isEmpty());
+            assertTrue(notificationRepository.findCycleNotifications(EmailCycle.INSTANT).findAny().isEmpty());
+        });
     }
     @Test
     @ExpectedDatabase(value = NOTIFICATION_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
