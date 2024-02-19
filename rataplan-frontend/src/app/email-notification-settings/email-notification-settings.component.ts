@@ -11,13 +11,14 @@ import { EmailCycle } from './state/email-notification-settings.model';
 @Component({
   selector: 'app-email-notification-settings',
   templateUrl: './email-notification-settings.component.html',
-  styleUrls: ['./email-notification-settings.component.css']
+  styleUrls: ['./email-notification-settings.component.css'],
 })
 export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
-  private readonly categorySettings = new FormGroup<Record<string, AbstractControl<EmailCycle|undefined>>>({});
-  private readonly typeSettings = new FormGroup<Record<string, AbstractControl<EmailCycle|undefined>>>({});
+  private readonly categorySettings = new FormGroup<Record<string, AbstractControl<EmailCycle | undefined>>>({});
+  private readonly typeSettings = new FormGroup<Record<string, AbstractControl<EmailCycle | undefined>>>({});
+  private readonly defaultCycle = new FormControl<EmailCycle>(EmailCycle.INSTANT);
   readonly form = new FormGroup({
-    defaultCycle: new FormControl(EmailCycle.INSTANT),
+    defaultCycle: this.defaultCycle,
     categorySettings: this.categorySettings,
     typeSettings: this.typeSettings,
   });
@@ -36,54 +37,45 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
   
   private subCat?: Subscription;
   private sub?: Subscription;
-  private subForm: Subscription[] = [];
+  private subDefault?: Subscription;
   
-
   constructor(
     private readonly store: Store,
-    readonly notificationTypeService: NotificationCategoryTypeService
-  ) {
+    readonly notificationTypeService: NotificationCategoryTypeService,
+  )
+  {
     this.busy$ = store.select(emailNotificationSettingsFeature.selectBusy);
   }
   
   public ngOnInit(): void {
     this.subCat = this.notificationTypeService.categoryTypes$.subscribe(catTypes => {
       for(const cat in catTypes) {
-        const catCtrl = new FormControl<EmailCycle|null>(null);
+        const catCtrl = new FormControl<EmailCycle | null>(null);
         this.categorySettings.addControl(cat, catCtrl);
-        this.subForm.push(catCtrl.valueChanges.subscribe(val => {
-          if(val == null) {
-            this.store.dispatch(emailNotificationSettingsActions.clearCategorySetting({notificationCategory: cat}));
-          } else {
-            this.store.dispatch(emailNotificationSettingsActions.setCategorySetting({notificationCategory: cat, cycle: val}));
-          }
-        }));
         for(const type of catTypes[cat]) {
-          const typeCtrl = new FormControl<EmailCycle|null>(null);
+          const typeCtrl = new FormControl<EmailCycle | null>(null);
           this.typeSettings.addControl(type, typeCtrl);
-          this.subForm.push(typeCtrl.valueChanges.subscribe(val => {
-            if(val == null) {
-              this.store.dispatch(emailNotificationSettingsActions.clearTypeSetting({notificationType: type}));
-            } else {
-              this.store.dispatch(emailNotificationSettingsActions.setTypeSetting({notificationType: type, cycle: val}));
-            }
-          }));
         }
       }
     });
+    this.subDefault = this.defaultCycle.valueChanges.pipe(
+      filter(v => v !== null),
+    ).subscribe(v => this.store.dispatch(emailNotificationSettingsActions.setDefaultSetting({
+      cycle: v!,
+    })));
     this.sub = this.store.select(emailNotificationSettingsFeature.selectEmailNotificationSettingsState)
       .pipe(
         filter(({busy, settings}) => !busy && settings !== undefined),
         map(({settings}) => settings!),
       ).subscribe(settings => {
-      this.form.patchValue(settings, {emitEvent: false});
-    });
+        this.form.patchValue(settings);
+      });
   }
   
   public ngOnDestroy(): void {
     this.sub?.unsubscribe();
     this.subCat?.unsubscribe();
-    this.subForm.forEach(s => s.unsubscribe());
+    this.subDefault?.unsubscribe();
   }
   
   updateSettings(): void {

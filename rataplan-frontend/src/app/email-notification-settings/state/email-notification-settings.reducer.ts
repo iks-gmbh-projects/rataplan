@@ -1,10 +1,26 @@
 import { createReducer, on } from '@ngrx/store';
 import { emailNotificationSettingsActions } from './email-notification-settings.actions';
+import { EmailCycle, EmailNotificationSettings, NetworkEmailNotificationSettings } from './email-notification-settings.model';
 import { initialState } from './email-notification-settings.state';
 
 function deleteFromCopy<A extends string|number|symbol, B, R extends Record<A, B>>(r: R, del: A): R {
   const ret = {...r};
   delete ret[del];
+  return ret;
+}
+
+function deserializeResponse(settings: NetworkEmailNotificationSettings): EmailNotificationSettings {
+  const ret: EmailNotificationSettings = {
+    defaultSettings: 'string' === typeof settings.defaultSettings ? EmailCycle[settings.defaultSettings] : settings.defaultSettings,
+    categorySettings: {},
+    typeSettings: {},
+  };
+  for(const [cat, val] of Object.entries(settings.categorySettings)) {
+    ret.categorySettings[cat] = 'string' === typeof val ? EmailCycle[val] : val;
+  }
+  for(const [type, val] of Object.entries(settings.typeSettings)) {
+    ret.typeSettings[type] = 'string' === typeof val ? EmailCycle[val] : val;
+  }
   return ret;
 }
 
@@ -20,7 +36,7 @@ export const emailNotificationSettingsReducer = createReducer(
   })),
   on(emailNotificationSettingsActions.success, (state, {response}) => ({
     ...state,
-    settings: response,
+    settings: deserializeResponse(response),
     busy: false,
     error: undefined,
   })),
@@ -28,6 +44,13 @@ export const emailNotificationSettingsReducer = createReducer(
     ...state,
     busy: false,
     error,
+  })),
+  on(emailNotificationSettingsActions.setDefaultSetting, (state, {cycle}) => ({
+    ...state,
+    settings: {
+      ...state.settings!,
+      defaultSettings: cycle,
+    },
   })),
   on(emailNotificationSettingsActions.setCategorySetting, (state, {notificationCategory, cycle}) => ({
     ...state,

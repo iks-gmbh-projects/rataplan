@@ -59,7 +59,7 @@ public class NotificationsController {
     public ResponseEntity<NotificationSettingsDTO> getSettings(
         @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
         @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
-        NotificationSettingsDTO settings
+        @RequestBody NotificationSettingsDTO settings
     )
     {
         String token = validateTokenOrThrow(tokenCookie, tokenHeader);
