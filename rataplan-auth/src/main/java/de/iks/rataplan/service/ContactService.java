@@ -1,16 +1,16 @@
 package de.iks.rataplan.service;
 
-import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.AllContactsDTO;
 import de.iks.rataplan.dto.ContactGroupDTO;
 
 public interface ContactService {
-    Integer addContact(User currentUser, Integer contact);
-    AllContactsDTO getContacts(User currentUser);
-    void deleteContact(User currentUser, int toDelete);
-    ContactGroupDTO createGroup(User currentUser, ContactGroupDTO group);
-    ContactGroupDTO renameGroup(User currentUser, long groupId, String newName);
-    ContactGroupDTO addToGroup(User currentUser, long groupId, int contact);
-    ContactGroupDTO removeFromGroup(User currentUser, long groupId, int contactId);
-    void deleteGroup(User currentUser, long idToDelete);
+    Integer addContact(int currentUser, int contact);
+    AllContactsDTO getContacts(int currentUser);
+    void deleteContact(int currentUser, int toDelete);
+    ContactGroupDTO createGroup(int currentUser, ContactGroupDTO group);
+    ContactGroupDTO getGroup(int currentUser, long groupId);
+    ContactGroupDTO renameGroup(int currentUser, long groupId, String newName);
+    ContactGroupDTO addToGroup(int currentUser, long groupId, int contact);
+    ContactGroupDTO removeFromGroup(int currentUser, long groupId, int contactId);
+    void deleteGroup(int currentUser, long idToDelete);
 }

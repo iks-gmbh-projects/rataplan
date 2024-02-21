@@ -2,7 +2,6 @@ package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.Contact;
 import de.iks.rataplan.domain.ContactGroup;
-import de.iks.rataplan.domain.ContactId;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.AllContactsDTO;
 import de.iks.rataplan.dto.ContactGroupDTO;
@@ -26,7 +25,8 @@ public class ContactServiceImpl implements ContactService {
     
     @Override
     @Transactional
-    public Integer addContact(User currentUser, Integer userId) {
+    public Integer addContact(int currentUserId, int userId) {
+        final User currentUser = userService.getUserFromId(currentUserId);
         Contact inserted = contactRepository.saveAndFlush(Contact.builder()
             .owner(currentUser)
             .user(userService.getUserFromId(userId))
@@ -36,7 +36,8 @@ public class ContactServiceImpl implements ContactService {
     
     @Override
     @Transactional(readOnly = true)
-    public AllContactsDTO getContacts(User currentUser) {
+    public AllContactsDTO getContacts(int currentUserId) {
+        final User currentUser = userService.getUserFromId(currentUserId);
         return new AllContactsDTO(
             contactGroupRepository.findAllByOwner(currentUser)
                 .map(this::toDTO)
@@ -61,39 +62,43 @@ public class ContactServiceImpl implements ContactService {
     }
     @Override
     @Transactional
-    public void deleteContact(User currentUser, int toDelete) {
-        contactRepository.deleteById(new ContactId(currentUser, userService.getUserFromId(toDelete)));
+    public void deleteContact(int currentUserId, int toDelete) {
+        final User currentUser = userService.getUserFromId(currentUserId);
+        contactRepository.deleteByOwnerAndUser(currentUser, userService.getUserFromId(toDelete));
+        contactRepository.flush();
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public ContactGroupDTO getGroup(int currentUserId, long groupId) {
+        final User currentUser = userService.getUserFromId(currentUserId);
+        return contactGroupRepository.findById(groupId)
+            .filter(currentUser::owns)
+            .map(this::toDTO)
+            .orElse(null);
     }
     @Override
     @Transactional
-    public ContactGroupDTO createGroup(User currentUser, ContactGroupDTO group) {
+    public ContactGroupDTO createGroup(int currentUserId, ContactGroupDTO group) {
+        final User currentUser = userService.getUserFromId(currentUserId);
         ContactGroup.ContactGroupBuilder builder = ContactGroup.builder()
             .owner(currentUser)
-            .name(cryptoService.encryptDB(group.getName()));
+            .name(cryptoService.encryptDB(group.getName()))
+            .contacts(Set.of());
         return toDTO(contactGroupRepository.saveAndFlush(builder.build()));
-    }
-    private Set<Contact> toContactSet(User currentUser, Collection<Integer> collection) {
-        if(collection == null) return null;
-        return collection.stream()
-            .filter(Objects::nonNull)
-            .distinct()
-            .map(userService::getUserFromId)
-            .map(id -> new ContactId(currentUser, id))
-            .map(contactRepository::findById)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toUnmodifiableSet());
     }
     @Override
     @Transactional
-    public ContactGroupDTO renameGroup(User currentUser, long groupId, String newName) {
+    public ContactGroupDTO renameGroup(int currentUserId, long groupId, String newName) {
+        final User currentUser = userService.getUserFromId(currentUserId);
         Optional<ContactGroup> entity = contactGroupRepository.findById(groupId).filter(currentUser::owns);
         entity.ifPresent(grp -> grp.setName(cryptoService.encryptDBRaw(newName)));
         return entity.map(contactGroupRepository::saveAndFlush).map(this::toDTO).orElse(null);
     }
     @Override
     @Transactional
-    public ContactGroupDTO addToGroup(User currentUser, long groupId, int contactId) {
-        return contactRepository.findById(new ContactId(currentUser, userService.getUserFromId(contactId)))
+    public ContactGroupDTO addToGroup(int currentUserId, long groupId, int contactId) {
+        final User currentUser = userService.getUserFromId(currentUserId);
+        return contactRepository.findByOwnerAndUser(currentUser, userService.getUserFromId(contactId))
             .flatMap(ctc -> {
                 Optional<ContactGroup> entity = contactGroupRepository.findById(groupId).filter(currentUser::owns);
                 entity.ifPresent(grp -> grp.getContacts().add(ctc));
@@ -103,13 +108,15 @@ public class ContactServiceImpl implements ContactService {
     }
     @Override
     @Transactional
-    public ContactGroupDTO removeFromGroup(User currentUser, long groupId, int contactId) {
+    public ContactGroupDTO removeFromGroup(int currentUserId, long groupId, int contactId) {
+        final User currentUser = userService.getUserFromId(currentUserId);
         Optional<ContactGroup> entity = contactGroupRepository.findById(groupId).filter(currentUser::owns);
         entity.ifPresent(grp -> grp.getContacts().removeIf(ctc -> Objects.equals(ctc.getUser().getId(), contactId)));
         return entity.map(contactGroupRepository::saveAndFlush).map(this::toDTO).orElse(null);
     }
     @Override
-    public void deleteGroup(User currentUser, long idToDelete) {
+    public void deleteGroup(int currentUserId, long idToDelete) {
+        final User currentUser = userService.getUserFromId(currentUserId);
         contactGroupRepository.findById(idToDelete).filter(currentUser::owns).ifPresent(contactGroupRepository::delete);
         contactGroupRepository.flush();
     }
