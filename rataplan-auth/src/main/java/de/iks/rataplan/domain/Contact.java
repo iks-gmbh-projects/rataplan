@@ -12,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
+@IdClass(ContactId.class)
 @Table(
     name = "contact",
     uniqueConstraints = @UniqueConstraint(
@@ -20,14 +21,11 @@ import java.util.Set;
 )
 public class Contact implements OwnedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-    
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "ownerId")
     private User owner;
     
+    @Id
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "userId")
     private User user;
