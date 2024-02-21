@@ -1,48 +1,44 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.DbKeyConfig;
+import de.iks.rataplan.config.KeyExchangeConfig;
+import de.iks.rataplan.dto.KeyDTO;
 import de.iks.rataplan.exceptions.CryptoException;
-import org.springframework.beans.factory.annotation.Value;
+import de.iks.rataplan.exceptions.RataplanException;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+@RequiredArgsConstructor
 @Service
 public class CryptoServiceImpl implements CryptoService{
-    private final String dbKeyAlgorithm;
-    private final String dbKeyBytes;
-    private final String dbKeyPath;
+    private final DbKeyConfig dbKeyConfig;
+    
+    private final KeyExchangeConfig keyExchangeConfig;
+    private final RestTemplate restTemplate;
+    private PublicKey authIdKey = null;
+    private long fetchTime = 0;
 
     private Key dbKey;
     private KeyPair keyPair;
 
-    public CryptoServiceImpl(
-            @Value("${keys.db.algorithm:AES}") String dbKeyAlgorithm,
-            @Value("${keys.db.key:}") String dbKeyBytes,
-            @Value("${keys.db.path:}") String dbKeyPath) {
-        this.dbKeyAlgorithm = dbKeyAlgorithm;
-        this.dbKeyBytes = dbKeyBytes;
-        this.dbKeyPath = dbKeyPath;
-    }
-
     @PostConstruct
-    public void init() throws IOException, NoSuchAlgorithmException {
-        byte[] bytes;
-        if (dbKeyBytes.isEmpty()) {
-            bytes = Files.readAllBytes(Paths.get(dbKeyPath));
-        } else bytes = Base64.getDecoder().decode(dbKeyBytes);
-        dbKey = new SecretKeySpec(bytes, dbKeyAlgorithm);
-
+    public void init() throws NoSuchAlgorithmException, IOException {
+        this.dbKey = dbKeyConfig.resolveKey();
         this.keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
     }
 
@@ -86,12 +82,30 @@ public class CryptoServiceImpl implements CryptoService{
             throw new CryptoException(ex);
         }
     }
-
+    
     @Override
-    public PublicKey authIdKey() {
-        return null;
+    public PublicKey getAuthIdKey() {
+        if(authIdKey == null) {
+            ResponseEntity<KeyDTO> response = restTemplate.getForEntity(keyExchangeConfig.getUrl(), KeyDTO.class);
+            if(!response.getStatusCode().is2xxSuccessful() || !response.hasBody())
+                throw new RataplanException("Key fetch error");
+            KeyDTO dto = response.getBody();
+            if(dto == null) throw new RataplanException("Key fetch error");
+            try {
+                KeyFactory factory = KeyFactory.getInstance(dto.getAlgorithm());
+                authIdKey = factory.generatePublic(new X509EncodedKeySpec(dto.getEncoded()));
+                fetchTime = System.currentTimeMillis();
+            } catch(NoSuchAlgorithmException | InvalidKeySpecException ex) {
+                throw new RataplanException("Key decode error", ex);
+            }
+        }
+        return authIdKey;
     }
-
+    @Override
+    public PublicKey getAuthIdKey(long since) {
+        if(since > fetchTime) this.authIdKey = null;
+        return getAuthIdKey();
+    }
     @Override
     public PublicKey getPublicKey(){
         return this.keyPair.getPublic();

@@ -13,6 +13,8 @@ public class KeyExchangeConfig {
     private String displayNameURL;
     @Value("${auth.email.url:}")
     private String emailURL;
+    @Value("${auth.notification.url:}")
+    private String notificationURL;
     @Value("${auth.id.validIssuer:drumdibum-auth}")
     private String validIssuer;
 }
