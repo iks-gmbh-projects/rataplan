@@ -40,7 +40,7 @@ public class ContactGroup implements OwnedEntity {
         },
         inverseJoinColumns = {
             @JoinColumn(name = "contactOwnerId", referencedColumnName = "ownerId"),
-            @JoinColumn(name = "contactId", referencedColumnName = "id")
+            @JoinColumn(name = "contactId", referencedColumnName = "userId")
         }
     )
     private Set<Contact> contacts;
