@@ -66,4 +66,11 @@ public class User implements Serializable {
     public User(Integer id, byte[] mail, byte[] username, String password, byte[] displayname) {
         this(null, null, null, id, mail, username, password, displayname, false, EmailCycle.INSTANT, null, null);
     }
+    
+    public boolean owns(OwnedEntity oe) {
+        if(oe == null) return false;
+        if(oe.getOwner() == null) return false;
+        if(id == null) return oe.getOwner() == this;
+        return id.equals(oe.getOwner().id);
+    }
 }
