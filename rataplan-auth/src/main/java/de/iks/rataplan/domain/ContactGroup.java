@@ -3,6 +3,7 @@ package de.iks.rataplan.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Getter
@@ -18,7 +19,7 @@ import java.util.Set;
         columnNames = {"ownerId", "name"}
     )
 )
-public class ContactGroup implements OwnedEntity {
+public class ContactGroup implements OwnedEntity, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -33,7 +34,7 @@ public class ContactGroup implements OwnedEntity {
     
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinTable(
-        name = "contacts2groups",
+        name = "contactGroupContent",
         joinColumns = {
             @JoinColumn(name = "groupOwnerId", referencedColumnName = "ownerId"),
             @JoinColumn(name = "groupId", referencedColumnName = "id")

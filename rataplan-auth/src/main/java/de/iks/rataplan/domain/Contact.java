@@ -3,6 +3,7 @@ package de.iks.rataplan.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Getter
@@ -12,20 +13,22 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@IdClass(ContactId.class)
 @Table(
     name = "contact",
     uniqueConstraints = @UniqueConstraint(
         columnNames = {"ownerId", "userId"}
     )
 )
-public class Contact implements OwnedEntity {
+public class Contact implements OwnedEntity, Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "ownerId")
     private User owner;
     
-    @Id
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "userId")
     private User user;
