@@ -2,16 +2,21 @@ package de.iks.rataplan.restservice;
 
 import de.iks.rataplan.config.KeyExchangeConfig;
 import de.iks.rataplan.domain.AuthUser;
+import de.iks.rataplan.dto.restservice.EmailNotificationDTO;
+import de.iks.rataplan.dto.restservice.NotificationType;
+import de.iks.rataplan.dto.restservice.UserNotificationDTO;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -84,5 +89,35 @@ public class AuthServiceImpl implements AuthService {
                  IllegalArgumentException ex) {
             return false;
         }
+    }
+    
+    @Override
+    public void sendNotification(int recipient, NotificationType type, String subject, String content, String summaryContent) {
+        restTemplate.postForObject(
+            keyExchangeConfig.getNotificationURL(),
+            List.of(new UserNotificationDTO(
+                recipient,
+                type.name,
+                subject,
+                content,
+                summaryContent
+            )),
+            Boolean.class
+        );
+    }
+    
+    @Override
+    public void sendNotification(String email, NotificationType type, String subject, String content, String summaryContent) {
+        restTemplate.postForObject(
+            keyExchangeConfig.getNotificationURL(),
+            List.of(new EmailNotificationDTO(
+                email,
+                type.name,
+                subject,
+                content,
+                summaryContent
+            )),
+            Boolean.class
+        );
     }
 }
