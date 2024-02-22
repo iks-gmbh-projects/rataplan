@@ -21,6 +21,8 @@ import de.iks.rataplan.exceptions.InvalidTokenException;
 
 import org.springframework.web.client.ResourceAccessException;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1")
@@ -85,6 +87,16 @@ public class RataplanAuthRestController {
     @PostMapping("/users/usernameExists")
     public boolean checkIfUsernameExists(@RequestBody String username) {
         return userService.checkIfUsernameExists(username);
+    }
+    
+    @GetMapping("/users/search")
+    public ResponseEntity<List<Integer>> searchUsers(
+        @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
+        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+        @RequestParam(value = "q", required = false) String query
+    ) {
+        validateTokenOrThrow(tokenCookie, tokenHeader);
+        return ResponseEntity.ok(userService.searchUsers(query));
     }
     
     @PostMapping("/users/login")

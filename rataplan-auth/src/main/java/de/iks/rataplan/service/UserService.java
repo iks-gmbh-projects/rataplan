@@ -7,6 +7,8 @@ import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.UserDeletionException;
 import de.iks.rataplan.exceptions.WrongCredentialsException;
 
+import java.util.List;
+
 public interface UserService {
     UserDTO registerUser(UserDTO user);
     UserDTO getUserDTOFromUsername(String username);
@@ -27,5 +29,6 @@ public interface UserService {
     UserDTO validateResendConfirmationEmailRequest(String email);
 
     String getEmailFromId(Integer id);
-
+    
+    List<Integer> searchUsers(String query);
 }

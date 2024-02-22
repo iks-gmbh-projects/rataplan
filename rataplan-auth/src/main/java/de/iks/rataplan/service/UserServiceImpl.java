@@ -14,6 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -257,5 +262,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getEmailFromId(Integer id) {
         return mapToUserDTO(getUserFromId(id)).getMail();
+    }
+    
+    @Override
+    public List<Integer> searchUsers(String query) {
+        final byte[] enc = this.cryptoService.encryptDBRaw(query.toLowerCase().trim());
+        return Stream.concat(
+                Stream.of(
+                    this.userRepository.findOneByUsername(enc),
+                    this.userRepository.findOneByMail(enc)
+                ).flatMap(Optional::stream),
+                this.userRepository.findByDisplayname(enc)
+            ).map(User::getId)
+            .collect(Collectors.toUnmodifiableList());
     }
 }
