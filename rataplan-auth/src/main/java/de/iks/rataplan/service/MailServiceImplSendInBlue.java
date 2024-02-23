@@ -2,7 +2,6 @@ package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.ConfirmAccountMailData;
 import de.iks.rataplan.domain.FeedbackCategory;
-import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
 import de.iks.rataplan.domain.notifications.NotificationMailData;
 import de.iks.rataplan.dto.FeedbackDTO;
@@ -46,17 +45,6 @@ public class MailServiceImplSendInBlue implements MailService {
         SendSmtpEmail mail = mailBuilder.buildAccountConfirmationEmail(confirmAccountMailData);
         try {
             log.info(mail.getHtmlContent());
-            transactionalEmailsApi.sendTransacEmail(mail);
-        } catch (ApiException ex) {
-            log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public void notifyParticipantDeletion(ParticipantDeletionMailData participantDeletionMailData) {
-        SendSmtpEmail mail = mailBuilder.buildParticipantDeletionEmail(participantDeletionMailData);
-        try {
             transactionalEmailsApi.sendTransacEmail(mail);
         } catch (ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());

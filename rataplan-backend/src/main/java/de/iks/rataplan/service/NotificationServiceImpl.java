@@ -1,8 +1,8 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.Vote;
+import de.iks.rataplan.domain.VoteParticipant;
 import de.iks.rataplan.dto.restservice.NotificationType;
-import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.restservice.AuthService;
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +12,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,8 +24,6 @@ public class NotificationServiceImpl implements NotificationService {
     private final AuthService authService;
     
     private final TemplateEngine templateEngine;
-    
-    private final FromEncryptedStringConverter fromEncryptedStringConverter;
     
     @Override
     public void notifyForVoteInvitations(Vote vote) {
@@ -46,7 +46,20 @@ public class NotificationServiceImpl implements NotificationService {
         );
     }
     @Override
-    public void notifyForParticipationInvalidation(Vote vote, Collection<Integer> affectedParticipants) {
-        //TODO
+    public void notifyForParticipationInvalidation(Vote vote, Collection<? extends VoteParticipant> affectedParticipants) {
+            String voteLink = baseUrl + "/vote/" + vote.getParticipationToken();
+            
+            Context ctx = new Context();
+            ctx.setVariable("link", voteLink);
+            
+            authService.sendUserNotifications(
+                affectedParticipants.stream()
+                    .map(VoteParticipant::getUserId)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toUnmodifiableList()),
+                NotificationType.PARTICIPATION_INVALIDATED,
+                templateEngine.process("participantDeletion_subject",ctx),
+                templateEngine.process("participantDeletion_content",ctx)
+            );
     }
 }
