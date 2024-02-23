@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureException;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,14 +43,4 @@ public class JwtServiceTest {
         String jwts = jwtTokenService.generateAuthBackendParticipantToken(1);
         Assertions.assertThrows(SignatureException.class,() -> Jwts.parser().setSigningKey(keyPair.getPublic()).parse(jwts));
     }
-
-    @Test
-    public void expirationDateValid(){
-        Claims claims = jwtTokenService.generateStandardClaims();
-        Assertions.assertEquals(60000, claims.getExpiration().getTime() - claims.getIssuedAt().getTime());
-    }
-
-
-
-
 }

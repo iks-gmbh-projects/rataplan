@@ -6,19 +6,23 @@ import de.iks.rataplan.dto.restservice.EmailNotificationDTO;
 import de.iks.rataplan.dto.restservice.NotificationType;
 import de.iks.rataplan.dto.restservice.UserNotificationDTO;
 import de.iks.rataplan.exceptions.InvalidTokenException;
+import de.iks.rataplan.service.JwtTokenService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
     public static final String PURPOSE_ID = "id";
     
     private final KeyExchangeConfig keyExchangeConfig;
+    private final JwtTokenService jwtTokenService;
     private final SigningKeyResolver keyResolver;
     private final RestTemplate restTemplate;
     
@@ -92,31 +97,57 @@ public class AuthServiceImpl implements AuthService {
     }
     
     @Override
-    public void sendNotification(int recipient, NotificationType type, String subject, String content, String summaryContent) {
-        restTemplate.postForObject(
-            keyExchangeConfig.getNotificationURL(),
-            List.of(new UserNotificationDTO(
+    public void sendUserNotifications(
+        Collection<Integer> recipients,
+        NotificationType type,
+        String subject,
+        String content,
+        String summaryContent
+    ) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("jwt", jwtTokenService.generateIDToken());
+        HttpEntity<List<UserNotificationDTO>> request = new HttpEntity<>(recipients.stream()
+            .map(recipient -> new UserNotificationDTO(
                 recipient,
                 type.name,
                 subject,
                 content,
                 summaryContent
-            )),
+            ))
+            .collect(Collectors.toUnmodifiableList()),
+            headers
+        );
+        restTemplate.postForObject(
+            keyExchangeConfig.getNotificationURL(),
+            request,
             Boolean.class
         );
     }
     
     @Override
-    public void sendNotification(String email, NotificationType type, String subject, String content, String summaryContent) {
-        restTemplate.postForObject(
-            keyExchangeConfig.getNotificationURL(),
-            List.of(new EmailNotificationDTO(
-                email,
+    public void sendMailNotifications(
+        Collection<String> recipients,
+        NotificationType type,
+        String subject,
+        String content,
+        String summaryContent
+    ) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("jwt", jwtTokenService.generateIDToken());
+        HttpEntity<List<EmailNotificationDTO>> request = new HttpEntity<>(recipients.stream()
+            .map(recipient -> new EmailNotificationDTO(
+                recipient,
                 type.name,
                 subject,
                 content,
                 summaryContent
-            )),
+            ))
+            .collect(Collectors.toUnmodifiableList()),
+            headers
+        );
+        restTemplate.postForObject(
+            keyExchangeConfig.getNotificationURL(),
+            request,
             Boolean.class
         );
     }

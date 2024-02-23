@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { combineLatestWith, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { NotificationCategoryTypeService } from './NotificationCategoryType.service';
 import { emailNotificationSettingsActions } from './state/email-notification-settings.actions';
 import { emailNotificationSettingsFeature } from './state/email-notification-settings.feature';
@@ -16,9 +16,9 @@ import { EmailCycle } from './state/email-notification-settings.model';
 export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
   private readonly categorySettings = new FormGroup<Record<string, AbstractControl<EmailCycle | undefined>>>({});
   private readonly typeSettings = new FormGroup<Record<string, AbstractControl<EmailCycle | undefined>>>({});
-  private readonly defaultCycle = new FormControl<EmailCycle>(EmailCycle.INSTANT);
+  private readonly defaultSettings = new FormControl<EmailCycle>(EmailCycle.INSTANT);
   readonly form = new FormGroup({
-    defaultCycle: this.defaultCycle,
+    defaultSettings: this.defaultSettings,
     categorySettings: this.categorySettings,
     typeSettings: this.typeSettings,
   });
@@ -38,6 +38,7 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
   private subCat?: Subscription;
   private sub?: Subscription;
   private subDefault?: Subscription;
+  private subs: Subscription[] = [];
   
   constructor(
     private readonly store: Store,
@@ -49,17 +50,42 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
   
   public ngOnInit(): void {
     this.subCat = this.notificationTypeService.categoryTypes$.subscribe(catTypes => {
+      this.subs.forEach(s => s.unsubscribe());
+      this.subs = [];
       for(const cat in catTypes) {
         const catCtrl = new FormControl<EmailCycle | null>(null);
+        this.subs.push(
+          this.store.select(emailNotificationSettingsFeature.selectSettings).pipe(
+            filter(v => !!v),
+            map(v => v!.categorySettings[cat]),
+          ).pipe(
+            combineLatestWith(catCtrl.valueChanges),
+            filter(([prev, next]) => prev !== next && next !== null),
+          ).subscribe(([, next]) => {
+            this.store.dispatch(emailNotificationSettingsActions.setCategorySetting({notificationCategory: cat, cycle: next!}));
+          }),
+        );
         this.categorySettings.addControl(cat, catCtrl);
         for(const type of catTypes[cat]) {
           const typeCtrl = new FormControl<EmailCycle | null>(null);
+          this.subs.push(
+            this.store.select(emailNotificationSettingsFeature.selectSettings).pipe(
+              filter(v => !!v),
+              map(v => v!.typeSettings[type]),
+            ).pipe(
+              combineLatestWith(typeCtrl.valueChanges),
+              filter(([prev, next]) => prev !== next && next !== null),
+            ).subscribe(([, next]) => {
+              this.store.dispatch(emailNotificationSettingsActions.setTypeSetting({notificationType: type, cycle: next!}));
+            }),
+          );
           this.typeSettings.addControl(type, typeCtrl);
         }
       }
     });
-    this.subDefault = this.defaultCycle.valueChanges.pipe(
+    this.subDefault = this.defaultSettings.valueChanges.pipe(
       filter(v => v !== null),
+      distinctUntilChanged(),
     ).subscribe(v => this.store.dispatch(emailNotificationSettingsActions.setDefaultSetting({
       cycle: v!,
     })));
@@ -76,6 +102,8 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
     this.subCat?.unsubscribe();
     this.subDefault?.unsubscribe();
+    this.subs.forEach(s => s.unsubscribe());
+    this.subs = [];
   }
   
   updateSettings(): void {
