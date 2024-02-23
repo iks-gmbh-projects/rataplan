@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<body>
+<p>Guten Tag,</p>
+<p>Folgendes ist letztens auf <a href="https://www.drumdibum.de/">drumdibum.de</a> geschehen:</p>
+<div style="border-radius: 1ex; background: rgba(0,0,0,.1); padding: 1ex" th:each="notification: ${notifications}">
+    <h2 th:text="${notification.getSubject()}"></h2>
+    <div th:utext="${notification.getContent()}"></div>
+</div>
+</body>
+</html>
