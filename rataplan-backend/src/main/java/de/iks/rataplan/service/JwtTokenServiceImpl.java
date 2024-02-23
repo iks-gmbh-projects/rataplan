@@ -26,21 +26,26 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 
     @Override
     public String generateAuthBackendParticipantToken(Integer id) {
-        String jwt = Jwts.builder().setClaims(generateIdClaims(String.valueOf(id)))
-                .signWith(SignatureAlgorithm.RS256, this.cryptoService.getPrivateKey()).compact();
-        return jwt;
+        return Jwts.builder().setClaims(generateIdClaims(String.valueOf(id)))
+                .signWith(SignatureAlgorithm.RS256, this.cryptoService.getPrivateKey())
+            .compact();
+    }
+    
+    @Override
+    public String generateIDToken() {
+        return Jwts.builder().setClaims(generateStandardClaims())
+            .signWith(SignatureAlgorithm.RS256, this.cryptoService.getPrivateKey())
+            .compact();
     }
 
-    @Override
-    public Claims generateIdClaims(String id) {
+    private Claims generateIdClaims(String id) {
         Claims claims = generateStandardClaims();
         claims.put(CLAIM_PURPOSE,PURPOSE_ID);
         claims.setSubject(id);
         return claims;
     }
 
-    @Override
-    public Date generateExpirationDate() {
+    private Date generateExpirationDate() {
         return new Date(System.currentTimeMillis() + jwtConfig.getLifetime());
     }
 
@@ -55,8 +60,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
         return claims;
     }
 
-    @Override
-    public Claims generateStandardClaims() {
+    private Claims generateStandardClaims() {
         Claims claims = Jwts.claims();
         claims.setIssuedAt(new Date());
         claims.setIssuer(jwtConfig.getIssuer());

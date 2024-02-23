@@ -25,7 +25,7 @@ import java.util.Base64;
 
 @RequiredArgsConstructor
 @Service
-public class CryptoServiceImpl implements CryptoService{
+public class CryptoServiceImpl implements CryptoService {
     private final DbKeyConfig dbKeyConfig;
     
     private final KeyExchangeConfig keyExchangeConfig;
