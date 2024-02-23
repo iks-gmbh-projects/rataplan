@@ -2,11 +2,11 @@ package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.ConfirmAccountMailData;
 import de.iks.rataplan.domain.FeedbackCategory;
-import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
 import de.iks.rataplan.domain.notifications.NotificationMailData;
 import de.iks.rataplan.dto.FeedbackDTO;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -29,11 +29,6 @@ public class LogMailServiceImpl implements MailService {
     @Override
     public void sendAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData) {
         log.info("Account confirmation link: " + baseUrl + "/confirm-account/" + confirmAccountMailData.getToken());
-    }
-
-    @Override
-    public void notifyParticipantDeletion(ParticipantDeletionMailData participantDeletionMailData) {
-        log.info(baseUrl + "/vote/" + participantDeletionMailData.getVoteToken());
     }
     
     @Override

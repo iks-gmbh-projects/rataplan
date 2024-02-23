@@ -1,7 +1,6 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.*;
-import de.iks.rataplan.dto.ParticipantDeletionEmailDTO;
 import de.iks.rataplan.dto.ResultsDTO;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
@@ -11,14 +10,8 @@ import de.iks.rataplan.repository.VoteOptionRepository;
 import de.iks.rataplan.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import springfox.documentation.schema.Entry;
 
@@ -30,8 +23,6 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
-    private final RestTemplate restTemplate;
-    
     private final VoteDecisionRepository voteDecisionRepository;
     
     private final VoteRepository voteRepository;
@@ -40,9 +31,6 @@ public class VoteServiceImpl implements VoteService {
     
     private final BackendUserAccessRepository backendUserAccessRepository;
     
-    private final JwtTokenService jwtTokenService;
-    @Value(value = "${auth.notify.participant.url}")
-    private String backendUrl;
     private final NotificationService notificationService;
     private final MailService mailService;
     
@@ -267,14 +255,14 @@ public class VoteServiceImpl implements VoteService {
                         .filter(vd -> vd.getDecision() == Decision.ACCEPT ||
                                       vd.getDecision() == Decision.ACCEPT_IF_NECESSARY)
                         .forEach(d -> d.setDecision(Decision.NO_ANSWER));
-                    notifyParticipantsVoteDeleted(dbVote.getParticipants(), dbVoteOption.getId());
+                    notifyParticipantsVoteDeleted(dbVote, dbVoteOption.getId());
                 }
             }
         }
     }
     
-    private void notifyParticipantsVoteDeleted(List<VoteParticipant> participants, Integer optionId) {
-        List<VoteParticipant> participantsToNotify = participants.stream()
+    private void notifyParticipantsVoteDeleted(Vote vote, Integer optionId) {
+        List<VoteParticipant> participantsToNotify = vote.getParticipants().stream()
             .filter(participant -> participant.getUserId() != null)
             .filter(participant -> participant.getVoteDecisions()
                 .stream()
@@ -282,23 +270,7 @@ public class VoteServiceImpl implements VoteService {
                 .anyMatch(vd -> vd.getDecision() != Decision.ACCEPT ||
                                 vd.getDecision() == Decision.ACCEPT_IF_NECESSARY))
             .collect(Collectors.toList());
-        
-        for(VoteParticipant vp : participantsToNotify) {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.set("jwt", this.jwtTokenService.generateAuthBackendParticipantToken(vp.getUserId()));
-            ParticipantDeletionEmailDTO participantDeletionEmailDTO = new ParticipantDeletionEmailDTO(null,
-                vp.getVote().getParticipationToken()
-            );
-            HttpEntity<ParticipantDeletionEmailDTO> participantDeletionEmailDTOHttpEntity =
-                new HttpEntity<>(participantDeletionEmailDTO,
-                httpHeaders
-            );
-            restTemplate.exchange(backendUrl,
-                HttpMethod.POST,
-                participantDeletionEmailDTOHttpEntity,
-                ResponseEntity.class
-            );
-        }
+        notificationService.notifyForParticipationInvalidation(vote, participantsToNotify);
     }
     
     @Override

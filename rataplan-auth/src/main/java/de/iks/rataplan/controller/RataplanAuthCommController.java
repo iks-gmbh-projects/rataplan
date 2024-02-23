@@ -1,10 +1,12 @@
 package de.iks.rataplan.controller;
 
-import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.KeyDTO;
 import de.iks.rataplan.dto.NotificationDTO;
-import de.iks.rataplan.service.*;
+import de.iks.rataplan.service.CryptoService;
+import de.iks.rataplan.service.JwtTokenService;
+import de.iks.rataplan.service.NotificationService;
+import de.iks.rataplan.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,6 @@ public class RataplanAuthCommController {
     private final CryptoService cryptoService;
     private final JwtTokenService jwtTokenService;
     private final UserService userService;
-    private final MailService mailServiceImplSendInBlue;
     private final NotificationService notificationService;
     
     @GetMapping("/pubid")
@@ -33,19 +34,6 @@ public class RataplanAuthCommController {
         User user = userService.getUserFromEmail(email);
         if(user == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(user.getId());
-    }
-    
-    @PostMapping("/notify-participant/delete")
-    public ResponseEntity<Boolean> notifyParticipant(
-        @RequestHeader String jwt,
-        @RequestBody ParticipantDeletionMailData participantDeletionMailData
-    )
-    {
-        Integer userId = jwtTokenService.getUserIdFromBackendToken(jwt);
-        String email = userService.getEmailFromId(userId);
-        participantDeletionMailData.setEmail(email);
-        this.mailServiceImplSendInBlue.notifyParticipantDeletion(participantDeletionMailData);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @PostMapping("/notification")
