@@ -4,6 +4,7 @@ import de.iks.rataplan.domain.AuthUser;
 import de.iks.rataplan.domain.BackendUserAccess;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.dto.CreatorVoteDTO;
+import de.iks.rataplan.dto.ResultsDTO;
 import de.iks.rataplan.dto.VoteDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.RequiresAuthorizationException;
@@ -11,6 +12,8 @@ import de.iks.rataplan.restservice.AuthService;
 import de.iks.rataplan.service.ConsigneeService;
 import de.iks.rataplan.service.VoteService;
 import lombok.RequiredArgsConstructor;
+
+import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -132,4 +135,9 @@ public class VoteControllerService {
 		}
 		return modelMapper.map(vote, CreatorVoteDTO.class);
 	}
+    
+    public List<ResultsDTO> getVoteResults(String accessToken){
+        if(accessToken == null) return null;
+        return this.voteService.getVoteResults(accessToken);
+    }
 }

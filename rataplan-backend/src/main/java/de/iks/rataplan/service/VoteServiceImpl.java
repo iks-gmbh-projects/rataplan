@@ -2,6 +2,7 @@ package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.*;
 import de.iks.rataplan.dto.ParticipantDeletionEmailDTO;
+import de.iks.rataplan.dto.ResultsDTO;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.BackendUserAccessRepository;
@@ -19,11 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import springfox.documentation.schema.Entry;
+
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +46,8 @@ public class VoteServiceImpl implements VoteService {
     private final MailService mailService;
     
     private final TokenGeneratorService tokenGeneratorService;
+    
+    private final CryptoService cryptoService;
     
     @Override
     public Vote createVote(Vote vote) {
@@ -283,18 +285,18 @@ public class VoteServiceImpl implements VoteService {
         for(VoteParticipant vp : participantsToNotify) {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.set("jwt", this.jwtTokenService.generateAuthBackendParticipantToken(vp.getUserId()));
-            ParticipantDeletionEmailDTO participantDeletionEmailDTO = new ParticipantDeletionEmailDTO(
-                null,
+            ParticipantDeletionEmailDTO participantDeletionEmailDTO = new ParticipantDeletionEmailDTO(null,
                 vp.getVote().getParticipationToken()
             );
-            HttpEntity<ParticipantDeletionEmailDTO> participantDeletionEmailDTOHttpEntity = new HttpEntity<>(
-                participantDeletionEmailDTO,
+            HttpEntity<ParticipantDeletionEmailDTO> participantDeletionEmailDTOHttpEntity =
+                new HttpEntity<>(participantDeletionEmailDTO,
                 httpHeaders
             );
             restTemplate.exchange(backendUrl,
                 HttpMethod.POST,
                 participantDeletionEmailDTOHttpEntity,
-                ResponseEntity.class);
+                ResponseEntity.class
+            );
         }
     }
     
@@ -317,5 +319,31 @@ public class VoteServiceImpl implements VoteService {
     public Vote addAccess(Vote vote, Collection<? extends BackendUserAccess> backendUserAccesses) {
         vote.getAccessList().addAll(backendUserAccesses);
         return voteRepository.saveAndFlush(vote);
+    }
+    @Override
+    public List<ResultsDTO> getVoteResults(String accessToken) {
+        Vote vote = getVoteByParticipationToken(accessToken);
+        List<ResultsDTO> resultDTOS = new ArrayList<>();
+        for(VoteParticipant vo : vote.getParticipants()) {
+            ResultsDTO resultsDTO = mapResultsDTO(vo);
+            resultDTOS.add(resultsDTO);
+        }
+        return resultDTOS;
+    }
+    
+    @Override
+    public ResultsDTO mapResultsDTO(VoteParticipant voteParticipant) {
+        ResultsDTO resultsDTO = new ResultsDTO(cryptoService.decryptDB(voteParticipant.getName().getString()));
+        Map<Integer, Integer> votesByOptionId = voteParticipant.getVoteDecisions()
+            .stream()
+            .collect(Collectors.groupingBy(voteDecision -> voteDecision.getVoteDecisionId().getVoteOption().getId(),
+                Collectors.collectingAndThen(Collectors.mapping(voteDecision -> voteDecision.getParticipants() == null ?
+                        voteDecision.getDecision().getValue() :
+                        voteDecision.getParticipants(), Collectors.toList()),
+                    list -> list.stream().mapToInt(Integer::intValue).sum()
+                )
+            ));
+        resultsDTO.setVoteOptionAnswers(votesByOptionId);
+        return resultsDTO;
     }
 }

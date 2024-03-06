@@ -177,7 +177,7 @@ export class VoteComponent implements OnInit, OnDestroy {
     });
   }
   
-  setParticipantNumber(vote: VoteOptionModel, participants: number|`${number}`) {
+  setParticipantNumber(vote: VoteOptionModel, participants: number | `${number}`) {
     const index = this.vote!.options.indexOf(vote);
     const voteDecision = this.voteParticipant.decisions[index];
     voteDecision.participants = Number(participants);
@@ -343,10 +343,10 @@ export class VoteComponent implements OnInit, OnDestroy {
   
   hasDeadlinePassed(): boolean {
     const deadline = new Date(this.vote.deadline);
-    if (!deadline) {
+    if(!deadline) {
       throw new Error('Deadline has not been set.');
     }
-    deadline.setDate(deadline.getDate()+1);
+    deadline.setDate(deadline.getDate() + 1);
     return deadline.getTime() < Date.now();
   }
   
