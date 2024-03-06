@@ -54,7 +54,7 @@
     </mat-error>
   </div>
   <div>
-    <div *ngIf="personaliseEmailPermitted">
+    <div *ngIf="!isEditing && ($isLoggedIn | async)">
       <button
         *ngIf="!personaliseEmailActive; else personaliseEmailContainer"
         mat-raised-button

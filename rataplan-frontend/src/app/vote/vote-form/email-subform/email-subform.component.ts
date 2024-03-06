@@ -3,8 +3,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { authFeature } from '../../../authentication/auth.feature';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
 import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../../vote.actions';
@@ -20,7 +21,8 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
   busy = false;
   consigneeList: string[] = [];
-  personaliseEmailPermitted = false;
+  isEditing: boolean = false;
+  $isLoggedIn: Observable<boolean>;
   personaliseEmailActive = false;
   emailSubform = new UntypedFormGroup({
     'name': new UntypedFormControl(null, [
@@ -44,12 +46,16 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   constructor(
     private snackBar: MatSnackBar,
     private store: Store,
-    public readonly errorMessageService: FormErrorMessageService
-  ) {
+    public readonly errorMessageService: FormErrorMessageService,
+  )
+  {
+    this.$isLoggedIn = this.store.select(authFeature.selectUser).pipe(
+      map(u => !!u),
+    );
   }
-
+  
   private lastError?: any;
-
+  
   ngOnInit(): void {
     this.storeSub = this.store.select(voteFeature.selectVoteState)
       .pipe(
@@ -57,10 +63,11 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       ).subscribe(state => {
         this.busy = state.busy;
         const vote = state.vote!;
-        if(state.vote?.id == undefined) this.personaliseEmailPermitted = true;
         this.emailSubform.get('name')?.setValue(vote.organizerName);
         this.emailSubform.get('email')?.setValue(vote.organizerMail);
         this.consigneeList = vote.consigneeList;
+        console.log(vote);
+        this.isEditing = !!state.vote!.id;
         if(state.error !== this.lastError) {
           this.lastError = state.error;
           if(state.error) {
@@ -80,25 +87,25 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       name: this.emailSubform.get('name')?.value || undefined,
       email: this.emailSubform.get('email')?.value || undefined,
       consigneeList: this.consigneeList,
-      personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value
+      personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value,
     }));
   }
-
+  
   remove(email: string) {
     const index = this.consigneeList.indexOf(email);
-    if (index >= 0) {
-      this.consigneeList = [...this.consigneeList.slice(0, index), ...this.consigneeList.slice(index+1)];
+    if(index >= 0) {
+      this.consigneeList = [...this.consigneeList.slice(0, index), ...this.consigneeList.slice(index + 1)];
     }
   }
-
+  
   add(email: MatChipInputEvent) {
-    if (email.value && this.consigneeList.indexOf(email.value) < 0 && this.emailSubform.get('consigneeList')?.valid) {
+    if(email.value && this.consigneeList.indexOf(email.value) < 0 && this.emailSubform.get('consigneeList')?.valid) {
       this.consigneeList = [...this.consigneeList, email.value.toLowerCase()];
     }
     this.emailSubform.get('consigneeList')?.setErrors(null);
     email.chipInput?.clear();
   }
-
+  
   sendEndOfVoteOption() {
     const consigneeForm = this.emailSubform.get('consigneeList');
     if(consigneeForm?.valid && consigneeForm.value && !this.consigneeList.includes(consigneeForm.value)) {
@@ -112,4 +119,6 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   personaliseEmail() {
     this.personaliseEmailActive = !this.personaliseEmailActive;
   }
+  
+  protected readonly authFeature = authFeature;
 }
