@@ -20,6 +20,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
   busy = false;
   consigneeList: string[] = [];
+  personaliseEmailPermitted = false;
   personaliseEmailActive = false;
   emailSubform = new UntypedFormGroup({
     'name': new UntypedFormControl(null, [
@@ -56,13 +57,14 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       ).subscribe(state => {
         this.busy = state.busy;
         const vote = state.vote!;
+        if(state.vote?.id == undefined) this.personaliseEmailPermitted = true;
         this.emailSubform.get('name')?.setValue(vote.organizerName);
         this.emailSubform.get('email')?.setValue(vote.organizerMail);
         this.consigneeList = vote.consigneeList;
         if(state.error !== this.lastError) {
           this.lastError = state.error;
           if(state.error) {
-            this.snackBar.open("Unbekannter Fehler beim Erstellen der Abstimmung", "OK");
+            this.snackBar.open('Unbekannter Fehler beim Erstellen der Abstimmung', 'OK');
             console.log(state.error);
           }
         }
@@ -108,6 +110,6 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   }
   
   personaliseEmail() {
-    this.personaliseEmailActive = this.personaliseEmailActive ? false : true;
+    this.personaliseEmailActive = !this.personaliseEmailActive;
   }
 }

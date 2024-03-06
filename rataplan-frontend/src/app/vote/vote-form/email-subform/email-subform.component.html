@@ -8,7 +8,7 @@
         type="text"
         formControlName="name"
       >
-      <mat-error>{{errorMessageService.genericFormError(emailSubform.get('name'))}}</mat-error>
+      <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('name')) }}</mat-error>
     </mat-form-field>
   </div>
   <div>
@@ -19,7 +19,7 @@
         autocomplete="off"
         formControlName="email"
       >
-      <mat-error>{{errorMessageService.genericFormError(emailSubform.get('email'))}}</mat-error>
+      <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('email')) }}</mat-error>
     </mat-form-field>
   </div>
   <div>
@@ -64,24 +64,24 @@
       >
         Einlaungstext personalisieren
       </button>
+      <ng-template #personaliseEmailContainer>
+        <mat-form-field appearance="fill">
+          <mat-label>Personalisierte Nachricht</mat-label>
+          <textarea
+            matInput formControlName="personalisedInvitation"
+          ></textarea>
+        </mat-form-field>
+        <div>
+          <button
+            class="personalise-email-button"
+            mat-raised-button
+            color="warn"
+            (click)="personaliseEmail()"
+          >Einladung Verwerfen
+          </button>
+        </div>
+      </ng-template>
     </div>
-    <ng-template #personaliseEmailContainer>
-      <mat-form-field appearance="fill">
-        <mat-label>Personalisierte Nachricht</mat-label>
-        <textarea
-          matInput formControlName="personalisedInvitation"
-        ></textarea>
-      </mat-form-field>
-      <div>
-        <button
-          class="personalise-email-button"
-          mat-raised-button
-          color="warn"
-          (click)="personaliseEmail()"
-        >Einladung Verwerfen
-        </button>
-      </div>
-    </ng-template>
   </div>
   <div>
     <button
