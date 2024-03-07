@@ -19,6 +19,7 @@ import { CombinedDatetimeMaxDirective } from '../validator/combined-datetime-max
 import { CombinedDatetimeMinDirective } from '../validator/combined-datetime-min.directive';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-dialog/vote-option-info-dialog.component';
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-d
     VoteRoutingModule,
     StoreModule.forFeature(voteFeature),
     EffectsModule.forFeature([VoteEffects]),
+    MatSelectModule,
   ],
 })
 export class VoteModule {}

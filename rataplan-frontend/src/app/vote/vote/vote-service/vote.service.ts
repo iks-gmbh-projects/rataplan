@@ -105,7 +105,6 @@ export class VoteService {
                         let mappedUserVoteResults: UserVoteResults[] = [];
                         for (const userVoteResultResponse of response) {
                             let mappedUserVoteResult: UserVoteResults = {username: userVoteResultResponse.username, voteOptionAnswers: new Map<number, number>()};
-                            console.log(Object.entries(userVoteResultResponse.voteOptionAnswers))
                             for (const mapElement of Object.entries(userVoteResultResponse.voteOptionAnswers)) {
                                 mappedUserVoteResult.voteOptionAnswers.set(Number(mapElement[0]), mapElement[1])
                             }

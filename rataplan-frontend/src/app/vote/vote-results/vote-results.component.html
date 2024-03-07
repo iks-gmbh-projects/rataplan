@@ -1,29 +1,87 @@
 <div class="page-container">
     <div class="result-container">
         <div style="display: block">
-            <h2 style="display: block; text-align: center">Abstimmung {{vote.title}} Ergebnisse</h2>
-            <table style="border: black; border-collapse: collapse">
-                <thead style="position:sticky;">
-                <tr>
-                    <th>Teilnehmerin</th>
-                    <th *ngFor="let voteOption of vote.options; let i = index">Termin {{i + 1}}
-                        <mat-icon (click)="showVoteOptionInfo(voteOption)">info</mat-icon>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let userResults of allVoteResults; let i = index">
-                    <td>{{userResults.username}}</td>
-                    <ng-container [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
-                                  *ngFor="let vo of vote.options">
-                        <td *ngSwitchCase="0"><p>Keine Antwort</p></td>
-                        <td *ngSwitchCase="1" style="background: green"><p>Akzeptiert</p></td>
-                        <td *ngSwitchCase="2" style="background: yellow"><p>ggf. Akzeptiert</p></td>
-                        <td *ngSwitchCase="3" style="background: red"><p>Abgelehnt</p></td>
-                    </ng-container>
-                </tr>
-                </tbody>
-            </table>
+            <mat-card>
+                <mat-card-title>Abstimmung {{vote.title}} Ergebnisse</mat-card-title>
+                <mat-card-content>
+                    <mat-form-field>
+                        <mat-label>Filtern nach</mat-label>
+                        <mat-select [(ngModel)]="filterByOption">
+                            <mat-option *ngFor="let filterBy of filterByOptions"
+                                        (click)="updateFilterOptions(filterBy)"
+                                        [value]="filterBy"
+                            >
+                                {{filterBy}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="showVoteOptionsInFilter">
+                        <mat-label>Termin</mat-label>
+                        <mat-select [(ngModel)]="filterVoteOption">
+                            <mat-option *ngFor="let v of vote.options;let i = index" [value]="i">
+                            Termin {{i + 1}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Sortieren</mat-label>
+                        <mat-select [(ngModel)]="filterSortOption">
+                            <mat-option *ngFor="let sortOption of sortByOptions"
+                                        [value]="sortOption">{{sortOption}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" (click)="applyFilter()">Filter anwenden</button>
+                    <table style="border: black; border-collapse: collapse;">
+                        <thead style="position:sticky;">
+                        <tr>
+                            <th>Teilnehmerin</th>
+                            <th *ngFor="let voteOption of vote.options; let i = index">Termin {{i + 1}}
+                                <mat-icon (click)="showVoteOptionInfo(voteOption)">info</mat-icon>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody *ngIf="vote.voteConfig.decisionType !== DecisionType.NUMBER; else teilnehmerVote">
+                        <tr *ngFor="let userResults of allVoteResults; let i = index">
+                            <td>{{userResults.username}}</td>
+                            <ng-container [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
+                                          *ngFor="let vo of vote.options">
+                                <td *ngSwitchCase="0"><p>Keine Antwort</p></td>
+                                <td *ngSwitchCase="1" style="background: green"><p>Akzeptiert</p></td>
+                                <td *ngSwitchCase="2" style="background: yellow"><p>ggf. Akzeptiert</p></td>
+                                <td *ngSwitchCase="3" style="background: red"><p>Abgelehnt</p></td>
+                            </ng-container>
+                        </tr>
+                        <tr>
+                            <td>Ergebnis/</td>
+                            <td *ngFor="let voteOption of vote.options!">
+                                <p>{{getVoteOptionSum(voteOption.id!)}}</p>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <ng-template #teilnehmerVote>
+                            <tbody>
+                            <tr *ngFor="let userResults of allVoteResults; let i = index">
+                                <td>{{userResults.username}}</td>
+                                <ng-container [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
+                                              *ngFor="let vo of vote.options">
+                                    <td *ngSwitchCase="0" style="background: red"><p>0</p></td>
+                                    <td *ngSwitchDefault style="background: green">
+                                        <p>{{userResults.voteOptionAnswers.get(vo.id!)}}</p></td>
+                                </ng-container>
+                            </tr>
+                            <tr>
+                                <td>Ergebnis</td>
+                                <td *ngFor="let voteOption of vote.options!">
+                                    <p>{{getVoteOptionSum(voteOption.id!)}}</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </ng-template>
+                    </table>
+                </mat-card-content>
+            </mat-card>
         </div>
     </div>
 </div>
+<button (click)="sort(false)">Sort by name</button>
+<button (click)="sort(true,vote.options[0]!.id!)">Sort by answer</button>
