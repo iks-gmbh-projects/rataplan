@@ -1,0 +1,28 @@
+<div class="page-container">
+    <div class="result-container">
+        <div style="display: block">
+            <h2 style="display: block; text-align: center">Abstimmung {{vote.title}} Ergebnisse</h2>
+            <table style="border: black; border-collapse: collapse">
+                <thead style="position:sticky;">
+                <tr>
+                    <th>Teilnehmerin</th>
+                    <th *ngFor="let voteOption of vote.options; let i = index">Termin {{i + 1}}
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let userResults of allVoteResults; let i = index">
+                    <td>{{userResults.username}}</td>
+                    <ng-container [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
+                                  *ngFor="let vo of vote.options">
+                        <td *ngSwitchCase="0"><p>Keine Antwort</p></td>
+                        <td *ngSwitchCase="1" style="background: green"><p>Akzeptiert</p></td>
+                        <td *ngSwitchCase="2" style="background: yellow"><p>ggf. Akzeptiert</p></td>
+                        <td *ngSwitchCase="3" style="background: red"><p>Abgelehnt</p></td>
+                    </ng-container>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

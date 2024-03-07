@@ -17,6 +17,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { VoteEffects } from './vote.effects';
 import { CombinedDatetimeMaxDirective } from '../validator/combined-datetime-max.directive';
 import { CombinedDatetimeMinDirective } from '../validator/combined-datetime-min.directive';
+import { VoteResultsComponent } from './vote-results/vote-results.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { CombinedDatetimeMinDirective } from '../validator/combined-datetime-min
 
     CombinedDatetimeMaxDirective,
     CombinedDatetimeMinDirective,
+    VoteResultsComponent,
   ],
   imports: [
     AppCommonModule,
