@@ -8,6 +8,7 @@ import {ActivatedRoute} from "@angular/router";
 import {VoteResolver} from "../vote/resolver/vote.resolver";
 import {VoteOptionModel} from "../../models/vote-option.model";
 import {MatDialog} from "@angular/material/dialog";
+import {VoteOptionInfoDialogComponent} from "./vote-option-info-dialog/vote-option-info-dialog.component";
 
 export type UserVoteResults = {
     username: string,
@@ -15,8 +16,8 @@ export type UserVoteResults = {
 }
 
 export type UserVoteResultResponse = {
-    username:string,
-    voteOptionAnswers:Object
+    username: string,
+    voteOptionAnswers: Object
 }
 
 @Component({
@@ -29,7 +30,7 @@ export class VoteResultsComponent implements OnInit {
     allVoteResults!: UserVoteResults[];
     vote!: VoteModel<boolean>;
 
-    constructor(private store: Store, private route: ActivatedRoute, private dialog:MatDialog) {
+    constructor(private store: Store, private route: ActivatedRoute, private dialog: MatDialog) {
     }
 
     ngOnInit(): void {
@@ -38,6 +39,10 @@ export class VoteResultsComponent implements OnInit {
         const resolvedData: { vote: VoteModel, results: UserVoteResults[] } = this.route.snapshot.data["voteResultData"];
         this.vote = resolvedData.vote;
         this.allVoteResults = resolvedData.results;
+    }
+
+    showVoteOptionInfo(voteOption: VoteOptionModel) {
+        this.dialog.open(VoteOptionInfoDialogComponent, {data: {voteOption: voteOption}})
     }
 
     protected readonly Number = Number;

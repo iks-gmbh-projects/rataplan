@@ -7,6 +7,7 @@
                 <tr>
                     <th>Teilnehmerin</th>
                     <th *ngFor="let voteOption of vote.options; let i = index">Termin {{i + 1}}
+                        <mat-icon (click)="showVoteOptionInfo(voteOption)">info</mat-icon>
                     </th>
                 </tr>
                 </thead>

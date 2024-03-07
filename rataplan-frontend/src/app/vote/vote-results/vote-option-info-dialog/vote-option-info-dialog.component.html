@@ -1,1 +1,4 @@
-<p>vote-option-info-dialog works!</p>
+<p *ngIf="voteOption.startDate">Anfangsdatum: {{voteOption.startDate| date:'medium'}}</p>
+<p *ngIf="voteOption.endDate">Enddatum: {{voteOption.endDate | date:'medium'}}</p>
+<p *ngIf="voteOption.description">Beschreibung: {{voteOption.description}}</p>
+<p *ngIf="voteOption.url">url: <a [href]="voteOption.url">{{voteOption.url}}</a></p>
