@@ -43,15 +43,26 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field>
+      <mat-form-field *ngIf="filterByOption === FilterByOptions.VOTE_OPTION; else sortByNameDropDownOptions">
         <mat-label>Sortieren</mat-label>
         <mat-select [(ngModel)]="filterSortOption">
           <mat-option
-            *ngFor="let sortOption of sortByOptions"
+            *ngFor="let sortOption of sortByOptionOptions"
             [value]="sortOption"
           >{{sortOption}}</mat-option>
         </mat-select>
       </mat-form-field>
+      <ng-template #sortByNameDropDownOptions>
+        <mat-form-field *ngIf="filterByOption == FilterByOptions.PARTICIPANT">
+          <mat-label>Sortieren</mat-label>
+          <mat-select [(ngModel)]="filterSortOption">
+            <mat-option
+              *ngFor="let sortOption of sortByNameOptions"
+              [value]="sortOption"
+            >{{sortOption}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
       <button mat-raised-button color="primary" (click)="applyFilter()" style="margin-right: 15px">Filter anwenden
       </button>
       <button mat-raised-button class="back-to-vote-button" [routerLink]="['../']">Zur Abstimmung</button>

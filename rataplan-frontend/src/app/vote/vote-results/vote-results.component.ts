@@ -23,8 +23,10 @@ export enum FilterByOptions {
 }
 
 export enum FilterSortOption {
-  ASCENDING  = 'Aufsteigend',
-  DESCENDING = 'Absteigend'
+  ASCENDING      = 'Aufsteigend',
+  DESCENDING     = 'Absteigend',
+  ACCEPTED_FIRST = 'Zusagen zuerst',
+  REJECTED_FIRST = 'Ablehnungen zuerst'
 }
 
 @Component({
@@ -37,7 +39,8 @@ export class VoteResultsComponent implements OnInit {
   allVoteResults!: UserVoteResults[];
   vote!: VoteModel<boolean>;
   filterByOptions: string[] = [FilterByOptions.PARTICIPANT, FilterByOptions.VOTE_OPTION];
-  sortByOptions: string[] = [FilterSortOption.ASCENDING, FilterSortOption.DESCENDING];
+  sortByNameOptions: string[] = [FilterSortOption.ASCENDING, FilterSortOption.DESCENDING];
+  sortByOptionOptions: string[] = [FilterSortOption.ACCEPTED_FIRST, FilterSortOption.REJECTED_FIRST];
   filterByOption: string = FilterByOptions.VOTE_OPTION;
   filterVoteOption: number = 0;
   filterSortOption: string = FilterSortOption.ASCENDING;
@@ -97,7 +100,7 @@ export class VoteResultsComponent implements OnInit {
   }
   
   applyFilter() {
-    let descending = this.filterSortOption === FilterSortOption.DESCENDING;
+    let descending = this.filterSortOption === FilterSortOption.DESCENDING || this.filterSortOption === FilterSortOption.ACCEPTED_FIRST;
     if(this.filterByOption === FilterByOptions.PARTICIPANT) this.sort(descending);
     else this.sort(descending, this.vote.options[this.filterVoteOption].id);
   }
