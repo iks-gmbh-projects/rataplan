@@ -34,9 +34,44 @@ body {
 
 table {
     border-collapse: collapse;
-    width: 90%;
     margin-left: auto;
     margin-right: auto;
+    white-space: nowrap;
+    border: black;
+
+}
+
+.mat-card{
     overflow-x: scroll;
-    overflow-y: scroll;
+    max-width: 90%;
+    padding: 50px;
+}
+
+.participant-column-title{
+    position: sticky;
+    left: 0;
+    background: #f2f2f2;
+}
+
+.username-result-entries{
+    position: sticky;
+    left: 0;
+    background: white;
+}
+
+.mat-form-field{
+    max-width: 200px;
+    margin-right:15px;
+}
+
+.accepted-option{
+    background: green;
+}
+
+.maybe-option{
+    background: yellow;
+}
+
+.rejected-option{
+    background: red;
 }
