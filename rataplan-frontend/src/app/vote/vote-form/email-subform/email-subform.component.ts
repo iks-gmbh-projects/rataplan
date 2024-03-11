@@ -1,7 +1,8 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -10,7 +11,6 @@ import { FormErrorMessageService } from '../../../services/form-error-message-se
 import { ExtraValidators } from '../../../validator/validators';
 import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../../vote.actions';
 import { voteFeature } from '../../vote.feature';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-email-subform',
@@ -24,21 +24,22 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   isEditing: boolean = false;
   $isLoggedIn: Observable<boolean>;
   personaliseEmailActive = false;
-  emailSubform = new UntypedFormGroup({
-    'name': new UntypedFormControl(null, [
+  emailSubform = new FormGroup({
+    'name': new FormControl<string | null>(null, [
       Validators.maxLength(50),
       ExtraValidators.containsSomeWhitespace,
     ]),
-    'email': new UntypedFormControl(null, [
+    'email': new FormControl<string | null>(null, [
       Validators.maxLength(100),
       Validators.email,
     ]),
-    'consigneeList': new UntypedFormControl(null, [
+    'consigneeList': new FormControl<string | null>(null, [
       Validators.maxLength(60),
       Validators.email,
     ]),
-    'personalisedInvitation': new UntypedFormControl(
-      null),
+    'personalisedInvitation': new FormControl<string | null>(
+      null
+    ),
   });
   
   private storeSub?: Subscription;
@@ -63,8 +64,8 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       ).subscribe(state => {
         this.busy = state.busy;
         const vote = state.vote!;
-        this.emailSubform.get('name')?.setValue(vote.organizerName);
-        this.emailSubform.get('email')?.setValue(vote.organizerMail);
+        this.emailSubform.get('name')?.setValue(vote.organizerName ?? null);
+        this.emailSubform.get('email')?.setValue(vote.organizerMail ?? null);
         this.consigneeList = vote.consigneeList;
         console.log(vote);
         this.isEditing = !!state.vote!.id;
@@ -87,7 +88,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       name: this.emailSubform.get('name')?.value || undefined,
       email: this.emailSubform.get('email')?.value || undefined,
       consigneeList: this.consigneeList,
-      personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value,
+      personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value ?? undefined,
     }));
   }
   
@@ -111,7 +112,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     if(consigneeForm?.valid && consigneeForm.value && !this.consigneeList.includes(consigneeForm.value)) {
       this.consigneeList = [...this.consigneeList, consigneeForm.value];
     }
-    if(!this.personaliseEmailActive) this.emailSubform.get('personalisedInvitation')?.setValue(undefined);
+    if(!this.personaliseEmailActive) this.emailSubform.get('personalisedInvitation')?.setValue(null);
     this.setEmailForm();
     this.store.dispatch(new PostVoteAction());
   }
