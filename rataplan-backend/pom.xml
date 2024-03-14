@@ -132,13 +132,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<configuration>
-					<additionalClasspathElements>
-                        <additionalClasspathElement>
-                            ${project.basedir}\src\integration\resources
-                        </additionalClasspathElement>
+                <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${project.basedir}/src/integration/resources</additionalClasspathElement>
                     </additionalClasspathElements>
-				</configuration>
+                </configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -159,7 +157,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.basedir}\src\integration\java</source>
+								<source>${project.basedir}/src/integration/java</source>
 							</sources>
 						</configuration>
 					</execution>

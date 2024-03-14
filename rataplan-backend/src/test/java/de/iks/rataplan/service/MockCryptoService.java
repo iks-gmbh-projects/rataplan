@@ -17,22 +17,26 @@ public class MockCryptoService implements CryptoService {
     public String encryptDB(String raw) throws CryptoException {
         return raw;
     }
-
+    
     @Override
     public String decryptDB(String encrypted) throws CryptoException {
         return encrypted;
     }
-
+    
     @Override
-    public PublicKey authIdKey() {
+    public PublicKey getAuthIdKey() {
         return null;
     }
-
+    @Override
+    public PublicKey getAuthIdKey(long since) {
+        return null;
+    }
+    
     @Override
     public PublicKey getPublicKey() {
         return keyPair.getPublic();
     }
-
+    
     @Override
     public PrivateKey getPrivateKey() {
         return keyPair.getPrivate();

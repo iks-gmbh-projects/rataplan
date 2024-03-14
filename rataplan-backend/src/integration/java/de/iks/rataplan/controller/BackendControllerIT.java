@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
     value = TransactionDbUnitTestExecutionListener.class,
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
-public class BackendControllerTest {
+public class BackendControllerIT {
     private static final String FILE_PATH = PATH + CONTROLLER + BACKEND;
     
     @MockBean

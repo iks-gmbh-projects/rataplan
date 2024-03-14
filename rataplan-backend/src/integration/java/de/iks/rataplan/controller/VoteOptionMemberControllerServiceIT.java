@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.iks.rataplan.testutils.ITConstants.*;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -48,7 +47,7 @@ import static org.mockito.Mockito.*;
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
 @Transactional
-public class VoteOptionMemberControllerServiceTest {
+public class VoteOptionMemberControllerServiceIT {
     
     private static final String FILE_PATH = PATH + VOTE_PARTICIPANTS;
     
