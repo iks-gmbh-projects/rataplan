@@ -24,5 +24,12 @@
     </mat-select>
     <mat-error>{{errorMessageService.genericFormError(form.get('category'))}}</mat-error>
   </mat-form-field>
+  <button
+    *ngIf="submissionUnsuccessful"
+    mat-raised-button
+    routerLink="/vote/links"
+    [queryParams]="{editToken,participationToken}"
+  >Zurück zur Links
+  </button>
   <button type="submit" mat-raised-button color="primary">Senden</button>
 </form>
