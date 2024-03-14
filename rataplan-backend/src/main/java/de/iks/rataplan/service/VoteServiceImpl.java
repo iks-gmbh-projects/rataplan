@@ -43,6 +43,7 @@ public class VoteServiceImpl implements VoteService {
     private final JwtTokenService jwtTokenService;
     @Value(value = "${auth.notify.participant.url}")
     private String backendUrl;
+    private final NotificationService notificationService;
     private final MailService mailService;
     
     private final TokenGeneratorService tokenGeneratorService;
@@ -78,7 +79,7 @@ public class VoteServiceImpl implements VoteService {
             mailService.sendMailForVoteCreation(createdVote);
         }
         if(!vote.getConsigneeList().isEmpty()) {
-            this.mailService.sendMailForVoteInvitations(vote);
+            this.notificationService.notifyForVoteInvitations(vote);
         }
         
         return createdVote;
