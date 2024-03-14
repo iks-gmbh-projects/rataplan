@@ -26,11 +26,6 @@ public class LogMailServiceImpl implements MailService {
     }
     
     @Override
-    public void sendMailForVoteInvitations(Vote vote) {
-        log.info("Vote invitation link: {}", baseUrl + "/vote/" + vote.getParticipationToken());
-    }
-    
-    @Override
     public void sendMailForContactRequest(ContactData contactData) {
         log.info("ContactRequest mail sent.");
     }
