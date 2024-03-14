@@ -4,6 +4,7 @@ import de.iks.rataplan.domain.ConfirmAccountMailData;
 import de.iks.rataplan.domain.FeedbackCategory;
 import de.iks.rataplan.domain.ParticipantDeletionMailData;
 import de.iks.rataplan.domain.ResetPasswordMailData;
+import de.iks.rataplan.domain.notifications.NotificationMailData;
 import de.iks.rataplan.dto.FeedbackDTO;
 import lombok.RequiredArgsConstructor;
 import sibModel.SendSmtpEmail;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +95,28 @@ public class MailBuilderSendInBlue {
             )
             .subject("Feedback Report")
             .htmlContent(templateEngine.process("feedbackReport_content", ctx));
+    }
+    public SendSmtpEmail buildNotificationMail(String recipient, NotificationMailData notification) {
+        return new SendSmtpEmail()
+            .sender(sender)
+            .to(Collections.singletonList(
+                new SendSmtpEmailTo()
+                    .email(recipient)
+            ))
+            .subject(notification.getSubject())
+            .htmlContent(notification.getContent());
+    }
+    public SendSmtpEmail buildNotificationSummaryMail(String recipient, Collection<? extends NotificationMailData> notifications) {
+        Context ctx = new Context();
+        ctx.setVariable("notifications", notifications);
+        return new SendSmtpEmail()
+            .sender(sender)
+            .to(Collections.singletonList(
+                new SendSmtpEmailTo()
+                    .email(recipient)
+            ))
+            .subject(templateEngine.process("notification_summary_subject", ctx))
+            .htmlContent(templateEngine.process("notification_summary_content", ctx));
     }
     
     // f�r plain/text ist "\r\n" in Java ein Zeilenumbruch

@@ -4,6 +4,7 @@ import de.iks.rataplan.config.JwtConfig;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +91,6 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
 
     @Override
     public String getUsernameFromToken(String token) {
-        String username;
         try {
             final Claims claims = getClaimsFromToken(token);
 
@@ -101,13 +101,29 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
                 throw new InvalidTokenException("Invalid JWT");
             }
 
-            username = claims.getSubject();
+            return claims.getSubject();
         } catch (Exception e) {
             throw new InvalidTokenException("Invalid JWT");
         }
-        return username;
     }
-
+    
+    @Override
+    public Integer getUserIdFromToken(String token) {
+        try {
+            final Claims claims = getClaimsFromToken(token);
+            
+            if (isTokenExpired(claims.getExpiration())) {
+                throw new InvalidTokenException("Invalid JWT");
+            }
+            if (!PURPOSE_LOGIN.equals(claims.get(CLAIM_PURPOSE))) {
+                throw new InvalidTokenException("Invalid JWT");
+            }
+            
+            return claims.get(CLAIM_USERID, Integer.class);
+        } catch (Exception e) {
+            throw new InvalidTokenException("Invalid JWT");
+        }
+    }
     private boolean isTokenExpired(Date expiration) {
         return expiration.before(new Date());
     }
@@ -146,13 +162,26 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
         Claims claims = getClaimsFromBackendToken(jwt);
         return Integer.parseInt(claims.getSubject());
     }
-    public Claims getClaimsFromBackendToken(String jwt) {
-        Claims claims = Jwts.parser()
+    private Claims getClaimsFromBackendToken(String jwt) {
+        try {
+            Claims claims = Jwts.parser()
                 .setSigningKeyResolver(signingKeyResolver)
+                .requireIssuer("drumdibum-backend")
                 .parseClaimsJws(jwt)
                 .getBody();
-        if (!claims.getIssuer().equals("drumdibum-backend")) throw new InvalidTokenException("bad");
-        if (claims.getExpiration().before(new Date())) throw new InvalidTokenException("bad");
-        return claims;
+            if (claims.getExpiration().before(new Date())) throw new InvalidTokenException("bad");
+            return claims;
+        } catch(JwtException ex) {
+            throw new InvalidTokenException("bad", ex);
+        }
+    }
+    @Override
+    public boolean isBackendTokenValid(String jwt) {
+        try{
+            getClaimsFromBackendToken(jwt);
+        } catch(InvalidTokenException ex) {
+            return false;
+        }
+        return true;
     }
 }
