@@ -97,7 +97,7 @@ export class VoteComponent implements OnInit, OnDestroy {
       return;
     }
     if(this.currentUser != null && this.userVoted) {
-      console.log(this.currentUser + ' hat schon abgestimmt');
+      this.snackBar.open("Sie haben schon abgestimmt, bitte bearbeiten Sie ihre schon abgegebenen Antworten","OK")
       this.resetVote();
       return;
     }
