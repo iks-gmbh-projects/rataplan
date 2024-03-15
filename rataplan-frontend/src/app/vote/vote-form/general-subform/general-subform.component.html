@@ -1,5 +1,5 @@
 <div class="center">
-  <form [formGroup]="generalSubform">
+  <form [formGroup]="generalSubform" class="left-bound">
     <div>
       <div>
         <mat-form-field
@@ -94,17 +94,17 @@
           />
         </mat-form-field>
       </div>
-    </div>
-    <div class="button-space">
-      <button
-        [disabled]="this.generalSubform.invalid"
-        class="right"
-        type="button"
-        color="primary"
-        mat-raised-button
-        (click)="nextPage()"
-      ><mat-icon>navigate_next</mat-icon>
-      </button>
+      <div class="navigate-forward-submit-button-space">
+        <button
+          [disabled]="this.generalSubform.invalid"
+          type="button"
+          color="primary"
+          mat-raised-button
+          (click)="nextPage()"
+        >
+          <mat-icon>navigate_next</mat-icon>
+        </button>
+      </div>
     </div>
   </form>
 </div>

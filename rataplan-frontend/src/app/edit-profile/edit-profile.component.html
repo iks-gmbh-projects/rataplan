@@ -1,34 +1,37 @@
-<div class="content">
-  <div>
-    <h1 class="headline">Profil Bearbeiten</h1>
-  </div>
-  <form class="displayName">
-    <mat-form-field appearance="fill">
-      <mat-label>Anzeigename</mat-label>
-      <input matInput [placeholder]="userData?.displayname || ''"
-             autocomplete=off
-             [formControl]="displayNameField"
+<div class="center">
+  <h1>Profil Bearbeiten</h1>
+  <div class="left-bound">
+      <mat-form-field appearance="fill">
+        <mat-label>Anzeigename</mat-label>
+        <input
+          matInput [placeholder]="userData?.displayname || ''"
+          autocomplete="off"
+          [formControl]="displayNameField"
+        >
+        <mat-error>{{errorMessageService.genericFormError(displayNameField)}}</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Mail</mat-label>
+        <input
+          matInput [textContent]="userData?.mail || ''"
+          autocomplete="off"
+          [formControl]="emailField"
+        >
+        <mat-error>{{errorMessageService.genericFormError(emailField)}}</mat-error>
+      </mat-form-field>
+    <div class="navigate-submit-multiple-button-space">
+      <button
+        mat-raised-button color="warn"
+        routerLink="/view-profile"
+      >Zurück
+      </button>
+      <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
+      <button
+        mat-raised-button color="primary" [style]="busy ? '' : 'margin-left: 36px'"
+        [disabled]="displayNameField.invalid || emailField.invalid" (click)="updateProfile()"
       >
-      <mat-error>{{errorMessageService.genericFormError(displayNameField)}}</mat-error>
-    </mat-form-field>
-  </form>
-  <form class="mail">
-    <mat-form-field appearance="fill">
-      <mat-label>Mail</mat-label>
-      <input matInput [textContent]="userData?.mail || ''"
-             autocomplete=off
-             [formControl]="emailField">
-      <mat-error>{{errorMessageService.genericFormError(emailField)}}</mat-error>
-    </mat-form-field>
-  </form>
-  <div class="button-container">
-    <button  mat-raised-button color="warn"
-             routerLink="/view-profile">Zurück
-    </button>
-    <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
-    <button mat-raised-button color="primary" [style]="busy ? '' : 'margin-left: 36px'"
-            [disabled]="displayNameField.invalid || emailField.invalid" (click)="updateProfile()">
-      Speichern
-    </button>
+        Speichern
+      </button>
+    </div>
   </div>
 </div>

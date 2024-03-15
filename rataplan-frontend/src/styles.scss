@@ -186,28 +186,28 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
 }
 
 
-.mat-radio-label-content{
+.mat-radio-label-content {
   white-space: break-spaces
 }
 
-@media(max-width: 500px){
-  .password-reset{
+@media(max-width: 500px) {
+  .password-reset {
     display: block;
     padding: 5px;
     margin: auto;
     align-self: center;
   }
-  .registration{
+  .registration {
     display: block;
     padding-bottom: 5px;
     margin: auto;
     align-self: center;
   }
-  .links{
+  .links {
     display: block;
     text-align: center;
   }
-  .confirm-account{
+  .confirm-account {
     display: block;
     padding: 5px;
     margin: auto;
@@ -215,4 +215,39 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
   }
 
 }
+
+.navigate-submit-multiple-button-space {
+  margin-top: 1rem;
+  min-width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.navigate-forward-submit-button-space {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.navigate-back-cancel-button-space {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: left;
+  text-align: left;
+}
+
+.left-bound {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+
 

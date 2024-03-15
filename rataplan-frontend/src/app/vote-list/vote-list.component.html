@@ -1,9 +1,11 @@
-<mat-tab-group dynamicHeight [selectedIndex]='consignedVotes.length ? 1 : null'>
+<div class="center">
+<mat-tab-group dynamicHeight [selectedIndex]='consignedVotes.length ? 1 : null' >
   <mat-tab>
+    <div>
     <ng-template mat-tab-label>
       <span class='centered'>Erstellt</span>
     </ng-template>
-    <div class='wrapper'>
+    <div class='left-bound'>
       <mat-card class='width'
                 *ngFor='let vote of createdVotes'>
         <mat-card-title>{{vote.title}}</mat-card-title>
@@ -24,6 +26,7 @@
         </mat-card-actions>
       </mat-card>
     </div>
+    </div>
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
@@ -31,7 +34,7 @@
             [matBadgeHidden]='consignedVotes.length == 0'
             matBadgeColor='warn'>Einladungen</span>
     </ng-template>
-    <div class='wrapper'>
+    <div class='left-bound'>
       <mat-card class='width'
                 *ngFor='let vote of consignedVotes'>
         <mat-card-title>{{vote.title}}</mat-card-title>
@@ -51,7 +54,7 @@
     <ng-template mat-tab-label>
       <span class='centered'>Teilnahmen</span>
     </ng-template>
-    <div class='wrapper'>
+    <div class='left-bound'>
       <mat-card class='width'
                 *ngFor='let vote of participatedVotes'>
         <mat-card-title>{{vote.title}}</mat-card-title>
@@ -69,3 +72,4 @@
   </mat-tab>
 </mat-tab-group>
 <mat-spinner class='centered' *ngIf='ready != 7'></mat-spinner>
+</div>

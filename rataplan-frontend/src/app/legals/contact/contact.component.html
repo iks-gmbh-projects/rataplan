@@ -1,33 +1,35 @@
 <div class="legals-wrapper centered">
   <form class="form-container" [formGroup]="contact" (ngSubmit)="submit()">
-  <div>
-    <h1 class="centered">Kontakt</h1>
-  </div>
-  <div class="email">
-    <mat-form-field appearance="fill">
-      <mat-label>E-Mail</mat-label>
-      <input matInput placeholder="pat@example.com" [formControl]="senderMail" required>
-      <mat-error>{{errorMessageService.genericFormError(senderMail)}}</mat-error>
-    </mat-form-field>
-  </div>
-  <div class="subject">
-    <mat-form-field appearance="fill">
-      <mat-label>Betreff</mat-label>
-      <input matInput required [formControl]="subject">
-      <mat-error>{{errorMessageService.genericFormError(subject)}}</mat-error>
-    </mat-form-field>
-  </div>
-  <div class="message">
-    <mat-form-field class="message-field" appearance="fill">
-      <mat-label class="message-label">Nachricht...</mat-label>
-      <textarea class="message-textarea" matInput required [formControl]="content"></textarea>
-      <mat-error>{{errorMessageService.genericFormError(content)}}</mat-error>
-    </mat-form-field>
-  </div>
-    <div class="button">
-      <button type="submit" class="button-space" mat-raised-button color="primary" [disabled]="contact.invalid">
-        Abschicken
-      </button>
+    <div>
+      <div>
+        <h1 class="centered">Kontakt</h1>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>E-Mail</mat-label>
+          <input matInput placeholder="pat@example.com" [formControl]="senderMail" required>
+          <mat-error>{{errorMessageService.genericFormError(senderMail)}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Betreff</mat-label>
+          <input matInput required [formControl]="subject">
+          <mat-error>{{errorMessageService.genericFormError(subject)}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="message">
+        <mat-form-field class="message-field" appearance="fill">
+          <mat-label class="message-label">Nachricht...</mat-label>
+          <textarea class="message-textarea" matInput required [formControl]="content"></textarea>
+          <mat-error>{{errorMessageService.genericFormError(content)}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="navigate-forward-submit-button-space">
+        <button type="submit" mat-raised-button color="primary" [disabled]="contact.invalid">
+          Abschicken
+        </button>
+      </div>
     </div>
   </form>
 </div>

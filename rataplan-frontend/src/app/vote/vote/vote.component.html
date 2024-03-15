@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="center">
   <h2 *ngIf="isPreview">Vorschau</h2>
   <mat-card>
     <mat-card-title>{{ vote?.title }}</mat-card-title>
@@ -52,121 +52,121 @@
       </mat-list>
     </mat-expansion-panel>
   </div>
-  <div *ngIf="!hasDeadlinePassed()">
-    <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
-      <input
-        [(ngModel)]="voteParticipant.name"
-        required
-        maxlength="100"
-        someNonWhitespace
-        matInput
-        [disabled]="isPreview || !!currentUser"
-        autocomplete="off"
-        #nameField="ngModel"
-      >
-      <mat-error>{{errorMessageService.genericFormError(nameField.control)}}</mat-error>
-    </mat-form-field>
-  </div>
-  <div class="centered" style="display: inline-block">
-    <p>Keine Eingaben werden als nicht Entschieden gespeichert</p>
-    <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
-      maximal {{vote.voteConfig.yesAnswerLimit!}} Optionen zustimmen</p>
-  </div>
   <div>
-    <div class="fill-width topspace" *ngFor="let option of (vote?.options || []); let voteIndex=index">
-      <div style="font-size: 90%" class="center">
-        <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
-        <span *ngIf="option.endDate">
+    <div *ngIf="!hasDeadlinePassed()">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input
+          [(ngModel)]="voteParticipant.name"
+          required
+          maxlength="100"
+          someNonWhitespace
+          matInput
+          [disabled]="isPreview || !!currentUser"
+          autocomplete="off"
+          #nameField="ngModel"
+        >
+        <mat-error>{{errorMessageService.genericFormError(nameField.control)}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="centered" style="display: inline-block">
+      <p>Keine Eingaben werden als nicht Entschieden gespeichert</p>
+      <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
+        maximal {{vote.voteConfig.yesAnswerLimit!}} Optionen zustimmen</p>
+    </div>
+    <div class="left-bound">
+      <div *ngFor="let option of (vote?.options || []); let voteIndex=index">
+        <div style="font-size: 90%" class="center">
+          <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
+          <span *ngIf="option.endDate">
           {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
         </span>
-        <div class="break-text">{{option.description || ''}}</div>
-        <span>
+          <div class="break-text">{{option.description || ''}}</div>
+          <span>
           <a
             *ngIf="option.url"
             [href]="option.url"
           >Link</a>
         </span>
-      </div>
-      <div class="right centerText noWrap">
-        <button
-          mat-icon-button
-          (click)="openDialog(option)"
-        >
-          <mat-icon>info</mat-icon>
-        </button>
-        <mat-form-field
-          *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
-          appearance="fill"
-        >
-          <mat-label>Teilnehmerzahl</mat-label>
-          <input
-            type="text"
-            inputmode="numeric"
-            min="0"
-            required
-            integer
-            matInput
-            [ngModel]="voteParticipant!.decisions[voteIndex]?.participants"
-            (ngModelChange)="setParticipantNumber(option, $event)"
-            mat-line
-            [disabled]="isPreview"
-            #participantField="ngModel"
+        </div>
+        <div class="right centerText noWrap">
+          <button
+            mat-icon-button
+            (click)="openDialog(option)"
           >
-          <mat-error>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
-        </mat-form-field>
-        <ng-template #decisionComplex>
-          <mat-button-toggle
-            *ngIf="decisionDescription(option) as desc"
-            [class]="desc.class"
-            [matTooltip]="desc.tooltip || ''"
-            matTooltipPosition="above"
-            (click)="isPreview || hasDeadlinePassed() || cycleDecision(option); selectionButton.checked = false"
-            [disabled]="!!desc.disabled"
-            #selectionButton
+            <mat-icon>info</mat-icon>
+          </button>
+          <mat-form-field
+            *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
+            appearance="fill"
           >
-            <mat-icon>{{desc.icon || ""}}</mat-icon>
-          </mat-button-toggle>
-        </ng-template>
+            <mat-label>Teilnehmerzahl</mat-label>
+            <input
+              type="text"
+              inputmode="numeric"
+              min="0"
+              required
+              integer
+              matInput
+              [ngModel]="voteParticipant!.decisions[voteIndex]?.participants"
+              (ngModelChange)="setParticipantNumber(option, $event)"
+              mat-line
+              [disabled]="isPreview"
+              #participantField="ngModel"
+            >
+            <mat-error>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
+          </mat-form-field>
+          <ng-template #decisionComplex>
+            <mat-button-toggle
+              *ngIf="decisionDescription(option) as desc"
+              [class]="desc.class"
+              [matTooltip]="desc.tooltip || ''"
+              matTooltipPosition="above"
+              (click)="isPreview || hasDeadlinePassed() || cycleDecision(option); selectionButton.checked = false"
+              [disabled]="!!desc.disabled"
+              #selectionButton
+            >
+              <mat-icon>{{desc.icon || ""}}</mat-icon>
+            </mat-button-toggle>
+          </ng-template>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="fill-width" *ngIf="!isPreview; else previewButtons">
-    <div class="vote-button-container">
-      <mat-spinner *ngIf="submitBusy" diameter="24" class="button-spinner"></mat-spinner>
-      <button
-        *ngIf="!hasDeadlinePassed()"
-        class="vote-button"
-        type="submit"
-        color="primary"
-        mat-raised-button
-        (click)="saveVote()"
-      >{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
-      </button>
+    <div class="fill-width" *ngIf="!isPreview; else previewButtons">
+      <div class="vote-button-container">
+        <mat-spinner *ngIf="submitBusy" diameter="24" class="button-spinner"></mat-spinner>
+        <button
+          *ngIf="!hasDeadlinePassed()"
+          class="vote-button"
+          type="submit"
+          color="primary"
+          mat-raised-button
+          (click)="saveVote()"
+        >{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
+        </button>
       <button mat-raised-button [routerLink]="['./results']">
         Ergebnisse ansehen
       </button>
     </div>
-  </div>
-  <ng-template #previewButtons>
-    <div class="fill-width">
-      <a
-        class="back-button"
-        mat-raised-button
-        routerLink="../email"
-      >
-        <mat-icon>navigate_before</mat-icon>
-      </a>
-      <a
-        class="vote-button"
-        type="submit"
-        color="primary"
-        mat-raised-button
-        [disabled]="busy"
-        (click)="acceptPreview()"
-      >
-        Fertig
-      </a>
     </div>
-  </ng-template>
+    <ng-template #previewButtons class="fill-width">
+      <div class="navigate-submit-multiple-button-space">
+        <a
+          mat-raised-button
+          routerLink="../email"
+        >
+          <mat-icon>navigate_before</mat-icon>
+        </a>
+        <a
+          type="submit"
+          color="primary"
+          mat-raised-button
+          [disabled]="busy"
+          (click)="acceptPreview()"
+        >
+          Fertig
+        </a>
+      </div>
+    </ng-template>
+  </div>
 </div>

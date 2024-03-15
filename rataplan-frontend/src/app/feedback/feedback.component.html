@@ -1,35 +1,50 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <mat-form-field appearance="fill">
-    <mat-label>Titel</mat-label>
-    <input type="text" matInput formControlName="title">
-    <mat-error>{{errorMessageService.genericFormError(form.get('title'))}}</mat-error>
-  </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-label>Text</mat-label>
-    <textarea matInput formControlName="text"></textarea>
-    <mat-error>{{errorMessageService.genericFormError(form.get('text'))}}</mat-error>
-  </mat-form-field>
-  <div class="rating">
-    <mat-icon
-      *ngFor="let min of ratings"
-      (click)="setRating(min)"
-    >{{(form.value.rating ?? 0) >= min ? 'star' : 'star_border'}}</mat-icon>
-  </div>
-  <mat-form-field appearance="fill">
-    <mat-label>Kategorie</mat-label>
-    <mat-select formControlName="category">
-      <mat-option [value]="categories.GENERAL">Generell</mat-option>
-      <mat-option [value]="categories.VOTE">Abstimmungen</mat-option>
-      <mat-option [value]="categories.SURVEY">Umfragen</mat-option>
-    </mat-select>
-    <mat-error>{{errorMessageService.genericFormError(form.get('category'))}}</mat-error>
-  </mat-form-field>
-  <button
-    *ngIf="submissionUnsuccessful"
-    mat-raised-button
-    routerLink="/vote/links"
-    [queryParams]="{editToken,participationToken}"
-  >Zurück zur Links
-  </button>
-  <button type="submit" mat-raised-button color="primary">Senden</button>
-</form>
+<div class="center">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="left-bound">
+    <div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Titel</mat-label>
+          <input type="text" matInput formControlName="title">
+          <mat-error>{{errorMessageService.genericFormError(form.get('title'))}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Text</mat-label>
+          <textarea matInput formControlName="text"></textarea>
+          <mat-error>{{errorMessageService.genericFormError(form.get('text'))}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="rating">
+        <mat-icon
+          *ngFor="let min of ratings"
+          (click)="setRating(min)"
+        >{{(form.value.rating ?? 0) >= min ? 'star' : 'star_border'}}</mat-icon>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Kategorie</mat-label>
+          <mat-select formControlName="category">
+            <mat-option [value]="categories.GENERAL">Generell</mat-option>
+            <mat-option [value]="categories.VOTE">Abstimmungen</mat-option>
+            <mat-option [value]="categories.SURVEY">Umfragen</mat-option>
+          </mat-select>
+          <mat-error>{{errorMessageService.genericFormError(form.get('category'))}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div style="flex-direction: row;">
+        <div
+          *ngIf="submissionUnsuccessful"
+          style="float: left"
+        >
+          <button type="submit" mat-raised-button>Zurück zur Links</button>
+        </div>
+        <div
+          style="float: right"
+        >
+          <button type="submit" mat-raised-button color="primary">Senden</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
