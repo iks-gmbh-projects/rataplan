@@ -85,9 +85,7 @@ public class VoteOptionMemberServiceTest {
         
         participant.getVoteDecisions().add(decision);
         participant.getVoteDecisions().add(decision2);
-        assertThrows(MalformedException.class, () -> {
-            voteParticipantService.createParticipant(vote, participant);
-        });
+        assertThrows(MalformedException.class, () -> voteParticipantService.createParticipant(vote, participant));
     }
     
     @Test
@@ -98,7 +96,7 @@ public class VoteOptionMemberServiceTest {
             new EncryptedString("A short description of the voteOption.", false),
             new Date(2050, 10, 10),
             new EncryptedString("iks@iks-gmbh.com", false),
-            new EncryptedString("1", false),
+            null,
             new VoteConfig(new VoteOptionConfig(), DecisionType.EXTENDED)
         );
         
@@ -121,9 +119,7 @@ public class VoteOptionMemberServiceTest {
             .collect(Collectors.toList()));
         
         VoteParticipant dbParticipant = voteRepository.findById(1).orElseThrow().getParticipantById(1);
-        assertThrows(MalformedException.class, () -> {
-            voteParticipantService.updateParticipant(vote, dbParticipant, participant);
-        });
+        assertThrows(MalformedException.class, () -> voteParticipantService.updateParticipant(vote, dbParticipant, participant));
     }
     
     @Test
@@ -139,9 +135,7 @@ public class VoteOptionMemberServiceTest {
             .map(option -> new VoteDecision(Decision.ACCEPT, option, participant))
             .collect(Collectors.toList()));
         
-        assertThrows(MalformedException.class, () -> {
-            voteParticipantService.createParticipant(vote, participant);
-        });
+        assertThrows(MalformedException.class, () -> voteParticipantService.createParticipant(vote, participant));
     }
     @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
@@ -154,9 +148,7 @@ public class VoteOptionMemberServiceTest {
             .stream()
             .map(option -> new VoteDecision(Decision.ACCEPT, option, participant))
             .collect(Collectors.toList()));
-        assertThrows(MalformedException.class, () -> {
-            voteParticipantService.updateParticipant(vote, dbParticipant, participant);
-        });
+        assertThrows(MalformedException.class, () -> voteParticipantService.updateParticipant(vote, dbParticipant, participant));
     }
     
     @Test
@@ -185,9 +177,7 @@ public class VoteOptionMemberServiceTest {
         participant.getVoteDecisions().add(decision3);
         participant.setVote(vote);
         
-        assertThrows(MalformedException.class, () -> {
-            voteParticipantService.createParticipant(vote, participant);
-        });
+        assertThrows(MalformedException.class, () -> voteParticipantService.createParticipant(vote, participant));
     }
     
     @Test
@@ -210,9 +200,7 @@ public class VoteOptionMemberServiceTest {
         participant.getVoteDecisions().add(decision2);
         participant.setVote(vote);
         
-        assertThrows(ForbiddenException.class, () -> {
-            voteParticipantService.createParticipant(vote, participant);
-        });
+        assertThrows(ForbiddenException.class, () -> voteParticipantService.createParticipant(vote, participant));
     }
     
     @Test
@@ -232,9 +220,7 @@ public class VoteOptionMemberServiceTest {
         Vote vote = voteRepository.findById(1).orElseThrow();
         
         VoteParticipant voteParticipant = vote.getParticipantById(2);
-        assertThrows(ForbiddenException.class, () -> {
-            voteParticipantService.deleteParticipant(vote, voteParticipant);
-        });
+        assertThrows(ForbiddenException.class, () -> voteParticipantService.deleteParticipant(vote, voteParticipant));
     }
     
     @Test
@@ -268,9 +254,7 @@ public class VoteOptionMemberServiceTest {
         // this decision should not exist
         newVoteParticipant.getVoteDecisions().add(decision2);
         
-        assertThrows(MalformedException.class, () -> {
-            voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
-        });
+        assertThrows(MalformedException.class, () -> voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant));
     }
     
     @Test
@@ -290,8 +274,6 @@ public class VoteOptionMemberServiceTest {
         // this decision should not exist
         newVoteParticipant.getVoteDecisions().add(decision2);
         
-        assertThrows(ForbiddenException.class, () -> {
-            voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant);
-        });
+        assertThrows(ForbiddenException.class, () -> voteParticipantService.updateParticipant(vote, dbVoteParticipant, newVoteParticipant));
     }
 }

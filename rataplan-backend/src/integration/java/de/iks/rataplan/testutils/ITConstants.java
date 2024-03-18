@@ -11,6 +11,8 @@ public final class ITConstants {
 
 	// Filepath to resources from integration tests (controller)
 	public static final String PATH = "classpath:integration/db/controller";
+    public static final String BACKEND = "/backend";
+    public static final String ANONYMIZE = "/anonymize";
 
 	// Paths (used to find files and do REST-calls -> folder structure is same as REST-call structure)
 	public static final String VOTE_PARTICIPANTS = "/voteParticipants";

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -31,7 +32,13 @@ public class CreatorVoteDTOTest {
     @BeforeEach
     public void setup() {
         when(cryptoService.encryptDB(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
+        when(cryptoService.encryptDBRaw(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class)
+            .getBytes(StandardCharsets.UTF_8));
         when(cryptoService.decryptDB(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
+        when(cryptoService.decryptDBRaw(any(byte[].class))).thenAnswer(invocation -> new String(invocation.getArgument(
+            0,
+            byte[].class
+        ), StandardCharsets.UTF_8));
     }
     
     @Test
@@ -51,13 +58,21 @@ public class CreatorVoteDTOTest {
             "Description",
             new Date(1234567890L),
             IKS_NAME,
-            IKS_MAIL,
+            VoteNotificationSettingsDTO.builder()
+                .recipientEmail(IKS_MAIL)
+                .sendLinkMail(true)
+                .notifyExpiration(true)
+                .build(),
             new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT),
             "message"
         );
         
         Vote vote = mapper.map(dtoVote, Vote.class);
-        
+        VoteNotificationSettings notificationSettings = mapper.map(
+            dtoVote.getNotificationSettings(),
+            VoteNotificationSettings.class
+        );
+        RataplanAssert.assertVoteNotificationSettingsDTO(dtoVote.getNotificationSettings(), notificationSettings);
         RataplanAssert.assertVoteDTO(dtoVote, vote);
     }
     
@@ -91,7 +106,11 @@ public class CreatorVoteDTOTest {
             "Description",
             new Date(1234567890L),
             IKS_NAME,
-            IKS_MAIL,
+            VoteNotificationSettingsDTO.builder()
+                .recipientEmail(IKS_MAIL)
+                .sendLinkMail(true)
+                .notifyExpiration(true)
+                .build(),
             new VoteConfig(config, DecisionType.EXTENDED),
             "message"
         );
@@ -119,7 +138,7 @@ public class CreatorVoteDTOTest {
             new EncryptedString("Description", false),
             new Date(123456789L),
             new EncryptedString(IKS_NAME, false),
-            new EncryptedString(IKS_MAIL, false),
+            new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),
             new VoteConfig(new VoteOptionConfig(true, false, true, false, false, false), DecisionType.EXTENDED)
         );
         VoteOption voteOption1 = new VoteOption(new Timestamp(123123123L),
@@ -155,14 +174,11 @@ public class CreatorVoteDTOTest {
         
         RataplanAssert.assertVote(vote, dtoVote);
         
-        VoteParticipant[] memberList = vote.getParticipants()
-            .toArray(new VoteParticipant[0]);
-        VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
-            .toArray(new VoteParticipantDTO[0]);
+        VoteParticipant[] memberList = vote.getParticipants().toArray(new VoteParticipant[0]);
+        VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants().toArray(new VoteParticipantDTO[0]);
         
         for(int i = 0; i < memberList.length; i++) {
-            assertEquals(memberList[i].getVoteDecisions().size(),
-                participantDTOList[i].getDecisions().size());
+            assertEquals(memberList[i].getVoteDecisions().size(), participantDTOList[i].getDecisions().size());
         }
     }
     
@@ -172,7 +188,7 @@ public class CreatorVoteDTOTest {
             "Description",
             new Date(123456789L),
             IKS_NAME,
-            IKS_MAIL,
+            new VoteNotificationSettingsDTO(IKS_MAIL, true, false, true),
             new VoteConfig(new VoteOptionConfig(true, false, true, true, false, false), DecisionType.NUMBER),
             "message"
         );
@@ -211,14 +227,11 @@ public class CreatorVoteDTOTest {
         
         RataplanAssert.assertVoteDTO(dtoVote, vote);
         
-        VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants()
-            .toArray(new VoteParticipantDTO[0]);
-        VoteParticipant[] memberList = vote.getParticipants()
-            .toArray(new VoteParticipant[0]);
+        VoteParticipantDTO[] participantDTOList = dtoVote.getParticipants().toArray(new VoteParticipantDTO[0]);
+        VoteParticipant[] memberList = vote.getParticipants().toArray(new VoteParticipant[0]);
         
         for(int i = 0; i < participantDTOList.length; i++) {
-            assertEquals(participantDTOList[i].getDecisions().size(),
-                memberList[i].getVoteDecisions().size());
+            assertEquals(participantDTOList[i].getDecisions().size(), memberList[i].getVoteDecisions().size());
         }
     }
 }
