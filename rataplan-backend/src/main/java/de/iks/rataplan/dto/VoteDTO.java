@@ -19,7 +19,6 @@ public class VoteDTO implements Serializable {
     private String title;
     private String description;
     private String organizerName;
-    private String organizerMail;
     private Date deadline;
     private Integer userId;
     private boolean notified;
@@ -30,17 +29,17 @@ public class VoteDTO implements Serializable {
     private String personalisedInvitation;
     
 
-    public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,  String organizerMail, VoteConfig voteConfig,  String personalisedInvitation) {
-        this(title, description, deadline, organizerName, organizerMail, voteConfig,personalisedInvitation);
+    public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,
+        VoteConfig voteConfig,  String personalisedInvitation) {
+        this(title, description, deadline, organizerName, voteConfig,personalisedInvitation);
         this.id = id;
     }
     
-    public VoteDTO(String title, String description, Date deadline, String organizerName, String organizerMail, VoteConfig voteConfig, String personalisedInvitation) {
+    public VoteDTO(String title, String description, Date deadline, String organizerName, VoteConfig voteConfig, String personalisedInvitation) {
         this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.organizerName = organizerName;
-        this.organizerMail = organizerMail;
         this.voteConfig = voteConfig;
         this.personalisedInvitation = personalisedInvitation;
     }
@@ -58,7 +57,6 @@ public class VoteDTO implements Serializable {
             nullOrBlank(title) ||
             nonNullAndBlank(description) ||
             nonNullAndBlank(organizerName) ||
-            nonNullAndBlank(organizerMail) ||
             deadline == null ||
             voteConfig == null ||
             options == null ||

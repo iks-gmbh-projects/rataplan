@@ -37,7 +37,7 @@ public class Vote implements Serializable {
     private EncryptedString description;
     private Date deadline;
     private EncryptedString organizerName;
-    private EncryptedString organizerMail;
+    private VoteNotificationSettings notificationSettings;
     private Integer userId;
     private boolean isNotified = false;
     private String participationToken;
@@ -56,7 +56,7 @@ public class Vote implements Serializable {
         EncryptedString description,
         Date deadline,
         EncryptedString organizerName,
-        EncryptedString organizerMail,
+        VoteNotificationSettings notificationSettings,
         VoteConfig voteConfig,
         List<VoteOption> options,
         List<VoteParticipant> participants,
@@ -67,7 +67,7 @@ public class Vote implements Serializable {
         this.description = description;
         this.deadline = deadline;
         this.organizerName = organizerName;
-        this.organizerMail = organizerMail;
+        this.notificationSettings = notificationSettings;
         this.options = options;
         this.participants = participants;
         this.voteConfig = voteConfig;
@@ -79,7 +79,7 @@ public class Vote implements Serializable {
         EncryptedString description,
         Date deadline,
         EncryptedString organizerName,
-        EncryptedString organizerMail,
+        VoteNotificationSettings notificationSettings,
         VoteConfig voteConfig
     )
     {
@@ -87,7 +87,7 @@ public class Vote implements Serializable {
         this.description = description;
         this.deadline = deadline;
         this.organizerName = organizerName;
-        this.organizerMail = organizerMail;
+        this.notificationSettings = notificationSettings;
         this.voteConfig = voteConfig;
     }
     
@@ -137,10 +137,9 @@ public class Vote implements Serializable {
         return organizerName;
     }
     
-    @Column(name = "organizerMail")
-    @Convert(converter = DBEncryptedStringConverter.class)
-    public EncryptedString getOrganizerMail() {
-        return organizerMail;
+    @Embedded
+    public VoteNotificationSettings getNotificationSettings() {
+        return notificationSettings;
     }
     
     @Column(name = "userId")

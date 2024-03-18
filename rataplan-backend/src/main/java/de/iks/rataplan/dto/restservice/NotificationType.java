@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum NotificationType {
+    CREATE("vote/create"),
     INVITE("vote/invite"),
     EXPIRE("vote/expire"),
     NEW_PARTICIPANT("vote/participation"),

@@ -30,7 +30,7 @@ public class SchedulerService {
             request.setNotified(true);
             voteRepository.saveAndFlush(request);
 
-            if (request.getOrganizerMail() != null) {
+            if (request.getNotificationSettings() != null) {
                 mailService.sendMailForVoteExpired(request);
             }
         }

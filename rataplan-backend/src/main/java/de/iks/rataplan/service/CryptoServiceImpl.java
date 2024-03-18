@@ -32,55 +32,56 @@ public class CryptoServiceImpl implements CryptoService {
     private final RestTemplate restTemplate;
     private PublicKey authIdKey = null;
     private long fetchTime = 0;
-
+    
     private Key dbKey;
     private KeyPair keyPair;
-
+    
     @PostConstruct
     public void init() throws NoSuchAlgorithmException, IOException {
         this.dbKey = dbKeyConfig.resolveKey();
         this.keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
     }
-
+    
     @Override
-    public String encryptDB(String raw) throws CryptoException {
-        if (raw == null) return null;
+    public byte[] encryptDBRaw(String str) throws CryptoException {
+        if(str == null) return null;
         try {
             final Cipher cipher = Cipher.getInstance(dbKey.getAlgorithm());
             cipher.init(Cipher.ENCRYPT_MODE, dbKey);
-            return Base64.getEncoder().encodeToString(
-                    cipher.doFinal(
-                            raw.getBytes(StandardCharsets.UTF_8)
-                    )
-            );
-        } catch (InvalidKeyException |
-                NoSuchAlgorithmException |
-                NoSuchPaddingException |
-                IllegalBlockSizeException |
-                BadPaddingException ex) {
+            return cipher.doFinal(str.getBytes(StandardCharsets.UTF_8));
+        } catch(InvalidKeyException |
+            NoSuchAlgorithmException |
+            NoSuchPaddingException |
+            IllegalBlockSizeException |
+            BadPaddingException ex) {
             throw new CryptoException(ex);
         }
     }
-
     @Override
-    public String decryptDB(String encrypted) throws CryptoException {
-        if (encrypted == null) return null;
+    public String encryptDB(String raw) throws CryptoException {
+        if(raw == null) return null;
+        return Base64.getEncoder().encodeToString(encryptDBRaw(raw));
+    }
+    
+    @Override
+    public String decryptDBRaw(byte[] encrypted) throws CryptoException {
+        if(encrypted == null) return null;
         try {
             final Cipher cipher = Cipher.getInstance(dbKey.getAlgorithm());
             cipher.init(Cipher.DECRYPT_MODE, dbKey);
-            return new String(
-                    cipher.doFinal(
-                            Base64.getDecoder().decode(encrypted)
-                    ),
-                    StandardCharsets.UTF_8
-            );
-        } catch (InvalidKeyException |
-                NoSuchAlgorithmException |
-                NoSuchPaddingException |
-                IllegalBlockSizeException |
-                BadPaddingException ex) {
+            return new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
+        } catch(InvalidKeyException |
+            NoSuchAlgorithmException |
+            NoSuchPaddingException |
+            IllegalBlockSizeException |
+            BadPaddingException ex) {
             throw new CryptoException(ex);
         }
+    }
+    @Override
+    public String decryptDB(String encrypted) throws CryptoException {
+        if(encrypted == null) return null;
+        return decryptDBRaw(Base64.getDecoder().decode(encrypted));
     }
     
     @Override
@@ -107,13 +108,12 @@ public class CryptoServiceImpl implements CryptoService {
         return getAuthIdKey();
     }
     @Override
-    public PublicKey getPublicKey(){
+    public PublicKey getPublicKey() {
         return this.keyPair.getPublic();
     }
-
+    
     @Override
-    public PrivateKey getPrivateKey(){
+    public PrivateKey getPrivateKey() {
         return this.keyPair.getPrivate();
     }
-
 }

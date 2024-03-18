@@ -3,6 +3,7 @@ package de.iks.rataplan.utils;
 import de.iks.rataplan.domain.ContactData;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
+import de.iks.rataplan.service.CryptoService;
 import lombok.RequiredArgsConstructor;
 import sibModel.SendSmtpEmail;
 import sibModel.SendSmtpEmailSender;
@@ -14,8 +15,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,31 +36,9 @@ public class MailBuilderSendInBlue {
     
     private final TemplateEngine templateEngine;
     
+    private final CryptoService cryptoService;
+    
     private final FromEncryptedStringConverter fromEncryptedStringConverter;
-    
-    public List<SendSmtpEmail> buildMailListForVoteInvitations(Vote vote) {
-        Context ctx = getEmailContext(vote);
-        String subjectString = templateEngine.process("invitation_subject", ctx);
-        String contentString = templateEngine.process("invitation_content", ctx);
-        
-        return vote.getConsigneeList()
-            .stream()
-            .map(consignee -> new SendSmtpEmail().sender(sender)
-                .to(Collections.singletonList(new SendSmtpEmailTo().email(consignee)))
-                .subject(subjectString)
-                .htmlContent(contentString))
-            .collect(Collectors.toList());
-    }
-    
-    public Context getEmailContext(Vote vote) {
-        Context ctx = new Context();
-        ctx.setVariable("title", fromEncryptedStringConverter.convert(vote.getTitle()));
-        ctx.setVariable("organizer", fromEncryptedStringConverter.convert(vote.getOrganizerName()));
-        if(vote.getPersonalisedInvitation() != null && vote.getUserId() != null) ctx.setVariable("message", vote.getPersonalisedInvitation().trim());
-        String url = baseUrl + "/vote/" + vote.getParticipationToken();
-        ctx.setVariable("url", url);
-        return ctx;
-    }
     
     public SendSmtpEmail buildMailForVoteExpired(Vote vote) {
         String participationToken = vote.getParticipationToken();
@@ -81,7 +58,8 @@ public class MailBuilderSendInBlue {
         
         String htmlContent = templateEngine.process("expired_content", ctx);
         return new SendSmtpEmail().sender(sender)
-            .to(Collections.singletonList(new SendSmtpEmailTo().email(fromEncryptedStringConverter.convert(vote.getOrganizerMail()))))
+            .to(Collections.singletonList(new SendSmtpEmailTo().email(cryptoService.decryptDBRaw(vote.getNotificationSettings()
+                .getRecipientEmail()))))
             .subject(subjectContent)
             .htmlContent(htmlContent);
     }
@@ -107,7 +85,8 @@ public class MailBuilderSendInBlue {
         String htmlContent = templateEngine.process("to_organizerMail_htmlContent", ctx);
         
         return new SendSmtpEmail().sender(sender)
-            .to(Collections.singletonList(new SendSmtpEmailTo().email(fromEncryptedStringConverter.convert(vote.getOrganizerMail()))))
+            .to(Collections.singletonList(new SendSmtpEmailTo().email(cryptoService.decryptDBRaw(vote.getNotificationSettings()
+                .getRecipientEmail()))))
             .subject(subjectContent)
             .htmlContent(htmlContent);
     }
