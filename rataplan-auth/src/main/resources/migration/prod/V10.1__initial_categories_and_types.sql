@@ -5,7 +5,9 @@ INSERT INTO notification_type(categoryId, name, suppressAnonymous, version)
 SELECT c.id, n.name, FALSE, 0
 FROM notification_category AS c
 JOIN (
-    VALUES ('vote/invite'),
+    VALUES ('vote/create'),
+           ('vote/invite'),
+           ('vote/expire'),
            ('vote/participation'),
            ('vote/participation-invalidation')
 ) AS n(name) ON n.name LIKE (c.name || '/%');

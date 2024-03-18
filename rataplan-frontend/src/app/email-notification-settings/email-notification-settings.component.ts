@@ -30,7 +30,9 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
     vote: 'Abstimmungen',
   } as const;
   readonly notificationTypeTranslations: Record<string, string> = {
+    'vote/create': 'Abstimmung erstellt',
     'vote/invite': 'Einladung erhalten',
+    'vote/expire': 'Abstimmung beendet',
     'vote/participation': 'Teilnehmer hat abgestimmt',
     'vote/participation-invalidation': 'Teilnahme wurde ungültig',
   } as const;
