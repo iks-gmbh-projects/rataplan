@@ -62,8 +62,9 @@ public class VoteServiceImpl implements VoteService {
         vote.setEditToken(tokenGeneratorService.generateToken(10));
         
         Vote createdVote = voteRepository.saveAndFlush(vote);
-        
-        if(createdVote.getOrganizerMail() != null) {
+        if(createdVote.getUserId() != null) {
+            notificationService.notifyForVoteCreation(createdVote);
+        } else if(createdVote.getNotificationSettings() != null && createdVote.getNotificationSettings().getSendLinkMail()) {
             mailService.sendMailForVoteCreation(createdVote);
         }
         if(!vote.getConsigneeList().isEmpty()) {
@@ -176,7 +177,7 @@ public class VoteServiceImpl implements VoteService {
             }
         }
         dbVote.setOrganizerName(newVote.getOrganizerName());
-        dbVote.setOrganizerMail(newVote.getOrganizerMail());
+        dbVote.setNotificationSettings(newVote.getNotificationSettings());
         transferParticipationLimitSetting(dbVote, newVote);
         
         Vote ret;
@@ -283,7 +284,7 @@ public class VoteServiceImpl implements VoteService {
         getVotesForUser(userId).stream()
             .peek(r -> r.setUserId(null))
             .peek(r -> r.setOrganizerName(null))
-            .peek(r -> r.setOrganizerMail(null))
+            .peek(r -> r.setNotificationSettings(null))
             .forEach(voteRepository::save);
         backendUserAccessRepository.deleteByUserId(userId);
     }

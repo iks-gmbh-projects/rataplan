@@ -30,7 +30,6 @@ public class DBEncrypter implements ApplicationRunner {
                 ensureEncrypted(vote::getTitle, vote::setTitle);
                 ensureEncrypted(vote::getDescription, vote::setDescription);
                 ensureEncrypted(vote::getOrganizerName, vote::setOrganizerName);
-                ensureEncrypted(vote::getOrganizerMail, vote::setOrganizerMail);
             })
             .forEach(voteRepository::save);
         voteOptionRepository.findUnencrypted()

@@ -1,9 +1,7 @@
 package de.iks.rataplan.dto;
 
 import de.iks.rataplan.domain.VoteConfig;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -16,7 +14,9 @@ import java.util.List;
 public class CreatorVoteDTO extends VoteDTO implements Serializable {
 
     private static final long serialVersionUID = 8169186536220940206L;
-
+    
+    private VoteNotificationSettingsDTO notificationSettings;
+    
     private String editToken;
     
     private List<String> consigneeList;
@@ -27,11 +27,12 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         String description,
         Date deadline,
         String organizerName,
-        String organizerMail,
+        VoteNotificationSettingsDTO notificationSettings,
         VoteConfig voteConfig,
         String personalisedInvitation
     ) {
-        super(id, title, description, deadline, organizerName, organizerMail, voteConfig,  personalisedInvitation);
+        super(id, title, description, deadline, organizerName, voteConfig,  personalisedInvitation);
+        this.notificationSettings = notificationSettings;
     }
     
     public CreatorVoteDTO(
@@ -39,12 +40,12 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         String description,
         Date deadline,
         String organizerName,
-        String organizerMail,
+        VoteNotificationSettingsDTO notificationSettings,
         VoteConfig voteConfig,
         List<String> consigneeList,
         String personalisedInvitation
     ) {
-        super(title, description, deadline, organizerName, organizerMail, voteConfig, personalisedInvitation);
+        this(title, description, deadline, organizerName, notificationSettings, voteConfig, personalisedInvitation);
         this.consigneeList = consigneeList;
     }
     
@@ -53,11 +54,12 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         String description,
         Date deadline,
         String organizerName,
-        String organizerMail,
+        VoteNotificationSettingsDTO notificationSettings,
         VoteConfig voteConfig,
         String personalisedInvitation
     ) {
-        super(title, description, deadline, organizerName, organizerMail, voteConfig, personalisedInvitation);
+        super(title, description, deadline, organizerName, voteConfig, personalisedInvitation);
+        this.notificationSettings = notificationSettings;
     }
     
     @Override
