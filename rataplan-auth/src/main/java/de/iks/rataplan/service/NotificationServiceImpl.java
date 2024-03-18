@@ -108,9 +108,23 @@ public class NotificationServiceImpl implements NotificationService {
                 Collectors.flatMapping(e -> e.getValue().stream(), Collectors.toUnmodifiableList())
             ));
         notificationRepository.saveAllAndFlush(instantPartition.get(false));
-        for(Notification notification : instantPartition.get(true)) {
-            mailService.sendNotification(getNotificationMail(notification), toMailData(notification));
-        }
+        instantPartition.get(true)
+            .stream()
+            .collect(Collectors.groupingBy(
+                this::getNotificationMail,
+                Collectors.mapping(this::toMailData, Collectors.toUnmodifiableList())
+            ))
+            .forEach((recipientMail, notifs) -> {
+                try {
+                    if(notifs.size() == 1) {
+                        mailService.sendNotification(recipientMail, notifs.get(0));
+                    } else {
+                        mailService.sendNotificationSummary(recipientMail, notifs);
+                    }
+                } catch(RuntimeException ex) {
+                    log.error("Unexpected error while sending emails", ex);
+                }
+            });
     }
     private Notification fromDTO(NotificationDTO notificationDTO) {
         NotificationType type = notificationTypeRepository.findByName(notificationDTO.getType())
