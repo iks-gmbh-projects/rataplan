@@ -29,15 +29,19 @@
     </button>
   </ng-template>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/view-profile">
+    <a mat-menu-item routerLink="/view-profile">
       <mat-icon color="primary">account_circle</mat-icon>
       Profil
-    </button>
-    <button mat-menu-item routerLink="/survey/own">
+    </a>
+    <a mat-menu-item routerLink="/email-settings">
+      <mat-icon>edit_notifications</mat-icon>
+      Benachrichtigungseinstellungen
+    </a>
+    <a mat-menu-item routerLink="/survey/own">
       <mat-icon color="primary">campaign</mat-icon>
       Meine Umfragen
-    </button>
-    <button mat-menu-item routerLink="/vote/own">
+    </a>
+    <a mat-menu-item routerLink="/vote/own">
       <mat-icon
         color="primary"
         [matBadge]="notificationState[notificationTypeConsignee] || 0"
@@ -47,7 +51,7 @@
       >campaign
       </mat-icon>
       Meine Abstimmungen
-    </button>
+    </a>
     <button mat-menu-item routerLink="/" (click)="onLogout()">
       <mat-icon color="primary">logout</mat-icon>
       Logout
