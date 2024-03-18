@@ -7,10 +7,13 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { authFeature } from '../../../authentication/auth.feature';
+import { VoteNotificationSettings } from '../../../models/vote.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
 import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../../vote.actions';
 import { voteFeature } from '../../vote.feature';
+
+type Nullable<T> = {[K in keyof T]: T[K] | null};
 
 @Component({
   selector: 'app-email-subform',
@@ -23,16 +26,22 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   consigneeList: string[] = [];
   isEditing: boolean = false;
   $isLoggedIn: Observable<boolean>;
+  $needsEmail: Observable<boolean>;
   personaliseEmailActive = false;
   emailSubform = new FormGroup({
     'name': new FormControl<string | null>(null, [
       Validators.maxLength(50),
       ExtraValidators.containsSomeWhitespace,
     ]),
-    'email': new FormControl<string | null>(null, [
-      Validators.maxLength(100),
-      Validators.email,
-    ]),
+    'notificationSettings': new FormGroup({
+      'recipientEmail': new FormControl<string | null>(null, [
+        Validators.maxLength(100),
+        Validators.email,
+      ]),
+      'sendLinkMail': new FormControl<boolean>(false),
+      'notifyParticipation': new FormControl<boolean>(false),
+      'notifyExpiration': new FormControl<boolean>(false),
+    }),
     'consigneeList': new FormControl<string | null>(null, [
       Validators.maxLength(60),
       Validators.email,
@@ -53,6 +62,9 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     this.$isLoggedIn = this.store.select(authFeature.selectUser).pipe(
       map(u => !!u),
     );
+    this.$needsEmail = this.emailSubform.get('notificationSettings')!.valueChanges.pipe(
+      map(({sendLinkMail, notifyParticipation, notifyExpiration}) => sendLinkMail || notifyParticipation || notifyExpiration || false),
+    );
   }
   
   private lastError?: any;
@@ -65,7 +77,12 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
         this.busy = state.busy;
         const vote = state.vote!;
         this.emailSubform.get('name')?.setValue(vote.organizerName ?? null);
-        this.emailSubform.get('email')?.setValue(vote.organizerMail ?? null);
+        this.emailSubform.get('notificationSettings')?.setValue(vote.notificationSettings ?? {
+          recipientEmail: null,
+          sendLinkMail: false,
+          notifyParticipation: false,
+          notifyExpiration: false,
+        });
         this.consigneeList = vote.consigneeList;
         console.log(vote);
         this.isEditing = !!state.vote!.id;
@@ -83,10 +100,21 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     this.storeSub?.unsubscribe();
   }
   
+  validateNotificationSettings(s: Nullable<VoteNotificationSettings> | undefined): VoteNotificationSettings | undefined {
+    if(!s) return undefined;
+    if((s.notifyExpiration || s.notifyParticipation || s.sendLinkMail) && s.recipientEmail) return {
+      recipientEmail: s.recipientEmail,
+      sendLinkMail: s.sendLinkMail ?? false,
+      notifyParticipation: s.notifyParticipation ?? false,
+      notifyExpiration: s.notifyExpiration ?? false
+    };
+    return undefined;
+  }
+  
   setEmailForm() {
     this.store.dispatch(new SetOrganizerInfoVoteOptionAction({
       name: this.emailSubform.get('name')?.value || undefined,
-      email: this.emailSubform.get('email')?.value || undefined,
+      notificationSettings: this.validateNotificationSettings(this.emailSubform.get('notificationSettings')?.value),
       consigneeList: this.consigneeList,
       personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value ?? undefined,
     }));

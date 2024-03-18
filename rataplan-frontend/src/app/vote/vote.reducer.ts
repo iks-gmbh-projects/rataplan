@@ -180,7 +180,7 @@ export function voteReducer(
       vote: {
         ...state.vote!,
         organizerName: action.payload.name,
-        organizerMail: action.payload.email,
+        notificationSettings: action.payload.notificationSettings,
         consigneeList: action.payload.consigneeList,
         personalisedInvitation: action.payload.personalisedInvitation,
       },

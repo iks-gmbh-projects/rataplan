@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-import { VoteModel } from '../models/vote.model';
+import { VoteModel, VoteNotificationSettings } from '../models/vote.model';
 import { VoteOptionConfig, VoteOptionModel } from '../models/vote-option.model';
 import { DecisionType } from './vote-form/decision-type.enum';
 
@@ -146,7 +146,7 @@ export class SetOrganizerInfoVoteOptionAction implements Action {
   constructor(
     readonly payload: {
       name?: string,
-      email?: string,
+      notificationSettings?: VoteNotificationSettings,
       consigneeList: string[],
       personalisedInvitation?:string
     }

@@ -8,24 +8,24 @@ import { deserializeVoteOptionModel, VoteOptionConfig, VoteOptionModel } from '.
 import { VoteParticipantModel } from './vote-participant.model';
 
 export type VoteModel<serialized extends boolean = false> = {
-  id?: number;
-  title: string;
-  description?: string;
-  deadline: string;
-  organizerMail?: string;
-  organizerName?: string;
-  consigneeList: string[];
+  id?: number,
+  title: string,
+  description?: string,
+  deadline: string,
+  organizerName?: string,
+  notificationSettings?: VoteNotificationSettings,
+  consigneeList: string[],
 
-  backendUserid?: number;
-  expired?: boolean;
-  participationToken?: string;
-  editToken?: string;
+  backendUserid?: number,
+  expired?: boolean,
+  participationToken?: string,
+  editToken?: string,
 
-  voteConfig: VoteConfig<serialized>;
-  options: VoteOptionModel<serialized>[];
-  participants: VoteParticipantModel<serialized>[];
+  voteConfig: VoteConfig<serialized>,
+  options: VoteOptionModel<serialized>[],
+  participants: VoteParticipantModel<serialized>[],
   
-  personalisedInvitation?:string;
+  personalisedInvitation?:string,
 };
 
 export function deserializeVoteModel(request: VoteModel<boolean>): VoteModel {
@@ -43,10 +43,17 @@ export function deserializeVoteModel(request: VoteModel<boolean>): VoteModel {
   };
 }
 
+export type VoteNotificationSettings = {
+  recipientEmail: string,
+  sendLinkMail: boolean,
+  notifyParticipation: boolean,
+  notifyExpiration: boolean,
+};
+
 export type VoteConfig<serialized extends boolean = false> = {
   id?: number,
   voteOptionConfig: VoteOptionConfig,
   decisionType: serialized extends false ? DecisionType : SerializedDecisionType,
   yesLimitActive?:boolean,
-  yesAnswerLimit?:number|null
+  yesAnswerLimit?:number|null,
 };

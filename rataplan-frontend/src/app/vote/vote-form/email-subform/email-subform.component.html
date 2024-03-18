@@ -1,26 +1,28 @@
 <div class="centered">
   <form [formGroup]="emailSubform" class="left-bound">
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Name</mat-label>
-        <input
-          matInput
-          autocomplete="off"
-          type="text"
-          formControlName="name"
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        autocomplete="off"
+        type="text"
+        formControlName="name"
+      >
+      <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('name')) }}</mat-error>
+    </mat-form-field>
+  </div>
+  <div *ngIf="!($isLoggedIn | async)" formGroupName="notificationSettings">
+    <mat-checkbox formControlName="sendLinkMail">Sende mir die Links in einer Email</mat-checkbox><br>
+    <mat-checkbox formControlName="notifyParticipation">Informiere mich per Email über Teilnahmen</mat-checkbox><br>
+    <mat-checkbox formControlName="notifyExpiration">Informiere mich per Email über das Ende der Abstimmung</mat-checkbox><br>
+      <mat-form-field *ngIf="$needsEmail | async" appearance="fill">
+      <mat-label>E-Mail</mat-label>
+      <input
+        matInput
+        formControlName="recipientEmail"
         >
-        <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('name')) }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>E-Mail</mat-label>
-        <input
-          matInput
-          autocomplete="off"
-          formControlName="email"
-        >
-        <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('email')) }}</mat-error>
+        <mat-error>{{ errorMessageService.genericFormError(emailSubform.get(['notificationSettings', 'recipientEmail'])) }}</mat-error>
       </mat-form-field>
     </div>
     <div>
