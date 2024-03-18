@@ -10,7 +10,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,13 +17,14 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
 import static de.iks.rataplan.utils.VoteBuilder.voteOptionList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestExecutionListeners(
@@ -45,7 +45,7 @@ public class VoteOptionRequestServiceTest {
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
 	@ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void createVote() throws Exception {
+	public void createVote() {
 		Vote vote = createSimpleVote();
 
 		voteService.createVote(vote);
@@ -53,15 +53,15 @@ public class VoteOptionRequestServiceTest {
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void createVoteShouldFailHasNoOptions() throws Exception {
+	public void createVoteShouldFailHasNoOptions() {
 		Vote vote = createSimpleVote();
 		vote.setOptions(new ArrayList<>());
-        Assertions.assertThrows(MalformedException.class, () -> voteService.createVote(vote));
+        assertThrows(MalformedException.class, () -> voteService.createVote(vote));
 	}
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void createVoteShouldFailHasMember() throws Exception {
+	public void createVoteShouldFailHasMember() {
 		Vote vote = createSimpleVote();
 
 		List<VoteParticipant> voteParticipants = vote.getParticipants();
@@ -72,12 +72,12 @@ public class VoteOptionRequestServiceTest {
 
 		vote.setParticipants(voteParticipants);
 
-		Assertions.assertThrows(MalformedException.class, () -> voteService.createVote(vote));
+		assertThrows(MalformedException.class, () -> voteService.createVote(vote));
 	}
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void createVoteShouldFailWrongVoteOptionConfig() throws Exception {
+	public void createVoteShouldFailWrongVoteOptionConfig() {
 		Vote vote = createSimpleVote();
 
 		VoteOption voteOption = new VoteOption(new EncryptedString("iks Hilden", false), vote);
@@ -88,26 +88,26 @@ public class VoteOptionRequestServiceTest {
 					vote
 				)));
 
-		Assertions.assertThrows(MalformedException.class, () -> voteService.createVote(vote));
+		assertThrows(MalformedException.class, () -> voteService.createVote(vote));
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
-	public void getAllVotes() throws Exception {
+	public void getAllVotes() {
 		List<Vote> votes = voteService.getVotes();
 		assertEquals(4, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void getVotesNoneAvailable() throws Exception {
+	public void getVotesNoneAvailable() {
 		List<Vote> votes = voteService.getVotes();
 		assertEquals(0, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
-	public void getVoteById() throws Exception {
+	public void getVoteById() {
 		Vote vote = voteService.getVoteById(1);
 		assertEquals(vote.getTitle().getString(), "Coding Dojo");
 		assertEquals(vote.getOptions().size(), 2);
@@ -116,20 +116,20 @@ public class VoteOptionRequestServiceTest {
 
 	@Test
 	@DatabaseSetup(FILE_EMPTY_DB)
-	public void getVoteByIdShouldFailDoesNotExist() throws Exception {
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> voteService.getVoteById(1));
+	public void getVoteByIdShouldFailDoesNotExist() {
+        assertThrows(ResourceNotFoundException.class, () -> voteService.getVoteById(1));
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
-	public void getVotesByUser() throws Exception {
+	public void getVotesByUser() {
 		List<Vote> votes = voteService.getVotesForUser(1);
 		assertEquals(2, votes.size());
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + GET + FILE_INITIAL)
-	public void getVotesByUserNoneAvailable() throws Exception {
+	public void getVotesByUserNoneAvailable() {
 		List<Vote> votes = voteService.getVotesForUser(2);
 		assertEquals(0, votes.size());
 	}
@@ -137,7 +137,7 @@ public class VoteOptionRequestServiceTest {
 	@Test
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void updateVote() throws Exception {
+	public void updateVote() {
 		
 		Vote oldVote = voteService.getVoteById(1);
 		
@@ -149,7 +149,7 @@ public class VoteOptionRequestServiceTest {
 		vote.setTitle(new EncryptedString("IKS-Thementag", false));
 		vote.setDeadline(new Date(DATE_2050_10_10));
 		vote.setDescription(new EncryptedString("Fun with code", false));
-		vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
+		vote.setNotificationSettings(new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true));
 		vote.setVoteConfig(voteConfig);
 
 		VoteParticipant voteParticipant = new VoteParticipant();
@@ -157,7 +157,7 @@ public class VoteOptionRequestServiceTest {
 		voteParticipant.setName(new EncryptedString("RubberBandMan", false));
 		voteParticipant.setVote(vote);
 
-		List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
+		List<VoteParticipant> voteParticipants = new ArrayList<>();
 		voteParticipants.add(voteParticipant);
 
 		vote.setParticipants(voteParticipants);
@@ -178,7 +178,7 @@ public class VoteOptionRequestServiceTest {
 
 	@Test
 	@DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
-	public void updateVoteShouldFailNoOptions() throws Exception {
+	public void updateVoteShouldFailNoOptions() {
 		
 		Vote oldVote = voteService.getVoteById(1);
 		
@@ -186,14 +186,14 @@ public class VoteOptionRequestServiceTest {
 		vote.setOptions(new ArrayList<>());
 
 		// has no options
-		Assertions.assertThrows(MalformedException.class, () -> voteService.updateVote(oldVote, vote));
+		assertThrows(MalformedException.class, () -> voteService.updateVote(oldVote, vote));
 	}
 
 	@Test
 	@DatabaseSetup(FILE_PATH + UPDATE + EXPIRED + FILE_INITIAL)
 	@ExpectedDatabase(value = FILE_PATH + UPDATE + EXPIRED
 			+ FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
-	public void updateVoteNewExpiredDate() throws Exception {
+	public void updateVoteNewExpiredDate() {
 		
 		Vote oldVote = voteService.getVoteById(1);
 		
@@ -213,7 +213,6 @@ public class VoteOptionRequestServiceTest {
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10));
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
         vote.setVoteConfig(voteConfig);
 
         VoteOption voteOption = new VoteOption(new EncryptedString("universe", false), vote);
@@ -225,7 +224,7 @@ public class VoteOptionRequestServiceTest {
         voteOption.setVote(vote);
         voteOption.setParticipantLimit(10);
         voteOption.setParticipantLimitActive(false);
-        Assertions.assertThrows(MalformedException.class,() -> voteService.createVote(vote));
+        assertThrows(MalformedException.class,() -> voteService.createVote(vote));
     }
 
     @Test
@@ -238,7 +237,6 @@ public class VoteOptionRequestServiceTest {
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10));
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
         vote.setVoteConfig(voteConfig);
 
         VoteOption voteOption = new VoteOption(new EncryptedString("universe", false), vote);
@@ -250,7 +248,7 @@ public class VoteOptionRequestServiceTest {
         vote.setOptions(voteOptionList(voteOption));
 
         voteOption.setVote(vote);
-        Assertions.assertThrows(MalformedException.class,() -> voteService.createVote(vote));
+        assertThrows(MalformedException.class,() -> voteService.createVote(vote));
     }
 
 
@@ -267,7 +265,6 @@ public class VoteOptionRequestServiceTest {
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10));
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
         vote.setVoteConfig(voteConfig);
 
         VoteParticipant voteParticipant = new VoteParticipant();
@@ -275,7 +272,7 @@ public class VoteOptionRequestServiceTest {
         voteParticipant.setName(new EncryptedString("RubberBandMan", false));
         voteParticipant.setVote(vote);
 
-        List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
+        List<VoteParticipant> voteParticipants = new ArrayList<>();
         voteParticipants.add(voteParticipant);
 
         vote.setParticipants(voteParticipants);
@@ -287,7 +284,7 @@ public class VoteOptionRequestServiceTest {
         voteOption2.setVote(vote);
 
         vote.setOptions(voteOptionList(voteOption1, voteOption2));
-        Assertions.assertThrows(MalformedException.class,() -> voteService.updateVote(oldVote, vote));
+        assertThrows(MalformedException.class,() -> voteService.updateVote(oldVote, vote));
     }
 
     @Test
@@ -303,7 +300,6 @@ public class VoteOptionRequestServiceTest {
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10));
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
         vote.setVoteConfig(voteConfig);
 
         VoteParticipant voteParticipant = new VoteParticipant();
@@ -311,7 +307,7 @@ public class VoteOptionRequestServiceTest {
         voteParticipant.setName(new EncryptedString("RubberBandMan", false));
         voteParticipant.setVote(vote);
 
-        List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
+        List<VoteParticipant> voteParticipants = new ArrayList<>();
         voteParticipants.add(voteParticipant);
 
         vote.setParticipants(voteParticipants);
@@ -324,7 +320,7 @@ public class VoteOptionRequestServiceTest {
 
         vote.setOptions(voteOptionList(voteOption1, voteOption2));
         
-        Assertions.assertThrows(MalformedException.class,() -> voteService.updateVote(oldVote, vote));
+        assertThrows(MalformedException.class,() -> voteService.updateVote(oldVote, vote));
     }
 
     @Test
@@ -341,7 +337,6 @@ public class VoteOptionRequestServiceTest {
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10));
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setOrganizerMail(new EncryptedString(IKS_MAIL, false));
         vote.setVoteConfig(voteConfig);
 
         VoteParticipant voteParticipant = new VoteParticipant();
@@ -349,7 +344,7 @@ public class VoteOptionRequestServiceTest {
         voteParticipant.setName(new EncryptedString("RubberBandMan", false));
         voteParticipant.setVote(vote);
 
-        List<VoteParticipant> voteParticipants = new ArrayList<VoteParticipant>();
+        List<VoteParticipant> voteParticipants = new ArrayList<>();
         voteParticipants.add(voteParticipant);
 
         vote.setParticipants(voteParticipants);
@@ -360,13 +355,11 @@ public class VoteOptionRequestServiceTest {
         vote.setOptions(voteOptionList(voteOption1));
 
         Vote updatedVote = voteService.updateVote(oldVote, vote);
-        assertTrue(
-                updatedVote.getParticipants()
-                        .stream()
-                        .flatMap(p -> p.getVoteDecisions().stream())
-                        .filter(d -> d.getDecision().getValue() == 1)
-                        .noneMatch(d -> d.getVoteOption().getId() == 1)
-        );
+        assertTrue(updatedVote.getParticipants()
+                .stream()
+                .flatMap(p -> p.getVoteDecisions().stream())
+                .filter(d -> d.getDecision().getValue() == 1)
+                .noneMatch(d -> d.getVoteOption().getId() == 1));
     }
 
 

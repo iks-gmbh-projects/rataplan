@@ -1,8 +1,8 @@
 <dataset>
-  <vote id="1" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" version="1" yeslimitactive="false"/>
-  <vote id="2" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" version="1" yeslimitactive="false"/>
-  <vote id="3" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" userId="1" version="1" yeslimitactive="false"/>
-  <vote id="4" title="Coding Dojo" description="Fun with code" organizerMail="iks@iks-gmbh.com" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" userId="1" version="1" yeslimitactive="false"/>
+  <vote id="1" title="Coding Dojo" description="Fun with code" recipientEmail="aWtzQGlrcy1nbWJoLmNvbQ==" notifyParticipation="false" notifyExpiration="true" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" version="1" yeslimitactive="false"/>
+  <vote id="2" title="Coding Dojo" description="Fun with code" recipientEmail="aWtzQGlrcy1nbWJoLmNvbQ==" notifyParticipation="false" notifyExpiration="true" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" version="1" yeslimitactive="false"/>
+  <vote id="3" title="Coding Dojo" description="Fun with code" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" userId="1" version="1" yeslimitactive="false"/>
+  <vote id="4" title="Coding Dojo" description="Fun with code" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" userId="1" version="1" yeslimitactive="false"/>
 
   <voteOption id="1" voteId="1" description="iks Hilden" version="1" participantlimitactive="false"/>
   <voteOption id="2" voteId="1" description="homeoffice" version="1" participantlimitactive="false"/>
