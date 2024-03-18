@@ -32,7 +32,6 @@ public class VoteServiceImpl implements VoteService {
     private final BackendUserAccessRepository backendUserAccessRepository;
     
     private final NotificationService notificationService;
-    private final MailService mailService;
     
     private final TokenGeneratorService tokenGeneratorService;
     
@@ -62,11 +61,7 @@ public class VoteServiceImpl implements VoteService {
         vote.setEditToken(tokenGeneratorService.generateToken(10));
         
         Vote createdVote = voteRepository.saveAndFlush(vote);
-        if(createdVote.getUserId() != null) {
-            notificationService.notifyForVoteCreation(createdVote);
-        } else if(createdVote.getNotificationSettings() != null && createdVote.getNotificationSettings().getSendLinkMail()) {
-            mailService.sendMailForVoteCreation(createdVote);
-        }
+        notificationService.notifyForVoteCreation(createdVote);
         if(!vote.getConsigneeList().isEmpty()) {
             this.notificationService.notifyForVoteInvitations(vote);
         }
