@@ -75,8 +75,7 @@ public class NotificationServiceImpl implements NotificationService {
         } else if(vote.getNotificationSettings() != null) {
             VoteNotificationSettings notificationSettings = vote.getNotificationSettings();
             if(Objects.requireNonNullElse(notificationSettings.getNotifyParticipation(), false)) {
-                authService.sendNotification(
-                    cryptoService.decryptDBRaw(notificationSettings.getRecipientEmail()),
+                authService.sendNotification(cryptoService.decryptDBRaw(notificationSettings.getRecipientEmail()),
                     NotificationType.NEW_PARTICIPANT,
                     subjectString,
                     contentString
@@ -128,7 +127,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
     private String getEditUrl(Vote vote) {
         String editToken = vote.getEditToken();
-        return editToken == null ? null : baseUrl + "/vote/" + editToken + "/edit";
+        return editToken == null ? null : baseUrl + "/vote/edit/" + editToken;
     }
     
     @Override
