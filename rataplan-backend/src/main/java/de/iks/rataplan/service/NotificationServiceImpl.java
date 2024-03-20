@@ -75,7 +75,7 @@ public class NotificationServiceImpl implements NotificationService {
         if(participationToken == null) participationToken = vote.getId().toString();
         String url = baseUrl + "/vote/" + participationToken;
         String editToken = vote.getEditToken();
-        String adminUrl = editToken == null ? null : baseUrl + "/vote/" + editToken + "/edit";
+        String adminUrl = editToken == null ? null : baseUrl + "/vote/edit/" + editToken;
         
         Context ctx = new Context();
         ctx.setVariable("url", url);
