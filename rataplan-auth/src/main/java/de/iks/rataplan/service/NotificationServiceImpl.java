@@ -4,6 +4,7 @@ import de.iks.rataplan.domain.User;
 import de.iks.rataplan.domain.notifications.*;
 import de.iks.rataplan.dto.NotificationDTO;
 import de.iks.rataplan.dto.NotificationSettingsDTO;
+import de.iks.rataplan.exceptions.NoSuchNotificationCategoryException;
 import de.iks.rataplan.repository.NotificationCategoryRepository;
 import de.iks.rataplan.repository.NotificationRepository;
 import de.iks.rataplan.repository.NotificationTypeRepository;
@@ -74,13 +75,13 @@ public class NotificationServiceImpl implements NotificationService {
         if(settings.getCategorySettings() != null) user.setNotificationCategorySettings(settings.getCategorySettings()
             .entrySet()
             .stream()
-            .collect(Collectors.toMap(e -> notificationCategoryRepository.findByName(e.getKey()).orElseThrow(),
+            .collect(Collectors.toMap(e -> notificationCategoryRepository.findByNameIgnoreCase(e.getKey()).orElseThrow(),
                 Map.Entry::getValue
             )));
         if(settings.getCategorySettings() != null) user.setNotificationTypeSettings(settings.getTypeSettings()
             .entrySet()
             .stream()
-            .collect(Collectors.toMap(e -> notificationTypeRepository.findByName(e.getKey()).orElseThrow(),
+            .collect(Collectors.toMap(e -> notificationTypeRepository.findByNameIgnoreCase(e.getKey()).orElseThrow(),
                 Entry::getValue
             )));
         
@@ -127,8 +128,8 @@ public class NotificationServiceImpl implements NotificationService {
             });
     }
     private Notification fromDTO(NotificationDTO notificationDTO) {
-        NotificationType type = notificationTypeRepository.findByName(notificationDTO.getType())
-            .orElseThrow();
+        NotificationType type = notificationTypeRepository.findByNameIgnoreCase(notificationDTO.getType())
+            .orElseThrow(() -> new NoSuchNotificationCategoryException(notificationDTO.getType()));
         try {
             if(notificationDTO.getRecipientId() == null) throw new NoSuchElementException();
             return new Notification(notificationDTO.getRecipientEmail(),
