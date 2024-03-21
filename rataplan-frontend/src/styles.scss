@@ -3,6 +3,124 @@
 
 $line-height: 36px;
 
+$iks-blue: #005477;
+$iks-yellow: #f4c42e;
+$iks-red: #871c37;
+$iks-green: #0e4823;
+
+$md-primary: (
+        50 : #e0eaef,
+        100 : #b3ccd6,
+        200 : #80aabb,
+        300 : #4d87a0,
+        400 : #266e8b,
+        500 : #005477,
+        600 : #004d6f,
+        700 : #004364,
+        800 : #003a5a,
+        900 : #002947,
+        A100 : #7bbcff,
+        A200 : #48a2ff,
+        A400 : #1588ff,
+        A700 : #007bfb,
+        contrast: (
+                50 : #000000,
+                100 : #000000,
+                200 : #000000,
+                300 : #ffffff,
+                400 : #ffffff,
+                500 : #ffffff,
+                600 : #ffffff,
+                700 : #ffffff,
+                800 : #ffffff,
+                900 : #ffffff,
+                A100 : #000000,
+                A200 : #000000,
+                A400 : #ffffff,
+                A700 : #ffffff,
+        )
+);
+$md-accent: (
+        50 : #e2e9e5,
+        100 : #b7c8bd,
+        200 : #87a491,
+        300 : #567f65,
+        400 : #326344,
+        500 : #0e4823,
+        600 : #0c411f,
+        700 : #0a381a,
+        800 : #083015,
+        900 : #04210c,
+        A100 : #5dff7e,
+        A200 : #2aff55,
+        A400 : #00f631,
+        A700 : #00dd2c,
+        contrast: (
+                50 : #000000,
+                100 : #000000,
+                200 : #000000,
+                300 : #ffffff,
+                400 : #ffffff,
+                500 : #ffffff,
+                600 : #ffffff,
+                700 : #ffffff,
+                800 : #ffffff,
+                900 : #ffffff,
+                A100 : #000000,
+                A200 : #000000,
+                A400 : #000000,
+                A700 : #000000,
+        )
+);
+$md-warn: (
+        50 : #f1e4e7,
+        100 : #dbbbc3,
+        200 : #c38e9b,
+        300 : #ab6073,
+        400 : #993e55,
+        500 : #871c37,
+        600 : #7f1931,
+        700 : #74142a,
+        800 : #6a1123,
+        900 : #570916,
+        A100 : #ff8b99,
+        A200 : #ff586c,
+        A400 : #ff253f,
+        A700 : #ff0c28,
+        contrast: (
+                50 : #000000,
+                100 : #000000,
+                200 : #000000,
+                300 : #ffffff,
+                400 : #ffffff,
+                500 : #ffffff,
+                600 : #ffffff,
+                700 : #ffffff,
+                800 : #ffffff,
+                900 : #ffffff,
+                A100 : #000000,
+                A200 : #000000,
+                A400 : #ffffff,
+                A700 : #ffffff,
+        )
+);
+
+/* For use in src/lib/core/theming/_palette.scss */
+
+@use '@angular/material' as mat;
+
+$primary-palette: mat.define-palette($md-primary);
+$accent-palette: mat.define-palette($md-accent);
+$warn-palette: mat.define-palette($md-warn);
+
+$my-theme: mat.define-light-theme($primary-palette, $accent-palette, $warn-palette);
+
+@use "sass:map";
+$my-corrected-theme: map.set(map.set($my-theme, foreground, text, rgba($iks-blue, 0.87)), foreground, secondary-text, rgba($iks-blue, 0.54));
+
+@include mat.core($my-corrected-theme);
+@include mat.all-component-colors($my-corrected-theme);
+
 html, body {
   height: 100%;
 }

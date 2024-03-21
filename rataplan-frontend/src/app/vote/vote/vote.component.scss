@@ -1,3 +1,5 @@
+@use 'src/styles';
+
 :has(>.center,>.right) {
   display: grid;
   grid-template-columns: minmax(min-content, max-content) auto minmax(min-content, max-content);
@@ -50,8 +52,8 @@
 }
 
 .icon-name {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .user-icon {
@@ -64,14 +66,17 @@
 
 .checkedAccept {
   background-color: limegreen;
+  color: white;
 }
 
 .checkedAcceptIfNecessary {
-  background-color: yellow;
+  background-color: styles.$iks-yellow;
+  color: white;
 }
 
 .checkedDecline {
-  background-color: red;
+  background-color: styles.$iks-red;
+  color: white;
 }
 
 .checkedNoAnswer {
