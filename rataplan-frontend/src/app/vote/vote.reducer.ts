@@ -182,6 +182,7 @@ export function voteReducer(
         organizerName: action.payload.name,
         notificationSettings: action.payload.notificationSettings,
         consigneeList: action.payload.consigneeList,
+        userConsignees: action.payload.userConsignees,
         personalisedInvitation: action.payload.personalisedInvitation,
       },
       complete: state.complete!,

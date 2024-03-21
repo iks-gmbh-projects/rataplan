@@ -15,6 +15,7 @@ export type VoteModel<serialized extends boolean = false> = {
   organizerName?: string,
   notificationSettings?: VoteNotificationSettings,
   consigneeList: string[],
+  userConsignees: (string|number)[],
 
   backendUserid?: number,
   expired?: boolean,

@@ -91,7 +91,8 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
           notifyParticipation: false,
           notifyExpiration: false,
         });
-        this.consigneeList = vote.consigneeList;
+        this.consigneeList = [...vote.consigneeList];
+        this.contactList = vote.userConsignees.filter(v => this.groupList.some(g => g.contacts.includes(v)));
         console.log(vote);
         this.isEditing = !!state.vote!.id;
         if(state.error !== this.lastError) {
@@ -124,11 +125,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       name: this.emailSubform.get('name')?.value || undefined,
       notificationSettings: this.validateNotificationSettings(this.emailSubform.get('notificationSettings')?.value),
       consigneeList: [
-        // ...[
-        //   ...this.groupList.flatMap(g => g.contacts),
-        //   ...this.contactList
-        // ].map(c => c.mail),
         ...this.consigneeList
+      ],
+      userConsignees: [
+        ...[
+          ...this.groupList.flatMap(g => g.contacts),
+          ...this.contactList
+        ],
       ],
       personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value ?? undefined,
     }));

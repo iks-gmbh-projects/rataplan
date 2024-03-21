@@ -58,6 +58,7 @@ export class VoteEffects {
           options: [],
           participants: [],
           consigneeList: [],
+          userConsignees: [],
         }));
         else return this.urlService.voteBackendURL('votes', 'edit', action.id).pipe(
           switchMap(url => this.http.get<VoteModel<true>>(url, {withCredentials: true})),
