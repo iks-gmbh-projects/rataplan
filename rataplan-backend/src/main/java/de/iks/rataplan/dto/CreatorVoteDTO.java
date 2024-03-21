@@ -21,6 +21,8 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
     
     private List<String> consigneeList;
     
+    private List<Integer> userConsignees;
+    
     public CreatorVoteDTO(
         Integer id,
         String title,
@@ -43,10 +45,12 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         VoteNotificationSettingsDTO notificationSettings,
         VoteConfig voteConfig,
         List<String> consigneeList,
+        List<Integer> userConsignees,
         String personalisedInvitation
     ) {
         this(title, description, deadline, organizerName, notificationSettings, voteConfig, personalisedInvitation);
         this.consigneeList = consigneeList;
+        this.userConsignees = userConsignees;
     }
     
     public CreatorVoteDTO(
@@ -66,5 +70,6 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
     public void defaultNullValues() {
         super.defaultNullValues();
         if(this.consigneeList == null) this.consigneeList = new ArrayList<>();
+        if(this.userConsignees == null) this.userConsignees = new ArrayList<>();
     }
 }
