@@ -7,30 +7,6 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
-body {
-
-}
-
-.page-container{
-    width: 100%;
-}
-
-.result-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-.table-container {
-    width: 80%; /* Adjust the width as needed */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
 
 table {
     border-collapse: collapse;
@@ -38,10 +14,9 @@ table {
     margin-right: auto;
     white-space: nowrap;
     border: black;
-
 }
 
-.mat-card{
+.result-container{
     overflow-x: scroll;
     max-width: 90%;
     padding: 50px;
