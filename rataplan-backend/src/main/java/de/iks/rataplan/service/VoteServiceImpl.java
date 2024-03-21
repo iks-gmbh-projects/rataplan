@@ -62,10 +62,7 @@ public class VoteServiceImpl implements VoteService {
         
         Vote createdVote = voteRepository.saveAndFlush(vote);
         notificationService.notifyForVoteCreation(createdVote);
-        if(!vote.getConsigneeList().isEmpty()) {
-            this.notificationService.notifyForVoteInvitations(vote);
-        }
-        
+        this.notificationService.notifyForVoteInvitations(vote);
         return createdVote;
     }
     

@@ -48,6 +48,11 @@ public class NotificationServiceImpl implements NotificationService {
             subjectString,
             contentString
         );
+        authService.sendUserNotifications(vote.getUserConsignees(),
+            NotificationType.INVITE,
+            subjectString,
+            contentString
+        );
     }
     @Override
     public void notifyForParticipationInvalidation(
@@ -86,17 +91,11 @@ public class NotificationServiceImpl implements NotificationService {
         String htmlContent = templateEngine.process("to_organizerMail_htmlContent", ctx);
         
         if(vote.getUserId() != null) {
-            authService.sendNotification(
-                vote.getUserId(),
-                NotificationType.CREATE,
-                subjectContent,
-                htmlContent
-            );
+            authService.sendNotification(vote.getUserId(), NotificationType.CREATE, subjectContent, htmlContent);
         } else if(vote.getNotificationSettings() != null) {
             VoteNotificationSettings notificationSettings = vote.getNotificationSettings();
             if(notificationSettings.getSendLinkMail()) {
-                authService.sendNotification(
-                    cryptoService.decryptDBRaw(notificationSettings.getRecipientEmail()),
+                authService.sendNotification(cryptoService.decryptDBRaw(notificationSettings.getRecipientEmail()),
                     NotificationType.CREATE,
                     subjectContent,
                     htmlContent
@@ -120,17 +119,11 @@ public class NotificationServiceImpl implements NotificationService {
         String htmlContent = templateEngine.process("expired_content", ctx);
         
         if(expiredVote.getUserId() != null) {
-            authService.sendNotification(
-                expiredVote.getUserId(),
-                NotificationType.EXPIRE,
-                subjectContent,
-                htmlContent
-            );
+            authService.sendNotification(expiredVote.getUserId(), NotificationType.EXPIRE, subjectContent, htmlContent);
         } else if(expiredVote.getNotificationSettings() != null) {
             VoteNotificationSettings notificationSettings = expiredVote.getNotificationSettings();
             if(notificationSettings.getNotifyExpiration()) {
-                authService.sendNotification(
-                    cryptoService.decryptDBRaw(notificationSettings.getRecipientEmail()),
+                authService.sendNotification(cryptoService.decryptDBRaw(notificationSettings.getRecipientEmail()),
                     NotificationType.EXPIRE,
                     subjectContent,
                     htmlContent

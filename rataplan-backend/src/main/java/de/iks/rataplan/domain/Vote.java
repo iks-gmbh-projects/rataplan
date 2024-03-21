@@ -46,6 +46,7 @@ public class Vote implements Serializable {
     private VoteConfig voteConfig = new VoteConfig();
     
     private List<String> consigneeList = new ArrayList<>();
+    private List<Integer> userConsignees = new ArrayList<>();
     private List<VoteOption> options = new ArrayList<>();
     private List<VoteParticipant> participants = new ArrayList<>();
     private List<BackendUserAccess> accessList = new ArrayList<>();
@@ -198,6 +199,10 @@ public class Vote implements Serializable {
     @Transient
     public List<String> getConsigneeList() {
         return consigneeList;
+    }
+    @Transient
+    public List<Integer> getUserConsignees() {
+        return userConsignees;
     }
     @Transient
     public String getPersonalisedInvitation(){return personalisedInvitation;}
