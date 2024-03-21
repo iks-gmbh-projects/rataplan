@@ -72,11 +72,11 @@ export class VoteResultsComponent implements OnInit {
       .map(results => results.voteOptionAnswers)
       .map(answers => answers.get(voteOptionId))
       .map(answer => this.vote.voteConfig.decisionType === DecisionType.NUMBER ?
-        answer :
+        answer! :
         (
-          answer === 1 ? answer : 0
+          answer === 1 ? 1 : 0
         ))
-      .reduce((a, b) => a! + b!);
+      .reduce<number>((a, b) => a + b, 0);
   }
   
   sort(descending = false, voteOption = -1) {
