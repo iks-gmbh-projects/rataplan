@@ -84,6 +84,14 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
           this.typeSettings.addControl(type, typeCtrl);
         }
       }
+      this.sub?.unsubscribe();
+      this.sub = this.store.select(emailNotificationSettingsFeature.selectEmailNotificationSettingsState)
+        .pipe(
+          filter(({busy, settings}) => !busy && settings !== undefined),
+          map(({settings}) => settings!),
+        ).subscribe(settings => {
+          this.form.patchValue(settings);
+        });
     });
     this.subDefault = this.defaultSettings.valueChanges.pipe(
       filter(v => v !== null),
@@ -91,13 +99,6 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
     ).subscribe(v => this.store.dispatch(emailNotificationSettingsActions.setDefaultSetting({
       cycle: v!,
     })));
-    this.sub = this.store.select(emailNotificationSettingsFeature.selectEmailNotificationSettingsState)
-      .pipe(
-        filter(({busy, settings}) => !busy && settings !== undefined),
-        map(({settings}) => settings!),
-      ).subscribe(settings => {
-        this.form.patchValue(settings);
-      });
   }
   
   public ngOnDestroy(): void {
