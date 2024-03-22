@@ -1,81 +1,84 @@
-<form *ngIf="questionGroup" (ngSubmit)="submit(form)" #form="ngForm">
-  <div
-    style="margin-bottom: 1ex"
-    *ngFor="let question of questionGroup.questions"
-    [ngModelGroup]="''+question.id!"
-    #modelQuestionGroup="ngModelGroup"
-  >
-    <h3>{{question.text}}</h3>
-    <div>
-      <input type="hidden" name="questionId" [ngModel]="question.id">
-      <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
-        <mat-label>Antwort</mat-label>
-        <input
-          type="text"
-          ngModel name="text"
-          [required]="question.required"
-          someNonWhitespace
-          maxlength="1500"
-          matInput
-          #answerText="ngModel"
-        >
-        <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
-      </mat-form-field>
-      <ng-template [ngIf]="question.checkboxGroup">
-        <div
-          *ngIf="question.checkboxGroup.multipleSelect; else singleSelect"
-          ngModelGroup="checkboxes"
-          [checkboxCountMin]="question.checkboxGroup.minSelect"
-          [checkboxCountMax]="question.checkboxGroup.maxSelect"
-          #selectionGroup="ngModelGroup"
-        >
-          <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
-            <mat-checkbox
-              ngModel
-              [name]="''+checkbox.id!"
-              value="true"
-            >
-              {{checkbox.text}}
-            </mat-checkbox>
-            <br>
-          </ng-template>
-          <mat-error *ngIf="selectionGroup.invalid && selectionGroup.dirty">
-            Nur mindestens {{question.checkboxGroup.minSelect}} und maximal {{question.checkboxGroup.maxSelect}} auswählen.
-          </mat-error>
-        </div>
-        <ng-template #singleSelect>
-          <mat-radio-group ngModel [ngModelOptions]="{name: 'checkboxId'}" [required]="question.required">
-            <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
-              <mat-radio-button class="newLine" [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button>
-              <br>
-            </ng-template>
-          </mat-radio-group>
-        </ng-template>
-        <mat-form-field *ngIf="hasTextField(question.checkboxGroup.checkboxes)" appearance="fill">
-          <mat-label>Freitextantwort</mat-label>
+<div class="center">
+  <form *ngIf="questionGroup" (ngSubmit)="submit(form)" #form="ngForm">
+    <div
+      style="margin-bottom: 1ex"
+      *ngFor="let question of questionGroup.questions"
+      [ngModelGroup]="''+question.id!"
+      #modelQuestionGroup="ngModelGroup"
+    >
+      <h3>{{question.text}}</h3>
+      <div>
+        <input type="hidden" name="questionId" [ngModel]="question.id">
+        <mat-form-field *ngIf="!question.checkboxGroup" appearance="fill">
+          <mat-label>Antwort</mat-label>
           <input
             type="text"
-            ngModel
-            name="text"
+            ngModel name="text"
+            [required]="question.required"
             someNonWhitespace
             maxlength="1500"
             matInput
-            [disabled]="disableTextField(question, modelQuestionGroup.control)"
             #answerText="ngModel"
           >
           <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
         </mat-form-field>
-        <br>
-      </ng-template>
+        <ng-template [ngIf]="question.checkboxGroup">
+          <div
+            *ngIf="question.checkboxGroup.multipleSelect; else singleSelect"
+            ngModelGroup="checkboxes"
+            [checkboxCountMin]="question.checkboxGroup.minSelect"
+            [checkboxCountMax]="question.checkboxGroup.maxSelect"
+            #selectionGroup="ngModelGroup"
+          >
+            <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
+              <mat-checkbox
+                ngModel
+                [name]="''+checkbox.id!"
+                value="true"
+              >
+                {{checkbox.text}}
+              </mat-checkbox>
+              <br>
+            </ng-template>
+            <mat-error *ngIf="selectionGroup.invalid && selectionGroup.dirty">
+              Nur mindestens {{question.checkboxGroup.minSelect}} und maximal {{question.checkboxGroup.maxSelect}}
+              auswählen.
+            </mat-error>
+          </div>
+          <ng-template #singleSelect>
+            <mat-radio-group ngModel [ngModelOptions]="{name: 'checkboxId'}" [required]="question.required">
+              <ng-template ngFor [ngForOf]="question.checkboxGroup.checkboxes" let-checkbox>
+                <mat-radio-button class="newLine" [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button>
+                <br>
+              </ng-template>
+            </mat-radio-group>
+          </ng-template>
+          <mat-form-field *ngIf="hasTextField(question.checkboxGroup.checkboxes)" appearance="fill">
+            <mat-label>Freitextantwort</mat-label>
+            <input
+              type="text"
+              ngModel
+              name="text"
+              someNonWhitespace
+              maxlength="1500"
+              matInput
+              [disabled]="disableTextField(question, modelQuestionGroup.control)"
+              #answerText="ngModel"
+            >
+            <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
+          </mat-form-field>
+          <br>
+        </ng-template>
+      </div>
     </div>
-  </div>
-  <div>
-    <button class="left" *ngIf="!isFirst" type="button" mat-raised-button color="basic" (click)="revert()">
-      <mat-icon>navigate_before</mat-icon>
-    </button>
-    <div class="middle"></div>
-    <button class="right" type="submit" mat-raised-button color="primary" [disabled]="!!form.invalid">
-      <mat-icon>navigate_next</mat-icon>
-    </button>
-  </div>
-</form>
+    <div>
+      <button class="left" *ngIf="!isFirst" type="button" mat-raised-button color="basic" (click)="revert()">
+        <mat-icon>navigate_before</mat-icon>
+      </button>
+      <div class="middle"></div>
+      <button class="right" type="submit" mat-raised-button color="primary" [disabled]="!!form.invalid">
+        <mat-icon>navigate_next</mat-icon>
+      </button>
+    </div>
+  </form>
+</div>

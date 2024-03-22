@@ -1,52 +1,51 @@
-<div *ngIf="survey">
-  <div class="parent-div">
-    <div class="centered">
-      <mat-card class="bottomspace">
-        <mat-card-title>{{survey.name}}</mat-card-title>
-        <mat-card-content>
-          <p>{{survey.description}}</p>
-          <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
-          <p>
-            Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
-            {{survey.anonymousParticipation ?
-            " anonym" :
-            " mit Benutzerkonto"}}</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    <div class="button-div">
-      <a mat-raised-button color="primary" routerLink="/survey/list">Zurück</a>
+<div *ngIf="survey" class="center">
+  <div>
+    <mat-card class="bottomspace">
+      <mat-card-title>{{survey.name}}</mat-card-title>
+      <mat-card-content>
+        <p>{{survey.description}}</p>
+        <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
+        <p>
+          Teilnahme {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
+          {{survey.anonymousParticipation ?
+          " anonym" :
+          " mit Benutzerkonto"}}</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-divider class="bottomspace"></mat-divider>
+    <div class="margin-top">
+      <a mat-raised-button class="navigate-back-cancel-button-space" color="warn" routerLink="/survey/list">Zurück</a>
     </div>
   </div>
-  <mat-divider class="bottomspace"></mat-divider>
-  <div>
-    <div class="size-div">
-      <app-survey-form-page
-        *ngIf="page < survey.questionGroups.length; else finished"
-        [questionGroup]="survey.questionGroups[page]" [isFirst]="page==0"
-        (onSubmit)="pageSubmit($event)"
-        #surveyPage></app-survey-form-page>
-      <ng-template #finished>
-        <h3>Fertig</h3>
-        <div class="bottomSpace">
-          <div class="left">
-            <button
-              class="left" mat-raised-button color="basic"
-              (click)="page = page-1">
-              <mat-icon>navigate_before</mat-icon>
-            </button>
-          </div>
-          <div class="middle"></div>
-          <div class="right">
-            <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
-            <button
-              class="right" mat-raised-button color="primary"
-              [disabled]="!!(isResponseValid | async)"
-              (click)="submit()">Einreichen
-            </button>
-          </div>
+  <div class="size-div">
+    <app-survey-form-page
+      *ngIf="page < survey.questionGroups.length; else finished"
+      [questionGroup]="survey.questionGroups[page]" [isFirst]="page==0"
+      (onSubmit)="pageSubmit($event)"
+      #surveyPage
+    ></app-survey-form-page>
+    <ng-template class="center" #finished>
+      <h3 style="text-align: center">Fertig</h3>
+      <div class="bottomSpace">
+        <div class="left">
+          <button
+            class="left" mat-raised-button color="basic"
+            (click)="page = page-1"
+          >
+            <mat-icon>navigate_before</mat-icon>
+          </button>
         </div>
-      </ng-template>
-    </div>
+        <div class="middle"></div>
+        <div class="right">
+          <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
+          <button
+            class="right" mat-raised-button color="primary"
+            [disabled]="!!(isResponseValid | async)"
+            (click)="submit()"
+          >Einreichen
+          </button>
+        </div>
+      </div>
+    </ng-template>
   </div>
 </div>
