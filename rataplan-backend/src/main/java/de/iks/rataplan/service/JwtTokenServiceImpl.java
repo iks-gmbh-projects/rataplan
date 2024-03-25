@@ -3,20 +3,15 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.JwtConfig;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.formula.functions.T;
-import org.apache.tools.ant.types.selectors.modifiedselector.Algorithm;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 @Service
 @Transactional
