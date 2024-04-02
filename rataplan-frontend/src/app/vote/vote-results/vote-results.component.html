@@ -27,15 +27,15 @@
         <mat-label>Filtern nach</mat-label>
         <mat-select [(ngModel)]="filterByOption">
           <mat-option
-            *ngFor="let filterBy of filterByOptions"
-            (click)="updateFilterOptions(filterBy)"
-            [value]="filterBy"
+            *ngFor="let filterBy of FilterByOptions | keyvalue"
+            (click)="updateFilterOptions(filterBy.value)"
+            [value]="filterBy.value"
           >
-            {{filterBy}}
+            {{filterBy.value}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field *ngIf="showVoteOptionsInFilter">
+      <mat-form-field *ngIf="filterByOption !== FilterByOptions.PARTICIPANT">
         <mat-label>Termin</mat-label>
         <mat-select [(ngModel)]="filterVoteOption">
           <mat-option *ngFor="let v of vote.options;let i = index" [value]="i">
@@ -47,26 +47,32 @@
         <mat-label>Sortieren</mat-label>
         <mat-select [(ngModel)]="filterSortOption">
           <mat-option
-            *ngFor="let sortOption of sortByOptionOptions"
-            [value]="sortOption"
-          >{{sortOption}}</mat-option>
+            *ngFor="let sortOption of VoteAnswerFilterOptions | keyvalue"
+            [value]="sortOption.value"
+          >{{sortOption.value}}</mat-option>
         </mat-select>
       </mat-form-field>
       <ng-template #sortByNameDropDownOptions>
-        <mat-form-field *ngIf="filterByOption == FilterByOptions.PARTICIPANT">
+        <mat-form-field>
           <mat-label>Sortieren</mat-label>
           <mat-select [(ngModel)]="filterSortOption">
             <mat-option
-              *ngFor="let sortOption of sortByNameOptions"
-              [value]="sortOption"
-            >{{sortOption}}</mat-option>
+              *ngFor="let sortOption of GeneralFilterSortOption | keyvalue"
+              [value]="sortOption.value"
+            >{{sortOption.value}}</mat-option>
           </mat-select>
         </mat-form-field>
       </ng-template>
-      <button mat-raised-button color="primary" (click)="applyFilter()" style="margin-right: 15px">Filter anwenden
+      <button
+        mat-raised-button
+        [disabled]="!filterByOption || !filterSortOption || filterVoteOption === undefined || filterVoteOption < 0 || filterVoteOption > vote.options.length "
+        color="primary"
+        (click)="applyFilter()"
+        style="margin-right: 15px"
+      >Filter anwenden
       </button>
       <button mat-raised-button class="back-to-vote-button" [routerLink]="['../']">Zur Abstimmung</button>
-      <table>
+      <table id="resultsTable">
         <thead>
         <tr>
           <th class="participant-column-title">Teilnehmerin</th>
@@ -79,7 +85,7 @@
         <tr *ngFor="let userResults of allVoteResults; let i = index">
           <td class="username-result-entries">{{userResults.username}}</td>
           <ng-container
-            [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
+            [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)?.answer"
             *ngFor="let vo of vote.options"
           >
             <td *ngSwitchCase="0"><p>Keine Antwort</p></td>
@@ -100,7 +106,7 @@
           <tr *ngFor="let userResults of allVoteResults; let i = index">
             <td class="username-result-entries">{{userResults.username}}</td>
             <ng-container
-              [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
+              [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)?.answer"
               *ngFor="let vo of vote.options"
             >
               <td *ngSwitchCase="0" class="rejected-option"><p>0</p></td>

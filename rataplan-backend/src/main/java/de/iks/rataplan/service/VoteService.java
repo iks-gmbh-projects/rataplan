@@ -3,7 +3,7 @@ package de.iks.rataplan.service;
 import de.iks.rataplan.domain.BackendUserAccess;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteParticipant;
-import de.iks.rataplan.dto.ResultsDTO;
+import de.iks.rataplan.dto.ResultDTO;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +20,7 @@ public interface VoteService {
     public void deleteVotes(int userId);
     public void anonymizeVotes(int userId);
     Vote addAccess(Vote vote, Collection<? extends BackendUserAccess> backendUserAccesses);
-    List<ResultsDTO> getVoteResults(String accessToken);
-    public ResultsDTO mapResultsDTO(VoteParticipant voteParticipant);
+    List<ResultDTO> getVoteResults(String accessToken);
+    public ResultDTO mapResultDTO(VoteParticipant voteParticipant);
 }
 

@@ -2,7 +2,7 @@ package de.iks.rataplan.controller;
 
 import de.iks.rataplan.domain.ContactData;
 import de.iks.rataplan.dto.CreatorVoteDTO;
-import de.iks.rataplan.dto.ResultsDTO;
+import de.iks.rataplan.dto.ResultDTO;
 import de.iks.rataplan.dto.VoteDTO;
 import de.iks.rataplan.dto.VoteParticipantDTO;
 import de.iks.rataplan.exceptions.ForbiddenException;
@@ -172,7 +172,7 @@ public class Controller {
     }
     
     @GetMapping("/vote/{voteId}/results")
-    public ResponseEntity<List<ResultsDTO>> getResults(@PathVariable(name = "voteId") String accessToken){
+    public ResponseEntity<List<ResultDTO>> getResults(@PathVariable(name = "voteId") String accessToken){
         return ResponseEntity.ok(voteControllerService.getVoteResults(accessToken));
     }
 }

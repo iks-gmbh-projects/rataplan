@@ -1,7 +1,8 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.*;
-import de.iks.rataplan.dto.ResultsDTO;
+import de.iks.rataplan.dto.ResultDTO;
+import de.iks.rataplan.dto.VoteAnswerDTO;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.BackendUserAccessRepository;
@@ -287,29 +288,25 @@ public class VoteServiceImpl implements VoteService {
         return voteRepository.saveAndFlush(vote);
     }
     @Override
-    public List<ResultsDTO> getVoteResults(String accessToken) {
+    public List<ResultDTO> getVoteResults(String accessToken) {
         Vote vote = getVoteByParticipationToken(accessToken);
-        List<ResultsDTO> resultDTOS = new ArrayList<>();
+        List<ResultDTO> resultDTOS = new ArrayList<>();
         for(VoteParticipant vo : vote.getParticipants()) {
-            ResultsDTO resultsDTO = mapResultsDTO(vo);
-            resultDTOS.add(resultsDTO);
+            ResultDTO ResultDTO = mapResultDTO(vo);
+            resultDTOS.add(ResultDTO);
         }
         return resultDTOS;
     }
     
     @Override
-    public ResultsDTO mapResultsDTO(VoteParticipant voteParticipant) {
-        ResultsDTO resultsDTO = new ResultsDTO(cryptoService.decryptDB(voteParticipant.getName().getString()));
-        Map<Integer, Integer> votesByOptionId = voteParticipant.getVoteDecisions()
+    public ResultDTO mapResultDTO(VoteParticipant voteParticipant) {
+        ResultDTO ResultDTO = new ResultDTO(cryptoService.decryptDB(voteParticipant.getName().getString()));
+        Map<Integer, VoteAnswerDTO> votesByOptionId = voteParticipant.getVoteDecisions()
             .stream()
-            .collect(Collectors.groupingBy(voteDecision -> voteDecision.getVoteDecisionId().getVoteOption().getId(),
-                Collectors.collectingAndThen(Collectors.mapping(voteDecision -> voteDecision.getParticipants() == null ?
-                        voteDecision.getDecision().getValue() :
-                        voteDecision.getParticipants(), Collectors.toList()),
-                    list -> list.stream().mapToInt(Integer::intValue).sum()
-                )
+            .collect(Collectors.toMap(voteDecision -> voteDecision.getVoteDecisionId().getVoteOption().getId(),
+                v -> new VoteAnswerDTO(v.getDecision().getValue(), v.getLastUpdated())
             ));
-        resultsDTO.setVoteOptionAnswers(votesByOptionId);
-        return resultsDTO;
+        ResultDTO.setVoteOptionAnswers(votesByOptionId);
+        return ResultDTO;
     }
 }

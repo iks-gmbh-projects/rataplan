@@ -5,18 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ResultsDTO {
+public class ResultDTO {
     
     private String username;
-    private Map<Integer,Integer> voteOptionAnswers;
+    private Map<Integer,VoteAnswerDTO> voteOptionAnswers;
     
-    public ResultsDTO(String username){
+    
+    public ResultDTO(String username){
         this.username = username;
     }
     //username
