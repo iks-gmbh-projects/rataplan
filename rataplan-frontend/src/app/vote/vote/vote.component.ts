@@ -112,7 +112,9 @@ export class VoteComponent implements OnInit, OnDestroy {
         },
         error: err => {
           this.submitBusy = false;
-          this.snackBar.open('Unbekannter Fehler beim Abstimmen', 'OK');
+          if(err.status == 401) this.snackBar.open('Authorisierungsfehler (wahrscheinlich existiert ein veraltetes Cookie)', 'OK');
+          else if(err.status == 403) this.snackBar.open('Sie sind nicht zum Abstimmen berechtigt.', 'OK');
+          else this.snackBar.open('Unbekannter Fehler beim Abstimmen', 'OK');
           console.log(err);
         },
       });
@@ -130,7 +132,9 @@ export class VoteComponent implements OnInit, OnDestroy {
         },
         error: err => {
           this.submitBusy = false;
-          this.snackBar.open('Unbekannter Fehler beim Ändern der Stimme', 'OK');
+          if(err.status == 401) this.snackBar.open('Authorisierungsfehler (wahrscheinlich existiert ein veraltetes Cookie)', 'OK');
+          else if(err.status == 403) this.snackBar.open('Sie sind nicht zum Ändern dieser Stimme berechtigt', 'OK');
+          else this.snackBar.open('Unbekannter Fehler beim Ändern der Stimme', 'OK');
           console.log(err);
         },
       });
