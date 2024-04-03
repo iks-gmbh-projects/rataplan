@@ -18,6 +18,6 @@ public class WrongCredentialsException extends RataplanAuthException {
     public WrongCredentialsException(String message, Throwable cause) {
         super(message, cause);
         this.errorCode = ErrorCode.WRONG_CREDENTIALS;
-        this.status = HttpStatus.FORBIDDEN;
+        this.httpStatus = HttpStatus.FORBIDDEN;
     }
 }

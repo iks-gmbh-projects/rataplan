@@ -18,7 +18,7 @@ public class MailAlreadyInUseException extends RataplanAuthException {
     public MailAlreadyInUseException(String message, Throwable cause) {
         super(message, cause);
         this.errorCode = ErrorCode.MAIL_IN_USE;
-        this.status = HttpStatus.GONE;
+        this.httpStatus = HttpStatus.GONE;
     }
 	
 }

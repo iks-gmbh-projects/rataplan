@@ -8,7 +8,7 @@ public class UnconfirmedAccountException extends RataplanAuthException {
     public UnconfirmedAccountException(String message) {
         super(message);
         this.errorCode = FORBIDDEN;
-        this.status = HttpStatus.FORBIDDEN;
+        this.httpStatus = HttpStatus.FORBIDDEN;
     }
 
 }

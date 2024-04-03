@@ -132,7 +132,7 @@ public class RataplanAuthRestController {
         @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie
     )
     {
-        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
+        String token = validateTokenOrThrow(tokenCookie, tokenHeader, true);
         String username = jwtTokenService.getUsernameFromToken(token);
         UserDTO userDTO = userService.getUserDTOFromUsername(username);
         HttpHeaders responseHeaders = createResponseHeaders(userDTO);
@@ -201,13 +201,16 @@ public class RataplanAuthRestController {
     }
     
     private String validateTokenOrThrow(String cookieToken, String headerToken) throws RataplanAuthException {
+        return validateTokenOrThrow(cookieToken, headerToken, false);
+    }
+    private String validateTokenOrThrow(String cookieToken, String headerToken, boolean allowReset) throws RataplanAuthException {
         String token;
         if(headerToken == null) token = cookieToken;
         else if(cookieToken == null) token = headerToken;
         else if(cookieToken.equals(headerToken)) token = cookieToken;
         else throw new RataplanAuthException("Different tokens provided by cookie and header.");
         if(!jwtTokenService.isTokenValid(token)) {
-            throw new InvalidTokenException("Invalid token");
+            throw new InvalidTokenException("Invalid token", allowReset && cookieToken != null);
         }
         return token;
     }

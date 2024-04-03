@@ -61,7 +61,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
         try {
             return !isTokenExpired(getTokenExpiration(token));
         } catch (Exception e) {
-            throw new InvalidTokenException("Invalid JWT");
+            return false;
         }
     }
 

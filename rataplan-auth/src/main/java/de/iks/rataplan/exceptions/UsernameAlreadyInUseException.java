@@ -18,6 +18,6 @@ public class UsernameAlreadyInUseException extends RataplanAuthException {
     public UsernameAlreadyInUseException(String message, Throwable cause) {
         super(message, cause);
         this.errorCode = ErrorCode.USERNAME_IN_USE;
-        this.status = HttpStatus.GONE;
+        this.httpStatus = HttpStatus.GONE;
     }
 }
