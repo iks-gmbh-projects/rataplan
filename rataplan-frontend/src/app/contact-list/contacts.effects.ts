@@ -20,6 +20,11 @@ export class ContactsEffects {
   {
   }
   
+  clearOnLogout$ = createEffect(() => this.actions$.pipe(
+    ofType(AuthActions.LOGOUT_ACTION),
+    map(a => contactActions.reset()),
+  ));
+  
   fetchOnAuth = createEffect(() => this.actions$.pipe(
     ofType(AuthActions.LOGIN_SUCCESS_ACTION),
     map(() => contactActions.fetch()),
@@ -55,20 +60,20 @@ export class ContactsEffects {
   
   deleteContact = createEffect(() => this.actions$.pipe(
     ofType(contactActions.deleteContact),
-    switchMap(({userId}) => this.urlService.authBackendURL('contacts',userId)),
+    switchMap(({userId}) => this.urlService.authBackendURL('contacts', userId)),
     switchMap(url => this.httpClient.delete(url, {
       withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
       catchError(error => of(contactActions.error({error}))),
-    ))
+    )),
   ));
   
   createGroup = createEffect(() => this.actions$.pipe(
     ofType(contactActions.createGroup),
     combineLatestWith(this.urlService.authBackendURL('contacts', 'group')),
-    switchMap(([{name},url]) => this.httpClient.post(url, {name}, {
-      withCredentials: true
+    switchMap(([{name}, url]) => this.httpClient.post(url, {name}, {
+      withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
       catchError(error => of(contactActions.error({error}))),
@@ -77,7 +82,7 @@ export class ContactsEffects {
   
   renameGroup = createEffect(() => this.actions$.pipe(
     ofType(contactActions.renameGroup),
-    switchMap(({id, name}) => this.urlService.authBackendURL('contacts','group',id,'name').pipe(
+    switchMap(({id, name}) => this.urlService.authBackendURL('contacts', 'group', id, 'name').pipe(
       map(url => [{name}, url] as const),
     )),
     switchMap(([{name}, url]) => this.httpClient.put(url, name, {
@@ -90,7 +95,7 @@ export class ContactsEffects {
   
   deleteGroup = createEffect(() => this.actions$.pipe(
     ofType(contactActions.deleteGroup),
-    switchMap(({id}) => this.urlService.authBackendURL('contacts','group',id)),
+    switchMap(({id}) => this.urlService.authBackendURL('contacts', 'group', id)),
     switchMap(url => this.httpClient.delete(url, {
       withCredentials: true,
     }).pipe(
@@ -101,7 +106,7 @@ export class ContactsEffects {
   
   addContactToGroup = createEffect(() => this.actions$.pipe(
     ofType(contactActions.addToGroup),
-    switchMap(({groupId, contactId}) => this.urlService.authBackendURL('contacts','group',groupId,'contact').pipe(
+    switchMap(({groupId, contactId}) => this.urlService.authBackendURL('contacts', 'group', groupId, 'contact').pipe(
       map(url => [{contactId}, url] as const),
     )),
     switchMap(([{contactId}, url]) => this.httpClient.post(url, contactId, {
@@ -113,7 +118,13 @@ export class ContactsEffects {
   ));
   removeContactFromGroup = createEffect(() => this.actions$.pipe(
     ofType(contactActions.removeFromGroup),
-    switchMap(({groupId, contactId}) => this.urlService.authBackendURL('contacts','group',groupId,'contact',contactId)),
+    switchMap(({groupId, contactId}) => this.urlService.authBackendURL(
+      'contacts',
+      'group',
+      groupId,
+      'contact',
+      contactId,
+    )),
     switchMap(url => this.httpClient.delete(url, {
       withCredentials: true,
     }).pipe(
