@@ -33,12 +33,8 @@ public class NotificationServiceImpl implements NotificationService {
     
     @Override
     public void notifyForVoteInvitations(Vote vote) {
-        String participationToken = vote.getParticipationToken();
-        if(participationToken == null) participationToken = vote.getId().toString();
-        String url = baseUrl + "/vote/" + participationToken;
-        
         Context ctx = new Context();
-        ctx.setVariable("url", url);
+        ctx.setVariable("url", getParticipationUrl(vote));
         
         String subjectString = templateEngine.process("invitation_subject", ctx);
         String contentString = templateEngine.process("invitation_content", ctx);
@@ -54,15 +50,48 @@ public class NotificationServiceImpl implements NotificationService {
             contentString
         );
     }
+    private String getParticipationUrl(Vote vote) {
+        String participationToken = vote.getParticipationToken();
+        if(participationToken == null) participationToken = vote.getId().toString();
+        return baseUrl + "/vote/" + participationToken;
+    }
+    @Override
+    public void notifyForParticipation(VoteParticipant participant) {
+        final Vote vote = participant.getVote();
+        
+        Context ctx = new Context();
+        ctx.setVariable("url", getParticipationUrl(vote));
+        ctx.setVariable("title", fromEncryptedStringConverter.convert(vote.getTitle()));
+        ctx.setVariable("participant", fromEncryptedStringConverter.convert(participant.getName()));
+        
+        String subjectString = templateEngine.process("participation_subject", ctx);
+        String contentString = templateEngine.process("participation_content", ctx);
+        if(vote.getUserId() != null) {
+            authService.sendNotification(vote.getUserId(),
+                NotificationType.NEW_PARTICIPANT,
+                subjectString,
+                contentString
+            );
+        } else if(vote.getNotificationSettings() != null) {
+            VoteNotificationSettings notificationSettings = vote.getNotificationSettings();
+            if(Objects.requireNonNullElse(notificationSettings.getNotifyParticipation(), false)) {
+                authService.sendNotification(
+                    cryptoService.decryptDBRaw(notificationSettings.getRecipientEmail()),
+                    NotificationType.NEW_PARTICIPANT,
+                    subjectString,
+                    contentString
+                );
+            }
+        }
+    }
     @Override
     public void notifyForParticipationInvalidation(
         Vote vote, Collection<? extends VoteParticipant> affectedParticipants
     )
     {
-        String voteLink = baseUrl + "/vote/" + vote.getParticipationToken();
-        
         Context ctx = new Context();
-        ctx.setVariable("link", voteLink);
+        ctx.setVariable("link", getParticipationUrl(vote));
+        ctx.setVariable("title", fromEncryptedStringConverter.convert(vote.getTitle()));
         
         authService.sendUserNotifications(affectedParticipants.stream()
                 .map(VoteParticipant::getUserId)
@@ -76,15 +105,9 @@ public class NotificationServiceImpl implements NotificationService {
     
     @Override
     public void notifyForVoteCreation(Vote vote) {
-        String participationToken = vote.getParticipationToken();
-        if(participationToken == null) participationToken = vote.getId().toString();
-        String url = baseUrl + "/vote/" + participationToken;
-        String editToken = vote.getEditToken();
-        String adminUrl = editToken == null ? null : baseUrl + "/vote/" + editToken + "/edit";
-        
         Context ctx = new Context();
-        ctx.setVariable("url", url);
-        ctx.setVariable("adminUrl", adminUrl);
+        ctx.setVariable("url", getParticipationUrl(vote));
+        ctx.setVariable("adminUrl", getEditUrl(vote));
         
         String subjectContent = templateEngine.process("to_organizerMail_subject", ctx);
         
@@ -103,15 +126,15 @@ public class NotificationServiceImpl implements NotificationService {
             }
         }
     }
+    private String getEditUrl(Vote vote) {
+        String editToken = vote.getEditToken();
+        return editToken == null ? null : baseUrl + "/vote/" + editToken + "/edit";
+    }
     
     @Override
     public void notifyForVoteExpired(Vote expiredVote) {
-        String participationToken = expiredVote.getParticipationToken();
-        if(participationToken == null) participationToken = expiredVote.getId().toString();
-        String url = baseUrl + "/vote/" + participationToken;
-        
         Context ctx = new Context();
-        ctx.setVariable("url", url);
+        ctx.setVariable("url", getParticipationUrl(expiredVote));
         ctx.setVariable("title", fromEncryptedStringConverter.convert(expiredVote.getTitle()));
         
         String subjectContent = templateEngine.process("expired_subject", ctx);

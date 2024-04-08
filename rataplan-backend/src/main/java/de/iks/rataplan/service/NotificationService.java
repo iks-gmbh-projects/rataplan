@@ -7,6 +7,7 @@ import java.util.Collection;
 
 public interface NotificationService {
     void notifyForVoteInvitations(Vote vote);
+    void notifyForParticipation(VoteParticipant participant);
     void notifyForParticipationInvalidation(Vote vote, Collection<? extends VoteParticipant> affectedParticipants);
     void notifyForVoteCreation(Vote createdVote);
     void notifyForVoteExpired(Vote expiredVote);

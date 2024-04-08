@@ -25,6 +25,8 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     
     private final VoteParticipantRepository voteParticipantRepository;
     
+    private final NotificationService notificationService;
+    
     @Override
     public VoteParticipant createParticipant(Vote vote, VoteParticipant voteParticipant) {
         
@@ -41,7 +43,9 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
                 decision.setVoteParticipant(voteParticipant);
             }
             
-            return voteParticipantRepository.saveAndFlush(voteParticipant);
+            VoteParticipant ret = voteParticipantRepository.saveAndFlush(voteParticipant);
+            notificationService.notifyForParticipation(ret);
+            return ret;
         } else {
             throw new MalformedException("VoteDecisions don't fit the DecisionType in the Vote.");
         }
