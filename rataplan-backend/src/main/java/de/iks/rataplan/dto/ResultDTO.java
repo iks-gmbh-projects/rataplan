@@ -1,12 +1,11 @@
 package de.iks.rataplan.dto;
 
-import de.iks.rataplan.domain.VoteOption;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -15,13 +14,11 @@ import java.util.Map;
 public class ResultDTO {
     
     private String username;
-    private Map<Integer,VoteAnswerDTO> voteOptionAnswers;
+    private Map<Integer, Integer> voteOptionAnswers;
+    private LocalDateTime lastUpdated;
     
-    
-    public ResultDTO(String username){
+    public ResultDTO(String username, LocalDateTime lastUpdated) {
         this.username = username;
+        this.lastUpdated = lastUpdated;
     }
-    //username
-    //vote answer
-    //vote to which they answered
 }

@@ -1,6 +1,4 @@
 <div class="wrapper">
-  <!--    <div class="result-container">-->
-  <!--        <div style="display: block">-->
   <div style="margin-bottom: 20px">
     <mat-card>
       <mat-card-title>{{ vote?.title }}</mat-card-title>
@@ -72,10 +70,10 @@
       >Filter anwenden
       </button>
       <button mat-raised-button class="back-to-vote-button" [routerLink]="['../']">Zur Abstimmung</button>
-      <table id="resultsTable">
+      <table #resultsTable>
         <thead>
         <tr>
-          <th class="participant-column-title">Teilnehmerin</th>
+          <th class="participant-column-title">Teilnehmer</th>
           <th *ngFor="let voteOption of vote.options; let i = index">Termin {{i + 1}}
             <mat-icon (click)="showVoteOptionInfo(voteOption)">info</mat-icon>
           </th>
@@ -85,7 +83,7 @@
         <tr *ngFor="let userResults of allVoteResults; let i = index">
           <td class="username-result-entries">{{userResults.username}}</td>
           <ng-container
-            [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)?.answer"
+            [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
             *ngFor="let vo of vote.options"
           >
             <td *ngSwitchCase="0"><p>Keine Antwort</p></td>
@@ -106,7 +104,7 @@
           <tr *ngFor="let userResults of allVoteResults; let i = index">
             <td class="username-result-entries">{{userResults.username}}</td>
             <ng-container
-              [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)?.answer"
+              [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
               *ngFor="let vo of vote.options"
             >
               <td *ngSwitchCase="0" class="rejected-option"><p>0</p></td>
@@ -123,10 +121,9 @@
           </tbody>
         </ng-template>
       </table>
+      <button mat-mini-fab color="primary" style="float: right" (click)="createExcel()">
+        <mat-icon>download</mat-icon>
+      </button>
     </mat-card-content>
   </mat-card>
 </div>
-<!--    </div>-->
-<!--</div>-->
-<!--<button (click)="sort(false)">Sort by name</button>-->
-<!--<button (click)="sort(true,vote.options[0]!.id!)">Sort by answer</button>-->

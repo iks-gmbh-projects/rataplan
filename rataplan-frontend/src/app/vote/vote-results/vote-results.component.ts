@@ -4,22 +4,20 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { VoteOptionModel } from '../../models/vote-option.model';
 import { VoteModel } from '../../models/vote.model';
+import { ExcelService } from '../../services/excel-service/excel-service';
 import { DecisionType, VoteOptionDecisionType } from '../vote-form/decision-type.enum';
 import { VoteOptionInfoDialogComponent } from './vote-option-info-dialog/vote-option-info-dialog.component';
 
 export type UserVoteResults = {
   username: string,
-  voteOptionAnswers: Map<number, ResultDTO>
-}
-
-export type ResultDTO = {
-  answer: number,
-  submissionTime: Date
+  voteOptionAnswers: Map<number, number>,
+  lastUpdated: Date
 }
 
 export type UserVoteResultResponse = {
   username: string,
-  voteOptionAnswers: Map<number, string>
+  voteOptionAnswers: Map<number, number>,
+  lastUpdated: string
 }
 
 export enum FilterByOptions {
@@ -44,16 +42,22 @@ export enum VoteAnswerFilterOptions {
   styleUrls: ['./vote-results.component.scss'],
 })
 export class VoteResultsComponent implements OnInit {
-  @ViewChild('results-table')
-  resultsTable!: HTMLTableElement;
+  
+  @ViewChild('resultsTable', {static: false, read: ElementRef}) resultsTable!: ElementRef<HTMLTableElement>;
   allVoteResults!: UserVoteResults[];
-  vote!: VoteModel<boolean>;
+  vote!: VoteModel;
   filterByOption: string = FilterByOptions.PARTICIPANT;
   filterVoteOption: number = 0;
   filterSortOption: string = GeneralFilterSortOption.ASCENDING;
   showVoteOptionsInFilter: boolean = false;
   
-  constructor(private store: Store, private route: ActivatedRoute, private dialog: MatDialog) {
+  constructor(
+    private store: Store,
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private excelService: ExcelService,
+  )
+  {
   }
   
   ngOnInit(): void {
@@ -80,9 +84,9 @@ export class VoteResultsComponent implements OnInit {
       .map(results => results.voteOptionAnswers)
       .map(answers => answers.get(voteOptionId))
       .map(answer => this.vote.voteConfig.decisionType === DecisionType.NUMBER ?
-        answer?.answer! :
+        answer! :
         (
-          answer?.answer === 1 ? 1 : 0
+          answer === 1 ? 1 : 0
         ))
       .reduce<number>((a, b) => a + b, 0);
   }
@@ -93,8 +97,8 @@ export class VoteResultsComponent implements OnInit {
       this.allVoteResults.sort((
         a,
         b,
-      ) => a.voteOptionAnswers.get(voteOption)!.submissionTime.getTime() -
-        b.voteOptionAnswers.get(voteOption)!.submissionTime.getTime());
+      ) => a.lastUpdated.getTime() -
+        b.lastUpdated.getTime());
       break;
     case FilterByOptions.VOTE_OPTION:
       this.allVoteResults.sort((a, b) => this.sortByVoteOption(a, b, voteOption));
@@ -106,31 +110,32 @@ export class VoteResultsComponent implements OnInit {
     if(descending) this.allVoteResults.reverse();
   }
   
+  //ggf kann die Methode benutzt werden um Antworten zu gruppieren, wenn nach Abgabezeit gefiltert wird.
   sortBySubmissionTime(voteOption: number) {
-    let yesVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)!.answer ===
+    let yesVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)! ===
       VoteOptionDecisionType.ACCEPT).sort((
       a,
       b,
-    ) => a.voteOptionAnswers.get(voteOption)!.submissionTime.getTime() -
-      b.voteOptionAnswers.get(voteOption)!.submissionTime.getTime());
-    let maybeVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)!.answer ===
+    ) => a.lastUpdated.getTime() -
+      b.lastUpdated.getTime());
+    let maybeVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)! ===
       VoteOptionDecisionType.ACCEPT_IF_NECESSARY).sort((
       a,
       b,
-    ) => a.voteOptionAnswers.get(voteOption)!.submissionTime.getTime() -
-      b.voteOptionAnswers.get(voteOption)!.submissionTime.getTime());
-    let noVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)!.answer ===
+    ) => a.lastUpdated.getTime() -
+      b.lastUpdated.getTime());
+    let noVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)! ===
       VoteOptionDecisionType.DECLINE).sort((
       a,
       b,
-    ) => a.voteOptionAnswers.get(voteOption)!.submissionTime.getTime() -
-      b.voteOptionAnswers.get(voteOption)!.submissionTime.getTime());
+    ) => a.lastUpdated.getTime() -
+      b.lastUpdated.getTime());
     this.allVoteResults = [...yesVotes, ...maybeVotes, ...noVotes];
   }
   
   sortByVoteOption(a: UserVoteResults, b: UserVoteResults, voteOptionId: number) {
-    const answer1 = a.voteOptionAnswers.get(voteOptionId)!.answer;
-    const answer2 = b.voteOptionAnswers.get(voteOptionId)!.answer;
+    const answer1 = a.voteOptionAnswers.get(voteOptionId)!;
+    const answer2 = b.voteOptionAnswers.get(voteOptionId)!;
     if(answer2 === 0) return 1;
     else if(answer1 === answer2) return a.username.localeCompare(b.username);
     return answer2 > answer1 ? 1 : -1;
@@ -152,9 +157,13 @@ export class VoteResultsComponent implements OnInit {
     return deadline.getTime() < Date.now();
   }
   
-  protected readonly Number = Number;
+  createExcel() {
+    this.excelService.createExcel(this.vote, this.resultsTable, this.allVoteResults);
+  }
+  
   protected readonly DecisionType = DecisionType;
   protected readonly FilterByOptions = FilterByOptions;
   protected readonly VoteAnswerFilterOptions = VoteAnswerFilterOptions;
   protected readonly GeneralFilterSortOption = GeneralFilterSortOption;
+  
 }

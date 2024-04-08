@@ -6,7 +6,7 @@ import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
 import { deserializeVoteOptionDecisionModel } from '../../../models/vote-decision.model';
 import { VoteParticipantModel } from '../../../models/vote-participant.model';
 import { BackendUrlService } from '../../../services/backend-url-service/backend-url.service';
-import { ResultDTO, UserVoteResultResponse, UserVoteResults } from '../../vote-results/vote-results.component';
+import { UserVoteResultResponse, UserVoteResults } from '../../vote-results/vote-results.component';
 
 @Injectable({
   providedIn: 'root',
@@ -110,18 +110,18 @@ export class VoteService {
     return this.urlService.voteBackendURL('vote', voteParticipationToken, 'results').pipe(
       exhaustMap(url => this.http.get<UserVoteResultResponse[]>(url, {withCredentials: true}).pipe(
           map(response => {
-            let mappedUserVoteResults: UserVoteResults[] = [];
+            const mappedUserVoteResults: UserVoteResults[] = [];
             for(const userVoteResultResponse of response) {
               let mappedUserVoteResult: UserVoteResults = {
                 username: userVoteResultResponse.username,
-                voteOptionAnswers: new Map<number, ResultDTO>(),
+                voteOptionAnswers: new Map<number, number>(),
+                lastUpdated: new Date(userVoteResultResponse.lastUpdated)
               };
-              for(const mapElement of Object.entries(userVoteResultResponse.voteOptionAnswers)) {
-                mappedUserVoteResult.voteOptionAnswers.set(
+              Object.entries(userVoteResultResponse.voteOptionAnswers).forEach(mapElement => mappedUserVoteResult.voteOptionAnswers.set(
                   Number(mapElement[0]),
-                  {...mapElement[1], submissionTime: new Date(mapElement[1].submissionTime)},
-                );
-              }
+                  mapElement[1],
+                ),
+              );
               mappedUserVoteResults.push(mappedUserVoteResult);
             }
             return mappedUserVoteResults;

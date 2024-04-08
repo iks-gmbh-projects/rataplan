@@ -136,10 +136,10 @@ registerLocaleData(localeDE);
     AppCommonModule,
   ],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
-    { provide: DateAdapter, useClass: EUDateAdapter },
+    {provide: MAT_DATE_LOCALE, useValue: 'de-DE'},
+    {provide: DateAdapter, useClass: EUDateAdapter},
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}

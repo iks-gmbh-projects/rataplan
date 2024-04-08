@@ -2,7 +2,6 @@ package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.*;
 import de.iks.rataplan.dto.ResultDTO;
-import de.iks.rataplan.dto.VoteAnswerDTO;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.BackendUserAccessRepository;
@@ -13,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import springfox.documentation.schema.Entry;
 
 import java.sql.Date;
 import java.util.*;
@@ -300,13 +297,14 @@ public class VoteServiceImpl implements VoteService {
     
     @Override
     public ResultDTO mapResultDTO(VoteParticipant voteParticipant) {
-        ResultDTO ResultDTO = new ResultDTO(cryptoService.decryptDB(voteParticipant.getName().getString()));
-        Map<Integer, VoteAnswerDTO> votesByOptionId = voteParticipant.getVoteDecisions()
+        ResultDTO resultDTO = new ResultDTO(cryptoService.decryptDB(voteParticipant.getName().getString()),
+            voteParticipant.getVoteDecisions().get(0).getLastUpdated().toLocalDateTime());
+        Map<Integer, Integer> votesByOptionId = voteParticipant.getVoteDecisions()
             .stream()
             .collect(Collectors.toMap(voteDecision -> voteDecision.getVoteDecisionId().getVoteOption().getId(),
-                v -> new VoteAnswerDTO(v.getDecision().getValue(), v.getLastUpdated())
+                v -> v.getDecision().getValue().intValue()
             ));
-        ResultDTO.setVoteOptionAnswers(votesByOptionId);
-        return ResultDTO;
+        resultDTO.setVoteOptionAnswers(votesByOptionId);
+        return resultDTO;
     }
 }
