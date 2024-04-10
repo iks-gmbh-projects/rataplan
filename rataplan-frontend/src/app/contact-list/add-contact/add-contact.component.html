@@ -8,7 +8,16 @@
 <mat-spinner *ngIf="searchBusy; else results"></mat-spinner>
 <ng-template #results>
   <div class="fullwidth" *ngFor="let result of searchResults">
-    <span class="middle vcenter" [textContent]="result | displayName | async"></span>
-    <button class="right" mat-icon-button (click)="addContact(result)"><mat-icon>person_add</mat-icon></button>
+    <span class="middle vcenter" [textContent]="result.uid | displayName | async"></span>
+    <button
+      class="right"
+      mat-icon-button
+      [disabled]="result.alreadyAdded"
+      (click)="result.alreadyAdded || addContact(result.uid)"
+      matTooltip="Bereits hinzugefügt"
+      [matTooltipDisabled]="!result.alreadyAdded"
+    >
+      <mat-icon>person_add</mat-icon>
+    </button>
   </div>
 </ng-template>
