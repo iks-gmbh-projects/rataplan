@@ -1,6 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
-import { UntypedFormGroup } from '@angular/forms';
+
+export type HeadFormFields = {
+  id: string | number | null,
+  accessId: string | null,
+  participationId: string | null,
+  name: string | null,
+  description: string | null,
+  startDate: Date | null,
+  endDate: Date | null,
+  openAccess: boolean | null,
+  anonymousParticipation: boolean | null,
+};
 
 @Component({
   selector: 'app-survey-create-form-head',
@@ -8,7 +20,7 @@ import { UntypedFormGroup } from '@angular/forms';
   styleUrls: ['./survey-create-form-head.component.css']
 })
 export class SurveyCreateFormHeadComponent implements OnInit {
-  @Input("form") formGroup?: UntypedFormGroup;
+  @Input("form") formGroup?: FormGroup<{[K in keyof HeadFormFields]: AbstractControl<HeadFormFields[K]>}>;
   @Output() readonly submit = new EventEmitter<void>();
 
   public get yesterday(): Date {
@@ -27,9 +39,9 @@ export class SurveyCreateFormHeadComponent implements OnInit {
 
   public headerComplete(): boolean {
     if (!this.formGroup) return false;
-    return this.formGroup.get("name")!.valid
-      && this.formGroup.get("description")!.valid
-      && this.formGroup.get("startDate")!.valid
-      && this.formGroup.get("endDate")!.valid;
+    return this.formGroup.controls.name.valid
+      && this.formGroup.controls.description.valid
+      && this.formGroup.controls.startDate.valid
+      && this.formGroup.controls.endDate.valid;
   }
 }

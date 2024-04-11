@@ -1,23 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {
-  AbstractControl,
-  UntypedFormArray,
-  UntypedFormControl,
-  UntypedFormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../../../validator/validators';
 import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
-import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../../../validator/validators";
-
-function minControlValueValidator(min: AbstractControl): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors|null => {
-    if(control.value <= min.value) return {matDatetimePickerMin: true};
-    return null;
-  };
-}
 
 @Component({
   selector: 'app-survey-create-form',
@@ -41,28 +26,28 @@ export class SurveyCreateFormComponent {
 
   constructor(public readonly errorMessageService: FormErrorMessageService) { }
 
-  private createSurvey(survey?: Survey): UntypedFormGroup {
-    const startDate = new UntypedFormControl(survey?.startDate || null, [Validators.required, Validators.min(Date.now()-24*3600000)]);
-    const endDate = new UntypedFormControl(survey?.endDate || null, [Validators.required, minControlValueValidator(startDate)]);
-    return new UntypedFormGroup({
-      id: new UntypedFormControl(survey?.id),
-      accessId: new UntypedFormControl(survey?.accessId),
-      participationId: new UntypedFormControl(survey?.participationId),
-      name: new UntypedFormControl(survey?.name || null, [
+  private createSurvey(survey?: Survey) {
+    const startDate = new FormControl<Date | null>(survey?.startDate ?? null);
+    const endDate = new FormControl<Date | null>(survey?.endDate ?? null);
+    return new FormGroup({
+      id: new FormControl(survey?.id ?? null),
+      accessId: new FormControl(survey?.accessId ?? null),
+      participationId: new FormControl(survey?.participationId ?? null),
+      name: new FormControl(survey?.name ?? null, [
         Validators.required,
         Validators.maxLength(255),
         ExtraValidators.containsSomeWhitespace
       ]),
-      description: new UntypedFormControl(survey?.description || null, [
+      description: new FormControl(survey?.description ?? null, [
         Validators.required,
         Validators.maxLength(3000),
         ExtraValidators.containsSomeWhitespace
       ]),
       startDate: startDate,
       endDate: endDate,
-      openAccess: new UntypedFormControl(survey?.openAccess || false),
-      anonymousParticipation: new UntypedFormControl(survey?.anonymousParticipation || false),
-      questionGroups: new UntypedFormArray(survey?.questionGroups.map(this.createQuestionGroup, this) || [this.createQuestionGroup()], Validators.required)
+      openAccess: new FormControl(survey?.openAccess ?? false),
+      anonymousParticipation: new FormControl(survey?.anonymousParticipation ?? false),
+      questionGroups: new FormArray(survey?.questionGroups.map(this.createQuestionGroup, this) || [this.createQuestionGroup()], Validators.required)
     })
   }
 

@@ -21,22 +21,30 @@
       <mat-form-field class="mat-form-field-flex unlimited" appearance="fill">
         <mat-label>Von</mat-label>
         <input
-          type="localdatetime" [min]="yesterday" matInput [ngxMatDatetimePicker]="startTime"
+          type="text"
+          [min]="yesterday"
+          [mtxDatetimepicker]="startDate"
+          matInput
           formControlName="startDate"
+          required
         >
-        <mat-datepicker-toggle matSuffix [for]="$any(startTime)"></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker [defaultTime]="[0,0,0]" #startTime></ngx-mat-datetime-picker>
+        <mtx-datetimepicker-toggle [for]="startDate" matSuffix></mtx-datetimepicker-toggle>
+        <mtx-datetimepicker #startDate></mtx-datetimepicker>
         <mat-error>{{errorMessageService.genericFormError(formGroup.get('startDate'))}}</mat-error>
       </mat-form-field>
       <br>
       <mat-form-field class="mat-form-field-flex unlimited" appearance="fill">
         <mat-label>Bis</mat-label>
         <input
-          type="localdatetime" [min]="(formGroup.get('startDate')?.value || yesterday)" matInput
-          [ngxMatDatetimePicker]="endTime" formControlName="endDate"
+          type="text"
+          [min]="formGroup.controls.startDate.value ?? yesterday"
+          [mtxDatetimepicker]="endDate"
+          matInput
+          formControlName="endDate"
+          required
         >
-        <mat-datepicker-toggle matSuffix [for]="$any(endTime)"></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker [defaultTime]="[24,0,0]" #endTime></ngx-mat-datetime-picker>
+        <mtx-datetimepicker-toggle [for]="endDate" matSuffix></mtx-datetimepicker-toggle>
+        <mtx-datetimepicker #endDate></mtx-datetimepicker>
         <mat-error>{{errorMessageService.genericFormError(formGroup.get('endDate'))}}</mat-error>
       </mat-form-field>
       <br>
