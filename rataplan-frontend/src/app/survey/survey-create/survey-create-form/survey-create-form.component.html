@@ -1,12 +1,12 @@
 <app-survey-create-form-head
-  *ngIf="page < 0; else qg" [form]="formGroup"
+  *ngIf="page < 0; else qg" [form]="$any(formGroup)"
   (submit)="page = page+1"
 ></app-survey-create-form-head>
 <ng-template #qg>
   <app-survey-create-form-page
-    [questionGroup]="$any(getQuestionGroups().at(page))"
-    [lastPage]="page+1 == getQuestionGroups().length"
-    [onlyPage]="getQuestionGroups().length <= 1"
+    [questionGroup]="formGroup!.controls.questionGroups.at(page)"
+    [lastPage]="page+1 == formGroup!.controls.questionGroups.length"
+    [onlyPage]="formGroup!.controls.questionGroups.length <= 1"
     (onSubmit)="advanceForm($event)"
     (remove)="removeGroup()"
     (revert)="page = page-1"
@@ -24,4 +24,3 @@
     </button>
   </div>
 </div>
-
