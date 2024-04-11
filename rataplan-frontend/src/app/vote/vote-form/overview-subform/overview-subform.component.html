@@ -87,11 +87,13 @@
         <mat-card-actions>
           <button
             mat-button
+            color="warn"
             (click)="clearContent()"
           >Zurücksetzen
           </button>
           <button
-            mat-button
+            mat-raised-button
+            color="primary"
             [disabled]="vote.invalid || vote.untouched"
             (click)="addVoteOption()"
           >
