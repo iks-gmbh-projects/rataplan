@@ -86,8 +86,12 @@ $my-theme: mat.define-light-theme($primary-palette, $accent-palette, $warn-palet
 @use "sass:map";
 $my-corrected-theme: map.set(map.set($my-theme, foreground, text, rgba($iks-blue, 0.87)), foreground, secondary-text, rgba($iks-blue, 0.54));
 
+@use "@ng-matero/extensions" as mtx;
+
 @include mat.core($my-corrected-theme);
 @include mat.all-component-colors($my-corrected-theme);
+
+@include mtx.all-component-themes($my-corrected-theme);
 
 html, body {
   height: 100%;
@@ -343,6 +347,3 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
   align-items: flex-start;
   flex-direction: column;
 }
-
-
-

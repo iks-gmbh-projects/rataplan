@@ -15,8 +15,6 @@ import { StoreModule } from '@ngrx/store';
 import { voteFeature } from './vote.feature';
 import { EffectsModule } from '@ngrx/effects';
 import { VoteEffects } from './vote.effects';
-import { CombinedDatetimeMaxDirective } from '../validator/combined-datetime-max.directive';
-import { CombinedDatetimeMinDirective } from '../validator/combined-datetime-min.directive';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-dialog/vote-option-info-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
@@ -35,8 +33,6 @@ import { MatMenuModule } from '@angular/material/menu';
     OverviewSubformComponent,
     VoteListComponent,
     
-    CombinedDatetimeMaxDirective,
-    CombinedDatetimeMinDirective,
     VoteResultsComponent,
     VoteOptionInfoDialogComponent,
   ],

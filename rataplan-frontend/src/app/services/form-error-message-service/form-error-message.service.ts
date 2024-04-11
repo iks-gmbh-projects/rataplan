@@ -27,13 +27,11 @@ export class FormErrorMessageService {
     if (element.hasError("invalidCredentials")) return "Benutzername/Email oder Passwort ist falsch.";
     if (
       element.hasError("matDatepickerMin")
-      || element.hasError("matDatetimePickerMin")
-      || element.hasError("matTimepickerMin")
+      || element.hasError("mtxDatetimepickerMin")
     ) return "Zu früh";
     if (
       element.hasError("matDatepickerMax")
-      || element.hasError("matDatetimePickerMax")
-      || element.hasError("matTimepickerMax")
+      || element.hasError("mtxDatetimepickerMax")
     ) return "Zu spät";
     if (element.hasError("min")) return "Muss größer sein";
     if (element.hasError("max")) return "Muss kleiner sein";

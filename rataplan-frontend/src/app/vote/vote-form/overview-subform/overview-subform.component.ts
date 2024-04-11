@@ -1,6 +1,7 @@
-import { Component, OnDestroy,OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MtxDatetimepickerType } from '@ng-matero/extensions/datetimepicker';
 import { Store } from '@ngrx/store';
 import { filter, Observable, of, Subscription } from 'rxjs';
 
@@ -10,26 +11,6 @@ import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } fr
 import { voteFeature } from '../../vote.feature';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
-import { combineDateTime } from '../vote-form.service';
-
-function extractTime(date: string | undefined | null): string | null {
-  if (!date) return null;
-  const dateObject = new Date(date);
-  return dateObject.getHours().toString().padStart(2, '0') + ':' + dateObject.getMinutes().toString().padStart(2, '0');
-}
-
-type formValue = {
-  voteIndex: number | null,
-  startDateInput: string | null,
-  endDateInput: string | null,
-  startTimeInput: string | null,
-  endTimeInput: string | null,
-  descriptionInput: string | null,
-  linkInput: string | null,
-  participantLimitActive: boolean,
-  participantLimit: number | null
-};
-
 @Component({
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',
@@ -46,17 +27,41 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     description: false,
     url: false,
   };
+  
+  get startLabel(): string {
+    const end = this.voteConfig.endDate || this.voteConfig.endTime;
+    if(this.voteConfig.startTime) return end ? 'Startzeit' : 'Uhrzeit';
+    else return end ? 'Startdatum' : 'Datum';
+  }
+  
+  get startType(): MtxDatetimepickerType {
+    if(this.voteConfig.startTime) {
+      return `${this.voteConfig.startDate ? 'date' : ''}time`;
+    }
+    return 'date';
+  }
+  
+  get endLabel(): string {
+    const start = this.voteConfig.startDate || this.voteConfig.startTime;
+    if(this.voteConfig.endTime) return start ? 'Endzeit' : 'Uhrzeit';
+    else return start ? 'Enddatum' : 'Datum';
+  }
+  
+  get endType(): MtxDatetimepickerType {
+    if(this.voteConfig.endTime) {
+      return `${this.voteConfig.endDate ? 'date' : ''}time`;
+    }
+    return 'date';
+  }
 
-  participantLimitActive: UntypedFormControl = new UntypedFormControl(false);
-  participantLimit: UntypedFormControl = new UntypedFormControl(null, [Validators.min(1)]);
-  vote = new UntypedFormGroup({
-    voteIndex: new UntypedFormControl(null),
-    startDateInput: new UntypedFormControl(null),
-    endDateInput: new UntypedFormControl(null),
-    startTimeInput: new UntypedFormControl(null),
-    endTimeInput: new UntypedFormControl(null),
-    descriptionInput: new UntypedFormControl(null),
-    linkInput: new UntypedFormControl(null),
+  participantLimitActive = new FormControl<boolean>(false);
+  participantLimit = new FormControl<number | null>(null, [Validators.min(1)]);
+  vote = new FormGroup({
+    voteIndex: new FormControl<number | null>(null),
+    startDateInput: new FormControl<Date | null>(null),
+    endDateInput: new FormControl<Date | null>(null),
+    descriptionInput: new FormControl<string | null>(null),
+    linkInput: new FormControl<string | null>(null),
     participantLimitActive: this.participantLimitActive,
     participantLimit: this.participantLimit
   });
@@ -113,7 +118,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     if (!this.isInputInForm()) {
       return;
     }
-    const input: formValue = this.vote.value;
+    const input = this.vote.value;
     let proceed: Observable<boolean> = of(true);
     if (input.voteIndex != null && input.participantLimitActive) {
       if (input.participantLimit! < this.originalParticipationLimit.get(this.voteOptions[input.voteIndex].id!)!) {
@@ -123,17 +128,11 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     proceed.subscribe(proceed => {
       if(proceed) {
         const voteOption: VoteOptionModel = {};
-        voteOption.startDate = combineDateTime(
-          input.startDateInput, input.startTimeInput,
-        )!;
-        if (this.voteConfig.endDate || this.voteConfig.endTime) {
-          voteOption.endDate = combineDateTime(
-            input.endDateInput || input.startDateInput, input.endTimeInput,
-          )!;
-        }
-        voteOption.description = input.descriptionInput || undefined;
-        voteOption.url = input.linkInput || undefined;
-        voteOption.participantLimitActive = input.participantLimitActive || false;
+        voteOption.startDate = input.startDateInput?.toISOString();
+        voteOption.endDate = input.endDateInput?.toISOString();
+        voteOption.description = input.descriptionInput ?? undefined;
+        voteOption.url = input.linkInput ?? undefined;
+        voteOption.participantLimitActive = input.participantLimitActive ?? false;
         voteOption.participantLimit = input.participantLimitActive ? input.participantLimit : null;
         if (input.voteIndex !== null) {
           this.store.dispatch(new EditVoteOptionAction(input.voteIndex!, voteOption));
@@ -163,10 +162,8 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
   editVoteOption(index: number) {
     const voteOption = this.voteOptions[index];
     this.vote.setValue({
-      startDateInput: voteOption.startDate || null,
-      endDateInput: voteOption.endDate || null,
-      startTimeInput: extractTime(voteOption.startDate),
-      endTimeInput: extractTime(voteOption.endDate),
+      startDateInput: voteOption.startDate ? new Date(voteOption.startDate) : null,
+      endDateInput: voteOption.endDate ? new Date(voteOption.endDate) : null,
       descriptionInput: voteOption.description || null,
       linkInput: voteOption.url || null,
       voteIndex: index,

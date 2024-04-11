@@ -22,6 +22,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MtxNativeDatetimeModule } from '@ng-matero/extensions/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
@@ -132,6 +133,7 @@ registerLocaleData(localeDE);
     ...environment.devModules,
     MatSlideToggleModule,
     AppCommonModule,
+    MtxNativeDatetimeModule,
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'de-DE'},
