@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule } from '@angular-material-components/datetime-picker';
 import { NgChartsModule } from 'ng2-charts';
 
 import { AppCommonModule } from '../app-common.module';
@@ -45,14 +44,12 @@ import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unkno
   imports: [
     AppCommonModule,
     SurveyRoutingModule,
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
     NgChartsModule,
   ],
   providers: [
     SurveyService,
     AccessIDSurveyResolver,
     ParticipationIDSurveyResolver,
-  ]
+  ],
 })
-export class SurveyModule { }
+export class SurveyModule {}

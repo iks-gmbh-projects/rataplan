@@ -24,7 +24,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 import { environment } from '../environments/environment';
 import { AppCommonModule } from './app-common.module';
@@ -120,7 +119,6 @@ registerLocaleData(localeDE);
     HttpClientModule,
     MatMenuModule,
     MatSnackBarModule,
-    NgxMaterialTimepickerModule,
     MatBottomSheetModule,
     MatDialogModule,
     MatExpansionModule,

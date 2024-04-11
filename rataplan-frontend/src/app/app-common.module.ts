@@ -1,35 +1,35 @@
-import { NgModule } from '@angular/core';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSortModule } from '@angular/material/sort';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
 import { DisplayNamePipe } from './pipes/display-name.pipe';
-import { NoWhitespaceDirective } from "./validator/no-whitespace.directive";
-import { SomeNonWhitespaceDirective } from "./validator/some-non-whitespace.directive";
-import { CheckboxCountMinDirective } from "./validator/checkbox-count-min.directive";
-import { CheckboxCountMaxDirective } from "./validator/checkbox-count-max.directive";
-import { MatTooltipModule } from "@angular/material/tooltip";
+import { CheckboxCountMaxDirective } from './validator/checkbox-count-max.directive';
+import { CheckboxCountMinDirective } from './validator/checkbox-count-min.directive';
 import { IntegerDirective } from './validator/integer.directive';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatSortModule } from '@angular/material/sort';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatStepperModule } from '@angular/material/stepper';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatChipsModule } from '@angular/material/chips';
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatListModule } from '@angular/material/list';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatTabsModule } from '@angular/material/tabs';
-import { ClipboardModule } from '@angular/cdk/clipboard';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NoWhitespaceDirective } from './validator/no-whitespace.directive';
+import { SomeNonWhitespaceDirective } from './validator/some-non-whitespace.directive';
 
 const declarations = [
   DisplayNamePipe,
@@ -67,7 +67,7 @@ const imports = [
   MatBadgeModule,
   MatStepperModule,
   MatTabsModule,
-  NgxMaterialTimepickerModule,
+  MtxDatetimepickerModule,
   ClipboardModule,
 ];
 
@@ -79,4 +79,4 @@ const imports = [
     ...declarations,
   ],
 })
-export class AppCommonModule { }
+export class AppCommonModule {}
