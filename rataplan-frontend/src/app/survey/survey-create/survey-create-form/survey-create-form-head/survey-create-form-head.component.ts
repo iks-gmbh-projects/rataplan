@@ -23,12 +23,7 @@ export class SurveyCreateFormHeadComponent implements OnInit {
   @Input("form") formGroup?: FormGroup<{[K in keyof HeadFormFields]: AbstractControl<HeadFormFields[K]>}>;
   @Output() readonly submit = new EventEmitter<void>();
 
-  public get yesterday(): Date {
-    let ms = Date.now();
-    ms -= 24*3600000;
-    ms -= ms % 60000;
-    return new Date(ms);
-  }
+  public readonly yesterday = new Date();
 
   constructor(
     readonly errorMessageService: FormErrorMessageService
