@@ -57,6 +57,7 @@ public class ContactServiceImpl implements ContactService {
                 .stream()
                 .map(Contact::getUser)
                 .map(User::getId)
+                .sorted()
                 .collect(Collectors.toUnmodifiableList())
         );
     }

@@ -118,6 +118,32 @@ public class VoteOptionRequestServiceTest {
             anyString(),
             anyString()
         );
+        verify(authService, atLeast(0)).sendMailNotifications(
+            anyCollection(),
+            any(NotificationType.class),
+            anyString(),
+            anyString()
+        );
+        verify(authService, atLeast(0)).sendMailNotifications(
+            anyCollection(),
+            any(NotificationType.class),
+            anyString(),
+            anyString(),
+            anyString()
+        );
+        verify(authService, atLeast(0)).sendUserNotifications(
+            anyCollection(),
+            any(NotificationType.class),
+            anyString(),
+            anyString()
+        );
+        verify(authService, atLeast(0)).sendUserNotifications(
+            anyCollection(),
+            any(NotificationType.class),
+            anyString(),
+            anyString(),
+            anyString()
+        );
         verifyNoMoreInteractions(authService);
     }
     
