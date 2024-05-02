@@ -1,4 +1,4 @@
-@use 'src/styles';
+@use 'src/colors';
 
 :has(>.center,>.right) {
   display: grid;
@@ -70,12 +70,12 @@
 }
 
 .checkedAcceptIfNecessary {
-  background-color: styles.$iks-yellow;
+  background-color: colors.$iks-yellow;
   color: white;
 }
 
 .checkedDecline {
-  background-color: styles.$iks-red;
+  background-color: colors.$iks-red;
   color: white;
 }
 

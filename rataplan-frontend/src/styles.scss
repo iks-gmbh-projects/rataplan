@@ -1,12 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 
-$line-height: 36px;
-
-$iks-blue: #005477;
-$iks-yellow: #f4c42e;
-$iks-red: #871c37;
-$iks-green: #0e4823;
+@use "colors";
 
 $md-primary: (
         50 : #e0eaef,
@@ -84,7 +79,7 @@ $warn-palette: mat.define-palette($md-warn);
 $my-theme: mat.define-light-theme($primary-palette, $accent-palette, $warn-palette);
 
 @use "sass:map";
-$my-corrected-theme: map.set(map.set($my-theme, foreground, text, rgba($iks-blue, 0.87)), foreground, secondary-text, rgba($iks-blue, 0.54));
+$my-corrected-theme: map.set(map.set($my-theme, foreground, text, rgba(colors.$iks-blue, 0.87)), foreground, secondary-text, rgba(colors.$iks-blue, 0.54));
 
 @use "@ng-matero/extensions" as mtx;
 
@@ -132,7 +127,7 @@ body {
   width: 80vw;
   max-width: 400px;
   margin-top: 1rem;
-  max-height: $line-height;
+  max-height: colors.$line-height;
 
   button #icon {
     max-height: 100%;

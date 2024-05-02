@@ -1,4 +1,4 @@
-@use "src/styles";
+@use "src/colors";
 
 th, td {
   border: 1px solid #dddddd;
@@ -47,11 +47,11 @@ table {
 }
 
 .maybe-option {
-  background: styles.$iks-yellow;
+  background: colors.$iks-yellow;
   color: white;
 }
 
 .rejected-option {
-  background: styles.$iks-red;
+  background: colors.$iks-red;
   color: white;
 }
