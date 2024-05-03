@@ -83,7 +83,7 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = CreatorVoteDTO.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @PostMapping(value = "/votes", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/votes")
     public ResponseEntity<CreatorVoteDTO> createVote(
             @RequestBody CreatorVoteDTO creatorVoteDTO,
             @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
