@@ -1,15 +1,13 @@
-import { DatePipe } from '@angular/common';
-import { ElementRef, Injectable } from '@angular/core';
+import { formatDate } from '@angular/common';
+import { ElementRef, Inject, Injectable, LOCALE_ID } from '@angular/core';
 import * as ExcelJS from 'exceljs';
 import { VoteModel } from '../../models/vote.model';
 import { UserVoteResults } from '../../vote/vote-results/vote-results.component';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ExcelService {
   
-  constructor(private datePipe: DatePipe) {}
+  constructor(@Inject(LOCALE_ID) private readonly locale: string) {}
   
   createExcel(vote: VoteModel, resultsTable: ElementRef<HTMLTableElement>, userVoteResults: UserVoteResults[]) {
     const workbook: ExcelJS.Workbook = new ExcelJS.Workbook();
@@ -26,12 +24,12 @@ export class ExcelService {
       let title = `Termin ${i + 1} \r\n`;
       if(vote.options[i].startDate !== null) title = title.concat(
         'Anfangsdatum: ',
-        this.datePipe.transform(new Date(vote.options[i].startDate!), 'medium')!,
+        formatDate(new Date(vote.options[i].startDate!), 'medium', this.locale)!,
         '\r\n',
       );
       if(vote.options[i].endDate !== null) title = title.concat(
         'Enddatum: ',
-        this.datePipe.transform(new Date(vote.options[i].startDate!), 'medium')!,
+        formatDate(new Date(vote.options[i].startDate!), 'medium', this.locale)!,
         '\r\n',
       );
       if(vote.options[i].description !== null) title = title.concat(
@@ -57,7 +55,7 @@ export class ExcelService {
       if(i <= userVoteResults.length) {
         let columnEntries: string[] = [
           ...Object.entries(cells).map(entry => entry[1].textContent!.toString()),
-          this.datePipe.transform(userVoteResults[i-1].lastUpdated,'medium')!
+          formatDate(userVoteResults[i-1].lastUpdated,'medium', this.locale)!
         ];
         worksheet.addRow(columnEntries);
       } else worksheet.addRow([...Object.entries(cells).map(entry => entry[1].textContent!.toString())]);
@@ -77,7 +75,6 @@ export class ExcelService {
     downloadLink.href = window.URL.createObjectURL(blob);
     downloadLink.download = filename;
     downloadLink.click();
-    document.removeChild(downloadLink);
   };
   
   buildSolidFill(fgColor?: Partial<ExcelJS.Color>): ExcelJS.Fill {

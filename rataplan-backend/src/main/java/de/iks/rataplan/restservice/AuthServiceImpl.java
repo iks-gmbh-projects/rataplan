@@ -104,6 +104,7 @@ public class AuthServiceImpl implements AuthService {
         String content,
         String summaryContent
     ) {
+        if(recipients.isEmpty()) return;
         HttpHeaders headers = new HttpHeaders();
         headers.add("jwt", jwtTokenService.generateIDToken());
         HttpEntity<List<UserNotificationDTO>> request = new HttpEntity<>(recipients.stream()
@@ -132,6 +133,7 @@ public class AuthServiceImpl implements AuthService {
         String content,
         String summaryContent
     ) {
+        if(recipients.isEmpty()) return;
         HttpHeaders headers = new HttpHeaders();
         headers.add("jwt", jwtTokenService.generateIDToken());
         HttpEntity<List<EmailNotificationDTO>> request = new HttpEntity<>(recipients.stream()

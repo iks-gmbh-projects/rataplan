@@ -4,12 +4,11 @@ import de.iks.rataplan.dto.PublicKeyExchangeDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwsHeader;
 import lombok.SneakyThrows;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.KeyGenerator;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PublicKey;

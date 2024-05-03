@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AppCommonModule } from '../app-common.module';
+import { ExcelService } from '../services/excel-service/excel-service';
 import { VoteRoutingModule } from './vote-routing.module';
 import { VoteFormComponent } from './vote-form/vote-form.component';
 import { GeneralSubformComponent } from './vote-form/general-subform/general-subform.component';
@@ -44,5 +45,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatSelectModule,
     MatMenuModule,
   ],
+  providers: [
+    ExcelService,
+  ]
 })
 export class VoteModule {}
