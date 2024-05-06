@@ -29,7 +29,7 @@
             (click)="updateFilterOptions(filterBy.value)"
             [value]="filterBy.value"
           >
-            {{filterBy.value}}
+            {{ filterBy.value }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -37,7 +37,7 @@
         <mat-label>Termin</mat-label>
         <mat-select [(ngModel)]="filterVoteOption">
           <mat-option *ngFor="let v of vote.options;let i = index" [value]="i">
-            Termin {{i + 1}}
+            Termin {{ i + 1 }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -47,7 +47,8 @@
           <mat-option
             *ngFor="let sortOption of VoteAnswerFilterOptions | keyvalue"
             [value]="sortOption.value"
-          >{{sortOption.value}}</mat-option>
+          >{{ sortOption.value }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <ng-template #sortByNameDropDownOptions>
@@ -57,7 +58,8 @@
             <mat-option
               *ngFor="let sortOption of GeneralFilterSortOption | keyvalue"
               [value]="sortOption.value"
-            >{{sortOption.value}}</mat-option>
+            >{{ sortOption.value }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </ng-template>
@@ -74,14 +76,15 @@
         <thead>
         <tr>
           <th class="participant-column-title">Teilnehmer</th>
-          <th *ngFor="let voteOption of vote.options; let i = index">Termin {{i + 1}}
+          <th *ngFor="let voteOption of vote.options; let i = index">
+            <span>Termin {{ i + 1 }}</span>
             <mat-icon (click)="showVoteOptionInfo(voteOption)">info</mat-icon>
           </th>
         </tr>
         </thead>
         <tbody *ngIf="vote.voteConfig.decisionType !== DecisionType.NUMBER; else teilnehmerVote">
         <tr *ngFor="let userResults of allVoteResults; let i = index">
-          <td class="username-result-entries">{{userResults.username}}</td>
+          <td class="username-result-entries">{{ userResults.username }}</td>
           <ng-container
             [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
             *ngFor="let vo of vote.options"
@@ -95,27 +98,27 @@
         <tr>
           <td class="username-result-entries">Ergebnis</td>
           <td *ngFor="let voteOption of vote.options!">
-            <p>{{getVoteOptionSum(voteOption.id!)}}</p>
+            <p>{{ getVoteOptionSum(voteOption.id!) }}</p>
           </td>
         </tr>
         </tbody>
         <ng-template #teilnehmerVote>
           <tbody>
           <tr *ngFor="let userResults of allVoteResults; let i = index">
-            <td class="username-result-entries">{{userResults.username}}</td>
+            <td class="username-result-entries">{{ userResults.username }}</td>
             <ng-container
               [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
               *ngFor="let vo of vote.options"
             >
               <td *ngSwitchCase="0" class="rejected-option"><p>0</p></td>
               <td *ngSwitchDefault class="accepted-option">
-                <p>{{userResults.voteOptionAnswers.get(vo.id!)}}</p></td>
+                <p>{{ userResults.voteOptionAnswers.get(vo.id!) }}</p></td>
             </ng-container>
           </tr>
           <tr>
             <td class="username-result-entries">Ergebnis</td>
             <td *ngFor="let voteOption of vote.options!">
-              <p>{{getVoteOptionSum(voteOption.id!)}}</p>
+              <p>{{ getVoteOptionSum(voteOption.id!) }}</p>
             </td>
           </tr>
           </tbody>

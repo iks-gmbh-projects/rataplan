@@ -134,10 +134,9 @@ export class VoteResultsComponent implements OnInit {
   }
   
   sortByVoteOption(a: UserVoteResults, b: UserVoteResults, voteOptionId: number) {
-    const answer1 = a.voteOptionAnswers.get(voteOptionId)!;
-    const answer2 = b.voteOptionAnswers.get(voteOptionId)!;
-    if(answer2 === 0) return 1;
-    else if(answer1 === answer2) return a.username.localeCompare(b.username);
+    const answer1 = a.voteOptionAnswers.get(voteOptionId) || 999;
+    const answer2 = b.voteOptionAnswers.get(voteOptionId) || 999;
+    if(answer1 === answer2) return a.username.localeCompare(b.username);
     return answer2 > answer1 ? 1 : -1;
   }
   
