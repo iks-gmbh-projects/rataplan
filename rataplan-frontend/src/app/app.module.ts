@@ -64,6 +64,7 @@ import { ContactListComponent } from './contact-list/contact-list.component';
 import { AddContactComponent } from './contact-list/add-contact/add-contact.component';
 import { GroupDisplayComponent } from './contact-list/group-display/group-display.component';
 import { EditGroupComponent } from './contact-list/edit-group/edit-group.component';
+import { ChangeNoteComponent } from './version/change-note/change-note.component';
 
 registerLocaleData(localeDE);
 
@@ -99,6 +100,7 @@ registerLocaleData(localeDE);
     AddContactComponent,
     GroupDisplayComponent,
     EditGroupComponent,
+    ChangeNoteComponent,
   ],
   imports: [
     BrowserModule,

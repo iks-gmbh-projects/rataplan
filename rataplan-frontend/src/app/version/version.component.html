@@ -7,7 +7,7 @@
       </mat-expansion-panel-header>
       <ng-template matExpansionPanelContent>
         <ul>
-          <li *ngFor="let change of version.notes">{{change}}</li>
+          <app-change-note *ngFor="let c of version.notes" [change]="c"></app-change-note>
         </ul>
       </ng-template>
     </mat-expansion-panel>

@@ -1,0 +1,8 @@
+<li *ngIf="singleChange as c; else subList" [textContent]="c"></li>
+<ng-template #subList>
+  <li>{{multiChange!.name}}
+    <ul>
+      <app-change-note *ngFor="let c of multiChange!.changes" [change]="c"></app-change-note>
+    </ul>
+  </li>
+</ng-template>
