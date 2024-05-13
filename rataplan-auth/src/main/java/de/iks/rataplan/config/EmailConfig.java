@@ -1,6 +1,12 @@
 package de.iks.rataplan.config;
 
+import de.iks.rataplan.service.MailService;
+import de.iks.rataplan.service.MailServiceImplSendInBlue;
+import de.iks.rataplan.utils.MailBuilderSendInBlue;
 import lombok.Data;
+
+import org.springframework.context.annotation.Primary;
+
 import sendinblue.ApiClient;
 import sibApi.TransactionalEmailsApi;
 import sibModel.SendSmtpEmailSender;
@@ -31,6 +37,16 @@ public class EmailConfig {
     @ConditionalOnBean(ApiClient.class)
     public TransactionalEmailsApi transactionalEmailsApi(ApiClient apiClient) {
         return new TransactionalEmailsApi(apiClient);
+    }
+    
+    @Primary
+    @Bean
+    @ConditionalOnBean(ApiClient.class)
+    public MailServiceImplSendInBlue mailService(
+        MailBuilderSendInBlue mailBuilderSendInBlue,
+        ApiClient api
+    ) {
+        return new MailServiceImplSendInBlue(mailBuilderSendInBlue, transactionalEmailsApi(api));
     }
     
     @Bean

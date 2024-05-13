@@ -20,10 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@Primary
-@Service
 @RequiredArgsConstructor
-@ConditionalOnBean(TransactionalEmailsApi.class)
 @Slf4j
 public class MailServiceImplSendInBlue implements MailService {
     private final MailBuilderSendInBlue mailBuilder;
