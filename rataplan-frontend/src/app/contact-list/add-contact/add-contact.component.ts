@@ -56,7 +56,7 @@ export class AddContactComponent implements OnInit, OnDestroy {
     });
     this.sub2 = this.actions$.pipe(
       ofType(contactActions.error)
-    ).subscribe(({error}) => {
+    ).subscribe(() => {
       this.snackbar.open("Unbekannter Fehler");
     });
   }

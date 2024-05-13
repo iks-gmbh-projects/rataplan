@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChartData, Color } from 'chart.js';
 import { Subscription } from 'rxjs';
@@ -43,7 +43,7 @@ function* inf<T>(it: Iterable<T>): Generator<T> {
   templateUrl: './survey-results.component.html',
   styleUrls: ['./survey-results.component.css'],
 })
-export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
+export class SurveyResultsComponent implements OnInit, OnDestroy {
   public survey?: Survey;
   private sub?: Subscription;
   public columns: {[questionId: string | number]: string[]} = {};
@@ -63,8 +63,6 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
   public ngOnDestroy(): void {
     this.sub?.unsubscribe();
   }
-  
-  public ngOnChanges(changes: SimpleChanges): void {  }
   
   private fetchAnswers(survey: Survey): void {
     if(this.survey === survey) return;

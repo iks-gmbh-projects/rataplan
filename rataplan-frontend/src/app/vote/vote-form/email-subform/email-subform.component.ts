@@ -15,7 +15,7 @@ import { ExtraValidators } from '../../../validator/validators';
 import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../../vote.actions';
 import { voteFeature } from '../../vote.feature';
 
-type Nullable<T> = {[K in keyof T]: T[K] | null};
+type Nullable<T> = { [K in keyof T]: T[K] | null };
 
 @Component({
   selector: 'app-email-subform',
@@ -26,20 +26,20 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   readonly separatorKeysCodes = [ENTER, COMMA, SPACE] as const;
   busy = false;
   consigneeList: string[] = [];
-  contactList: (string|number)[] = [];
+  contactList: (string | number)[] = [];
   groupList: ContactGroup[] = [];
-
+  
   isEditing: boolean = false;
   $isLoggedIn: Observable<boolean>;
   $needsEmail: Observable<boolean>;
   personaliseEmailActive = false;
   emailSubform = new FormGroup({
-    'name': new FormControl<string|null>(null, [
+    'name': new FormControl<string | null>(null, [
       Validators.maxLength(50),
       ExtraValidators.containsSomeWhitespace,
     ]),
     'notificationSettings': new FormGroup({
-      'recipientEmail': new FormControl<string|null>(null, [
+      'recipientEmail': new FormControl<string | null>(null, [
         Validators.maxLength(100),
         Validators.email,
       ]),
@@ -47,31 +47,34 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       'notifyParticipation': new FormControl<boolean>(false),
       'notifyExpiration': new FormControl<boolean>(false),
     }),
-    'consigneeList': new FormControl<string|null>(null, [
+    'consigneeList': new FormControl<string | null>(null, [
       Validators.maxLength(60),
       Validators.email,
     ]),
     'personalisedInvitation': new FormControl<string | null>(
-      null
+      null,
     ),
   });
   
   private storeSub?: Subscription;
   
   readonly allGroups$: Observable<ContactGroup[]>;
-  readonly ungrouped$: Observable<(string|number)[]>;
+  readonly ungrouped$: Observable<(string | number)[]>;
+  
   constructor(
     private snackBar: MatSnackBar,
     private store: Store,
-    public readonly errorMessageService: FormErrorMessageService
-  ) {
+    public readonly errorMessageService: FormErrorMessageService,
+  )
+  {
     this.allGroups$ = this.store.select(contactsFeature.selectGroups);
     this.ungrouped$ = this.store.select(contactsFeature.selectUngrouped);
     this.$isLoggedIn = this.store.select(authFeature.selectUser).pipe(
       map(u => !!u),
     );
     this.$needsEmail = this.emailSubform.get('notificationSettings')!.valueChanges.pipe(
-      map(({sendLinkMail, notifyParticipation, notifyExpiration}) => sendLinkMail || notifyParticipation || notifyExpiration || false),
+      map(({sendLinkMail, notifyParticipation, notifyExpiration}) => sendLinkMail || notifyParticipation ||
+        notifyExpiration || false),
     );
   }
   
@@ -97,7 +100,8 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
         if(state.error !== this.lastError) {
           this.lastError = state.error;
           if(state.error) {
-            this.snackBar.open('Unbekannter Fehler beim Erstellen der Abstimmung', 'OK');          }
+            this.snackBar.open('Unbekannter Fehler beim Erstellen der Abstimmung', 'OK');
+          }
         }
       });
   }
@@ -108,11 +112,13 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   
   validateNotificationSettings(s: Nullable<VoteNotificationSettings> | undefined): VoteNotificationSettings | undefined {
     if(!s) return undefined;
-    if((s.notifyExpiration || s.notifyParticipation || s.sendLinkMail) && s.recipientEmail) return {
+    if((
+      s.notifyExpiration || s.notifyParticipation || s.sendLinkMail
+    ) && s.recipientEmail) return {
       recipientEmail: s.recipientEmail,
       sendLinkMail: s.sendLinkMail ?? false,
       notifyParticipation: s.notifyParticipation ?? false,
-      notifyExpiration: s.notifyExpiration ?? false
+      notifyExpiration: s.notifyExpiration ?? false,
     };
     return undefined;
   }
@@ -122,12 +128,12 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       name: this.emailSubform.get('name')?.value || undefined,
       notificationSettings: this.validateNotificationSettings(this.emailSubform.get('notificationSettings')?.value),
       consigneeList: [
-        ...this.consigneeList
+        ...this.consigneeList,
       ],
       userConsignees: [
         ...[
           ...this.groupList.flatMap(g => g.contacts),
-          ...this.contactList
+          ...this.contactList,
         ],
       ],
       personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value ?? undefined,
@@ -138,9 +144,10 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     this.groupList = this.groupList.filter(g => g.id !== group.id);
   }
   
-  removeContact(contact: string|number): void {
+  removeContact(contact: string | number): void {
     this.contactList = this.contactList.filter(c => c !== contact);
   }
+  
   remove(email: string) {
     const index = this.consigneeList.indexOf(email);
     if(index >= 0) {
@@ -152,9 +159,10 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     this.groupList = [...this.groupList, group];
   }
   
-  addContact(contact: string|number): void {
+  addContact(contact: string | number): void {
     this.contactList = [...this.contactList, contact];
   }
+  
   add(email: MatChipInputEvent) {
     if(email.value && this.consigneeList.indexOf(email.value) < 0 && this.emailSubform.get('consigneeList')?.valid) {
       this.consigneeList = [...this.consigneeList, email.value.toLowerCase()];

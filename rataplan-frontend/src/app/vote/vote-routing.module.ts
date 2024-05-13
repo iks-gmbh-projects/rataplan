@@ -17,19 +17,6 @@ import {ProfilePasswordAuthService} from '../services/auth-guard-service/profile
 import {VoteResultsComponent} from "./vote-results/vote-results.component";
 import {VoteResultsResolver} from "./vote/resolver/vote-results.resolver";
 
-// function matcherFunction(url: UrlSegment[]) {
-//
-//   const path = url[0].path;
-//   if(path.startsWith('create-vote')) {
-//     return { consumed: url.slice(0,1) };
-//   }
-//   if (path.startsWith('edit')) {
-//     return { consumed: url.slice(0,1) };
-//   }
-//
-//   return null;
-// }
-
 const routes: Routes = [
     {
         // matcher: matcherFunction,  component: VoteFormComponent,
