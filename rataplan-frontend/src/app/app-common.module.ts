@@ -14,14 +14,17 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MtxButtonModule } from '@ng-matero/extensions/button';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
 import { DisplayNamePipe } from './pipes/display-name.pipe';
@@ -46,6 +49,8 @@ const imports = [
   FormsModule,
   ReactiveFormsModule,
   ClipboardModule,
+  MatMenuModule,
+  MatSelectModule,
   MatTooltipModule,
   MatIconModule,
   MatButtonModule,
@@ -68,7 +73,7 @@ const imports = [
   MatStepperModule,
   MatTabsModule,
   MtxDatetimepickerModule,
-  ClipboardModule,
+  MtxButtonModule,
 ];
 
 @NgModule({
