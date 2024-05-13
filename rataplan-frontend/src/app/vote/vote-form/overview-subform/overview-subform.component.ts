@@ -146,7 +146,6 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
 
   isInputInForm() {
     let isInputInForm = false;
-    console.log(this.voteOptions);
     Object.values(this.vote.value).forEach(value => {
       if (value) {
         isInputInForm = true;

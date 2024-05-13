@@ -75,11 +75,9 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
           }
 
           this.minYesLimit = vote!.voteConfig!.yesAnswerLimit! || 0;
-          console.log(this.minYesLimit);
-        },
+          },
         error: err => {
           this.snackBar.open("Unbekannter Fehler beim Laden der Abstimmungsdaten", "OK");
-          console.log(err);
         }
       });
   }
@@ -115,20 +113,11 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
       decisionType: this.generalSubform.value.decision,
       yesLimitActive: this.generalSubform.value.yesLimitActive,
       yesAnswerLimit: this.generalSubform.value.yesAnswerLimit
-    }));
-    console.log(this.generalSubform.get('title'));
-    console.log(this.generalSubform.get('deadline'));
-    console.log(this.generalSubform.get('yesAnswerLimit'));
-    console.log(this.generalSubform.get('yesLimitActive'));
-    console.log(this.generalSubform)
-    this.router.navigate(['..', 'configurationOptions'], { relativeTo: this.activeRoute });
+    }));    this.router.navigate(['..', 'configurationOptions'], { relativeTo: this.activeRoute });
   }
 
   static yesAnswerLimitMoreThanZeroOrNull(currentLimit:number | null):ValidatorFn {
-    return (c) => {
-      console.log(c.value);
-      console.log(currentLimit);
-      if (currentLimit === null) return null;
+    return (c) => {      if (currentLimit === null) return null;
       if (c.parent?.get('yesLimitActive')?.value) return c.value >= currentLimit ? null : { 'invalid yes answer limit' : true };
       else return null;
     };

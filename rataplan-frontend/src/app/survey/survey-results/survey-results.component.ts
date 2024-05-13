@@ -64,9 +64,8 @@ export class SurveyResultsComponent implements OnInit, OnDestroy, OnChanges {
     this.sub?.unsubscribe();
   }
   
-  public ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
+  public ngOnChanges(changes: SimpleChanges): void {  }
+  
   private fetchAnswers(survey: Survey): void {
     if(this.survey === survey) return;
     this.busy = true;

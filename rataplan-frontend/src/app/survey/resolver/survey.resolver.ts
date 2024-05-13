@@ -27,7 +27,6 @@ export class AccessIDSurveyResolver implements Resolve<Survey> {
             this.router.navigate(["/survey", "missing"]);
             return EMPTY;
         }
-        console.log(err);
         this.router.navigate(["/survey", "unknown"]);
         return EMPTY;
       }));
@@ -56,9 +55,7 @@ export class ParticipationIDSurveyResolver implements Resolve<Survey> {
           case 404:
             this.router.navigate(["/survey", "missing"]);
             return EMPTY;
-        }
-        console.log(err);
-        this.router.navigate(["/survey", "unknown"]);
+        }        this.router.navigate(["/survey", "unknown"]);
         return EMPTY;
       }));
   }

@@ -115,8 +115,7 @@ export class VoteComponent implements OnInit, OnDestroy {
           if(err.status == 401) this.snackBar.open('Authorisierungsfehler (wahrscheinlich existiert ein veraltetes Cookie)', 'OK');
           else if(err.status == 403) this.snackBar.open('Sie sind nicht zum Abstimmen berechtigt.', 'OK');
           else this.snackBar.open('Unbekannter Fehler beim Abstimmen', 'OK');
-          console.log(err);
-        },
+          },
       });
   }
   
@@ -134,9 +133,7 @@ export class VoteComponent implements OnInit, OnDestroy {
           this.submitBusy = false;
           if(err.status == 401) this.snackBar.open('Authorisierungsfehler (wahrscheinlich existiert ein veraltetes Cookie)', 'OK');
           else if(err.status == 403) this.snackBar.open('Sie sind nicht zum Ändern dieser Stimme berechtigt', 'OK');
-          else this.snackBar.open('Unbekannter Fehler beim Ändern der Stimme', 'OK');
-          console.log(err);
-        },
+          else this.snackBar.open('Unbekannter Fehler beim Ändern der Stimme', 'OK');        },
       });
   }
   
@@ -303,9 +300,7 @@ export class VoteComponent implements OnInit, OnDestroy {
           this.vote = updatedRequest;
         },
         error: err => {
-          this.snackBar.open('Unbekannter Fehler beim löschen der Stimme', 'OK');
-          console.log(err);
-        },
+          this.snackBar.open('Unbekannter Fehler beim löschen der Stimme', 'OK');        },
       });
   }
   
@@ -322,9 +317,7 @@ export class VoteComponent implements OnInit, OnDestroy {
   
   updateYesAnswerRestrictions(voteType: number, index: number) {
     const voteConfig = this.vote?.voteConfig;
-    if(!voteConfig?.yesLimitActive) return;
-    console.log('fsd');
-    switch(voteType) {
+    if(!voteConfig?.yesLimitActive) return;    switch(voteType) {
     case 1:
       this.votes.set(index, true);
       this.isYesVoteLimitMet = this.votes.size >= voteConfig.yesAnswerLimit!;

@@ -64,10 +64,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.password.setErrors({ invalidCredentials: true });
     } else if (errorRes.error.error.errorCode === 'FORBIDDEN') {
       this.router.navigate(['/confirm-account/']);
-    } else {
-      this.snackBar.open('Unbekannter Fehler bei Login', 'Ok');
-      console.log(errorRes);
-    }
+    } else this.snackBar.open('Unbekannter Fehler bei Login', 'Ok');
   }
 
   constructor(

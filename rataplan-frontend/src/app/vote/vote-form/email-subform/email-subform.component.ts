@@ -93,14 +93,11 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
         });
         this.consigneeList = [...vote.consigneeList];
         this.contactList = vote.userConsignees.filter(v => this.groupList.some(g => g.contacts.includes(v)));
-        console.log(vote);
         this.isEditing = !!state.vote!.id;
         if(state.error !== this.lastError) {
           this.lastError = state.error;
           if(state.error) {
-            this.snackBar.open('Unbekannter Fehler beim Erstellen der Abstimmung', 'OK');
-            console.log(state.error);
-          }
+            this.snackBar.open('Unbekannter Fehler beim Erstellen der Abstimmung', 'OK');          }
         }
       });
   }

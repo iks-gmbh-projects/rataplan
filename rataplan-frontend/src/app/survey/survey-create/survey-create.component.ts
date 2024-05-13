@@ -72,7 +72,6 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
         this.busy = false;
         this.survey!.questionGroups = survey!.questionGroups;
         this.snackBar.open("Unbekannter Fehler beim Erstellen der Umfrage", "OK");
-        console.log(err);
       }
     });
   }

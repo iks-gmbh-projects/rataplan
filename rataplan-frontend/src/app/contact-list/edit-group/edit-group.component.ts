@@ -44,7 +44,6 @@ export class EditGroupComponent implements OnInit, OnDestroy {
     this.sub2 = this.actions$.pipe(
       ofType(contactActions.error)
     ).subscribe(({error}) => {
-      console.log(error);
       this.snackbar.open("Unbekannter Fehler");
     });
   }

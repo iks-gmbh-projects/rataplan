@@ -21,7 +21,6 @@ import {VoteResultsResolver} from "./vote/resolver/vote-results.resolver";
 //
 //   const path = url[0].path;
 //   if(path.startsWith('create-vote')) {
-//     console.log(url);
 //     return { consumed: url.slice(0,1) };
 //   }
 //   if (path.startsWith('edit')) {

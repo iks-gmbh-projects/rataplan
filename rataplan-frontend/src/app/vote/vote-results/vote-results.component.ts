@@ -65,7 +65,6 @@ export class VoteResultsComponent implements OnInit {
       vote: VoteModel,
       results: UserVoteResults[]
     } = this.route.snapshot.data['voteResultData'];
-    console.log(this.route.snapshot.data['voteResultData']);
     this.vote = resolvedData.vote;
     this.allVoteResults = resolvedData.results;
   }

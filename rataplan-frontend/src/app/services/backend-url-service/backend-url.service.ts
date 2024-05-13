@@ -24,7 +24,6 @@ export class BackendUrlService {
           this._voteURL.next(conf.voteBackend);
           this._surveyURL.next(conf.surveyBackend);
         },
-        error: console.log,
       });
   }
   
