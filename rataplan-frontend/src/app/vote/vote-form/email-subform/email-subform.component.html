@@ -1,57 +1,60 @@
-<div class="center">
-  <form [formGroup]="emailSubform" class="left-bound">
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Name</mat-label>
-        <input
-          matInput
-          autocomplete="off"
-          type="text"
-          formControlName="name"
+<form [formGroup]="emailSubform" class="left-bound">
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        autocomplete="off"
+        type="text"
+        formControlName="name"
+      >
+      <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('name')) }}</mat-error>
+    </mat-form-field>
+  </div>
+  <div *ngIf="!($isLoggedIn | async)" formGroupName="notificationSettings">
+    <mat-checkbox formControlName="sendLinkMail">
+      <span class="vote-email-option">Sende mir die Links in einer Email</span></mat-checkbox>
+    <br>
+    <mat-checkbox formControlName="notifyParticipation">
+      <span class="vote-email-option">Informiere mich per Email über Teilnahmen</span>
+    </mat-checkbox>
+    <br>
+    <mat-checkbox formControlName="notifyExpiration">
+      <span class="vote-email-option">Informiere mich per Email über das Ende der Abstimmung</span>
+    </mat-checkbox>
+    <br>
+    <mat-form-field *ngIf="$needsEmail | async" appearance="fill">
+      <mat-label>E-Mail</mat-label>
+      <input
+        matInput
+        formControlName="recipientEmail"
+      >
+      <mat-error>{{ errorMessageService.genericFormError(emailSubform.get(['notificationSettings', 'recipientEmail'])) }}</mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-checkbox><span class="vote-email-option">Für das nächste Mal speichern</span></mat-checkbox>
+  </div>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Personen per E-Mail einladen</mat-label>
+      <mat-chip-list #chipList formControlName="consigneeList">
+        <mat-chip
+          *ngFor="let group of groupList"
+          (removed)="removeGroup(group)"
         >
-        <mat-error>{{ errorMessageService.genericFormError(emailSubform.get('name')) }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div *ngIf="!($isLoggedIn | async)" formGroupName="notificationSettings">
-      <mat-checkbox formControlName="sendLinkMail">Sende mir die Links in einer Email</mat-checkbox>
-      <br>
-      <mat-checkbox formControlName="notifyParticipation">Informiere mich per Email über Teilnahmen</mat-checkbox>
-      <br>
-      <mat-checkbox formControlName="notifyExpiration">Informiere mich per Email über das Ende der Abstimmung
-      </mat-checkbox>
-      <br>
-      <mat-form-field *ngIf="$needsEmail | async" appearance="fill">
-        <mat-label>E-Mail</mat-label>
-        <input
-          matInput
-          formControlName="recipientEmail"
+          <mat-icon matChipAvatar>group</mat-icon>
+          {{ group.name }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+        <mat-chip
+          *ngFor="let contact of contactList"
+          (removed)="removeContact(contact)"
         >
-        <mat-error>{{ errorMessageService.genericFormError(emailSubform.get(['notificationSettings', 'recipientEmail'])) }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-checkbox>Für das nächste Mal speichern</mat-checkbox>
-    </div>
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Personen per E-Mail einladen</mat-label>
-        <mat-chip-list #chipList formControlName="consigneeList">
-          <mat-chip
-            *ngFor="let group of groupList"
-            (removed)="removeGroup(group)"
-          >
-            <mat-icon matChipAvatar>group</mat-icon>
-            {{ group.name }}
-            <button matChipRemove>
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-          <mat-chip
-            *ngFor="let contact of contactList"
-            (removed)="removeContact(contact)"
-          >
-            <mat-icon matChipAvatar>person</mat-icon>
-            <span>
+          <mat-icon matChipAvatar>person</mat-icon>
+          <span>
             <span [textContent]="contact | displayName | async"></span>
           </span>
           <button matChipRemove>
@@ -83,98 +86,97 @@
     <mat-error *ngIf='!emailSubform.get("consigneeList")?.valid'>
       Bitte geben Sie gültige Emails an
     </mat-error>
-    </div>
-    <div>
-      <div *ngIf="!isEditing && ($isLoggedIn | async)">
-        <button
-          *ngIf="!personaliseEmailActive; else personaliseEmailContainer"
-          mat-raised-button
-          class="personalise-email-button"
-          color="primary"
-          (click)="personaliseEmail()"
-        >
-          Einlaungstext personalisieren
-        </button>
-        <ng-template #personaliseEmailContainer>
-          <mat-form-field appearance="fill">
-            <mat-label>Personalisierte Nachricht</mat-label>
-            <textarea
-              matInput formControlName="personalisedInvitation"
-            ></textarea>
-          </mat-form-field>
-          <div>
-            <button
-              class="personalise-email-button"
-              mat-raised-button
-              color="warn"
-              (click)="personaliseEmail()"
-            >Einladung Verwerfen
-            </button>
-          </div>
-        </ng-template>
-      </div>
-    </div>
-    <div class="navigate-submit-multiple-button-space">
+  </div>
+  <div>
+    <div *ngIf="!isEditing && ($isLoggedIn | async)">
       <button
+        *ngIf="!personaliseEmailActive; else personaliseEmailContainer"
         mat-raised-button
-        routerLink="../configuration"
-        (click)="setEmailForm()"
+        class="personalise-email-button"
+        color="primary"
+        (click)="personaliseEmail()"
       >
-        <mat-icon>navigate_before</mat-icon>
+        Einlaungstext personalisieren
       </button>
-      <div class="right">
-        <button
-          type="button"
-          color="primary"
-          mat-raised-button
-          [disabled]="!emailSubform.valid"
-          routerLink="../preview"
-          (click)=setEmailForm()
-        >Vorschau
-        </button>
-        <button
-          type="button"
-          color="primary"
-          mat-raised-button
-          [disabled]="!emailSubform.valid"
-          (click)=sendEndOfVoteOption()
-        >Fertig
-        </button>
-      </div>
+      <ng-template #personaliseEmailContainer>
+        <mat-form-field appearance="fill">
+          <mat-label>Personalisierte Nachricht</mat-label>
+          <textarea
+            matInput formControlName="personalisedInvitation"
+          ></textarea>
+        </mat-form-field>
+        <div>
+          <button
+            class="personalise-email-button"
+            mat-raised-button
+            color="warn"
+            (click)="personaliseEmail()"
+          >Einladung Verwerfen
+          </button>
+        </div>
+      </ng-template>
     </div>
-  </form>
-  <mat-menu #groupMenu>
+  </div>
+  <div class="navigate-submit-multiple-button-space">
     <button
-      *ngFor="let group of ((allGroups$ | async) ?? [])"
-      mat-menu-item
-      [matMenuTriggerFor]="contactSubmenu"
-      [matMenuTriggerData]="{group}"
+      mat-raised-button
+      routerLink="../configuration"
+      (click)="setEmailForm()"
     >
-      <mat-icon>group</mat-icon>
-      <span [textContent]="group.name"></span>
+      <mat-icon>navigate_before</mat-icon>
     </button>
-    <button
-      *ngIf="(ungrouped$ | async)?.length"
-      mat-menu-item
-      [matMenuTriggerFor]="contactSubmenu"
-      [matMenuTriggerData]="{group:{contacts:(ungrouped$ | async)}}"
-    >
-      Gruppenlos
-    </button>
-  </mat-menu>
-  
-  <mat-menu #contactSubmenu>
-    <ng-template matMenuContent let-group="group">
-      <button mat-menu-item *ngIf="group.id" (click)="addGroup(group)">
-        <mat-icon>group_add</mat-icon>
-        Gruppe Einladen
+    <div class="right">
+      <button
+        type="button"
+        color="primary"
+        mat-raised-button
+        [disabled]="!emailSubform.valid"
+        routerLink="../preview"
+        (click)=setEmailForm()
+      >Vorschau
       </button>
-      <button mat-menu-item *ngFor="let contact of group.contacts" (click)="addContact(contact)">
-        <mat-icon>person_add_alt</mat-icon>
-        <span>
+      <button
+        type="button"
+        color="primary"
+        mat-raised-button
+        [disabled]="!emailSubform.valid"
+        (click)=sendEndOfVoteOption()
+      >Fertig
+      </button>
+    </div>
+  </div>
+</form>
+<mat-menu #groupMenu>
+  <button
+    *ngFor="let group of ((allGroups$ | async) ?? [])"
+    mat-menu-item
+    [matMenuTriggerFor]="contactSubmenu"
+    [matMenuTriggerData]="{group}"
+  >
+    <mat-icon>group</mat-icon>
+    <span [textContent]="group.name"></span>
+  </button>
+  <button
+    *ngIf="(ungrouped$ | async)?.length"
+    mat-menu-item
+    [matMenuTriggerFor]="contactSubmenu"
+    [matMenuTriggerData]="{group:{contacts:(ungrouped$ | async)}}"
+  >
+    Gruppenlos
+  </button>
+</mat-menu>
+
+<mat-menu #contactSubmenu>
+  <ng-template matMenuContent let-group="group">
+    <button mat-menu-item *ngIf="group.id" (click)="addGroup(group)">
+      <mat-icon>group_add</mat-icon>
+      Gruppe Einladen
+    </button>
+    <button mat-menu-item *ngFor="let contact of group.contacts" (click)="addContact(contact)">
+      <mat-icon>person_add_alt</mat-icon>
+      <span>
         <span [textContent]="contact | displayName | async"></span>
       </span>
-      </button>
-    </ng-template>
-  </mat-menu>
-</div>
+    </button>
+  </ng-template>
+</mat-menu>

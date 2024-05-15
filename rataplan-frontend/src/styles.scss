@@ -330,7 +330,7 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
   align-items: center;
   justify-content: left;
   text-align: left;
-  min-width: 100%;
+  padding-bottom: 20px;
 }
 
 .margin-top {
@@ -339,6 +339,7 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
 
 .left-bound {
   display: flex;
+  max-width: 80vw;
   align-items: flex-start;
   flex-direction: column;
 }

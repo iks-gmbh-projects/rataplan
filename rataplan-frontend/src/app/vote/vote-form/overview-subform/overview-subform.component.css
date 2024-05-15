@@ -1,13 +1,23 @@
 .vote-option {
-  display: flex;
-  margin-top: 1rem;
+    display: flex;
+    margin-top: 1rem;
 }
 
 .vote-option-buttons {
-  margin-left: auto;
+    margin-left: auto;
 }
 
 .vote-option-description {
-  max-width: 220px;
-  word-wrap: break-word;
+    max-width: 220px;
+    word-wrap: break-word;
+}
+
+.vote-option-form-field {
+    max-width: 70vw;
+}
+
+.vote-option-container {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
 }

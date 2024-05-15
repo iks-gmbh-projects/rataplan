@@ -1,71 +1,69 @@
-<div class="center">
-  <h3>Konfigurationseinstellungen</h3>
-  <div class="left-bound">
-    <span>Über was soll abgestimmt werden? (min. 1)</span>
-    <div [formGroup]="configForm">
-      <p>
-        <mat-checkbox
-          formControlName="isDateChecked"
-          color="primary"
-        >Datum
-        </mat-checkbox>
-      </p>
-      <p>
-        <mat-checkbox
-          formControlName="isTimeChecked"
-          color="primary"
-        >Uhrzeit
-        </mat-checkbox>
-      </p>
-      <p>
-        <mat-checkbox
-          formControlName="isEndDateChecked"
-          color="primary"
-        >Enddatum
-        </mat-checkbox>
-      </p>
-      <p>
-        <mat-checkbox
-          formControlName="isEndTimeChecked"
-          color="primary"
-        >Enduhrzeit
-        </mat-checkbox>
-      </p>
-      <p>
-        <mat-checkbox
-          formControlName="isDescriptionChecked"
-          color="primary"
-        >Beschreibung
-        </mat-checkbox>
-      </p>
-      <p>
-        <mat-checkbox
-          formControlName="isUrlChecked"
-          color="primary"
-        >Link
-        </mat-checkbox>
-      </p>
-    </div>
+<h3>Konfigurationseinstellungen</h3>
+<div class="left-bound">
+  <span>Über was soll abgestimmt werden? (min. 1)</span>
+  <div [formGroup]="configForm">
+    <p>
+      <mat-checkbox
+        formControlName="isDateChecked"
+        color="primary"
+      >Datum
+      </mat-checkbox>
+    </p>
+    <p>
+      <mat-checkbox
+        formControlName="isTimeChecked"
+        color="primary"
+      >Uhrzeit
+      </mat-checkbox>
+    </p>
+    <p>
+      <mat-checkbox
+        formControlName="isEndDateChecked"
+        color="primary"
+      >Enddatum
+      </mat-checkbox>
+    </p>
+    <p>
+      <mat-checkbox
+        formControlName="isEndTimeChecked"
+        color="primary"
+      >Enduhrzeit
+      </mat-checkbox>
+    </p>
+    <p>
+      <mat-checkbox
+        formControlName="isDescriptionChecked"
+        color="primary"
+      >Beschreibung
+      </mat-checkbox>
+    </p>
+    <p>
+      <mat-checkbox
+        formControlName="isUrlChecked"
+        color="primary"
+      >Link
+      </mat-checkbox>
+    </p>
   </div>
-  <div class="navigate-submit-multiple-button-space">
-    <button
-      class="left-aligned-button"
-      mat-raised-button
-      routerLink="../general"
-    >
-      <mat-icon>navigate_before</mat-icon>
-    </button>
-    <button
-      [disabled]="this.configForm.invalid"
-      class="right-aligned-button"
-      type="button"
-      color="primary"
-      mat-raised-button
-      (click)="nextPage()"
-    >
-      <mat-icon>navigate_next</mat-icon>
-    </button>
-  </div>
+</div>
+<div class="navigate-submit-multiple-button-space">
+  <button
+    class="left-aligned-button"
+    mat-raised-button
+    routerLink="../general"
+  >
+    <mat-icon>navigate_before</mat-icon>
+  </button>
+  <button
+    [disabled]="this.configForm.invalid"
+    class="right-aligned-button"
+    type="button"
+    color="primary"
+    mat-raised-button
+    (click)="nextPage()"
+  >
+    <mat-icon>navigate_next</mat-icon>
+  </button>
 </div>
 
 

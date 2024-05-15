@@ -1,8 +1,13 @@
-.right>button+button {
+.right > button + button {
     margin-left: 20px;
 }
 
-.personalise-email-button{
+.personalise-email-button {
     margin-left: auto;
     margin-bottom: 20px;
+}
+
+.vote-email-option {
+    text-wrap: balance;
+    margin-bottom: 5px;
 }
