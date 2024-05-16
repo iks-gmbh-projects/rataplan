@@ -20,6 +20,10 @@ public interface JwtTokenService {
     
     String generateAccountConfirmationToken(UserDTO userDTO);
     
+    String generateResetPasswordToken(String email);
+    
+    String getEmailFromResetPasswordToken(String token);
+    
     boolean isBackendTokenValid(String jwt);
     int getUserIdFromBackendToken(String jwt);
 }

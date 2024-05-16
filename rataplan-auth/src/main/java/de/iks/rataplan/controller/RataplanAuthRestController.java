@@ -31,8 +31,6 @@ public class RataplanAuthRestController {
     
     private final UserService userService;
     
-    private final AuthTokenService authTokenService;
-    
     private final MailService mailService;
     
     private final JwtTokenService jwtTokenService;
@@ -189,33 +187,33 @@ public class RataplanAuthRestController {
     
     @PostMapping("/users/forgotPassword")
     public boolean sendForgotPasswordMail(@RequestBody String mail) {
-        AuthToken response = authTokenService.saveAuthTokenToUserWithMail(mail);
-        
+        if(this.userService.getUserFromEmail(mail) == null) throw new NullPointerException("Email nicht gefunden");
+        String token = this.jwtTokenService.generateResetPasswordToken(mail);
+       
         ResetPasswordMailData resetPasswordMailData = new ResetPasswordMailData();
         resetPasswordMailData.setMail(mail);
-        resetPasswordMailData.setToken(response.getToken());
-        
+        resetPasswordMailData.setToken(token);
+       
         mailService.sendMailForResetPassword(resetPasswordMailData);
         return true;
     }
     
     @PostMapping("/users/resetPassword")
     public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
-        if(this.authTokenService.verifyAuthToken(resetPasswordData.getToken())) {
-            int userId = this.authTokenService.getIdFromAuthToken(resetPasswordData.getToken());
-            User user = this.userService.getUserFromId(userId);
-            boolean success = this.userService.changePasswordByToken(user, resetPasswordData.getPassword());
-            this.authTokenService.deleteById(userId);
-            return new ResponseEntity<>(success, HttpStatus.OK);
-        }
+        String mail = this.jwtTokenService.getEmailFromResetPasswordToken(resetPasswordData.getToken());
+        User user = this.userService.getUserFromEmail(mail);
+        if(user == null) throw new NullPointerException("Benutzer nicht gefunden");
         
-        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
+        boolean success = this.userService.changePasswordByToken(user, resetPasswordData.getPassword());
+        return new ResponseEntity<>(success, HttpStatus.OK);
     }
     
     private String validateTokenOrThrow(String cookieToken, String headerToken) throws RataplanAuthException {
         return validateTokenOrThrow(cookieToken, headerToken, false);
     }
-    private String validateTokenOrThrow(String cookieToken, String headerToken, boolean allowReset) throws RataplanAuthException {
+    private String validateTokenOrThrow(String cookieToken, String headerToken, boolean allowReset) throws
+        RataplanAuthException
+    {
         String token;
         if(headerToken == null) token = cookieToken;
         else if(cookieToken == null) token = headerToken;
