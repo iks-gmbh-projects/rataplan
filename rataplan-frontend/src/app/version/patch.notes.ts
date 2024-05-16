@@ -17,7 +17,7 @@ export const patchNotes: {
     ],
   },
   '2.2.0': {
-    releaseDate: new Date(Date.UTC(2024, 4)),
+    releaseDate: new Date(Date.UTC(2024, 4, 16)),
     changes: [
       {
         name: 'Änderungen:',
