@@ -2,14 +2,15 @@ package de.iks.rataplan.config;
 
 import lombok.Data;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties("backend.vote.urltemplate")
+@ConfigurationProperties("rataplan.frontend")
+@RequiredArgsConstructor
 @Data
-public class BackendMessageConfig {
-    private String delete;
-    private String anonymize;
-    private String publicKey;
+public class FrontendConfig {
+    private String url;
 }

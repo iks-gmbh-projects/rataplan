@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.JwtConfig;
 import de.iks.rataplan.domain.AuthToken;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(classes = {
     AuthTokenServiceImpl.class,
     UserServiceImpl.class,
+    JwtConfig.class,
     DataSourceAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class,
     FlywayAutoConfiguration.class

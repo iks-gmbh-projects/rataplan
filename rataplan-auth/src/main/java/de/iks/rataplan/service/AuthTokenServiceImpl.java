@@ -1,28 +1,28 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.JwtConfig;
 import de.iks.rataplan.domain.AuthToken;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.exceptions.InvalidUserDataException;
 import de.iks.rataplan.repository.AuthTokenRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.Random;
 
 @RequiredArgsConstructor
 @Service
 public class AuthTokenServiceImpl implements AuthTokenService {
-
+    private final JwtConfig tokenConfig;
+    
     private final UserService userService;
 
     private final AuthTokenRepository authTokenRepository;
 
     private final CryptoService cryptoService;
-
-    @Value("${token.lifetime}")
-    private int tokenLifetime;
 
     @Override
     public AuthToken saveAuthTokenToUserWithMail(String mail) {
@@ -44,7 +44,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         AuthToken authToken = authTokenRepository.findByToken(token.trim());
         if(authToken == null) return false;
         Date currentDate = new java.util.Date();
-        currentDate.setTime(currentDate.getTime() - tokenLifetime);
+        currentDate.setTime(currentDate.getTime() - tokenConfig.getLifetime() * 1000);
         return (authToken.getCreatedDateTime().getTime() - currentDate.getTime() > 0);
     }
 
@@ -70,7 +70,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     public void deleteById(int userId) {
         try {
             authTokenRepository.deleteById(userId);
-        } catch(EmptyResultDataAccessException ex) {}
+        } catch(EmptyResultDataAccessException ignored) {}
     }
 
 }

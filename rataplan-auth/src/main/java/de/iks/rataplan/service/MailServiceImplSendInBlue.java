@@ -22,6 +22,9 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
+@Primary
+@Service
+@ConditionalOnBean(TransactionalEmailsApi.class)
 public class MailServiceImplSendInBlue implements MailService {
     private final MailBuilderSendInBlue mailBuilder;
     private final TransactionalEmailsApi transactionalEmailsApi;
