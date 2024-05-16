@@ -69,8 +69,8 @@
         #participationLimitToggle formControlName="participantLimitActive"
         (click)="sanitiseParticipationLimit(participationLimitToggle.checked)"
       ></mat-slide-toggle>
-      <p>Möchten Sie die maximale Anzahl der Teilnehmenden auf diesen
-        Termin begrenzen?</p>
+      <label>Möchten Sie die maximale Anzahl der Teilnehmenden auf diesen
+        Termin begrenzen?</label>
     </div>
     <div *ngIf="vote.get('participantLimitActive')!.value!">
       <p>Geben Sie hier an, die maximale Anzahl der Teilnehmenden für diesen Termin</p>
