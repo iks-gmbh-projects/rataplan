@@ -21,6 +21,6 @@ public interface VoteService {
     public void anonymizeVotes(int userId);
     Vote addAccess(Vote vote, Collection<? extends BackendUserAccess> backendUserAccesses);
     List<ResultDTO> getVoteResults(String accessToken);
-    public ResultDTO mapResultDTO(VoteParticipant voteParticipant);
+    public ResultDTO mapResultDTO(VoteParticipant voteParticipant,boolean isParticipantVote);
 }
 

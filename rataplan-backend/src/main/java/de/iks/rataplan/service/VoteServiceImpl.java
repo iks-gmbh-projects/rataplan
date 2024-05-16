@@ -253,7 +253,8 @@ public class VoteServiceImpl implements VoteService {
     }
     
     private void notifyParticipantsVoteDeleted(Vote vote, Integer optionId) {
-        List<VoteParticipant> participantsToNotify = vote.getParticipants().stream()
+        List<VoteParticipant> participantsToNotify = vote.getParticipants()
+            .stream()
             .filter(participant -> participant.getUserId() != null)
             .filter(participant -> participant.getVoteDecisions()
                 .stream()
@@ -288,22 +289,23 @@ public class VoteServiceImpl implements VoteService {
     public List<ResultDTO> getVoteResults(String accessToken) {
         Vote vote = getVoteByParticipationToken(accessToken);
         List<ResultDTO> resultDTOS = new ArrayList<>();
+        boolean isParticipantVote = vote.getVoteConfig().getDecisionType() == DecisionType.NUMBER;
         for(VoteParticipant vo : vote.getParticipants()) {
-            ResultDTO ResultDTO = mapResultDTO(vo);
+            ResultDTO ResultDTO = mapResultDTO(vo, isParticipantVote);
             resultDTOS.add(ResultDTO);
         }
         return resultDTOS;
     }
     
-    @Override
-    public ResultDTO mapResultDTO(VoteParticipant voteParticipant) {
-        ResultDTO resultDTO = new ResultDTO(cryptoService.decryptDB(voteParticipant.getName().getString()),
-            voteParticipant.getVoteDecisions().get(0).getLastUpdated().toLocalDateTime());
-        Map<Integer, Integer> votesByOptionId = voteParticipant.getVoteDecisions()
-            .stream()
-            .collect(Collectors.toMap(voteDecision -> voteDecision.getVoteDecisionId().getVoteOption().getId(),
-                v -> v.getDecision().getValue().intValue()
-            ));
+    public ResultDTO mapResultDTO(VoteParticipant voteParticipant, boolean isParticipantVote) {
+        ResultDTO resultDTO = new ResultDTO(
+            cryptoService.decryptDB(voteParticipant.getName().getString()),
+            voteParticipant.getVoteDecisions().get(0).getLastUpdated().toLocalDateTime()
+        );
+        Map<Integer, Integer> votesByOptionId = voteParticipant.getVoteDecisions().stream().collect(Collectors.toMap(
+            voteDecision -> voteDecision.getVoteDecisionId().getVoteOption().getId(),
+            v -> isParticipantVote ? v.getParticipants() : v.getDecision().getValue().intValue()
+        ));
         resultDTO.setVoteOptionAnswers(votesByOptionId);
         return resultDTO;
     }
