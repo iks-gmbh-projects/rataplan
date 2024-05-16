@@ -1,6 +1,7 @@
 package de.iks.rataplan.restservice;
 
-import de.iks.rataplan.config.KeyExchangeConfig;
+import de.iks.rataplan.config.AuthBackendUrlConfig;
+import de.iks.rataplan.config.AuthenticationConfig;
 import de.iks.rataplan.domain.AuthUser;
 import de.iks.rataplan.dto.restservice.EmailNotificationDTO;
 import de.iks.rataplan.dto.restservice.NotificationType;
@@ -33,7 +34,8 @@ public class AuthServiceImpl implements AuthService {
     public static final String PURPOSE_LOGIN = "login";
     public static final String PURPOSE_ID = "id";
     
-    private final KeyExchangeConfig keyExchangeConfig;
+    private final AuthBackendUrlConfig authBackendUrlConfig;
+    private final AuthenticationConfig authenticationConfig;
     private final JwtTokenService jwtTokenService;
     private final SigningKeyResolver keyResolver;
     private final RestTemplate restTemplate;
@@ -41,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
     private Claims parseToken(String token, String purpose) {
         return Jwts.parser()
             .setSigningKeyResolver(keyResolver)
-            .requireIssuer(keyExchangeConfig.getValidIssuer())
+            .requireIssuer(authenticationConfig.getIssuer())
             .require(CLAIM_PURPOSE, purpose)
             .parseClaimsJws(token)
             .getBody();
@@ -66,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Integer fetchUserIdFromEmail(String email) {
         try {
-            String url = UriComponentsBuilder.fromHttpUrl(keyExchangeConfig.getEmailURL())
+            String url = UriComponentsBuilder.fromHttpUrl(authBackendUrlConfig.getEmail())
                 .queryParam("email", email)
                 .toUriString();
             ResponseEntity<Integer> response = restTemplate.getForEntity(url, Integer.class);
@@ -77,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
     
     @Override
     public String fetchDisplayName(Integer userId) {
-        String url = UriComponentsBuilder.fromHttpUrl(keyExchangeConfig.getDisplayNameURL())
+        String url = UriComponentsBuilder.fromHttpUrl(authBackendUrlConfig.getDisplayName())
             .pathSegment(userId.toString())
             .toUriString();
         return restTemplate.getForObject(url, String.class);
@@ -119,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
             headers
         );
         restTemplate.postForObject(
-            keyExchangeConfig.getNotificationURL(),
+            authBackendUrlConfig.getNotification(),
             request,
             Boolean.class
         );
@@ -148,7 +150,7 @@ public class AuthServiceImpl implements AuthService {
             headers
         );
         restTemplate.postForObject(
-            keyExchangeConfig.getNotificationURL(),
+            authBackendUrlConfig.getNotification(),
             request,
             Boolean.class
         );

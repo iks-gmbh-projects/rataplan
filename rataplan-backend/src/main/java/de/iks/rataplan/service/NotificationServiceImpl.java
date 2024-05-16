@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.FrontendConfig;
 import de.iks.rataplan.domain.Vote;
 import de.iks.rataplan.domain.VoteNotificationSettings;
 import de.iks.rataplan.domain.VoteParticipant;
@@ -8,7 +9,6 @@ import de.iks.rataplan.mapping.crypto.FromEncryptedStringConverter;
 import de.iks.rataplan.restservice.AuthService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class NotificationServiceImpl implements NotificationService {
-    @Value("${rataplan.frontend.url}")
-    private String baseUrl;
+    private final FrontendConfig frontendConfig;
     
     private final AuthService authService;
     
@@ -53,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
     private String getParticipationUrl(Vote vote) {
         String participationToken = vote.getParticipationToken();
         if(participationToken == null) participationToken = vote.getId().toString();
-        return baseUrl + "/vote/" + participationToken;
+        return frontendConfig.getUrl() + "/vote/" + participationToken;
     }
     @Override
     public void notifyForParticipation(VoteParticipant participant) {
@@ -127,7 +126,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
     private String getEditUrl(Vote vote) {
         String editToken = vote.getEditToken();
-        return editToken == null ? null : baseUrl + "/vote/edit/" + editToken;
+        return editToken == null ? null : frontendConfig.getUrl() + "/vote/edit/" + editToken;
     }
     
     @Override

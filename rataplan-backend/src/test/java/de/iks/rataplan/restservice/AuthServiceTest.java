@@ -1,6 +1,6 @@
 package de.iks.rataplan.restservice;
 
-import de.iks.rataplan.config.KeyExchangeConfig;
+import de.iks.rataplan.config.AuthenticationConfig;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import io.jsonwebtoken.*;
 
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 public class AuthServiceTest {
     @Autowired
-    private KeyExchangeConfig keyExchangeConfig;
+    private AuthenticationConfig authenticationConfig;
     
     @MockBean
     private SigningKeyResolver keyResolver;
@@ -53,7 +53,7 @@ public class AuthServiceTest {
         claims.put(AuthServiceImpl.CLAIM_USERID, AUTHUSER_1.getId());
         claims.put(AuthServiceImpl.CLAIM_PURPOSE, AuthServiceImpl.PURPOSE_LOGIN);
         claims.setExpiration(new Date(System.currentTimeMillis() + 2000));
-        keyExchangeConfig.setValidIssuer("test");
+        authenticationConfig.setIssuer("test");
         
         String token = Jwts.builder()
             .setClaims(claims)
@@ -74,7 +74,7 @@ public class AuthServiceTest {
         claims.put(AuthServiceImpl.CLAIM_USERID, AUTHUSER_1.getId());
         claims.put(AuthServiceImpl.CLAIM_PURPOSE, AuthServiceImpl.PURPOSE_LOGIN);
         claims.setExpiration(new Date(System.currentTimeMillis() + 1000));
-        keyExchangeConfig.setValidIssuer("test");
+        authenticationConfig.setIssuer("test");
         
         String token = Jwts.builder().setClaims(claims).compact();
         assertThrows(InvalidTokenException.class, () -> authService.getUserData(token));

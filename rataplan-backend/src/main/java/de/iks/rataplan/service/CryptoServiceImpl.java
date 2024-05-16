@@ -1,7 +1,7 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.config.DbKeyConfig;
-import de.iks.rataplan.config.KeyExchangeConfig;
+import de.iks.rataplan.config.AuthBackendUrlConfig;
 import de.iks.rataplan.dto.KeyDTO;
 import de.iks.rataplan.exceptions.CryptoException;
 import de.iks.rataplan.exceptions.RataplanException;
@@ -28,7 +28,7 @@ import java.util.Base64;
 public class CryptoServiceImpl implements CryptoService {
     private final DbKeyConfig dbKeyConfig;
     
-    private final KeyExchangeConfig keyExchangeConfig;
+    private final AuthBackendUrlConfig authBackendUrlConfig;
     private final RestTemplate restTemplate;
     private PublicKey authIdKey = null;
     private long fetchTime = 0;
@@ -87,7 +87,7 @@ public class CryptoServiceImpl implements CryptoService {
     @Override
     public PublicKey getAuthIdKey() {
         if(authIdKey == null) {
-            ResponseEntity<KeyDTO> response = restTemplate.getForEntity(keyExchangeConfig.getUrl(), KeyDTO.class);
+            ResponseEntity<KeyDTO> response = restTemplate.getForEntity(authBackendUrlConfig.getPublicKey(), KeyDTO.class);
             if(!response.getStatusCode().is2xxSuccessful() || !response.hasBody())
                 throw new RataplanException("Key fetch error");
             KeyDTO dto = response.getBody();
