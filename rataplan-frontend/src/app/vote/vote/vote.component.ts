@@ -94,6 +94,7 @@ export class VoteComponent implements OnInit, OnDestroy {
   }
   
   saveVote() {
+    this.voteParticipant.name = this.voteParticipant.name?.trim();
     if(this.isEditMember) {
       this.updateVote();
       return;

@@ -103,7 +103,7 @@ export class VoteResultsComponent implements OnInit {
       this.allVoteResults.sort((a, b) => this.sortByVoteOption(a, b, voteOption));
       break;
     case FilterByOptions.PARTICIPANT:
-      this.allVoteResults.sort((a, b) => a.username.localeCompare(b.username));
+      this.allVoteResults.sort((a, b) => a.username.trim().localeCompare(b.username.trim()));
       break;
     }
     if(descending) this.allVoteResults.reverse();
@@ -135,7 +135,7 @@ export class VoteResultsComponent implements OnInit {
   sortByVoteOption(a: UserVoteResults, b: UserVoteResults, voteOptionId: number) {
     const answer1 = a.voteOptionAnswers.get(voteOptionId) || 999;
     const answer2 = b.voteOptionAnswers.get(voteOptionId) || 999;
-    if(answer1 === answer2) return a.username.localeCompare(b.username);
+    if(answer1 === answer2) return a.username.trim().localeCompare(b.username.trim());
     return answer2 > answer1 ? 1 : -1;
   }
   
