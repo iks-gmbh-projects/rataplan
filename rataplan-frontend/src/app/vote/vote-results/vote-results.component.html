@@ -7,7 +7,7 @@
         <p>{{ vote?.description }}</p>
       </mat-card-content>
       <mat-card-subtitle>
-        Abstimmung aktiv bis einschließlich: {{ vote?.deadline | date:'dd MMMM yyyy':'+0200':'de' }}
+        Abstimmung aktiv bis einschließlich: {{ vote?.deadline! | date:'dd MMMM yyyy':undefined:'de' }}
       </mat-card-subtitle>
       <mat-card-subtitle *ngIf="hasDeadlinePassed()">
         <span class="mat-error">Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
