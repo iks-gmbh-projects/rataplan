@@ -92,7 +92,7 @@
     <button
       mat-raised-button
       color="primary"
-      [disabled]="vote.invalid"
+      [disabled]="vote.invalid "
       (click)="addVoteOption()"
     >
       {{ vote.value.voteIndex === null ? 'Hinzufügen' : 'Ändern' }}

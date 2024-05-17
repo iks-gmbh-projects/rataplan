@@ -346,11 +346,13 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
 @media (min-width: 962px) {
   .left-bound {
     max-width: 400px;
+    min-width: 400px;
   }
 }
 
 @media (max-width: 961px) {
   .left-bound {
     max-width: 80vw;
+    min-width: 80vw;
   }
 }
