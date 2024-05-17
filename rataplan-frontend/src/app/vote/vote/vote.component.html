@@ -1,21 +1,18 @@
 <div class="center">
   <h2 *ngIf="isPreview">Vorschau</h2>
-  <mat-card>
-    <mat-card-title>{{ vote?.title }}</mat-card-title>
-    <mat-card-content>
-      <p></p>
-      <p>{{ vote?.description }}</p>
-    </mat-card-content>
-    <mat-card-subtitle>
+  <div>
+    <h2 class="mat-card-title" [textContent]="vote?.title"></h2>
+    <p [textContent]="vote?.description"></p>
+    <p class="mat-card-subtitle" >
       Abstimmung aktiv bis einschließlich: {{ vote?.deadline! | date:'dd MMMM yyyy':undefined:'de' }}
-    </mat-card-subtitle>
-    <mat-card-subtitle *ngIf="hasDeadlinePassed()">
+    </p>
+    <p class="mat-card-subtitle" *ngIf="hasDeadlinePassed()">
       <span class="mat-error">Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
-    </mat-card-subtitle>
-    <div *ngIf="vote?.organizerName">
-      <span>Erstellt von {{ vote!.organizerName }}</span>
-    </div>
-  </mat-card>
+    </p>
+    <p class="mat-card-subtitle" *ngIf="vote?.organizerName">
+      Erstellt von {{ vote!.organizerName }}
+    </p>
+  </div>
   <div style="margin-top: 20px; margin-bottom: 20px">
     <mat-expansion-panel>
       <mat-expansion-panel-header>
