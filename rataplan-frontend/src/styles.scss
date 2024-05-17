@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
+
 @use "colors";
 
 $md-primary: (
@@ -339,6 +340,7 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
 
 .left-bound {
   display: flex;
+  max-width: 80vw;
   align-items: flex-start;
   flex-direction: column;
   max-width: 400px;
