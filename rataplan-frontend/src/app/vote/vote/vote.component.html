@@ -36,7 +36,7 @@
             <button
               mat-icon-button
               [disabled]="isPreview"
-              (click)="isPreview || editMember(participant)"
+              (click)="isPreview || editMember(participant, scrollTo)"
             >
               <mat-icon mat-list-icon>edit_square</mat-icon>
             </button>
@@ -75,7 +75,7 @@
       <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
         maximal {{vote.voteConfig.yesAnswerLimit!}} Optionen zustimmen</p>
     </div>
-    <div class="left-bound">
+    <div class="left-bound" #scrollTo>
       <div *ngFor="let option of (vote?.options ?? []); let voteIndex=index">
         <div style="font-size: 90%" class="center">
           <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>

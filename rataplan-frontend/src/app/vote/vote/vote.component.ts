@@ -1,3 +1,4 @@
+import { ViewportScroller } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgModel, ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -54,6 +55,7 @@ export class VoteComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
+    private viewportScroller: ViewportScroller,
     private voteService: VoteService,
     private store: Store,
     public readonly errorMessageService: FormErrorMessageService,
@@ -316,11 +318,16 @@ export class VoteComponent implements OnInit, OnDestroy {
       });
   }
   
-  editMember(member: VoteParticipantModel) {
+  editMember(member: VoteParticipantModel, scrollTo?: HTMLElement) {
     this.isEditMember = true;
     if(member.name != undefined) {
       this.voteParticipant = member;
     }
+    scrollTo?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest',
+    })
   }
   
   checkVoteOfMember(vote: VoteOptionModel, number: number) {
