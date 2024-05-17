@@ -1,4 +1,4 @@
-<h3>Abstimmungoption</h3>
+<h3>Abstimmungsoptionen</h3>
 <div class="left-bound" [formGroup]="vote">
   <div *ngIf="voteConfig.startDate || voteConfig.startTime">
     <mat-form-field appearance="fill">
@@ -8,7 +8,7 @@
         formControlName="startDateInput"
         [mtxDatetimepicker]="picker"
         matInput
-        required
+        [required]="voteConfig.startDate || voteConfig.startTime ?? false"
       >
       <mtx-datetimepicker-toggle [for]="picker" matSuffix></mtx-datetimepicker-toggle>
       <mtx-datetimepicker [type]="startType" #picker></mtx-datetimepicker>
@@ -24,7 +24,7 @@
         [mtxDatetimepicker]="picker"
         [min]="vote.value.startDateInput ?? null"
         matInput
-        required
+        [required]="voteConfig.endDate || voteConfig.endTime ?? false"
       >
       <mtx-datetimepicker-toggle [for]="picker" matSuffix></mtx-datetimepicker-toggle>
       <mtx-datetimepicker [type]="endType" [startAt]="vote.value.startDateInput ?? null" #picker></mtx-datetimepicker>
@@ -36,13 +36,13 @@
       class="vote-option-form-field"
       appearance="fill"
     >
-      <mat-label>Textfeld</mat-label>
+      <mat-label>Beschreibung</mat-label>
       <input
         type="text"
         formControlName="descriptionInput"
         autocomplete="off"
         matInput
-        required
+        [required]="voteConfig.description"
       >
       <mat-error>{{ errorMessageService.genericFormError(vote.get('descriptionInput')) }}</mat-error>
     </mat-form-field>
@@ -58,7 +58,7 @@
         formControlName="linkInput"
         autocomplete="off"
         matInput
-        required
+        [required]="voteConfig.url"
       >
       <mat-error>{{ errorMessageService.genericFormError(vote.get('linkInput')) }}</mat-error>
     </mat-form-field>
@@ -92,7 +92,7 @@
     <button
       mat-raised-button
       color="primary"
-      [disabled]="vote.invalid || vote.untouched"
+      [disabled]="vote.invalid"
       (click)="addVoteOption()"
     >
       {{ vote.value.voteIndex === null ? 'Hinzufügen' : 'Ändern' }}
