@@ -82,15 +82,15 @@
       />
     </mat-form-field>
   </div>
+  <div class="navigate-forward-submit-button-space">
+    <button
+      [disabled]="this.generalSubform.invalid"
+      type="button"
+      color="primary"
+      mat-raised-button
+      (click)="nextPage()"
+    >
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+  </div>
 </form>
-<div class="navigate-forward-submit-button-space">
-  <button
-    [disabled]="this.generalSubform.invalid"
-    type="button"
-    color="primary"
-    mat-raised-button
-    (click)="nextPage()"
-  >
-    <mat-icon>navigate_next</mat-icon>
-  </button>
-</div>

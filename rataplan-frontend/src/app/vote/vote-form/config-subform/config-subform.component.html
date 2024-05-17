@@ -45,26 +45,23 @@
       </mat-checkbox>
     </p>
   </div>
+  <div class="navigate-submit-multiple-button-space">
+    <button
+      class="left-aligned-button"
+      mat-raised-button
+      routerLink="../general"
+    >
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+    <button
+      [disabled]="this.configForm.invalid"
+      class="right-aligned-button"
+      type="button"
+      color="primary"
+      mat-raised-button
+      (click)="nextPage()"
+    >
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+  </div>
 </div>
-<div class="navigate-submit-multiple-button-space">
-  <button
-    class="left-aligned-button"
-    mat-raised-button
-    routerLink="../general"
-  >
-    <mat-icon>navigate_before</mat-icon>
-  </button>
-  <button
-    [disabled]="this.configForm.invalid"
-    class="right-aligned-button"
-    type="button"
-    color="primary"
-    mat-raised-button
-    (click)="nextPage()"
-  >
-    <mat-icon>navigate_next</mat-icon>
-  </button>
-</div>
-
-
-

@@ -12,9 +12,6 @@
     word-wrap: break-word;
 }
 
-.vote-option-form-field {
-    max-width: 70vw;
-}
 
 .vote-option-container {
     display: flex;

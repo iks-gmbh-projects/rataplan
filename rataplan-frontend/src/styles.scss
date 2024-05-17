@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 
-
 @use "colors";
 
 $md-primary: (
@@ -306,17 +305,18 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
 }
 
 .navigate-submit-multiple-button-space {
-  margin-top: 1rem;
   min-width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-top: 1rem;
 }
 
 .navigate-forward-submit-button-space {
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
+  min-width: 100%;
 }
 
 .navigate-back-cancel-button-space {
@@ -339,7 +339,18 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
 
 .left-bound {
   display: flex;
-  max-width: 80vw;
   align-items: flex-start;
   flex-direction: column;
+}
+
+@media (min-width: 962px) {
+  .left-bound {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 961px) {
+  .left-bound {
+    max-width: 80vw;
+  }
 }
