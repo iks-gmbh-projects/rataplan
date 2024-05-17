@@ -77,7 +77,7 @@
         <tr>
           <th class="participant-column-title">Teilnehmer</th>
           <th *ngFor="let voteOption of vote.options; let i = index">
-            <span>Termin {{ i + 1 }}</span>
+            <span>Option {{ i + 1 }}</span>
             <mat-icon (click)="showVoteOptionInfo(voteOption)">info</mat-icon>
           </th>
         </tr>
