@@ -20,13 +20,13 @@ table {
 
 .result-container {
   overflow-x: scroll;
-  max-width: 80vw;
   min-width: 50vw;
 }
 
 .participant-column-title {
   position: sticky;
   left: 0;
+  max-width: 10vw;
   background: #f2f2f2;
 }
 
@@ -38,6 +38,9 @@ th > * {
   position: sticky;
   left: 0;
   background: white;
+  max-width: 20vw;
+  overflow: auto;
+  scrollbar-width: thin;
 }
 
 .mat-form-field {

@@ -165,6 +165,10 @@ body {
 
 /*Survey */
 
+mat-card {
+  max-width: 80vw;
+}
+
 .width {
   min-width: 400px;
   max-width: 80%;
