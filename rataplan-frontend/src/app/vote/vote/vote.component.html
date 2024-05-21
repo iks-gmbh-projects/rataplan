@@ -3,7 +3,7 @@
   <div>
     <h2 class="mat-card-title" [textContent]="vote?.title"></h2>
     <p [textContent]="vote?.description"></p>
-    <p class="mat-card-subtitle" >
+    <p class="mat-card-subtitle">
       Abstimmung aktiv bis einschließlich: {{ vote?.deadline! | date:'dd MMMM yyyy':undefined:'de' }}
     </p>
     <p class="mat-card-subtitle" *ngIf="hasDeadlinePassed()">
@@ -14,7 +14,7 @@
     </p>
   </div>
   <div style="margin-top: 20px; margin-bottom: 20px">
-    <mat-expansion-panel>
+    <mat-expansion-panel style="max-width:80vw">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Teilnehmer : {{ vote?.participants?.length }}
@@ -64,13 +64,13 @@
           autocomplete="off"
           #nameField="ngModel"
         >
-        <mat-error>{{errorMessageService.genericFormError(nameField.control)}}</mat-error>
+        <mat-error>{{ errorMessageService.genericFormError(nameField.control) }}</mat-error>
       </mat-form-field>
     </div>
     <div class="centered" style="display: inline-block">
       <p>Keine Eingaben werden als nicht Entschieden gespeichert</p>
       <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
-        maximal {{vote.voteConfig.yesAnswerLimit!}} Optionen zustimmen</p>
+        maximal {{ vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
     </div>
     <div class="left-bound" #scrollTo>
       <div *ngFor="let option of (vote?.options ?? []); let voteIndex=index">
@@ -79,7 +79,7 @@
           <span *ngIf="option.endDate">
           {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
         </span>
-          <div class="break-text">{{option.description || ''}}</div>
+          <div class="break-text">{{ option.description || '' }}</div>
           <span>
           <a
             *ngIf="option.url"
@@ -91,11 +91,11 @@
           <button
             mat-icon-button
             class="verticalCenter"
-          (click)="openDialog(option)"
-        >
-          <mat-icon>info</mat-icon>
-        </button>
-        <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option)"></span>
+            (click)="openDialog(option)"
+          >
+            <mat-icon>info</mat-icon>
+          </button>
+          <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option)"></span>
           <mat-form-field
             *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
             appearance="fill"
@@ -114,7 +114,7 @@
               [disabled]="isPreview"
               #participantField="ngModel"
             >
-            <mat-error>{{errorMessageService.genericFormError(participantField.control)}}</mat-error>
+            <mat-error>{{ errorMessageService.genericFormError(participantField.control) }}</mat-error>
           </mat-form-field>
           <ng-template #decisionComplex>
             <mat-button-toggle
@@ -126,7 +126,7 @@
               [disabled]="!!desc.disabled"
               #selectionButton
             >
-              <mat-icon>{{desc.icon || ""}}</mat-icon>
+              <mat-icon>{{ desc.icon || "" }}</mat-icon>
             </mat-button-toggle>
           </ng-template>
         </div>
@@ -144,10 +144,10 @@
           (click)="saveVote()"
         >{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
         </button>
-      <button mat-raised-button [routerLink]="['./results']">
-        Ergebnisse ansehen
-      </button>
-    </div>
+        <button mat-raised-button [routerLink]="['./results']">
+          Ergebnisse ansehen
+        </button>
+      </div>
     </div>
     <ng-template #previewButtons class="fill-width">
       <div class="navigate-submit-multiple-button-space">
