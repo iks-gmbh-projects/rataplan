@@ -2,8 +2,7 @@
   <div style="margin-bottom: 20px">
     <mat-card>
       <mat-card-title>{{ vote?.title }}</mat-card-title>
-      <mat-card-content [style]="">
-        <p></p>
+      <mat-card-content>
         <p>{{ vote?.description }}</p>
       </mat-card-content>
       <mat-card-subtitle>
@@ -21,58 +20,62 @@
     <mat-card-title>
     </mat-card-title>
     <mat-card-content>
-      <mat-form-field>
-        <mat-label>Filtern nach</mat-label>
-        <mat-select [(ngModel)]="filterByOption">
-          <mat-option
-            *ngFor="let filterBy of FilterByOptions | keyvalue"
-            (click)="updateFilterOptions(filterBy.value)"
-            [value]="filterBy.value"
-          >
-            {{ filterBy.value }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field *ngIf="filterByOption !== FilterByOptions.PARTICIPANT">
-        <mat-label>Termin</mat-label>
-        <mat-select [(ngModel)]="filterVoteOption">
-          <mat-option *ngFor="let v of vote.options;let i = index" [value]="i">
-            Termin {{ i + 1 }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field *ngIf="filterByOption === FilterByOptions.VOTE_OPTION; else sortByNameDropDownOptions">
-        <mat-label>Sortieren</mat-label>
-        <mat-select [(ngModel)]="filterSortOption">
-          <mat-option
-            *ngFor="let sortOption of VoteAnswerFilterOptions | keyvalue"
-            [value]="sortOption.value"
-          >{{ sortOption.value }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <ng-template #sortByNameDropDownOptions>
+      <div style="margin-bottom: 1rem">
         <mat-form-field>
+          <mat-label>Filtern nach</mat-label>
+          <mat-select [(ngModel)]="filterByOption">
+            <mat-option
+              *ngFor="let filterBy of FilterByOptions | keyvalue"
+              (click)="updateFilterOptions(filterBy.value)"
+              [value]="filterBy.value"
+            >
+              {{ filterBy.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="filterByOption !== FilterByOptions.PARTICIPANT">
+          <mat-label>Termin</mat-label>
+          <mat-select [(ngModel)]="filterVoteOption">
+            <mat-option *ngFor="let v of vote.options;let i = index" [value]="i">
+              Termin {{ i + 1 }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field *ngIf="filterByOption === FilterByOptions.VOTE_OPTION; else sortByNameDropDownOptions">
           <mat-label>Sortieren</mat-label>
           <mat-select [(ngModel)]="filterSortOption">
             <mat-option
-              *ngFor="let sortOption of GeneralFilterSortOption | keyvalue"
+              *ngFor="let sortOption of VoteAnswerFilterOptions | keyvalue"
               [value]="sortOption.value"
             >{{ sortOption.value }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-      </ng-template>
-      <button
-        mat-raised-button
-        [disabled]="!filterByOption || !filterSortOption || filterVoteOption === undefined || filterVoteOption < 0 || filterVoteOption > vote.options.length "
-        color="primary"
-        (click)="applyFilter()"
-        style="margin-right: 15px"
-      >Filter anwenden
-      </button>
-      <button mat-raised-button class="back-to-vote-button" [routerLink]="['../']">Zur Abstimmung</button>
-      <table #resultsTable>
+        <ng-template #sortByNameDropDownOptions>
+          <mat-form-field>
+            <mat-label>Sortieren</mat-label>
+            <mat-select [(ngModel)]="filterSortOption">
+              <mat-option
+                *ngFor="let sortOption of GeneralFilterSortOption | keyvalue"
+                [value]="sortOption.value"
+              >{{ sortOption.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-template>
+        <!--        <div style="margin-bottom: 10px">-->
+        <button
+          mat-raised-button
+          [disabled]="!filterByOption || !filterSortOption || filterVoteOption === undefined || filterVoteOption < 0 || filterVoteOption > vote.options.length "
+          color="primary"
+          (click)="applyFilter()"
+          style="margin-right: 15px"
+        >Anwenden
+        </button>
+        <button mat-raised-button class="back-to-vote-button" [routerLink]="['../']">Zur Abstimmung</button>
+        <!--        </div>-->
+      </div>
+      <table #resultsTable style="margin-bottom: 1rem">
         <thead>
         <tr>
           <th class="participant-column-title">Teilnehmer</th>

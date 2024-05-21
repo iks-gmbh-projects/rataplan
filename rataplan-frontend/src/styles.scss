@@ -152,6 +152,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .verticalCenter, .mat-icon-button.verticalCenter {
@@ -262,13 +263,6 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
   justify-content: center;
 }
 
-.centerText {
-  text-align: center;
-}
-
-.noWrap {
-  white-space: nowrap;
-}
 
 .bold {
   font-weight: bold;
