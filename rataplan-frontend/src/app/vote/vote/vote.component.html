@@ -1,7 +1,7 @@
 <div class="center">
   <h2 *ngIf="isPreview">Vorschau</h2>
   <div class="left-bound">
-    <h2 class="mat-card-title" [textContent]="vote?.title"></h2>
+    <h2 class="mat-card-title" style="align-self: center" [textContent]="vote?.title"></h2>
     <p [textContent]="vote?.description"></p>
     <p class="mat-card-subtitle">
       Abstimmung aktiv bis einschließlich: {{ vote?.deadline! | date:'dd MMMM yyyy':undefined:'de' }}
@@ -112,7 +112,7 @@
             #participant
             #participantField="ngModel"
           >
-            <mat-error>{{ errorMessageService.genericFormError(participantField.control) }}</mat-error>
+          <mat-error>{{ errorMessageService.genericFormError(participantField.control) }}</mat-error>
         </mat-form-field>
         <ng-template #decisionComplex>
           <mat-button-toggle
@@ -166,5 +166,4 @@
       </div>
     </ng-template>
   </div>
-</div>
 </div>
