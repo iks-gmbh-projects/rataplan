@@ -93,6 +93,12 @@
   scale: 90%;
 }
 
+.option-container {
+  display: flex;
+  min-width: 100%;
+  justify-content: space-between
+}
+
 .participant-name {
   min-width: 80%;
   max-width: 80%;

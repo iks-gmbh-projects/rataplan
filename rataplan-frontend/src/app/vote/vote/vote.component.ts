@@ -1,5 +1,5 @@
 import { ViewportScroller } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgModel, ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -384,6 +384,13 @@ export class VoteComponent implements OnInit, OnDestroy {
       if(c.parent?.get('yesLimitActive')?.value) return c.value > 0 ? null : {'invalid yes answer limit': true};
       else return null;
     };
+  }
+  
+  checkEnteredValue(index: number, participant: HTMLInputElement) {
+    if(!participant.value.match(/^\d+$/)) {
+      this.voteParticipant.decisions[index]!.participants = 0;
+      participant.value = '0';
+    }
   }
   
 }

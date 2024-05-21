@@ -1,6 +1,6 @@
 <div class="center">
   <h2 *ngIf="isPreview">Vorschau</h2>
-  <div>
+  <div class="left-bound">
     <h2 class="mat-card-title" [textContent]="vote?.title"></h2>
     <p [textContent]="vote?.description"></p>
     <p class="mat-card-subtitle">
@@ -13,14 +13,13 @@
       Erstellt von {{ vote!.organizerName }}
     </p>
   </div>
-  <div style="margin-top: 20px; margin-bottom: 20px">
-    <mat-expansion-panel style="max-width:80vw">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Teilnehmer : {{ vote?.participants?.length }}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-list *ngFor="let participant of (this.vote?.participants || [])">
+  <mat-expansion-panel style="max-width:80vw; margin-top: 20px; margin-bottom: 20px; align-self: center">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Teilnehmer : {{ vote?.participants?.length }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-list *ngFor="let participant of (this.vote?.participants || [])">
         <span class="participant-list-item">
           <div class="participant-name">
             <mat-icon *ngIf="participant.userId" class="user-icon">person</mat-icon>
@@ -47,89 +46,87 @@
             </button>
           </div>
         </span>
-      </mat-list>
-    </mat-expansion-panel>
-  </div>
-  <div>
-    <div *ngIf="!hasDeadlinePassed()">
-      <mat-form-field appearance="fill">
-        <mat-label>Name</mat-label>
-        <input
-          [(ngModel)]="voteParticipant.name"
-          required
-          maxlength="100"
-          someNonWhitespace
-          matInput
-          [disabled]="isPreview || !!currentUser"
-          autocomplete="off"
-          #nameField="ngModel"
-        >
-        <mat-error>{{ errorMessageService.genericFormError(nameField.control) }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div class="centered" style="display: inline-block">
-      <p>Keine Eingaben werden als nicht Entschieden gespeichert</p>
-      <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
-        maximal {{ vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
-    </div>
-    <div class="left-bound" #scrollTo>
-      <div *ngFor="let option of (vote?.options ?? []); let voteIndex=index">
-        <div style="font-size: 90%" class="center">
-          <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
-          <span *ngIf="option.endDate">
+    </mat-list>
+  </mat-expansion-panel>
+  <mat-form-field *ngIf="!hasDeadlinePassed()" appearance="fill" style="align-self: center">
+    <mat-label>Name</mat-label>
+    <input
+      [(ngModel)]="voteParticipant.name"
+      required
+      maxlength="100"
+      someNonWhitespace
+      matInput
+      [disabled]="isPreview || !!currentUser"
+      autocomplete="off"
+      #nameField="ngModel"
+    >
+    <mat-error>{{ errorMessageService.genericFormError(nameField.control) }}</mat-error>
+  </mat-form-field>
+  <div *ngIf="!hasDeadlinePassed()" class="left-bound" style="margin-bottom: 1rem">
+    <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
+      maximal {{ vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
+    <div
+      #scrollTo
+      *ngFor="let option of (vote?.options ?? []); let voteIndex=index" class="option-container"
+    >
+      <div style="min-width: 50%; max-width: 50%">
+        <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
+        <span *ngIf="option.endDate">
           {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
         </span>
-          <div class="break-text">{{ option.description || '' }}</div>
-          <span>
+        <div class="break-text">{{ option.description || '' }}</div>
+        <span>
           <a
             *ngIf="option.url"
             [href]="option.url"
           >Link</a>
         </span>
-        </div>
-        <div class="right centerText noWrap">
-          <button
-            mat-icon-button
-            class="verticalCenter"
-            (click)="openDialog(option)"
+      </div>
+      <div>
+        <button
+          mat-icon-button
+          class="verticalCenter"
+          (click)="openDialog(option)"
+        >
+          <mat-icon>info</mat-icon>
+        </button>
+        <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option)"></span>
+        <mat-form-field
+          *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
+          appearance="fill"
+          style="max-width: 8vw;"
+        >
+          <mat-label>Teilnehmerzahl</mat-label>
+          <input
+            type="text"
+            inputmode="numeric"
+            min="0"
+            required
+            integer
+            matInput
+            [ngModel]="voteParticipant!.decisions[voteIndex]?.participants"
+            (ngModelChange)="setParticipantNumber(option, $event)"
+            (focusout)="checkEnteredValue(voteIndex,participant)"
+            mat-line
+            [disabled]="isPreview"
+            #participant
+            #participantField="ngModel"
           >
-            <mat-icon>info</mat-icon>
-          </button>
-          <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option)"></span>
-          <mat-form-field
-            *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
-            appearance="fill"
-          >
-            <mat-label>Teilnehmerzahl</mat-label>
-            <input
-              type="text"
-              inputmode="numeric"
-              min="0"
-              required
-              integer
-              matInput
-              [ngModel]="voteParticipant!.decisions[voteIndex]?.participants"
-              (ngModelChange)="setParticipantNumber(option, $event)"
-              mat-line
-              [disabled]="isPreview"
-              #participantField="ngModel"
-            >
             <mat-error>{{ errorMessageService.genericFormError(participantField.control) }}</mat-error>
-          </mat-form-field>
-          <ng-template #decisionComplex>
-            <mat-button-toggle
-              *ngIf="decisionDescription(option) as desc"
-              [class]="desc.class"
-              [matTooltip]="desc.tooltip || ''"
-              matTooltipPosition="above"
-              (click)="isPreview || hasDeadlinePassed() || cycleDecision(option); selectionButton.checked = false"
-              [disabled]="!!desc.disabled"
-              #selectionButton
-            >
-              <mat-icon>{{ desc.icon || "" }}</mat-icon>
-            </mat-button-toggle>
-          </ng-template>
-        </div>
+        </mat-form-field>
+        <ng-template #decisionComplex>
+          <mat-button-toggle
+            *ngIf="decisionDescription(option) as desc"
+            [class]="desc.class"
+            [matTooltip]="desc.tooltip || ''"
+            matTooltipPosition="above"
+            (click)="isPreview || hasDeadlinePassed() || cycleDecision(option); selectionButton.checked = false"
+            [disabled]="!!desc.disabled"
+            #selectionButton
+          >
+            <mat-icon>{{ desc.icon || "" }}</mat-icon>
+          </mat-button-toggle>
+        </ng-template>
       </div>
     </div>
     <div class="fill-width" *ngIf="!isPreview; else previewButtons">
@@ -169,4 +166,5 @@
       </div>
     </ng-template>
   </div>
+</div>
 </div>
