@@ -47,6 +47,7 @@ export class VoteComponent implements OnInit, OnDestroy {
   isYesVoteLimitMet!: boolean;
   votes: Map<number, boolean> = new Map<number, boolean>();
   @ViewChild('nameField') nameField?: NgModel;
+  @ViewChild('scrollTo') scrollTo!: ElementRef;
   
   currentUser?: FrontendUser;
   private userVoted = false;
@@ -319,16 +320,16 @@ export class VoteComponent implements OnInit, OnDestroy {
       });
   }
   
-  editMember(member: VoteParticipantModel, scrollTo?: HTMLElement) {
+  editMember(member: VoteParticipantModel) {
     this.isEditMember = true;
     if(member.name != undefined) {
       this.voteParticipant = member;
     }
-    scrollTo?.scrollIntoView({
+    this.scrollTo.nativeElement.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
       inline: 'nearest',
-    })
+    });
   }
   
   checkVoteOfMember(vote: VoteOptionModel, number: number) {

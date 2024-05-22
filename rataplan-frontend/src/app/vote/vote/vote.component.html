@@ -20,32 +20,32 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-list *ngFor="let participant of (this.vote?.participants || [])">
-        <span class="participant-list-item">
-          <div class="participant-name">
-            <mat-icon *ngIf="participant.userId" class="user-icon">person</mat-icon>
-            <div style="align-self: end">{{ participant.name }}</div>
-          </div>
-          <div
-            *ngIf="!hasDeadlinePassed() && (participant.userId === currentUser?.id)"
-            class="member-button"
+      <span class="participant-list-item">
+        <div class="participant-name">
+          <mat-icon *ngIf="participant.userId" class="user-icon">person</mat-icon>
+          <div style="align-self: end">{{ participant.name }}</div>
+        </div>
+        <div
+          *ngIf="!hasDeadlinePassed() && (participant.userId === currentUser?.id)"
+          class="member-button"
+        >
+          <button
+            mat-icon-button
+            [disabled]="isPreview"
+            (click)="isPreview || editMember(participant)"
           >
-            <button
-              mat-icon-button
-              [disabled]="isPreview"
-              (click)="isPreview || editMember(participant, scrollTo)"
-            >
-              <mat-icon mat-list-icon>edit_square</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="warn"
-              [disabled]="isPreview"
-              (click)="isPreview || deleteMember(participant)"
-            >
-              <mat-icon mat-list-icon>delete</mat-icon>
-            </button>
-          </div>
-        </span>
+            <mat-icon mat-list-icon>edit_square</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            [disabled]="isPreview"
+            (click)="isPreview || deleteMember(participant)"
+          >
+            <mat-icon mat-list-icon>delete</mat-icon>
+          </button>
+        </div>
+      </span>
     </mat-list>
   </mat-expansion-panel>
   <mat-form-field *ngIf="!hasDeadlinePassed()" appearance="fill" style="align-self: center">
@@ -65,11 +65,8 @@
   <div *ngIf="!hasDeadlinePassed()" class="left-bound" style="margin-bottom: 1rem">
     <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
       maximal {{ vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
-    <div
-      #scrollTo
-      *ngFor="let option of (vote?.options ?? []); let voteIndex=index" class="option-container"
-    >
-      <div style="min-width: 50%; max-width: 50%">
+    <div *ngFor="let option of (vote?.options ?? []); let voteIndex=index" class="option-container" #scrollTo>
+      <div style="min-width: 40%; max-width: 40%">
         <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
         <span *ngIf="option.endDate">
           {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
@@ -82,7 +79,7 @@
           >Link</a>
         </span>
       </div>
-      <div>
+      <div style="display: flex; align-content: flex-start">
         <button
           mat-icon-button
           class="verticalCenter"
