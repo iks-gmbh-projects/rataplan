@@ -1,34 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { delay, Observable, of, scan } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
-  loading = false;
+export class AppComponent {
+  loading$: Observable<boolean>;
+  
   constructor(private router: Router) {
-  }
-
-  ngOnInit(): void {
-    this.router.events.subscribe(event => {
-      switch (true) {
-        case event instanceof NavigationStart: {
-          this.loading = true;
-          break;
-        }
-
+    this.loading$ = router.events.pipe(
+      scan((state, event) => {
+        switch(true) {
+        case event instanceof NavigationStart:
+          return true;
         case event instanceof NavigationEnd:
         case event instanceof NavigationCancel:
-        case event instanceof NavigationError: {
-          this.loading = false;
-          break;
+        case event instanceof NavigationError:
+          return false;
+        default:
+          return state;
         }
-        default: {
-          break;
-        }
-      }
-    });
+      }, false),
+      switchMap(t => t ? of(t).pipe(delay(1000)) : of(t)),
+    );
   }
 }

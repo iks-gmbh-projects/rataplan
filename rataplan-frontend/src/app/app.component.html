@@ -1,5 +1,6 @@
 <app-main-nav>
-  <mat-spinner class="centered" *ngIf="loading"></mat-spinner>
-  <router-outlet></router-outlet>
+  <mat-spinner class="centered" *ngIf="loading$ | async; else content"></mat-spinner>
+  <ng-template #content>
+    <router-outlet></router-outlet>
+  </ng-template>
 </app-main-nav>
-
