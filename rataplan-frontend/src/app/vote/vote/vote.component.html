@@ -13,7 +13,7 @@
       Erstellt von {{ vote!.organizerName }}
     </p>
   </div>
-  <mat-expansion-panel style="max-width:80vw; margin-top: 20px; margin-bottom: 20px; align-self: center">
+  <mat-expansion-panel class="participant-list">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Teilnehmer : {{ vote?.participants?.length }}
@@ -91,9 +91,9 @@
         <mat-form-field
           *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
           appearance="fill"
-          style="max-width: 8vw;"
+          style="width: 8vw; min-width: 50px"
         >
-          <mat-label>Teilnehmerzahl</mat-label>
+          <!--          <mat-label>Teilnehmerzahl</mat-label>-->
           <input
             type="text"
             inputmode="numeric"
