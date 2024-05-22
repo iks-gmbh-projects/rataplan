@@ -48,11 +48,13 @@
 ::ng-deep .member {
   > span {
     justify-content: space-between;
+    display: flex;
+    align-items: center;
   }
 }
 
 .member-button {
-  width: max-content;
+  min-width: max-content;
 }
 
 .icon-name {
@@ -89,4 +91,17 @@
 
 .checkedAccept, .checkedAcceptIfNecessary, .checkedDecline, .checkedNoAnswer {
   scale: 90%;
+}
+
+.participant-name {
+  min-width: 80%;
+  max-width: 80%;
+  overflow-wrap: anywhere;
+  display: flex;
+}
+
+.participant-list-item {
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
 }

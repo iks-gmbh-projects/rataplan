@@ -21,10 +21,10 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
       <mat-list *ngFor="let participant of (this.vote?.participants || [])">
-        <mat-list-item class="member">
-          <div class="icon-name">
+        <span class="participant-list-item">
+          <div class="participant-name">
             <mat-icon *ngIf="participant.userId" class="user-icon">person</mat-icon>
-            {{ participant.name }}
+            <div style="align-self: end">{{ participant.name }}</div>
           </div>
           <div
             *ngIf="!hasDeadlinePassed() && (participant.userId === currentUser?.id)"
@@ -46,7 +46,7 @@
               <mat-icon mat-list-icon>delete</mat-icon>
             </button>
           </div>
-        </mat-list-item>
+        </span>
       </mat-list>
     </mat-expansion-panel>
   </div>
