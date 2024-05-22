@@ -29,7 +29,7 @@
       <div class="bottomSpace">
         <div class="left">
           <button
-            class="left" mat-raised-button color="basic"
+            class="left" mat-raised-button
             (click)="page = page-1"
           >
             <mat-icon>navigate_before</mat-icon>
@@ -37,10 +37,10 @@
         </div>
         <div class="middle"></div>
         <div class="right">
-          <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
           <button
             class="right" mat-raised-button color="primary"
-            [disabled]="!!(isResponseValid | async)"
+            [loading]="delayedBusy$ | async"
+            [disabled]="(isResponseValid | async) || (busy$ | async) ?? false"
             (click)="submit()"
           >Einreichen
           </button>

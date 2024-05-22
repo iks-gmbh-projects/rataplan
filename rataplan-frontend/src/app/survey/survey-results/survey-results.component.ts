@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ChartData, Color } from 'chart.js';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, delay, Observable, of, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Question, Survey, SurveyResponse } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
@@ -50,7 +51,10 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
   public columnNames: {[questionId: string | number]: string[]} = {};
   public data: {[questionId: string | number]: ChartData<'pie'>} = {};
   public answers: SurveyResponse[] = [];
-  public busy: boolean = false;
+  readonly busy$ = new BehaviorSubject<boolean>(false);
+  readonly delayedBusy$: Observable<boolean> = this.busy$.pipe(
+    switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+  );
   public error: any = null;
   
   constructor(private route: ActivatedRoute, private surveys: SurveyService) { }
@@ -66,7 +70,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
   
   private fetchAnswers(survey: Survey): void {
     if(this.survey === survey) return;
-    this.busy = true;
+    this.busy$.next(true);
     this.survey = survey;
     this.columns = {};
     this.columnNames = {};
@@ -131,9 +135,9 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
       },
       error: err => {
         this.error = err;
-        this.busy = false;
+        this.busy$.next(false);
       },
-      complete: () => this.busy = false,
+      complete: () => this.busy$.next(false),
     });
   }
   

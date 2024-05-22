@@ -14,8 +14,13 @@
       </button>
       <div class="middle"></div>
       <div class="right">
-        <mat-spinner *ngIf="busy" diameter="24" class="button-spinner"></mat-spinner>
-        <button mat-raised-button color="primary" (click)="onSubmit.emit(survey)">
+        <button
+          mat-raised-button
+          color="primary"
+          [loading]="delayedBusy$ | async"
+          [disabled]="(busy$ | async) ?? false"
+          (click)="onSubmit.emit(survey)"
+        >
           Erstellen
         </button>
       </div>

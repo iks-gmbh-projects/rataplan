@@ -1,14 +1,14 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable, Subscription } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
-import { LoginComponent } from '../login/login.component';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { delay, NEVER, Observable, of, Subscription } from 'rxjs';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 import { LogoutAction } from '../authentication/auth.actions';
-import { FrontendUser } from '../models/user.model';
 import { authFeature } from '../authentication/auth.feature';
+import { LoginComponent } from '../login/login.component';
+import { FrontendUser } from '../models/user.model';
 import { notificationFeature } from '../notification/notification.feature';
 import { patchNotes } from '../version/patch.notes';
 import { voteNotificationtypes } from '../vote/vote.notificationtypes';
@@ -30,6 +30,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   
   currentUser?: FrontendUser;
   busy: boolean = false;
+  readonly busyDelayed$: Observable<boolean> = NEVER;
   notificationCount: number = 0;
   notificationState: {[type: string]: number} = {};
   readonly notificationTypeConsignee = voteNotificationtypes.consigns;
@@ -50,7 +51,12 @@ export class MainNavComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store,
   )
-  {}
+  {
+    this.busyDelayed$ = this.store.select(authFeature.selectBusy)
+      .pipe(
+        switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+      );
+  }
   
   ngOnInit() {
     this.loggedInSub = this.store.select(authFeature.selectAuthState)

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { delay, NEVER, Observable, of, switchMap } from 'rxjs';
 import { QuestionGroup, Survey } from '../../survey.model';
 
 @Component({
@@ -10,7 +11,20 @@ export class SurveyPreviewComponent {
   @Input() public survey?:Survey;
   public page = 0;
   @Output() public readonly onSubmit = new EventEmitter<Survey>();
-  @Input() public busy: boolean = false;
+  private _busy: Observable<boolean> = NEVER;
+  private _delayedBusy: Observable<boolean> = NEVER;
+  public get delayedBusy$(): Observable<boolean> {
+    return this._delayedBusy;
+  }
+  public get busy$(): Observable<boolean> {
+    return this._busy;
+  }
+  @Input("busy") public set busy$(value: Observable<boolean>) {
+    this._busy = value;
+    this._delayedBusy = value.pipe(
+      switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+    );
+  }
 
   constructor() { }
 

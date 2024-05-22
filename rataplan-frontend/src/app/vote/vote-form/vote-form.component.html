@@ -1,7 +1,7 @@
 <div class="center">
-  <h1 class="centered" *ngIf="busy || !error">Abstimmung {{editing ? 'ändern' : 'erstellen' }}</h1>
+  <h1 class="centered" *ngIf="(busy$ | async) || !error">Abstimmung {{ editing ? 'ändern' : 'erstellen' }}</h1>
   <div class="left-bound">
-    <mat-spinner *ngIf="busy; else loaded"></mat-spinner>
+    <mat-spinner *ngIf="delayedBusy$ | async; else loaded"></mat-spinner>
     <ng-template #loaded>
       <ng-container *ngIf="error" [ngSwitch]="error.status">
         <ng-template [ngSwitchCase]="404">
@@ -26,8 +26,6 @@
         </ng-template>
       </ng-container>
     </ng-template>
-    <div [ngStyle]="{display: (busy || error) ? 'none' : 'block'}">
-      <router-outlet></router-outlet>
-    </div>
+    <router-outlet *ngIf="!(busy$ | async)"></router-outlet>
   </div>
 </div>

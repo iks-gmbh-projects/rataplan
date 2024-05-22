@@ -28,9 +28,8 @@
       </mat-form-field>
     </div>
     <div class="navigate-submit-multiple-button-space">
-      <button type="submit" mat-raised-button color="warn" routerLink="/view-profile">Zurück</button>
-      <button type="submit" mat-raised-button color="primary" [disabled]="busy || formGroup.invalid">Profil endgültig löschen</button>
+      <button type="submit" mat-raised-button routerLink="/view-profile">Zurück</button>
+      <button type="submit" mat-raised-button color="warn" [loading]="busy$ | async" [disabled]="((this.store.select(authFeature.selectBusy) | async) ?? false) || formGroup.invalid">Profil endgültig löschen</button>
     </div>
-    <mat-spinner *ngIf="busy"></mat-spinner>
   </form>
 </div>

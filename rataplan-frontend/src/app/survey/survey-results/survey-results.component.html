@@ -10,7 +10,9 @@
           {{ survey.name }}
         </h2>
         <div>
-          <mat-spinner *ngIf="busy; else finished"></mat-spinner>
+          <ng-template [ngIf]="busy$ | async" [ngIfElse]="finished">
+            <mat-spinner *ngIf="delayedBusy$ | async"></mat-spinner>
+          </ng-template>
           <ng-template #finished>
             <div *ngIf="error; else success">Fehler beim Laden der Daten</div>
             <ng-template #success>
@@ -64,10 +66,9 @@
     </ng-template>
     <div class="button">
       <a mat-raised-button color="primary" routerLink="..">Zurück</a>
-      <button *ngIf="!error" [disabled]="busy" mat-icon-button color="primary" (click)="downloadResults()">
+      <button *ngIf="!error" [disabled]="(busy$ | async) ?? false" mat-icon-button color="primary" (click)="downloadResults()">
         <mat-icon id="icon">download</mat-icon>
       </button>
     </div>
   </div>
 </div>
-

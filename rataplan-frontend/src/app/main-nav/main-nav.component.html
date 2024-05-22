@@ -9,7 +9,9 @@
   </button>
   <a routerLink="/" class="side-menu-title" (click)="drawer.close()">drumdibum</a>
   <span class="fillRemainingSpace"></span>
-  <mat-spinner *ngIf="busy; else profile" diameter="24" class="invertedPrimary"></mat-spinner>
+  <ng-template [ngIf]="busy" [ngIfElse]="profile">
+    <mat-spinner *ngIf="busyDelayed$ | async" diameter="24" class="invertedPrimary"></mat-spinner>
+  </ng-template>
   <ng-template #profile>
     <button
       (click)="onClick()" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" class="loginIcon" mat-icon-button

@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { combineLatestWith, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { combineLatestWith, delay, Observable, of, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { NotificationCategoryTypeService } from './NotificationCategoryType.service';
 import { emailNotificationSettingsActions } from './state/email-notification-settings.actions';
 import { emailNotificationSettingsFeature } from './state/email-notification-settings.feature';
@@ -23,6 +23,7 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
     typeSettings: this.typeSettings,
   });
   readonly busy$: Observable<boolean>;
+  readonly delayedBusy$: Observable<boolean>;
   readonly notificationCategoryTranslations: Record<string, string> = {
     account: 'Profil',
     misc: 'Sonstiges',
@@ -48,6 +49,9 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
   )
   {
     this.busy$ = store.select(emailNotificationSettingsFeature.selectBusy);
+    this.delayedBusy$ = this.busy$.pipe(
+      switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+    )
   }
   
   public ngOnInit(): void {

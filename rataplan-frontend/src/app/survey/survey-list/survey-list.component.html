@@ -2,7 +2,11 @@
   <div>
     <a class="button" mat-raised-button color="primary" routerLink="../create">Erstellen</a>
     <button
-      mat-raised-button aria-label="Neu Laden" [disabled]="busy" type="button"
+      mat-raised-button
+      aria-label="Neu Laden"
+      [loading]="delayedBusy$ | async"
+      [disabled]="(busy$ | async) ?? false"
+      type="button"
       (click)="updateList()"
     >
       <mat-icon>{{error ? 'sync_problem' : 'sync'}}</mat-icon>
@@ -11,7 +15,9 @@
   <div>
     <h2>{{isOwn ? 'Eigene' : 'Öffentliche'}} Umfragen</h2>
   </div>
-  <mat-spinner *ngIf="busy; else done"></mat-spinner>
+  <ng-template [ngIf]="busy$ | async" [ngIfElse]="done">
+    <mat-spinner *ngIf="delayedBusy$ | async"></mat-spinner>
+  </ng-template>
   <ng-template #done >
     <div *ngIf="error; else success">
       Fehler beim laden der Umfragen</div>
@@ -28,7 +34,7 @@
               [routerLink]="['..','participate',survey.participationId]"
             >Teilnehmen</a>
             <ng-template #ownerActions>
-              <a mat-raised-button color="link" [routerLink]="['/survey','participate', survey.participationId]">
+              <a mat-raised-button [routerLink]="['/survey','participate', survey.participationId]">
                 <mat-icon>open_in_new</mat-icon>
               </a>
               <!--ugly workaround for missing angular feature-->
@@ -37,7 +43,7 @@
                 #participationLink
               ></a>
               <button
-                mat-raised-button color="basic"
+                mat-raised-button
                 (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')"
               >
                 <mat-icon>content_copy</mat-icon>

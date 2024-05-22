@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatestAll, delay, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 
 import { VoteModel } from '../models/vote.model';
 import { VoteListService } from '../services/dashboard-service/vote-list.service';
@@ -11,7 +11,13 @@ import { VoteListService } from '../services/dashboard-service/vote-list.service
 })
 export class VoteListComponent implements OnInit, OnDestroy {
   destroySubject: Subject<boolean> = new Subject<boolean>();
-  ready: 0|1|2|3|4|5|6|7 = 0;
+  readonly busies$: readonly BehaviorSubject<boolean>[] = Array.from({length: 3}, () => new BehaviorSubject<boolean>(true));
+  readonly busy$: Observable<boolean> = of(...this.busies$).pipe(
+    combineLatestAll((...args) => args.some(v => v)),
+  );
+  readonly delayedBusy$: Observable<boolean> = this.busy$.pipe(
+    switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+  );
   createdVotes: VoteModel[] = [];
   consignedVotes: VoteModel[] = [];
   participatedVotes: VoteModel[] = [];
@@ -23,19 +29,19 @@ export class VoteListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject))
       .subscribe(res => {
         this.createdVotes = res;
-        this.ready |= 1;
+        this.busies$[0].next(false);
       });
     this.voteListService.getCondignedVotes()
       .pipe(takeUntil(this.destroySubject))
       .subscribe(res => {
         this.consignedVotes = res;
-        this.ready |= 2;
+        this.busies$[1].next(false);
       })
     this.voteListService.getParticipatedVotes()
       .pipe(takeUntil(this.destroySubject))
       .subscribe(res => {
         this.participatedVotes = res;
-        this.ready |= 4;
+        this.busies$[2].next(false);
       });
   }
 

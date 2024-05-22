@@ -1,19 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
-import { Subscription } from "rxjs";
-import { LoginData } from "../models/user.model";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { ExtraValidators } from "../validator/validators";
-import { Store } from "@ngrx/store";
-import { AuthActions, LoginAction, LoginErrorAction } from "../authentication/auth.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { tap } from "rxjs/operators";
+import { FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { CookieBannerComponent } from '../cookie-banner/cookie-banner.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { delay, NEVER, Observable, of, Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { AuthActions, LoginAction, LoginErrorAction } from '../authentication/auth.actions';
 import { authFeature } from '../authentication/auth.feature';
+import { CookieBannerComponent } from '../cookie-banner/cookie-banner.component';
 import { cookieFeature } from '../cookie-banner/cookie.feature';
+import { LoginData } from '../models/user.model';
+import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../validator/validators';
 
 @Component({
   selector: 'app-login',
@@ -26,9 +26,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   hide = true;
   cookieAllowed = false;
   cookieInit = true;
-  isLoading = false;
-  readonly inputField = new UntypedFormControl('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
-  readonly password = new UntypedFormControl('', [Validators.required]);
+  readonly isLoading$: Observable<boolean> = NEVER;
+  readonly isLoadingDelayed$: Observable<boolean> = NEVER;
+  readonly inputField = new FormControl<string>('', [Validators.required, Validators.minLength(3), ExtraValidators.cannotContainWhitespace]);
+  readonly password = new FormControl<string>('', [Validators.required]);
 
   readonly loginForm = new UntypedFormGroup({
     inputField: this.inputField,
@@ -44,17 +45,16 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
       let frontendUser: LoginData = {
-        username: this.inputField.value,
-        password: this.password.value
+        username: this.inputField.value!,
+        password: this.password.value!
 
       };
-      if (this.inputField.value.indexOf('@') !== -1) {
+      if (this.inputField.value!.indexOf('@') !== -1) {
         frontendUser = {
-          mail: this.inputField.value,
-          password: this.password.value
+          mail: this.inputField.value!,
+          password: this.password.value!
         };
       }
-      this.isLoading = true;
       this.store.dispatch(new LoginAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
     }
   }
@@ -77,14 +77,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     public readonly errorMessageService: FormErrorMessageService,
     private router: Router
   ) {
+    this.isLoading$ = this.store.select(authFeature.selectBusy);
+    this.isLoadingDelayed$ = this.isLoading$.pipe(
+      switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+    );
   }
 
   ngOnInit(): void {
-    this.busySub = this.store.select(authFeature.selectBusy).pipe(
-    ).subscribe(busy => {
-      this.isLoading = busy;
-    });
-
     this.cookieSub = this.store.select(cookieFeature.selectCookieState).pipe(
       tap(b => {
         if (this.cookieInit) {
@@ -101,8 +100,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.busySub?.unsubscribe();
+    this.cookieSub?.unsubscribe();
     this.errorSub?.unsubscribe();
   }
 }
-
-

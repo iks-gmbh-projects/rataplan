@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
-import { deletionChoices } from "../models/delete-profile.model";
-import { Router } from "@angular/router";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { Store } from "@ngrx/store";
-import { AuthActions, DeleteUserAction } from "../authentication/auth.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { Subscription } from "rxjs";
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { delay, NEVER, Observable, of, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { AuthActions, DeleteUserAction } from '../authentication/auth.actions';
 import { authFeature } from '../authentication/auth.feature';
+import { deletionChoices, deletionMethod } from '../models/delete-profile.model';
+import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
 
 @Component({
   selector: 'app-delete-profile',
@@ -16,32 +16,27 @@ import { authFeature } from '../authentication/auth.feature';
   styleUrls: ['./delete-profile.component.css'],
 })
 export class DeleteProfileComponent implements OnInit, OnDestroy {
-  busy: boolean = false;
-  readonly formGroup = new UntypedFormGroup({
-    backendChoice: new UntypedFormControl("DELETE", Validators.required),
-    surveyToolChoice: new UntypedFormControl("DELETE", Validators.required),
-    password: new UntypedFormControl(null, Validators.required),
+  busy$: Observable<boolean> = NEVER;
+  readonly formGroup = new FormGroup({
+    backendChoice: new FormControl<deletionMethod>("DELETE", Validators.required),
+    surveyToolChoice: new FormControl<deletionMethod>("DELETE", Validators.required),
+    password: new FormControl<string | null>(null, Validators.required),
   });
-
-  private busySub?: Subscription;
   private errorSub?: Subscription;
 
   constructor(
-    private store: Store,
+    readonly store: Store,
     private actions$: Actions,
-    private router: Router,
     private snackbar: MatSnackBar,
     public readonly errorMessageService: FormErrorMessageService,
   ) {
   }
 
   ngOnInit() {
-    this.busySub = this.store.select(authFeature.selectBusy)
-      .subscribe(busy => {
-        this.busy = busy;
-        if(busy) this.formGroup.disable();
-        else this.formGroup.enable();
-      });
+    this.busy$ = this.store.select(authFeature.selectBusy)
+      .pipe(
+        switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+      )
     this.errorSub = this.actions$.pipe(
       ofType(AuthActions.DELETE_USER_ERROR_ACTION),
     ).subscribe(() => {
@@ -50,14 +45,14 @@ export class DeleteProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.busySub?.unsubscribe();
     this.errorSub?.unsubscribe();
   }
 
   submit() {
-    this.busy = true;
-    const request: deletionChoices = this.formGroup.value;
+    const request: deletionChoices = this.formGroup.value as deletionChoices;
     this.formGroup.disable();
     this.store.dispatch(new DeleteUserAction(request));
   }
+  
+  protected readonly authFeature = authFeature;
 }

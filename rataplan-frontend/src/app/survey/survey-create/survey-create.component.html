@@ -1,4 +1,4 @@
 <div class="center">
   <app-survey-create-form class="width" *ngIf="!preview" [survey]="survey" (onSubmit)="toPreview($event)"></app-survey-create-form>
-  <app-survey-preview *ngIf="preview" [survey]="survey!" [busy]="busy" (onSubmit)="submit($event)"></app-survey-preview>
+  <app-survey-preview *ngIf="preview" [survey]="survey!" [busy]="busy$" (onSubmit)="submit($event)"></app-survey-preview>
 </div>

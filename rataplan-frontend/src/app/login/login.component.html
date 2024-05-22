@@ -27,8 +27,16 @@
       <a class="confirm-account" routerLink="/resend-confirmation-email">Konto bestätigen</a>
     </div>
     <div class="button">
-      <mat-spinner *ngIf="isLoading" diameter="30"></mat-spinner>
-      <button type="submit" class="submit-button" mat-raised-button color="primary" [disabled]="isLoading || !cookieAllowed || loginForm.invalid">Einloggen</button>
+      <button
+        type="submit"
+        class="submit-button"
+        mat-raised-button
+        color="primary"
+        [loading]="isLoadingDelayed$ | async"
+        [disabled]="(isLoading$ | async) || !cookieAllowed || loginForm.invalid"
+      >
+        Einloggen
+      </button>
     </div>
   </div>
   <mat-error ></mat-error>

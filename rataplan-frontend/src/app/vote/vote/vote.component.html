@@ -128,13 +128,14 @@
     </div>
     <div class="fill-width" *ngIf="!isPreview; else previewButtons">
       <div class="vote-button-container">
-        <mat-spinner *ngIf="submitBusy" diameter="24" class="button-spinner"></mat-spinner>
         <button
           *ngIf="!hasDeadlinePassed()"
           class="vote-button"
           type="submit"
           color="primary"
           mat-raised-button
+          [loading]="delayedSubmitBusy$ | async"
+          [disabled]="(submitBusy$ | async) ?? false"
           (click)="saveVote()"
         >{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
         </button>

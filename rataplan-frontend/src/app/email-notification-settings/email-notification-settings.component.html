@@ -69,10 +69,10 @@
       routerLink="/view-profile"
     >Zurück
     </button>
-    <mat-spinner *ngIf="busy$ | async" diameter="24" class="button-spinner"></mat-spinner>
     <button
-      mat-raised-button color="primary" [style]="(busy$ | async) ? '' : 'margin-left: 36px'"
-      [disabled]="form.invalid" (click)="updateSettings()"
+      mat-raised-button color="primary"
+      [loading]="delayedBusy$ | async"
+      [disabled]="(busy$ | async) || form.invalid" (click)="updateSettings()"
     >
       Speichern
     </button>

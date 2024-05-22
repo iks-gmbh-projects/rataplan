@@ -5,7 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { exhaustMap, filter, Subject, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, delay, exhaustMap, filter, of, Subject, take, takeUntil } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { authFeature } from '../../authentication/auth.feature';
 import { FrontendUser } from '../../models/user.model';
 import { VoteDecisionModel } from '../../models/vote-decision.model';
@@ -42,7 +43,10 @@ export class VoteComponent implements OnInit, OnDestroy {
   
   isPreview = false;
   busy = false;
-  submitBusy = false;
+  readonly submitBusy$ = new BehaviorSubject<boolean>(false);
+  readonly delayedSubmitBusy$ = this.submitBusy$.pipe(
+    switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+  );
   isEditMember = false;
   isYesVoteLimitMet!: boolean;
   votes: Map<number, boolean> = new Map<number, boolean>();
@@ -105,17 +109,17 @@ export class VoteComponent implements OnInit, OnDestroy {
       this.resetVote();
       return;
     }
-    this.submitBusy = true;
+    this.submitBusy$.next(true);
     this.voteService.addVoteParticipant(this.vote!, this.voteParticipant)
       .pipe(takeUntil(this.destroySubject))
       .subscribe({
         next: participant => {
-          this.submitBusy = false;
+          this.submitBusy$.next(false);
           this.vote!.participants.push(participant);
           this.resetVote();
         },
         error: err => {
-          this.submitBusy = false;
+          this.submitBusy$.next(false);
           if(err.status == 401) this.snackBar.open(
             'Authorisierungsfehler (wahrscheinlich existiert ein veraltetes Cookie)',
             'OK',
@@ -127,17 +131,17 @@ export class VoteComponent implements OnInit, OnDestroy {
   }
   
   updateVote() {
-    this.submitBusy = true;
+    this.submitBusy$.next(true);
     this.voteService.updateVoteParticipant(this.vote!, this.voteParticipant)
       .pipe(takeUntil(this.destroySubject))
       .subscribe({
         next: () => {
-          this.submitBusy = false;
+          this.submitBusy$.next(false);
           this.resetVote();
           this.isEditMember = false;
         },
         error: err => {
-          this.submitBusy = false;
+          this.submitBusy$.next(false);
           if(err.status == 401) this.snackBar.open(
             'Authorisierungsfehler (wahrscheinlich existiert ein veraltetes Cookie)',
             'OK',
