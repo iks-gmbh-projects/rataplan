@@ -200,8 +200,7 @@ public class RataplanAuthRestController {
     
     @PostMapping("/users/resetPassword")
     public ResponseEntity<Boolean> resetPassword(@RequestBody ResetPasswordData resetPasswordData) {
-        String mail = this.jwtTokenService.getEmailFromResetPasswordToken(resetPasswordData.getToken());
-        User user = this.userService.getUserFromEmail(mail);
+        User user = this.jwtTokenService.getUserFromResetPasswordToken(resetPasswordData.getToken(), userService);
         if(user == null) throw new NullPointerException("Benutzer nicht gefunden");
         
         boolean success = this.userService.changePasswordByToken(user, resetPasswordData.getPassword());

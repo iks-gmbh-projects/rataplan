@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.UserDTO;
 
 import java.util.Date;
@@ -22,7 +23,7 @@ public interface JwtTokenService {
     
     String generateResetPasswordToken(String email);
     
-    String getEmailFromResetPasswordToken(String token);
+    User getUserFromResetPasswordToken(String token, UserService userService);
     
     boolean isBackendTokenValid(String jwt);
     int getUserIdFromBackendToken(String jwt);

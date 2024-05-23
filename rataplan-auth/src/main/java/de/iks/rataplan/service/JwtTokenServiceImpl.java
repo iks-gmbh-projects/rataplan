@@ -1,6 +1,7 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.config.JwtConfig;
+import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.InvalidTokenException;
 import io.jsonwebtoken.Claims;
@@ -67,7 +68,7 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
     }
     
     @Override
-    public String getEmailFromResetPasswordToken(String token) {
+    public User getUserFromResetPasswordToken(String token, UserService userService) {
         Claims claims = getClaimsFromToken(token);
         if(claims.isEmpty()) throw new InvalidTokenException("token leer");
         if(!claims.get(CLAIM_PURPOSE).equals(PURPOSE_RESET_PASSWORD))
@@ -75,7 +76,12 @@ public class JwtTokenServiceImpl implements JwtTokenService, Serializable {
         if(!claims.getIssuer().equals(jwtConfig.getIssuer()))
             throw new InvalidTokenException("token Aussteller ist ungueltig");
         if(!isTokenValid(token)) throw new InvalidTokenException("token abgelaufen");
-        return claims.getSubject();
+        User user = userService.getUserFromEmail(claims.getSubject());
+        if(user == null) return null;
+        if(claims.getIssuedAt().after(user.getLastUpdated())) {
+            return user;
+        }
+        throw new InvalidTokenException("bereits genutzt");
     }
     
     public Date getTokenExpiration(String token) {
