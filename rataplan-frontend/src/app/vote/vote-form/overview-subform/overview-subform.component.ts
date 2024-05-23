@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MtxDatetimepickerType } from '@ng-matero/extensions/datetimepicker';
 import { Store } from '@ngrx/store';
@@ -11,6 +11,7 @@ import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } fr
 import { voteFeature } from '../../vote.feature';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
+
 @Component({
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',
@@ -53,7 +54,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     }
     return 'date';
   }
-
+  
   participantLimitActive = new FormControl<boolean>(false);
   participantLimit = new FormControl<number | null>(null, [Validators.min(1)]);
   vote = new FormGroup({
@@ -63,66 +64,104 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     descriptionInput: new FormControl<string | null>(null),
     linkInput: new FormControl<string | null>(null),
     participantLimitActive: this.participantLimitActive,
-    participantLimit: this.participantLimit
+    participantLimit: this.participantLimit,
   });
-
+  
   private storeSub?: Subscription;
-
+  
   constructor(
     private store: Store,
     public errorMessageService: FormErrorMessageService,
-    private dialog: MatDialog
-  ) {
+    private dialog: MatDialog,
+  )
+  {
   }
-
+  
   ngOnInit(): void {
     this.storeSub = this.store.select(voteFeature.selectVote).pipe(
       filter(vote => !!vote),
     ).subscribe(request => {
       this.voteConfig = request!.voteConfig.voteOptionConfig;
       this.voteOptions = request!.options;
-      if (this.originalParticipationLimit.size === 0) {
+      this.vote.setValidators([this.oneFieldValid(this.voteConfig)]);
+      if(this.originalParticipationLimit.size === 0) {
         this.voteOptions.forEach(vo => {
-          if (vo.id && vo.participantLimitActive && vo.participantLimit != null) this.originalParticipationLimit.set(vo.id, vo.participantLimit!);
-          else if (vo.id != undefined) {
-            const participantCount = request!.participants
-              .map(p => p.decisions).flatMap(s1 => s1)
-              .filter(d => d.optionId == vo.id)
-              .filter(d => d.decision == VoteOptionDecisionType.ACCEPT)
-              .length;
-            this.originalParticipationLimit.set(vo.id!, participantCount);
-            if (participantCount != 0) this.originalParticipationLimit.set(vo.id,participantCount);
-          }
-        }
+            if(vo.id && vo.participantLimitActive && vo.participantLimit !=
+              null) this.originalParticipationLimit.set(vo.id, vo.participantLimit!);
+            else if(vo.id != undefined) {
+              const participantCount = request!.participants
+                .map(p => p.decisions).flatMap(s1 => s1)
+                .filter(d => d.optionId == vo.id)
+                .filter(d => d.decision == VoteOptionDecisionType.ACCEPT)
+                .length;
+              this.originalParticipationLimit.set(vo.id!, participantCount);
+              if(participantCount != 0) this.originalParticipationLimit.set(vo.id, participantCount);
+            }
+          },
         );
       }
     });
   }
-
+  
+  oneFieldValid(voteOptionConfig: VoteOptionConfig): ValidatorFn {
+    // const controlsToCheck = Object.entries(voteOptionConfig).filter(e => e[1]).map(e => e[0]);
+    return (control: AbstractControl): ValidationErrors | null => {
+      if(
+        this.vote.get('startDateInput')?.value ||
+        this.vote.get('endDateInput')?.value ||
+        this.vote.get('descriptionInput')?.value ||
+        this.vote.get('linkInput')?.value
+      ) return null;
+        // for(const controlName of controlsToCheck) {
+        //   switch(controlName) {
+        //   case 'startDate':
+        //     if(this.vote.get('startDateInput')?.value) return null;
+        //     break;
+        //   case 'endDate':
+        //     if(this.vote.get('endDateInput')?.value) return null;
+        //     break;
+        //   case 'description':
+        //     if(this.vote.get('descriptionInput')?.value) return null;
+        //     break;
+        //   case 'url':
+        //     if(this.vote.get('linkInput')?.value) return null;
+        //     break;
+        //   default:
+        //     break;
+        //   }
+      // }
+      else return {'Für jede Abstimmungsoption müss wenigstens ein Feld ausgefüllt werden': true};
+    };
+  }
+  
   ngOnDestroy(): void {
     this.storeSub?.unsubscribe();
   }
-
+  
   clearContent() {
     this.vote.reset();
   }
-
+  
   sanitiseParticipationLimit(checked: boolean) {
-    if (!checked) {
+    if(!checked) {
       this.participantLimit.setValue(null);
       this.participantLimit.markAsPristine();
       this.participantLimit.setErrors(null);
     }
   }
+  
   addVoteOption() {
-    if (!this.isInputInForm()) {
+    if(!this.isInputInForm()) {
       return;
     }
     const input = this.vote.value;
     let proceed: Observable<boolean> = of(true);
-    if (input.voteIndex != null && input.participantLimitActive) {
-      if (input.participantLimit! < this.originalParticipationLimit.get(this.voteOptions[input.voteIndex].id!)!) {
-        proceed = this.dialog.open(ConfirmChoiceComponent, { data: { option: CONFIRM_CHOICE_OPTIONS.PARTICIPANT_LIMIT }}).afterClosed();
+    if(input.voteIndex != null && input.participantLimitActive) {
+      if(input.participantLimit! < this.originalParticipationLimit.get(this.voteOptions[input.voteIndex].id!)!) {
+        proceed = this.dialog.open(
+          ConfirmChoiceComponent,
+          {data: {option: CONFIRM_CHOICE_OPTIONS.PARTICIPANT_LIMIT}},
+        ).afterClosed();
       }
     }
     proceed.subscribe(proceed => {
@@ -134,7 +173,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
         voteOption.url = input.linkInput ?? undefined;
         voteOption.participantLimitActive = input.participantLimitActive ?? false;
         voteOption.participantLimit = input.participantLimitActive ? input.participantLimit : null;
-        if (input.voteIndex !== null) {
+        if(input.voteIndex !== null) {
           this.store.dispatch(new EditVoteOptionAction(input.voteIndex!, voteOption));
         } else {
           this.store.dispatch(new AddVoteOptionsAction(voteOption));
@@ -143,21 +182,21 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       this.clearContent();
     });
   }
-
+  
   isInputInForm() {
     let isInputInForm = false;
     Object.values(this.vote.value).forEach(value => {
-      if (value) {
+      if(value) {
         isInputInForm = true;
       }
     });
     return isInputInForm;
   }
-
+  
   deleteVoteOption(index: number) {
     this.store.dispatch(new RemoveVoteOptionAction(index));
   }
-
+  
   editVoteOption(index: number) {
     const voteOption = this.voteOptions[index];
     this.vote.setValue({
