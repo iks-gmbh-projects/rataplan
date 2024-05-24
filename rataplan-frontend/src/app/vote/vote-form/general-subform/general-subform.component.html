@@ -36,16 +36,16 @@
     <input
       autocomplete="off"
       matInput
-      [matDatepicker]="picker"
+      [mtxDatetimepicker]="picker"
       [max]="maxDate"
       [min]="minDate"
       formControlName="deadline"
     >
-    <mat-datepicker-toggle
+    <mtx-datetimepicker-toggle
       matSuffix
       [for]="picker"
-    ></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
+    ></mtx-datetimepicker-toggle>
+    <mtx-datetimepicker #picker></mtx-datetimepicker>
     <mat-error>{{ errorMessageService.genericFormError(generalSubform.get("deadline")) }}</mat-error>
   </mat-form-field>
   <label id="example-radio-group-label">Antwortmöglichkeiten</label>
