@@ -4,6 +4,7 @@ import de.iks.rataplan.dto.AllContactsDTO;
 import de.iks.rataplan.dto.ContactGroupDTO;
 import de.iks.rataplan.service.CryptoServiceImpl;
 import de.iks.rataplan.service.JwtTokenService;
+import de.iks.rataplan.service.RataplanUserDetails;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -22,12 +23,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import static de.iks.rataplan.controller.RataplanAuthRestController.JWT_COOKIE_NAME;
 import static de.iks.rataplan.testutils.ITConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -61,19 +58,15 @@ public class ContactsControllerIT {
     private final HttpHeaders headers = new HttpHeaders();
     
     @BeforeEach
-    void setup() throws NoSuchAlgorithmException {
+    void setup() {
         lenient().when(cryptoService.decryptDBRaw(any()))
             .then(a -> new String(a.getArgument(0), StandardCharsets.UTF_8));
         lenient().when(cryptoService.encryptDBRaw(anyString()))
             .then(a -> a.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8));
         lenient().when(cryptoService.decryptDB(any())).thenCallRealMethod();
         lenient().when(cryptoService.encryptDB(anyString())).thenCallRealMethod();
-        KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
-        KeyPair keyPair = gen.generateKeyPair();
-        lenient().when(cryptoService.idKey()).thenReturn(keyPair.getPublic());
-        lenient().when(cryptoService.idKeyP()).thenReturn(keyPair.getPrivate());
-        String token = jwtTokenService.generateLoginToken(USER_2);
-        headers.add(JWT_COOKIE_NAME, token);
+        String token = jwtTokenService.generateLoginToken(new RataplanUserDetails(1, "peter", "peter@sch.mitz", null, true));
+        headers.setBearerAuth(token);
     }
     
     @Test

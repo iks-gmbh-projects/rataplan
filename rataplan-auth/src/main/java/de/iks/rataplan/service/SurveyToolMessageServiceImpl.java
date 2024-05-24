@@ -17,12 +17,12 @@ public class SurveyToolMessageServiceImpl implements SurveyToolMessageService {
     private final JwtTokenService jwtTokenService;
     @Override
     public ResponseEntity<?> deleteUserData(long userId) {
-        RequestEntity<String> requestEntity = RequestEntity.method(
+        RequestEntity<?> requestEntity = RequestEntity.method(
             HttpMethod.DELETE,
             UriComponentsBuilder.fromHttpUrl(surveyToolMessageConfig.getDelete())
                 .buildAndExpand(userId)
                 .toUri()
-        ).body(jwtTokenService.generateIdToken());
+        ).headers(h -> h.setBearerAuth(jwtTokenService.generateIdToken())).build();
         return template.exchange(requestEntity, String.class);
     }
 

@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ import java.util.stream.Stream;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     
     private final BCryptPasswordEncoder passwordEncoder;
@@ -33,7 +35,13 @@ public class UserServiceImpl implements UserService {
     
     private final BackendMessageService backendMessageService;
     
-    private final JwtTokenService jwtTokenService;
+    @Override
+    @Transactional(readOnly = true)
+    public RataplanUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase()))
+            .map(u -> new RataplanUserDetails(u, cryptoService))
+            .orElseThrow(() -> new UsernameNotFoundException(username));
+    }
     
     public UserDTO registerUser(UserDTO userDTO) {
         if(userDTO.invalidFull()) throw new InvalidUserDataException();
@@ -62,8 +70,8 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public Boolean confirmAccount(String token) {
-        Integer userId = jwtTokenService.getUserIdFromAccountConfirmationToken(token);
+    public Boolean confirmAccount(String id) {
+        int userId = Integer.parseInt(id);
         User user = getUserFromId(userId);
         if(!user.isAccountConfirmed()) {
             user.setAccountConfirmed(true);

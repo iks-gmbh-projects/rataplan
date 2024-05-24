@@ -11,5 +11,4 @@ import org.springframework.context.annotation.Configuration;
 public class BackendMessageConfig {
     private String delete;
     private String anonymize;
-    private String publicKey;
 }

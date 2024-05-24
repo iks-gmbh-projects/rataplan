@@ -2,38 +2,30 @@ package de.iks.rataplan.controller;
 
 import de.iks.rataplan.domain.notifications.EmailCycle;
 import de.iks.rataplan.dto.NotificationSettingsDTO;
-import de.iks.rataplan.exceptions.InvalidTokenException;
-import de.iks.rataplan.exceptions.RataplanAuthException;
 import de.iks.rataplan.service.JwtTokenService;
 import de.iks.rataplan.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import java.util.Map;
 
-import static de.iks.rataplan.controller.RataplanAuthRestController.JWT_COOKIE_NAME;
-
 @RequiredArgsConstructor
+@Slf4j
 @Controller
 @RequestMapping("/v1/notifications")
 public class NotificationsController {
     private final JwtTokenService jwtTokenService;
     private final NotificationService notificationService;
-    private String validateTokenOrThrow(String cookieToken, String headerToken) throws RataplanAuthException {
-        String token;
-        if(headerToken == null) token = cookieToken;
-        else if(cookieToken == null) token = headerToken;
-        else if(cookieToken.equals(headerToken)) token = cookieToken;
-        else throw new RataplanAuthException("Different tokens provided by cookie and header.");
-        if(!jwtTokenService.isTokenValid(token)) {
-            throw new InvalidTokenException("Invalid token");
-        }
-        return token;
-    }
     
     @GetMapping("/list-settings")
     public ResponseEntity<Map<String, List<String>>> listSettings() {
@@ -46,25 +38,18 @@ public class NotificationsController {
     }
     
     @GetMapping("/settings")
-    public ResponseEntity<NotificationSettingsDTO> getSettings(
-        @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie
-    )
-    {
-        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
-        return ResponseEntity.ok(notificationService.getNotificationSettings(jwtTokenService.getUserIdFromToken(token)));
+    public ResponseEntity<NotificationSettingsDTO> getSettings(@AuthenticationPrincipal Jwt token) {
+        return ResponseEntity.ok(notificationService.getNotificationSettings(jwtTokenService.getUserId(token)));
     }
     
     @PutMapping("/settings")
     public ResponseEntity<NotificationSettingsDTO> getSettings(
-        @RequestHeader(value = JWT_COOKIE_NAME, required = false) String tokenHeader,
-        @CookieValue(value = JWT_COOKIE_NAME, required = false) String tokenCookie,
+        @AuthenticationPrincipal Jwt token,
         @RequestBody NotificationSettingsDTO settings
     )
     {
-        String token = validateTokenOrThrow(tokenCookie, tokenHeader);
         return ResponseEntity.ok(notificationService.updateNotificationSettings(
-            jwtTokenService.getUserIdFromToken(token),
+            jwtTokenService.getUserId(token),
             settings
         ));
     }

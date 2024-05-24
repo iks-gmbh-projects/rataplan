@@ -20,12 +20,12 @@ public class BackendMessageServiceImpl implements BackendMessageService {
     
     @Override
     public ResponseEntity<?> deleteUserData(long userId) {
-        RequestEntity<String> requestEntity = RequestEntity.method(
+        RequestEntity<?> requestEntity = RequestEntity.method(
             HttpMethod.DELETE,
             UriComponentsBuilder.fromHttpUrl(backendMessageConfig.getDelete())
                 .buildAndExpand(userId)
                 .toUri()
-        ).body(jwtTokenService.generateIdToken());
+        ).headers(h -> h.setBearerAuth(jwtTokenService.generateIdToken())).build();
         return template.exchange(requestEntity, String.class);
     }
     

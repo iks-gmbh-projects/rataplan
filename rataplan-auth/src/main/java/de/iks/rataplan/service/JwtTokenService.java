@@ -1,30 +1,23 @@
 package de.iks.rataplan.service;
 
-import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.UserDTO;
 
-import java.util.Date;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface JwtTokenService {
-    Integer getUserIdFromAccountConfirmationToken(String token);
+    String CLAIM_SCOPE = "scope";
+    String SCOPE_LOGIN = "login";
+    String SCOPE_ID = "id";
+    String SCOPE_ACCOUNT_CONFIRMATION = "account-confirmation";
+    String SCOPE_RESET_PASSWORD = "reset-password";
     
-    String getUsernameFromToken(String token);
-    Integer getUserIdFromToken(String token);
+    Integer getUserId(Jwt jwt);
     
-    String generateLoginToken(UserDTO user);
-    
-    Date getTokenExpiration(String token);
-    
-    boolean isTokenValid(String token);
+    String generateLoginToken(RataplanUserDetails user);
     
     String generateIdToken();
     
     String generateAccountConfirmationToken(UserDTO userDTO);
     
     String generateResetPasswordToken(String email);
-    
-    User getUserFromResetPasswordToken(String token, UserService userService);
-    
-    boolean isBackendTokenValid(String jwt);
-    int getUserIdFromBackendToken(String jwt);
 }

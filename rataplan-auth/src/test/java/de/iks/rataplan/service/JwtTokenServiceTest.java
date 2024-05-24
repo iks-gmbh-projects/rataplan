@@ -1,59 +1,55 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.IDKeyConfig;
 import de.iks.rataplan.config.JwtConfig;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.proc.JWSAlgorithmFamilyJWSKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+
 import de.iks.rataplan.dto.UserDTO;
-import io.jsonwebtoken.Claims;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtTokenServiceTest {
-    @Mock
-    private io.jsonwebtoken.SigningKeyResolver signingKeyResolver;
-    @Mock
-    private CryptoService cryptoService;
     private JwtTokenService jwtTokenService;
+    private JwtDecoder jwtDecoder;
     
     @BeforeEach
-    void setup() throws NoSuchAlgorithmException {
-        jwtTokenService = new JwtTokenServiceImpl(cryptoService, new JwtConfig(), signingKeyResolver);
-        KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
-        gen.initialize(2048);
-        KeyPair idKey = gen.generateKeyPair();
-        KeyPair signingKey = gen.generateKeyPair();
-        lenient().when(cryptoService.idKey()).thenReturn(idKey.getPublic());
-        lenient().when(cryptoService.idKeyP()).thenReturn(idKey.getPrivate());
-        lenient().when(signingKeyResolver.resolveSigningKey(Mockito.any(), Mockito.any(Claims.class)))
-            .thenReturn(signingKey.getPublic());
+    void setup() {
+        IDKeyConfig idKeyConfig = new IDKeyConfig();
+        JwtConfig jwtConfig = new JwtConfig();
+        JWKSet jwkSet = jwtConfig.jwkSet(List.of(idKeyConfig.generatedKey()));
+        jwtTokenService = new JwtTokenServiceImpl(jwtConfig, jwtConfig.jwtEncoder(jwkSet));
+        DefaultJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
+        jwtProcessor.setJWSKeySelector(new JWSAlgorithmFamilyJWSKeySelector<>(
+            JWSAlgorithm.Family.RSA,
+            new ImmutableJWKSet<>(jwkSet)
+        ));
+        jwtDecoder = new NimbusJwtDecoder(jwtProcessor);
     }
     
     @Test
     void generateTokenAndValidateTokenAndGetUsernameFromToken() {
-        UserDTO user = new UserDTO();
-        
-        user.setUsername("Peter");
-        user.setMail("peter@sch.mitz");
-        //		user.setPassword("geheim");
+        RataplanUserDetails user = new RataplanUserDetails(1, "Peter", "peter@sch.mitz", null, true);
         
         String token = jwtTokenService.generateLoginToken(user);
         assertNotNull(token);
         
-        assertTrue(jwtTokenService.isTokenValid(token));
-        
-        String username = jwtTokenService.getUsernameFromToken(token);
-        assertEquals(username, "Peter");
+        assertEquals("Peter", jwtDecoder.decode(token).getSubject());
     }
     
     @Test
@@ -62,19 +58,18 @@ public class JwtTokenServiceTest {
         user.setId(1);
         
         String token = jwtTokenService.generateAccountConfirmationToken(user);
-        Integer userId = jwtTokenService.getUserIdFromAccountConfirmationToken(token);
-        
         assertNotNull(token);
-        assertTrue(jwtTokenService.isTokenValid(token));
-        assertEquals(userId, user.getId());
+        
+        int userId = Integer.parseInt(jwtDecoder.decode(token).getSubject());
+        assertEquals(user.getId(), userId);
     }
-    //TODO fix this test again, somehow
-//    @Test
-//    void generateResetPasswordTokenAndRetrieveEmail() {
-//        String email = "test@test.com";
-//        String jwt = this.jwtTokenService.generateResetPasswordToken(email);
-//        assertNotNull(jwt);
-//        assertTrue(jwtTokenService.isTokenValid(jwt));
-//        assertEquals(email, this.jwtTokenService.getEmailFromResetPasswordToken(jwt));
-//    }
+    @Test
+    void generateResetPasswordTokenAndRetrieveEmail() {
+        String email = "test@test.com";
+        String jwt = this.jwtTokenService.generateResetPasswordToken(email);
+        assertNotNull(jwt);
+        
+        
+        assertEquals(email, jwtDecoder.decode(jwt).getSubject());
+    }
 }

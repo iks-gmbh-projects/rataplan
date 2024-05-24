@@ -5,7 +5,6 @@ import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.*;
 import de.iks.rataplan.repository.UserRepository;
-import io.jsonwebtoken.SigningKeyResolver;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -26,9 +25,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.TestExecutionListeners;
 
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,13 +64,9 @@ public class UserServiceTest {
     private SurveyToolMessageService stms;
     @MockBean
     private BackendMessageService bms;
-    @MockBean
-    private SigningKeyResolver skr;
     
     @BeforeEach
-    public void setup() throws NoSuchAlgorithmException {
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        KeyPair keyPair = kpg.generateKeyPair();
+    public void setup() {
         when(cryptoService.encryptDBRaw(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class)
             .getBytes(StandardCharsets.UTF_8));
         when(cryptoService.encryptDB(anyString())).thenCallRealMethod();
@@ -83,8 +75,6 @@ public class UserServiceTest {
             byte[].class
         ), StandardCharsets.UTF_8));
         when(cryptoService.decryptDB(any())).thenCallRealMethod();
-        when(cryptoService.idKeyP()).thenReturn(keyPair.getPrivate());
-        when(cryptoService.idKey()).thenReturn(keyPair.getPublic());
     }
     
     @Test

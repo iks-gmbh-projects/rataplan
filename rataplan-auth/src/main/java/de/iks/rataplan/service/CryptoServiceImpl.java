@@ -1,7 +1,6 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.config.DBKeyConfig;
-import de.iks.rataplan.config.IDKeyConfig;
 import de.iks.rataplan.exceptions.CryptoException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 @Service
@@ -26,12 +27,10 @@ import java.util.Base64;
 @Slf4j
 public class CryptoServiceImpl implements CryptoService {
     private final DBKeyConfig db;
-    private final IDKeyConfig id;
     private Key dbKey;
-    private KeyPair idKey;
     
     @PostConstruct
-    public void init() throws IOException, NoSuchAlgorithmException {
+    public void init() throws IOException {
         {
             log.info("Loading DB key");
             byte[] bytes;
@@ -41,13 +40,6 @@ public class CryptoServiceImpl implements CryptoService {
             } else bytes = Base64.getDecoder().decode(encKey);
             dbKey = new SecretKeySpec(bytes, db.getAlgorithm());
             log.info("DB key loaded");
-        }
-        {
-            log.info("Loading ID s");
-            KeyPairGenerator gen = KeyPairGenerator.getInstance(id.getAlgorithm());
-            gen.initialize(id.getLength());
-            idKey = gen.generateKeyPair();
-            log.info("ID keys loaded");
         }
     }
     @Override
@@ -79,15 +71,5 @@ public class CryptoServiceImpl implements CryptoService {
             BadPaddingException ex) {
             throw new CryptoException(ex);
         }
-    }
-    
-    @Override
-    public PublicKey idKey() {
-        return idKey.getPublic();
-    }
-    
-    @Override
-    public PrivateKey idKeyP() {
-        return idKey.getPrivate();
     }
 }
