@@ -17,26 +17,35 @@ export type HeadFormFields = {
 @Component({
   selector: 'app-survey-create-form-head',
   templateUrl: './survey-create-form-head.component.html',
-  styleUrls: ['./survey-create-form-head.component.css']
+  styleUrls: ['./survey-create-form-head.component.css'],
 })
 export class SurveyCreateFormHeadComponent implements OnInit {
-  @Input("form") formGroup?: FormGroup<{[K in keyof HeadFormFields]: AbstractControl<HeadFormFields[K]>}>;
+  @Input('form') formGroup?: FormGroup<{ [K in keyof HeadFormFields]: AbstractControl<HeadFormFields[K]> }>;
   @Output() readonly submit = new EventEmitter<void>();
-
-  public readonly yesterday = new Date();
-
+  
+  public minDate!:Date;
+  
   constructor(
-    readonly errorMessageService: FormErrorMessageService
-  ) { }
-
+    readonly errorMessageService: FormErrorMessageService,
+  )
+  { }
+  
   ngOnInit(): void {
   }
-
+  
   public headerComplete(): boolean {
-    if (!this.formGroup) return false;
+    if(this.formGroup?.get('startDate')?.value === null) this.minDate = new Date();
+    else this.setMinDate();
+    if(!this.formGroup) return false;
     return this.formGroup.controls.name.valid
       && this.formGroup.controls.description.valid
       && this.formGroup.controls.startDate.valid
       && this.formGroup.controls.endDate.valid;
+  }
+  
+  setMinDate() {
+    const startDate = new Date(this.formGroup?.get('startDate')!.value!);
+    const date = new Date();
+    this.minDate = startDate.getTime() > date.getTime() ? date : startDate;
   }
 }
