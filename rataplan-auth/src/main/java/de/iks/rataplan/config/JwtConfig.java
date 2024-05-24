@@ -68,7 +68,7 @@ public class JwtConfig {
     
     
     @Bean
-    public JwtDecoder jwtDecoder(@Value("${trusted.issuers}") String issuerPattern) {
+    public JwtDecoder jwtDecoder(@Value("${trusted.issuers:}") String issuerPattern) {
         Predicate<String> trust = Pattern.compile(issuerPattern).asPredicate().or(issuer::equals);
         DefaultJWTProcessor<SecurityContext> processor = new DefaultJWTProcessor<>();
         processor.setJWTClaimsSetAwareJWSKeySelector(new MultiIssuerJWSKeySelector(trust));

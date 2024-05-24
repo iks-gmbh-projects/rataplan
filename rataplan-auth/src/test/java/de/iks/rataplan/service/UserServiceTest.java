@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.IDKeyConfig;
 import de.iks.rataplan.config.JwtConfig;
 import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.UserDTO;
@@ -10,10 +11,19 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
+import com.nimbusds.jose.Algorithm;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -22,9 +32,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.test.context.TestExecutionListeners;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,6 +53,7 @@ import static org.mockito.Mockito.*;
         HibernateJpaAutoConfiguration.class,
         FlywayAutoConfiguration.class,
         JwtConfig.class,
+        IDKeyConfig.class,
         BCryptPasswordEncoder.class
     }
 )
@@ -64,6 +80,10 @@ public class UserServiceTest {
     private SurveyToolMessageService stms;
     @MockBean
     private BackendMessageService bms;
+    @Autowired
+    @Qualifier("jwkSet")
+    private JWKSet jwkSet;
+    private JwtDecoder jwtDecoder;
     
     @BeforeEach
     public void setup() {
@@ -75,6 +95,20 @@ public class UserServiceTest {
             byte[].class
         ), StandardCharsets.UTF_8));
         when(cryptoService.decryptDB(any())).thenCallRealMethod();
+        
+        
+        DefaultJWTProcessor<SecurityContext> processor = new DefaultJWTProcessor<>();
+        processor.setJWSKeySelector(new JWSVerificationKeySelector<>(
+            jwkSet.getKeys()
+                .stream()
+                .map(JWK::getAlgorithm)
+                .filter(Objects::nonNull)
+                .map(Algorithm::toString)
+                .map(JWSAlgorithm::parse)
+                .collect(Collectors.toUnmodifiableSet()),
+            new ImmutableJWKSet<>(jwkSet)
+        ));
+       jwtDecoder = new NimbusJwtDecoder(processor);
     }
     
     @Test
@@ -250,7 +284,10 @@ public class UserServiceTest {
         assertFalse(userService.getUserFromUsername(user.getUsername()).isAccountConfirmed());
         
         String token = jwtTokenService.generateAccountConfirmationToken(user);
-        userService.confirmAccount(token);
+        assertNotNull(token);
+        Jwt jwt = jwtDecoder.decode(token);
+        assertEquals(JwtTokenService.SCOPE_ACCOUNT_CONFIRMATION, jwt.getClaimAsString(JwtTokenService.CLAIM_SCOPE));
+        userService.confirmAccount(jwt.getSubject());
         
         assertTrue(userService.getUserFromUsername("fritz").isAccountConfirmed());
     }

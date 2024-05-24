@@ -1,5 +1,14 @@
 package de.iks.rataplan.controller;
 
+import com.nimbusds.jose.Algorithm;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+
 import de.iks.rataplan.dto.AllContactsDTO;
 import de.iks.rataplan.dto.ContactGroupDTO;
 import de.iks.rataplan.service.CryptoServiceImpl;
@@ -14,16 +23,21 @@ import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static de.iks.rataplan.testutils.ITConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,7 +65,11 @@ public class ContactsControllerIT {
     private TestRestTemplate restTemplate;
     @Autowired
     private JwtTokenService jwtTokenService;
-    
+    @Autowired
+    @Qualifier("jwkSet")
+    private JWKSet jwkSet;
+    @MockBean
+    private JwtDecoder jwtDecoder;
     @MockBean
     private CryptoServiceImpl cryptoService;
     
@@ -65,6 +83,22 @@ public class ContactsControllerIT {
             .then(a -> a.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8));
         lenient().when(cryptoService.decryptDB(any())).thenCallRealMethod();
         lenient().when(cryptoService.encryptDB(anyString())).thenCallRealMethod();
+        
+        DefaultJWTProcessor<SecurityContext> processor = new DefaultJWTProcessor<>();
+        processor.setJWSKeySelector(new JWSVerificationKeySelector<>(
+            jwkSet.getKeys()
+                .stream()
+                .map(JWK::getAlgorithm)
+                .filter(Objects::nonNull)
+                .map(Algorithm::toString)
+                .map(JWSAlgorithm::parse)
+                .collect(Collectors.toUnmodifiableSet()),
+            new ImmutableJWKSet<>(jwkSet)
+        ));
+        NimbusJwtDecoder delegate = new NimbusJwtDecoder(processor);
+        lenient().when(jwtDecoder.decode(anyString()))
+            .then(a -> delegate.decode(a.getArgument(0, String.class)));
+        
         String token = jwtTokenService.generateLoginToken(new RataplanUserDetails(1, "peter", "peter@sch.mitz", null, true));
         headers.setBearerAuth(token);
     }
