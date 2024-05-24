@@ -1,10 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
-import { HttpClient } from '@angular/common/http';
-import { map, switchMap } from 'rxjs/operators';
 import { catchError, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 
 export enum ConfirmationStatus {
   ACCOUNT_CONFIRMATION_SUCCESSFUL,
@@ -49,7 +49,11 @@ export class ConfirmAccountService {
         snackBarConfig.duration = (
           10000
         );
-        return this.http.post<number>(link, token).pipe(
+        return this.http.post<number>(link, undefined, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }).pipe(
           catchError(() => of(ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL)),
           map(response => {
             if(response !== ConfirmationStatus.ACCOUNT_CONFIRMATION_UNSUCCESSFUL) {

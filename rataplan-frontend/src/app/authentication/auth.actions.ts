@@ -2,7 +2,6 @@ import { UrlTree } from '@angular/router';
 import { Action } from '@ngrx/store';
 
 import { deletionChoices } from '../models/delete-profile.model';
-import { ResetPasswordDataModel } from '../models/reset-password-data.model';
 import { FrontendUser, LoginData, RegisterData } from '../models/user.model';
 
 export const AuthActions = {
@@ -75,7 +74,7 @@ export class LoginSuccessAction implements Action {
   readonly type = AuthActions.LOGIN_SUCCESS_ACTION;
 
   constructor(
-    readonly payload: FrontendUser,
+    readonly payload: string,
   ) {
   }
 }
@@ -93,7 +92,10 @@ export class ResetPasswordAction implements Action {
   readonly type = AuthActions.RESET_PASSWORD_ACTION;
 
   constructor(
-    readonly payload: ResetPasswordDataModel,
+    readonly payload: {
+      password: string,
+      token: string,
+    },
   ) {
   }
 }

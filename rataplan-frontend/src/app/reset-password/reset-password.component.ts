@@ -1,15 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-
-import { ResetPasswordDataModel } from '../models/reset-password-data.model';
-import { ExtraValidators } from "../validator/validators";
-import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
-import { Store } from "@ngrx/store";
-import { AuthActions, ResetPasswordAction } from "../authentication/auth.actions";
-import { Actions, ofType } from "@ngrx/effects";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { Subscription } from "rxjs";
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { AuthActions, ResetPasswordAction } from '../authentication/auth.actions';
+import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../validator/validators';
 
 @Component({
   selector: 'app-reset-password',
@@ -18,8 +16,8 @@ import { Subscription } from "rxjs";
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
 
-  password = new UntypedFormControl('', [Validators.required, Validators.minLength(3)]);
-  confirmPassword = new UntypedFormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
+  password = new FormControl('', [Validators.required, Validators.minLength(3)]);
+  confirmPassword = new FormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
   hide = true;
   hideConfirm = true;
 
@@ -30,7 +28,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   private errorSub?: Subscription;
 
-  constructor(private formBuilder: UntypedFormBuilder,
+  constructor(private formBuilder: FormBuilder,
               private store: Store,
               private actions$: Actions,
               private route: ActivatedRoute,
@@ -52,8 +50,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     let token: string;
     this.route.queryParams.subscribe(params => {
       token = params['token'];
-      const resetPassword = new ResetPasswordDataModel(token, this.password.value);
-      this.store.dispatch(new ResetPasswordAction(resetPassword));
+      this.store.dispatch(new ResetPasswordAction({
+        token,
+        password: this.password.value!,
+      }));
     });
   }
 

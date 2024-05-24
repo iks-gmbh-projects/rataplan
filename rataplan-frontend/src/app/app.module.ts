@@ -1,5 +1,5 @@
 import { registerLocaleData } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import localeDE from '@angular/common/locales/de';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
@@ -20,6 +20,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { appEffects } from './app.effects';
 import { authFeature } from './authentication/auth.feature';
+import { AuthInterceptor } from './authentication/auth.interceptor';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ConfirmAccountInstructionComponent } from './confirm-account/confirm-account-instruction/confirm-account-instruction.component';
 import { ConfirmAccountComponent } from './confirm-account/confirm-account/confirm-account.component';
@@ -115,6 +116,7 @@ registerLocaleData(localeDE);
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'de-DE'},
     {provide: DateAdapter, useClass: EUDateAdapter},
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -46,15 +46,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       let frontendUser: LoginData = {
         username: this.inputField.value!,
-        password: this.password.value!
-
+        password: this.password.value!,
       };
-      if (this.inputField.value!.indexOf('@') !== -1) {
-        frontendUser = {
-          mail: this.inputField.value!,
-          password: this.password.value!
-        };
-      }
       this.store.dispatch(new LoginAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
     }
   }

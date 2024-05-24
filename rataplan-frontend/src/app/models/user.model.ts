@@ -18,9 +18,6 @@ export class User {
 export type LoginData = {
   username: string,
   password: string,
-} | {
-  mail: string,
-  password: string,
 };
 export type FrontendUser = {
   username: string,
