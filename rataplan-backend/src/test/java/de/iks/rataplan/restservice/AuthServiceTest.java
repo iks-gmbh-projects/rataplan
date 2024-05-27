@@ -1,82 +1,29 @@
 package de.iks.rataplan.restservice;
 
-import de.iks.rataplan.config.AuthenticationConfig;
-import de.iks.rataplan.exceptions.InvalidTokenException;
-import io.jsonwebtoken.*;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import static de.iks.rataplan.testutils.TestConstants.AUTHUSER_1;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
 public class AuthServiceTest {
-    @Autowired
-    private AuthenticationConfig authenticationConfig;
-    
-    @MockBean
-    private SigningKeyResolver keyResolver;
-    
-    @Autowired
     private AuthService authService;
     
-    private KeyPair keyPair;
-    
     @BeforeEach
-    public void initKeys() throws NoSuchAlgorithmException {
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
-        keyPair = kpg.generateKeyPair();
-        when(keyResolver.resolveSigningKey(
-            isA(JwsHeader.class),
-            isA(Claims.class)
-        ))
-            .thenReturn(keyPair.getPublic());
+    public void setup() {
+        authService = new AuthServiceImpl(null, null, null);
     }
     
     @Test
     public void getUserData() {
-        Claims claims = Jwts.claims();
-        claims.setIssuer("test");
-        claims.setSubject(AUTHUSER_1.getUsername());
-        claims.put(AuthServiceImpl.CLAIM_USERID, AUTHUSER_1.getId());
-        claims.put(AuthServiceImpl.CLAIM_PURPOSE, AuthServiceImpl.PURPOSE_LOGIN);
-        claims.setExpiration(new Date(System.currentTimeMillis() + 2000));
-        authenticationConfig.setIssuer("test");
-        
-        String token = Jwts.builder()
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.RS512, keyPair.getPrivate())
-            .compact();
+        Jwt token = Jwt.withTokenValue("bla")
+            .subject(AUTHUSER_1.getUsername())
+            .claim(AuthService.CLAIM_USERID, AUTHUSER_1.getId())
+            .claim("scope", "id")
+            .header("kid", "blabla")
+            .build();
         
         assertEquals(AUTHUSER_1, authService.getUserData(token));
-    }
-    
-    @Test
-    public void getUserDataShouldFailInvalidToken() {Assertions.assertThrows(InvalidTokenException.class,() -> authService.getUserData("blashgiodrfngslkshdr"));}
-    
-    @Test()
-    public void getUserDataShouldFailUnsignedToken() {
-        Claims claims = Jwts.claims();
-        claims.setIssuer("test");
-        claims.setSubject(AUTHUSER_1.getUsername());
-        claims.put(AuthServiceImpl.CLAIM_USERID, AUTHUSER_1.getId());
-        claims.put(AuthServiceImpl.CLAIM_PURPOSE, AuthServiceImpl.PURPOSE_LOGIN);
-        claims.setExpiration(new Date(System.currentTimeMillis() + 1000));
-        authenticationConfig.setIssuer("test");
-        
-        String token = Jwts.builder().setClaims(claims).compact();
-        assertThrows(InvalidTokenException.class, () -> authService.getUserData(token));
     }
 }

@@ -21,9 +21,6 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +49,7 @@ public class VoteOptionRequestServiceTest {
     private VoteService voteService;
     
     @BeforeEach
-    public void setup() throws NoSuchAlgorithmException {
+    public void setup() {
         lenient().when(cryptoService.decryptDBRaw(any(byte[].class)))
             .thenAnswer(invocation -> new String(invocation.getArgument(0, byte[].class), StandardCharsets.UTF_8));
         lenient().when(cryptoService.decryptDB(anyString()))
@@ -61,10 +58,6 @@ public class VoteOptionRequestServiceTest {
             .thenAnswer(invocation -> invocation.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8));
         lenient().when(cryptoService.encryptDB(anyString()))
             .thenAnswer(invocation -> invocation.getArgument(0, String.class));
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        KeyPair kp = kpg.generateKeyPair();
-        lenient().when(cryptoService.getPrivateKey()).thenReturn(kp.getPrivate());
-        lenient().when(cryptoService.getPublicKey()).thenReturn(kp.getPublic());
         
         lenient().doCallRealMethod()
             .when(authService)

@@ -4,6 +4,7 @@ import de.iks.rataplan.domain.AuthUser;
 import de.iks.rataplan.dto.VoteDecisionDTO;
 import de.iks.rataplan.dto.VoteParticipantDTO;
 import de.iks.rataplan.restservice.AuthService;
+import de.iks.rataplan.restservice.AuthServiceImpl;
 import de.iks.rataplan.service.CryptoService;
 import de.iks.rataplan.utils.CookieBuilder;
 
@@ -18,20 +19,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +40,9 @@ import java.util.List;
 import static de.iks.rataplan.testutils.ITConstants.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @TestExecutionListeners(
     value = {DbUnitTestExecutionListener.class, TransactionalTestExecutionListener.class},
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
@@ -51,13 +52,14 @@ public class VoteOptionMemberControllerServiceIT {
     
     private static final String FILE_PATH = PATH + VOTE_PARTICIPANTS;
     
-    private Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-    @Autowired
+    private final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
     private MockMvc mockMvc;
-    private MockRestServiceServer mockRestServiceServer;
+    
+    @Autowired
+    private WebApplicationContext context;
     
     @MockBean
-    private AuthService authService;
+    private AuthServiceImpl authService;
     
     @MockBean
     private CryptoService cryptoService;
@@ -65,19 +67,19 @@ public class VoteOptionMemberControllerServiceIT {
     @Autowired
     private CookieBuilder cookieBuilder;
     
-    @Autowired
-    private RestOperations restOperations;
-
     @BeforeEach
     public void setUp() {
-        mockRestServiceServer = MockRestServiceServer.createServer((RestTemplate) restOperations);
-        when(cryptoService.encryptDB(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
-        when(cryptoService.decryptDB(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
+            .apply(SecurityMockMvcConfigurers.springSecurity())
+            .build();
+        lenient().when(cryptoService.encryptDB(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
+        lenient().when(cryptoService.decryptDB(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
+        lenient().when(authService.getUserData(isA(Jwt.class))).thenCallRealMethod();
     }
     
     @Test
     public void loadsContext() {
-        Assertions.assertNotNull(authService);
+        Assertions.assertNotNull(cookieBuilder);
     }
     
     @Test
@@ -93,7 +95,7 @@ public class VoteOptionMemberControllerServiceIT {
         
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.
             post(VERSION + VOTES + "/1/participants");
-        requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
+        requestBuilder.contentType(MediaType.APPLICATION_JSON);
         requestBuilder.content(json.getBytes());
         
         this.mockMvc.perform(requestBuilder).andExpect(MockMvcResultMatchers.status().isCreated());
@@ -112,7 +114,7 @@ public class VoteOptionMemberControllerServiceIT {
         String json = gson.toJson(voteParticipantDTO);
         
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(VERSION + VOTES + "/1/participants");
-        requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
+        requestBuilder.contentType(MediaType.APPLICATION_JSON);
         requestBuilder.content(json.getBytes());
         
         this.mockMvc.perform(requestBuilder).andExpect(MockMvcResultMatchers.status().isCreated());
@@ -132,9 +134,16 @@ public class VoteOptionMemberControllerServiceIT {
         String json = gson.toJson(voteParticipantDTO);
         
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(VERSION + VOTES + "/1/participants");
-        requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
+        requestBuilder.contentType(MediaType.APPLICATION_JSON);
         requestBuilder.content(json.getBytes());
-        requestBuilder.cookie(cookieBuilder.generateCookie(JWTTOKEN_VALUE, false));
+        requestBuilder.with(jwt().jwt(
+            Jwt.withTokenValue("bla")
+                .subject(AUTHUSER_1.getUsername())
+                .claim(AuthService.CLAIM_USERID, AUTHUSER_1.getId())
+                .claim("scope", "id")
+                .header("kid", "bla")
+                .build()
+        ));
         
         this.mockMvc.perform(requestBuilder).andExpect(MockMvcResultMatchers.status().isCreated());
     }
@@ -150,9 +159,15 @@ public class VoteOptionMemberControllerServiceIT {
         String json = gson.toJson(voteParticipantDTO);
         
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(VERSION + VOTES + "/1/participants");
-        requestBuilder.contentType(MediaType.APPLICATION_JSON_UTF8);
+        requestBuilder.contentType(MediaType.APPLICATION_JSON);
         requestBuilder.content(json.getBytes());
-        requestBuilder.cookie(cookieBuilder.generateCookie(JWTTOKEN_VALUE, false));
+        requestBuilder.with(jwt().jwt(
+            Jwt.withTokenValue("bla")
+                .subject(AUTHUSER_1.getUsername())
+                .claim(AuthService.CLAIM_USERID, AUTHUSER_1.getId())
+                .header("kid", "bla")
+                .build()
+        ));
         
         this.mockMvc.perform(requestBuilder).andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -172,7 +187,6 @@ public class VoteOptionMemberControllerServiceIT {
     }
     
     private void setMockRestServiceServer(AuthUser authUser, String displayName) {
-        given(authService.getUserData(JWTTOKEN_VALUE)).willReturn(authUser);
         if(displayName != null) given(authService.fetchDisplayName(authUser.getId())).willReturn(displayName);
     }
 }
