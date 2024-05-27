@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Optional;
 
 @Embeddable
 @Data
@@ -26,5 +27,16 @@ public class VoteDecisionId implements Serializable {
     @ManyToOne
     public VoteParticipant getVoteParticipant() {
         return voteParticipant;
+    }
+    
+    public String toString() {
+        return String.format(
+            "VoteDecisionId[option=%s; participant=%s]",
+            Optional.ofNullable(voteOption)
+                .map(VoteOption::getId)
+                .orElse(null),
+            Optional.ofNullable(voteParticipant)
+                .map(VoteParticipant::getId)
+                .orElse(null));
     }
 }

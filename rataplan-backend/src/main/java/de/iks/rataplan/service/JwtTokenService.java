@@ -1,10 +1,7 @@
 package de.iks.rataplan.service;
 
-import io.jsonwebtoken.Claims;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface JwtTokenService {
-
-    String generateAuthBackendParticipantToken(Integer id);
-    String generateIDToken();
-    Claims getClaimsFromToken(String token);
+    Jwt generateIDToken();
 }

@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "vote")
 public class VoteOption implements Serializable {
 
     private static final long serialVersionUID = 1722350279433794595L;
@@ -140,7 +140,6 @@ public class VoteOption implements Serializable {
 
     public boolean validateParticipantLimitConfig(){
         if (!this.participantLimitActive && this.participantLimit == null) return true;
-        else if (this.participantLimitActive  && this.participantLimit != null && this.participantLimit > 0) return true;
-        return false;
+        else return this.participantLimitActive && this.participantLimit != null && this.participantLimit > 0;
     }
 }

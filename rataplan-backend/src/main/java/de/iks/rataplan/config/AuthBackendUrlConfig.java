@@ -15,5 +15,4 @@ public class AuthBackendUrlConfig {
     private String displayName;
     private String email;
     private String notification;
-    private String publicKey;
 }

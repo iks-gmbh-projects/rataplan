@@ -13,9 +13,9 @@ import de.iks.rataplan.service.ConsigneeService;
 import de.iks.rataplan.service.VoteService;
 import lombok.RequiredArgsConstructor;
 
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -33,7 +33,7 @@ public class VoteControllerService {
 
 	private final ModelMapper modelMapper;
 	
-    public CreatorVoteDTO createVote(CreatorVoteDTO creatorVoteDTO, String jwtToken) {
+    public CreatorVoteDTO createVote(CreatorVoteDTO creatorVoteDTO, Jwt jwtToken) {
 		creatorVoteDTO.defaultNullValues();
         //BackendUser backendUser = null;
 		AuthUser authUser = null;
@@ -56,7 +56,7 @@ public class VoteControllerService {
 		return modelMapper.map(vote, CreatorVoteDTO.class);
 	}
 
-	public CreatorVoteDTO updateVote(String editToken, CreatorVoteDTO creatorVoteDTO, String jwtToken) {
+	public CreatorVoteDTO updateVote(String editToken, CreatorVoteDTO creatorVoteDTO, Jwt jwtToken) {
 		final Integer backendUserId;
 		if(jwtToken == null) backendUserId = null;
 		else backendUserId = authService.getUserData(jwtToken).getId();
@@ -83,7 +83,7 @@ public class VoteControllerService {
 		return modelMapper.map(newVote, CreatorVoteDTO.class);
 	}
 
-	public List<CreatorVoteDTO> getVotesCreatedByUser(String jwtToken) {
+	public List<CreatorVoteDTO> getVotesCreatedByUser(Jwt jwtToken) {
 		if (jwtToken == null) {
 			throw new ForbiddenException();
 		}
@@ -97,7 +97,7 @@ public class VoteControllerService {
 		return modelMapper.map(votes, new TypeToken<List<CreatorVoteDTO>>() {}.getType());
 	}
 
-	public List<VoteDTO> getVotesWhereUserParticipates(String jwtToken) {
+	public List<VoteDTO> getVotesWhereUserParticipates(Jwt jwtToken) {
 		if (jwtToken == null) {
 			throw new ForbiddenException();
 		}
@@ -118,7 +118,7 @@ public class VoteControllerService {
 		return modelMapper.map(vote, VoteDTO.class);
     }
 
-	public CreatorVoteDTO getVoteByEditToken(String editToken, String jwtToken) {
+	public CreatorVoteDTO getVoteByEditToken(String editToken, Jwt jwtToken) {
 		Vote vote = voteService.getVoteByEditToken(editToken);
 		
 		if(vote == null) return null;

@@ -14,6 +14,7 @@ import de.iks.rataplan.service.VoteService;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class VoteParticipantControllerService {
     private final FromEncryptedStringConverter fromEncryptedStringConverter;
     
     public VoteParticipantDTO createParticipant(
-        VoteParticipantDTO voteParticipantDTO, String participationToken, String jwtToken
+        VoteParticipantDTO voteParticipantDTO, String participationToken, Jwt jwtToken
     )
     {
         
@@ -58,7 +59,7 @@ public class VoteParticipantControllerService {
         return modelMapper.map(voteParticipant, VoteParticipantDTO.class);
     }
     
-    public void deleteParticipant(String participationToken, Integer memberId, String jwtToken) {
+    public void deleteParticipant(String participationToken, Integer memberId, Jwt jwtToken) {
         
         AuthUser authUser = null;
         
@@ -75,7 +76,7 @@ public class VoteParticipantControllerService {
     }
     
     public VoteParticipantDTO updateParticipant(
-        String participationToken, Integer memberId, VoteParticipantDTO voteParticipantDTO, String jwtToken
+        String participationToken, Integer memberId, VoteParticipantDTO voteParticipantDTO, Jwt jwtToken
     )
     {
         

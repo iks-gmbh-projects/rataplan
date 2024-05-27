@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "vote")
 public class VoteParticipant implements Serializable {
 
     private static final long serialVersionUID = 7136999956850896370L;

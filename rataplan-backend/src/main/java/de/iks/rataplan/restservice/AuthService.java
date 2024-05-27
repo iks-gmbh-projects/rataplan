@@ -1,8 +1,9 @@
 package de.iks.rataplan.restservice;
 
 import de.iks.rataplan.domain.AuthUser;
-import de.iks.rataplan.exceptions.InvalidTokenException;
 import de.iks.rataplan.dto.restservice.NotificationType;
+
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,10 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public interface AuthService {
-    AuthUser getUserData(String token) throws InvalidTokenException;
+    String CLAIM_USERID = "user_id";
+    
+    AuthUser getUserData(Jwt token);
     String fetchDisplayName(Integer userId);
     Integer fetchUserIdFromEmail(String email);
-    boolean isValidIDToken(String token);
     default void sendNotification(
         int recipient, NotificationType type, String subject, String content, String summaryContent
     )

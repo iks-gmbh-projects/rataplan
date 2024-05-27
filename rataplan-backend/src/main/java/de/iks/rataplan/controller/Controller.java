@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,10 +25,6 @@ import java.util.List;
 @RequestMapping("/v1")
 @RequiredArgsConstructor
 public class Controller {
-
-    private static final String JWT_COOKIE_NAME = "jwttoken";
-    private static final String ACCESS_TOKEN = "accesstoken";
-
     private final VoteControllerService voteControllerService;
 
     private final VoteParticipantControllerService voteParticipantControllerService;
@@ -35,20 +33,12 @@ public class Controller {
 
     private final VoteConsigneeControllerService voteConsigneeControllerService;
 
-    @ApiResponses({@ApiResponse(code = 200, message = "OK")})
-    @RequestMapping(value = "/*", method = RequestMethod.OPTIONS, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> handle() {
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = VoteDTO.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @GetMapping(value = "/votes/{participationToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<VoteDTO> getVoteByParticipationToken(@PathVariable String participationToken,
-                                                               @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+    @GetMapping(value = "/votes/{participationToken}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<VoteDTO> getVoteByParticipationToken(@PathVariable String participationToken) {
 
         VoteDTO voteDTO = voteControllerService
                 .getVoteByParticipationToken(participationToken);
@@ -59,9 +49,9 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @GetMapping(value = "/votes/edit/{editToken}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/votes/edit/{editToken}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CreatorVoteDTO> getVoteByEditToken(@PathVariable String editToken,
-                                                             @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+                                                             @AuthenticationPrincipal Jwt jwtToken) {
 
         CreatorVoteDTO creatorVoteDTO = voteControllerService
                 .getVoteByEditToken(editToken, jwtToken);
@@ -70,11 +60,11 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = CreatorVoteDTO.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @RequestMapping(value = "/votes/edit/{editToken}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/votes/edit/{editToken}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CreatorVoteDTO> editVote(
             @PathVariable String editToken,
             @RequestBody CreatorVoteDTO creatorVoteDTO,
-            @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+            @AuthenticationPrincipal Jwt jwtToken) {
 
         CreatorVoteDTO createdCreatorVoteDTO = voteControllerService
                 .updateVote(editToken, creatorVoteDTO, jwtToken);
@@ -83,10 +73,10 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 201, message = "CREATED", response = CreatorVoteDTO.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @PostMapping(value = "/votes")
+    @PostMapping(value = "/votes", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CreatorVoteDTO> createVote(
             @RequestBody CreatorVoteDTO creatorVoteDTO,
-            @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+            @AuthenticationPrincipal Jwt jwtToken) {
         creatorVoteDTO.assertCreationValid();
         CreatorVoteDTO createdCreatorVoteDTO = voteControllerService
                 .createVote(creatorVoteDTO, jwtToken);
@@ -98,10 +88,10 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @PostMapping(value = "/votes/{participationToken}/participants", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/votes/{participationToken}/participants", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VoteParticipantDTO> addVoteParticipant(@PathVariable String participationToken,
                                                                  @RequestBody VoteParticipantDTO voteParticipantDTO,
-                                                                 @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+                                                                 @AuthenticationPrincipal Jwt jwtToken) {
         VoteParticipantDTO addedVoteParticipantDTO = voteParticipantControllerService
                 .createParticipant(voteParticipantDTO, participationToken, jwtToken);
         return new ResponseEntity<>(addedVoteParticipantDTO, HttpStatus.CREATED);
@@ -111,9 +101,9 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @DeleteMapping(value = "/votes/{participationToken}/participants/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "/votes/{participationToken}/participants/{memberId}")
     public ResponseEntity<?> deleteVoteParticipant(@PathVariable String participationToken, @PathVariable Integer memberId,
-                                                   @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+                                                   @AuthenticationPrincipal Jwt jwtToken) {
 
         voteParticipantControllerService.deleteParticipant(participationToken, memberId, jwtToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -124,10 +114,10 @@ public class Controller {
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 404, message = "Vote not found.", response = ResourceNotFoundException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @PutMapping(value = "/votes/{participationToken}/participants/{memberId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/votes/{participationToken}/participants/{memberId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VoteParticipantDTO> updateVoteParticipant(@PathVariable String participationToken,
                                                                     @PathVariable Integer memberId, @RequestBody VoteParticipantDTO voteParticipantDTO,
-                                                                    @CookieValue(value = JWT_COOKIE_NAME, required = false) String jwtToken) {
+                                                                    @AuthenticationPrincipal Jwt jwtToken) {
         voteParticipantDTO.assertUpdateValid();
         VoteParticipantDTO updatedVoteParticipantDTO = voteParticipantControllerService.updateParticipant(participationToken, memberId,
                 voteParticipantDTO, jwtToken);
@@ -137,9 +127,9 @@ public class Controller {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @GetMapping(value = "/users/votes/creations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/users/votes/creations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CreatorVoteDTO>> getVotesCreatedByUser(
-            @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
+            @AuthenticationPrincipal Jwt jwtToken) {
 
         List<CreatorVoteDTO> voteDTOs = voteControllerService.getVotesCreatedByUser(jwtToken);
         return new ResponseEntity<>(voteDTOs, HttpStatus.OK);
@@ -148,9 +138,9 @@ public class Controller {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = List.class),
             @ApiResponse(code = 403, message = "No access.", response = ForbiddenException.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @GetMapping(value = "/users/votes/participations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/users/votes/participations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<VoteDTO>> getVotesWhereUserParticipates(
-            @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
+            @AuthenticationPrincipal Jwt jwtToken) {
 
         List<VoteDTO> votesDTO = voteControllerService.getVotesWhereUserParticipates(jwtToken);
         return new ResponseEntity<>(votesDTO, HttpStatus.OK);
@@ -158,7 +148,7 @@ public class Controller {
 
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK", response = Boolean.class),
             @ApiResponse(code = 500, message = "Internal Server Error.", response = ServiceNotAvailableException.class)})
-    @PostMapping(value = "/contacts", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/contacts", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> contact(@RequestBody ContactData contactData) {
         contactData.assertValid();
         generalControllerService.sendMailToContact(contactData);
@@ -167,7 +157,7 @@ public class Controller {
 
     @GetMapping("/users/votes/consigns")
     public ResponseEntity<List<VoteDTO>> getVotesWhereUserIsConsignee(
-        @CookieValue(JWT_COOKIE_NAME) String jwtToken) {
+        @AuthenticationPrincipal Jwt jwtToken) {
         return ResponseEntity.ok(voteConsigneeControllerService.getVotesWhereUserIsConsignee(jwtToken));
     }
     

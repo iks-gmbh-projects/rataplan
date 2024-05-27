@@ -7,8 +7,10 @@ import de.iks.rataplan.restservice.AuthService;
 import de.iks.rataplan.service.ConsigneeService;
 import de.iks.rataplan.service.VoteService;
 import lombok.RequiredArgsConstructor;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -22,7 +24,7 @@ public class VoteConsigneeControllerService {
     private final ConsigneeService consigneeService;
     private final VoteService voteService;
     private final ModelMapper modelMapper;
-    public List<VoteDTO> getVotesWhereUserIsConsignee(String token) {
+    public List<VoteDTO> getVotesWhereUserIsConsignee(Jwt token) {
         AuthUser user = authService.getUserData(token);
         if(user == null) return Collections.emptyList();
         List<Vote> votes = consigneeService.getVotesForConsignee(user);
