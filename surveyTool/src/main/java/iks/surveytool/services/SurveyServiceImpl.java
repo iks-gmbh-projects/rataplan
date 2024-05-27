@@ -14,6 +14,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -50,7 +51,7 @@ public class SurveyServiceImpl implements SurveyService {
         return ResponseEntity.ok(completeSurveyDTO);
     }
     
-    public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, String jwttoken) {
+    public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, Jwt jwttoken) {
         SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
         if(surveyOverviewDTO != null) {
             if(surveyOverviewDTO.getUserId() != null) {
@@ -203,7 +204,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(
-        String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken
+        String accessId, CompleteSurveyDTO completeSurveyDTO, Jwt jwttoken
     ) throws InvalidEntityException
     {
         final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
@@ -346,7 +347,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
     
     @Override
-    public ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(String jwttoken) {
+    public ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(Jwt jwttoken) {
         AuthUser user = authService.getUserData(jwttoken);
         if(user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

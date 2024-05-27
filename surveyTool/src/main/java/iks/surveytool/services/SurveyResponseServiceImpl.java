@@ -15,6 +15,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +66,7 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     }
     
     @Transactional
-    public ResponseEntity<List<SurveyResponseDTO>> processSurveyResponseDTOs(String accessId, String authToken) {
+    public ResponseEntity<List<SurveyResponseDTO>> processSurveyResponseDTOs(String accessId, Jwt authToken) {
         final Optional<Survey> optSurvey = surveyRepository.findSurveyByAccessId(accessId);
         if(optSurvey.isEmpty()) return ResponseEntity.notFound().build();
         final Survey survey = optSurvey.get();

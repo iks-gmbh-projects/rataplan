@@ -9,6 +9,8 @@ import iks.surveytool.services.SurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,7 @@ public class SurveyController {
     @PostMapping
     public ResponseEntity<SurveyOverviewDTO> createSurvey(
         @RequestBody CompleteSurveyDTO surveyDTO,
-        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+        @AuthenticationPrincipal Jwt jwttoken
     ) throws InvalidEntityException {
         if (jwttoken == null) surveyDTO.setUserId(null);
         else {
@@ -42,7 +44,7 @@ public class SurveyController {
     public ResponseEntity<SurveyOverviewDTO> editSurvey(
         @RequestParam String accessId,
         @RequestBody CompleteSurveyDTO surveyDTO,
-        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+        @AuthenticationPrincipal Jwt jwttoken
     ) throws InvalidEntityException {
         if(!surveyDTO.valid()) return ResponseEntity.badRequest().build();
         return surveyService.processEditSurveyByAccessId(accessId, surveyDTO, jwttoken);
@@ -51,7 +53,7 @@ public class SurveyController {
     @GetMapping(params = {"accessId"})
     public ResponseEntity<SurveyOverviewDTO> findSurveyByAccessId(
         @RequestParam String accessId,
-        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwttoken
+        @AuthenticationPrincipal Jwt jwttoken
     ) {
         return surveyService.processSurveyByAccessId(accessId, jwttoken);
     }
@@ -68,9 +70,8 @@ public class SurveyController {
 
     @GetMapping("/own")
     public ResponseEntity<List<SurveyOverviewDTO>> findMySurveys(
-        @CookieValue(name = AuthService.JWT_COOKIE_NAME, required = false) String jwtToken
+        @AuthenticationPrincipal Jwt jwtToken
     ) {
-        if (jwtToken == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         return surveyService.processMySurveys(jwtToken);
     }
 }
