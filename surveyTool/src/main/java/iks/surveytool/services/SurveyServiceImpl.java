@@ -7,6 +7,7 @@ import iks.surveytool.entities.*;
 import iks.surveytool.repositories.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
 import org.apache.logging.log4j.Level;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -38,8 +40,7 @@ public class SurveyServiceImpl implements SurveyService {
     private final AuthService authService;
     private final Random random = new Random();
     
-    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) throws
-        InvalidEntityException
+    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) throws InvalidEntityException
     {
         Survey newSurvey = mapSurveyToEntity(surveyDTO);
         newSurvey.validate();
@@ -202,9 +203,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(
-        String accessId,
-        CompleteSurveyDTO completeSurveyDTO,
-        String jwttoken
+        String accessId, CompleteSurveyDTO completeSurveyDTO, String jwttoken
     ) throws InvalidEntityException
     {
         final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
@@ -212,8 +211,11 @@ public class SurveyServiceImpl implements SurveyService {
             return ResponseEntity.notFound().build();
         }
         final Survey oldSurvey = optionalSurvey.get();
-        if(oldSurvey.getStartDate().toInstant().isAfter(completeSurveyDTO.getStartDate()))
+        if(oldSurvey.getStartDate().toInstant().isAfter(completeSurveyDTO.getStartDate()) &&
+           !oldSurvey.getStartDate().toInstant().isAfter(Instant.now()))
             throw new InvalidEntityException("Invalid Start Date", oldSurvey);
+        if(!completeSurveyDTO.getEndDate().isAfter(completeSurveyDTO.getStartDate()))
+            throw new InvalidEntityException("Invalid End Date", oldSurvey);
         if(oldSurvey.getUserId() != null) {
             AuthUser user = authService.getUserData(jwttoken);
             if(user == null) {
