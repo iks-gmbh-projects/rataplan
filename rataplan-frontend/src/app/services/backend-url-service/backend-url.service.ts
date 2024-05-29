@@ -32,6 +32,11 @@ export class BackendUrlService {
     first(),
   );
   
+  public readonly logoutURL: Observable<string> = this._authURL.pipe(
+    map(url => `${url}logout`),
+    first(),
+  );
+  
   public authBackendURL(...path: (string | number)[]): Observable<string> {
     const p = path.map(s =>
       'string' === typeof s ?
