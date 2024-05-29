@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.DisabledException;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,26 +34,41 @@ public class SecurityConfig {
     private final FrontendConfig frontendConfig;
     
     @Bean
-    public SecurityFilterChain normalSecurity(HttpSecurity httpSecurity, JwtTokenService jwtTokenService) throws
+    @Order(1)
+    public SecurityFilterChain loginSecurity(HttpSecurity httpSecurity, JwtTokenService jwtTokenService) throws
         Exception
     {
-        UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter =
-            new UsernamePasswordAuthenticationFilter();
-        usernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
+        AuthenticationSuccessHandler authenticationSuccessHandler = (request, response, authentication) -> {
             RataplanUserDetails userDetails = (RataplanUserDetails) authentication.getPrincipal();
             response.setStatus(200);
             PrintWriter writer = response.getWriter();
             writer.println(jwtTokenService.generateLoginToken(userDetails));
             writer.close();
-        });
+        };
+        UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter =
+            new UsernamePasswordAuthenticationFilter();
+        usernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         usernamePasswordAuthenticationFilter.setAuthenticationFailureHandler((request, response, exception) -> response.sendError(
             (exception instanceof DisabledException ? HttpStatus.FORBIDDEN : HttpStatus.UNAUTHORIZED).value())
         );
-        return httpSecurity.cors(Customizer.withDefaults())
+        return httpSecurity.requestMatchers(r -> r.mvcMatchers("/login", "/logout"))
+            .cors(Customizer.withDefaults())
             .csrf(CsrfConfigurer::disable)
             .addFilter(usernamePasswordAuthenticationFilter)
             .apply(new AuthenticationManagerConfigurer(usernamePasswordAuthenticationFilter))
             .and()
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .rememberMe(r -> r.authenticationSuccessHandler(authenticationSuccessHandler))
+            .logout(l -> l.logoutSuccessHandler(((request, response, authentication) -> response.sendError(HttpStatus.NO_CONTENT.value()))))
+            .authorizeHttpRequests(r -> r.anyRequest().denyAll())
+            .build();
+    }
+    
+    @Bean
+    @Order(2)
+    public SecurityFilterChain normalSecurity(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.cors(Customizer.withDefaults())
+            .csrf(CsrfConfigurer::disable)
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(r -> {
