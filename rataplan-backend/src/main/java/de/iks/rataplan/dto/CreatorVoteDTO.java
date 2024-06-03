@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Integer id,
         String title,
         String description,
-        Date deadline,
+        Instant deadline,
         String organizerName,
         VoteNotificationSettingsDTO notificationSettings,
         VoteConfig voteConfig,
@@ -40,7 +41,7 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
     public CreatorVoteDTO(
         String title,
         String description,
-        Date deadline,
+        Instant deadline,
         String organizerName,
         VoteNotificationSettingsDTO notificationSettings,
         VoteConfig voteConfig,
@@ -56,7 +57,7 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
     public CreatorVoteDTO(
         String title,
         String description,
-        Date deadline,
+        Instant deadline,
         String organizerName,
         VoteNotificationSettingsDTO notificationSettings,
         VoteConfig voteConfig,

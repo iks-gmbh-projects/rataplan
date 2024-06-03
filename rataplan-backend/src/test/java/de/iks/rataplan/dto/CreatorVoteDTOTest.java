@@ -56,7 +56,7 @@ public class CreatorVoteDTOTest {
         
         CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title",
             "Description",
-            new Date(1234567890L),
+            new Date(1234567890L).toInstant(),
             IKS_NAME,
             VoteNotificationSettingsDTO.builder()
                 .recipientEmail(IKS_MAIL)
@@ -104,7 +104,7 @@ public class CreatorVoteDTOTest {
         
         CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title",
             "Description",
-            new Date(1234567890L),
+            new Date(1234567890L).toInstant(),
             IKS_NAME,
             VoteNotificationSettingsDTO.builder()
                 .recipientEmail(IKS_MAIL)
@@ -136,7 +136,7 @@ public class CreatorVoteDTOTest {
     public void mapToDTO_VoteFull_mapped() {
         Vote vote = new Vote(new EncryptedString("Title", false),
             new EncryptedString("Description", false),
-            new Date(123456789L),
+            new Date(123456789L).toInstant(),
             new EncryptedString(IKS_NAME, false),
             new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),
             new VoteConfig(new VoteOptionConfig(true, false, true, false, false, false), DecisionType.EXTENDED)
@@ -186,7 +186,7 @@ public class CreatorVoteDTOTest {
     public void mapToDomain_VoteDTOFull_mapped() {
         CreatorVoteDTO dtoVote = new CreatorVoteDTO("Title",
             "Description",
-            new Date(123456789L),
+            new Date(123456789L).toInstant(),
             IKS_NAME,
             new VoteNotificationSettingsDTO(IKS_MAIL, true, false, true),
             new VoteConfig(new VoteOptionConfig(true, false, true, true, false, false), DecisionType.NUMBER),

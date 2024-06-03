@@ -5,8 +5,11 @@ import de.iks.rataplan.exceptions.MalformedException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +22,8 @@ public class VoteDTO implements Serializable {
     private String title;
     private String description;
     private String organizerName;
-    private Date deadline;
+    @DateTimeFormat(iso= DateTimeFormat.ISO.DATE_TIME)
+    private Instant deadline;
     private Integer userId;
     private boolean notified;
     private String participationToken;
@@ -29,13 +33,13 @@ public class VoteDTO implements Serializable {
     private String personalisedInvitation;
     
 
-    public VoteDTO(Integer id, String title, String description, Date deadline, String organizerName,
+    public VoteDTO(Integer id, String title, String description, Instant deadline, String organizerName,
         VoteConfig voteConfig,  String personalisedInvitation) {
         this(title, description, deadline, organizerName, voteConfig,personalisedInvitation);
         this.id = id;
     }
     
-    public VoteDTO(String title, String description, Date deadline, String organizerName, VoteConfig voteConfig, String personalisedInvitation) {
+    public VoteDTO(String title, String description, Instant deadline, String organizerName, VoteConfig voteConfig, String personalisedInvitation) {
         this.title = title;
         this.description = description;
         this.deadline = deadline;

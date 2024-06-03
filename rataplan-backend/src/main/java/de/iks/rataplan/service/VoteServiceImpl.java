@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -123,7 +123,7 @@ public class VoteServiceImpl implements VoteService {
         
         if(newVote.getDeadline() != null) {
             dbVote.setDeadline(newVote.getDeadline());
-            if(newVote.getDeadline().after(new Date(Calendar.getInstance().getTimeInMillis()))) {
+            if(newVote.getDeadline().isAfter(Instant.now())) {
                 dbVote.setNotified(false);
             }
         }

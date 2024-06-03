@@ -9,11 +9,13 @@ import lombok.ToString;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +37,8 @@ public class Vote implements Serializable {
     private Integer id;
     private EncryptedString title;
     private EncryptedString description;
-    private Date deadline;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Instant deadline;
     private EncryptedString organizerName;
     private VoteNotificationSettings notificationSettings;
     private Integer userId;
@@ -55,7 +58,7 @@ public class Vote implements Serializable {
     public Vote(
         EncryptedString title,
         EncryptedString description,
-        Date deadline,
+        Instant deadline,
         EncryptedString organizerName,
         VoteNotificationSettings notificationSettings,
         VoteConfig voteConfig,
@@ -78,7 +81,7 @@ public class Vote implements Serializable {
     public Vote(
         EncryptedString title,
         EncryptedString description,
-        Date deadline,
+        Instant deadline,
         EncryptedString organizerName,
         VoteNotificationSettings notificationSettings,
         VoteConfig voteConfig
@@ -128,7 +131,7 @@ public class Vote implements Serializable {
     }
     
     @Column(name = "deadline")
-    public Date getDeadline() {
+    public Instant getDeadline() {
         return deadline;
     }
     
@@ -205,7 +208,7 @@ public class Vote implements Serializable {
         return userConsignees;
     }
     @Transient
-    public String getPersonalisedInvitation(){return personalisedInvitation;}
+    public String getPersonalisedInvitation() {return personalisedInvitation;}
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "voteId", cascade = CascadeType.ALL)
     public List<BackendUserAccess> getAccessList() {
         return accessList;
