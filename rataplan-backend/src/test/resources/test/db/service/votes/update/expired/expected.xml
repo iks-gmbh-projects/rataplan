@@ -1,13 +1,16 @@
 <dataset>
-  <vote id="1" title="RAW__##__Coding Dojo" description="RAW__##__Fun with code" recipientEmail="aWtzQGlrcy1nbWJoLmNvbQ==" notifyParticipation="false" notifyExpiration="true" deadline="2050-10-10" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
+    <vote id="1" title="RAW__##__Coding Dojo" description="RAW__##__Fun with code"
+          recipientEmail="aWtzQGlrcy1nbWJoLmNvbQ==" notifyParticipation="false" notifyExpiration="true"
+          deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0" isDescription="1" isStartDate="0"
+          isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0"/>
 
-  <voteOption id="1" voteId="1" description="iks Hilden" />
-  <voteOption id="2" voteId="1" description="homeoffice" />
+    <voteOption id="1" voteId="1" description="iks Hilden"/>
+    <voteOption id="2" voteId="1" description="homeoffice"/>
 
-  <voteParticipant id="1" name="RubberBandMan" voteId="1" />
+    <voteParticipant id="1" name="RubberBandMan" voteId="1"/>
 
-  <voteDecision decision="0" voteOptionId="1" voteParticipantId="1"/>
-  <voteDecision decision="3" voteOptionId="2" voteParticipantId="1"/>
-  
-  <backendUserAccess />
+    <voteDecision decision="0" voteOptionId="1" voteParticipantId="1"/>
+    <voteDecision decision="3" voteOptionId="2" voteParticipantId="1"/>
+
+    <backendUserAccess/>
 </dataset>

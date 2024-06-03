@@ -9,8 +9,8 @@ import static de.iks.rataplan.testutils.TestConstants.createSimpleVote;
 import static org.junit.Assert.assertEquals;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import de.iks.rataplan.domain.*;
@@ -145,7 +145,7 @@ public class VoteOptionRequestBuilderTest {
     private Vote createComplicatedVote() {
         return new Vote(new EncryptedString("Coding Dojo", false),
             new EncryptedString("Fun with code", false),
-            new Date(DATE_2050_10_10),
+            new Date(DATE_2050_10_10).toInstant(),
             new EncryptedString(IKS_NAME, false),
             new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),
             new VoteConfig(new VoteOptionConfig(true, true, true, true, true, true), DecisionType.EXTENDED)

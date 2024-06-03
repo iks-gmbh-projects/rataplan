@@ -1,2 +1,2 @@
-ALTER TABLE rataplandb.public.vote
+ALTER TABLE vote
     ALTER COLUMN deadline TYPE timestamp with time zone;

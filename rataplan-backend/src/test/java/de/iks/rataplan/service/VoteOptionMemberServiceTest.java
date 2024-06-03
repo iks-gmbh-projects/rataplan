@@ -17,8 +17,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
@@ -94,7 +94,7 @@ public class VoteOptionMemberServiceTest {
         Vote vote = new Vote(
             new EncryptedString("Test Title", false),
             new EncryptedString("A short description of the voteOption.", false),
-            new Date(2050, 10, 10),
+            new Date(2050, 10, 10).toInstant(),
             new EncryptedString("iks@iks-gmbh.com", false),
             null,
             new VoteConfig(new VoteOptionConfig(), DecisionType.EXTENDED)

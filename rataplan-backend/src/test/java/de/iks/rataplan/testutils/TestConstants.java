@@ -3,7 +3,7 @@ package de.iks.rataplan.testutils;
 import static de.iks.rataplan.utils.VoteBuilder.voteOptionList;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
+import java.util.Date;
 
 import de.iks.rataplan.domain.*;
 
@@ -20,7 +20,7 @@ public final class TestConstants {
     // Paths (used to find files)
     public static final String CONSIGNEES = "/consignees";
     public static final String TRANSCRIBE_CONSIGNEES_TO_BACKEND_USER_ACCESSES =
-        "/transcribeConsigneesToBackendUserAccesses";
+            "/transcribeConsigneesToBackendUserAccesses";
     public static final String VOTE_PARTICIPANTS = "/voteParticipants";
     public static final String VOTES = "/votes";
     public static final String AUTHORIZATION = "/authorization";
@@ -67,7 +67,7 @@ public final class TestConstants {
     public static Vote createSimpleVote() {
         Vote vote = new Vote(new EncryptedString("Coding Dojo", false),
             new EncryptedString("Fun with code", false),
-            new Date(DATE_2050_10_10),
+            new Date(DATE_2050_10_10).toInstant(),
             new EncryptedString(IKS_NAME, false),
             new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),
             new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false),

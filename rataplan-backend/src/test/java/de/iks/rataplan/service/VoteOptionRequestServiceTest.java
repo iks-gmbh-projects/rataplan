@@ -24,8 +24,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
@@ -251,7 +251,7 @@ public class VoteOptionRequestServiceTest {
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
-        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
         vote.setNotificationSettings(new VoteNotificationSettings(
             IKS_MAIL.getBytes(StandardCharsets.UTF_8),
@@ -311,7 +311,7 @@ public class VoteOptionRequestServiceTest {
         
         Vote vote = voteService.getVoteById(1);
         
-        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         voteService.updateVote(oldVote, vote);
         verifyNoInteractions(authService);
     }
@@ -326,7 +326,7 @@ public class VoteOptionRequestServiceTest {
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
-        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
         vote.setVoteConfig(voteConfig);
         
@@ -353,7 +353,7 @@ public class VoteOptionRequestServiceTest {
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
-        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
         vote.setVoteConfig(voteConfig);
         
@@ -383,7 +383,7 @@ public class VoteOptionRequestServiceTest {
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
-        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
         vote.setVoteConfig(voteConfig);
         
@@ -421,7 +421,7 @@ public class VoteOptionRequestServiceTest {
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
-        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
         vote.setVoteConfig(voteConfig);
         
@@ -461,7 +461,7 @@ public class VoteOptionRequestServiceTest {
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
-        vote.setDeadline(new Date(DATE_2050_10_10));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
         vote.setVoteConfig(voteConfig);
         
