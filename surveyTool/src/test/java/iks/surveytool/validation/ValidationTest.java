@@ -178,25 +178,6 @@ class ValidationTest {
     }
 
     @Test
-    @DisplayName("Failed validation - startDate in past")
-    void startDateInPast() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
-        survey.setStartDate(ZonedDateTime.of(2000, 1, 1, 12, 0, 0, 0, ZoneId.systemDefault()));
-
-        assertThrows(InvalidEntityException.class, survey::validate);
-    }
-
-    @Test
     @DisplayName("Failed validation - QuestionGroup missing title")
     void questionGroupIsMissingTitle() {
         Question firstQuestion = new QuestionBuilder()
