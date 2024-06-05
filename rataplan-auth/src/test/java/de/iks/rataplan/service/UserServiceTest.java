@@ -113,9 +113,9 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void registerUser() {
-        UserDTO userDTO = new UserDTO(2, "fritz", " fritz", "fritz@fri.tte", "password");
+        UserDTO userDTO = new UserDTO(4, "fritz", " fritz", "fritz@fri.tte", "password");
         User registeredUser = userService.getUserFromId(userService.registerUser(userDTO).getId());
         assertEquals(registeredUser.getPassword().length(), 60);
         assertNotNull(registeredUser.getId());
@@ -123,9 +123,9 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void registerTrimmedUser() {
-        UserDTO userDTO = new UserDTO(2, " fritz ", " fritz", "fritz@fri.tte", "password");
+        UserDTO userDTO = new UserDTO(4, " fritz ", " fritz", "fritz@fri.tte", "password");
         User registeredUser = userService.getUserFromId(userService.registerUser(userDTO).getId());
         assertEquals(registeredUser.getPassword().length(), 60);
         assertNotNull(registeredUser.getId());
@@ -133,43 +133,43 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void registerUserShouldFailUsernameAlreadyExists() {
         assertThrows(UsernameAlreadyInUseException.class,
-            () -> userService.registerUser(new UserDTO(1, "PeTEr", "peter", "neuerpeter@sch.mitz", "password"))
+            () -> userService.registerUser(new UserDTO(4, "PeTEr", "peter", "neuerpeter@sch.mitz", "password"))
         );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void registerUserShouldFailMailAlreadyExists() {
         assertThrows(MailAlreadyInUseException.class,
-            () -> userService.registerUser(new UserDTO(1, "neuerpeter", "peter", "PEtEr@scH.MiTz", "password"))
+            () -> userService.registerUser(new UserDTO(4, "neuerpeter", "peter", "PEtEr@scH.MiTz", "password"))
         );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void registerUserShouldFailUsernameOnlyWhitespace() {
         assertThrows(InvalidUserDataException.class,
-            () -> userService.registerUser(new UserDTO(1, "  ", "peter", "neuerpeter@sch.mitz", "password"))
+            () -> userService.registerUser(new UserDTO(4, "  ", "peter", "neuerpeter@sch.mitz", "password"))
         );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void registerUserShouldFailEmailOnlyWhitespace() {
         assertThrows(InvalidUserDataException.class,
-            () -> userService.registerUser(new UserDTO(1, "neuerpeter", "peter", "  ", "password"))
+            () -> userService.registerUser(new UserDTO(4, "neuerpeter", "peter", "  ", "password"))
         );
     }
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void loginUserWithUsername() {
         UserDTO dbUser = userService.loginUser(new UserDTO(1, "PEtEr", null, null, "geheim"));
         assertEquals("peter", dbUser.getUsername());
@@ -178,7 +178,7 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void loginUserWithUsernameShouldFailUsernameDoesNotExist() {
         assertThrows(WrongCredentialsException.class,
             () -> userService.loginUser(new UserDTO(1, "DoesNotExist", null, null, "geheim"))
@@ -187,7 +187,7 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(ENCRYPTED_USER_FILE_INITIAL)
-    @ExpectedDatabase(value = ENCRYPTED_USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = ENCRYPTED_USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void loginUserWithUsernameShouldFailUsernameDoesNotExist2() {
         assertThrows(WrongCredentialsException.class,
             () -> userService.loginUser(new UserDTO(1, "/L81z0oXEO3vgkU25CCiIw==", null, null, "geheim"))
@@ -196,7 +196,7 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void loginUserWithUsernameShouldFailWrongPassword() {
         assertThrows(WrongCredentialsException.class,
             () -> userService.loginUser(new UserDTO(1, "PEtEr", null, null, "wrongPassword"))
@@ -215,7 +215,7 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void loginUserWithMailShouldFailWrongPassword() {
         assertThrows(WrongCredentialsException.class,
             () -> userService.loginUser(new UserDTO(1, null, null, "peter@sch.mitz", "wrongPassword"))
@@ -224,7 +224,7 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void loginUserWithMailShouldFailMailDoesNotExist() {
         assertThrows(WrongCredentialsException.class,
             () -> userService.loginUser(new UserDTO(1, null, null, "does@not.exist", "wrongPassword"))
@@ -233,7 +233,7 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(ENCRYPTED_USER_FILE_INITIAL)
-    @ExpectedDatabase(value = ENCRYPTED_USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = ENCRYPTED_USER_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void loginUserWithUsernameShouldFailMailDoesNotExist2() {
         assertThrows(WrongCredentialsException.class,
             () -> userService.loginUser(new UserDTO(1, "KoBbpLwGdBuAgJDBBIYmfQ==", null, null, "geheim"))
@@ -252,7 +252,7 @@ public class UserServiceTest {
         
         UserDTO changed = userService.getUserDTOFromUsername("peter");
         assertNotNull(changed);
-        assertEquals((Integer) 1, changed.getId()); //verify that we got the correct user
+        assertEquals((Integer) (-1), changed.getId()); //verify that we got the correct user
         assertEquals("GeänderterPeter", changed.getDisplayname());
         assertEquals("peter@sch.mitz", changed.getMail());
     }
@@ -280,7 +280,7 @@ public class UserServiceTest {
     @Test
     @DatabaseSetup(value = USER_FILE_INITIAL)
     public void confirmAccount() {
-        UserDTO user = userService.registerUser(new UserDTO(2, "fritz", " fritz", "fritz@fri.tte", "password"));
+        UserDTO user = userService.registerUser(new UserDTO(4, "fritz", " fritz", "fritz@fri.tte", "password"));
         assertFalse(userService.getUserFromUsername(user.getUsername()).isAccountConfirmed());
         
         String token = jwtTokenService.generateAccountConfirmationToken(user);
@@ -295,6 +295,6 @@ public class UserServiceTest {
     @Test
     @DatabaseSetup(value = USER_FILE_INITIAL)
     public void getEmailFromId() {
-        assertEquals("peter@sch.mitz", cryptoService.decryptDB(userService.getUserFromId(1).getMail()));
+        assertEquals("peter@sch.mitz", cryptoService.decryptDB(userService.getUserFromId(-1).getMail()));
     }
 }

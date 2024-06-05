@@ -7,8 +7,8 @@
     <contact ownerId="2" userId="1"/>
     <contact ownerId="1" userId="3"/>
 
-    <contactGroup ownerId="1" id="1" name="b2xkR3JvdXA="/>
-    <contactGroup ownerId="2" id="2" name="b2xkR3JvdXA="/>
+    <contactGroup ownerId="1" id="-1" name="b2xkR3JvdXA="/>
+    <contactGroup ownerId="2" id="-2" name="b2xkR3JvdXA="/>
 
-    <contactGroupContent groupOwnerId="1" groupId="1" contactOwnerId="1" contactId="1"/>
+    <contactGroupContent groupOwnerId="1" groupId="-1" contactOwnerId="1" contactId="1"/>
 </dataset>

@@ -13,5 +13,5 @@
     <notification_type id="3" categoryId="3" name="basic" version="1"/>
 
 
-    <notification_queue id="1" recipientId="1" typeId="2" subject="VGVzdE5vdGlmaWNhdGlvbg==" content="VGVzdE5vdGlmaWNhdGlvbkNvbnRlbnQ="/>
+    <notification_queue id="-1" recipientId="1" typeId="2" subject="VGVzdE5vdGlmaWNhdGlvbg==" content="VGVzdE5vdGlmaWNhdGlvbkNvbnRlbnQ="/>
 </dataset>

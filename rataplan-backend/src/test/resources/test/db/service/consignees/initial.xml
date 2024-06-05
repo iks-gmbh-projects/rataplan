@@ -8,5 +8,5 @@
 
     <voteDecision />
 
-    <backendUserAccess id="1" voteId="1" userId="1" isEdit="false" isInvited="true" version="1" />
+    <backendUserAccess id="-1" voteId="1" userId="1" isEdit="false" isInvited="true" version="1" />
 </dataset>

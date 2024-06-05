@@ -116,7 +116,7 @@ public class ContactServiceTest {
         assertEquals(1, allContacts.getGroups().size());
         assertIterableEquals(List.of(
             new ContactGroupDTO(
-                1L,
+                -1L,
                 "oldGroup",
                 List.of(1)
             )
@@ -131,7 +131,7 @@ public class ContactServiceTest {
         assertNotNull(allContacts);
         assertIterableEquals(List.of(
             new ContactGroupDTO(
-                1L,
+                -1L,
                 "oldGroup",
                 List.of()
             )
@@ -141,7 +141,7 @@ public class ContactServiceTest {
         AllContactsDTO allContacts2 = contactService.getContacts(2);
         assertNotNull(allContacts);
         assertIterableEquals(List.of(new ContactGroupDTO(
-            2L,
+            -2L,
             "oldGroup",
             List.of()
         )),  allContacts2.getGroups());
@@ -168,42 +168,42 @@ public class ContactServiceTest {
     
     @Test
     void renameGroupTest() {
-        ContactGroupDTO edited = contactService.renameGroup(1, 1, "newGroup");
+        ContactGroupDTO edited = contactService.renameGroup(1, -1, "newGroup");
         assertNotNull(edited);
-        assertEquals(1, edited.getId());
+        assertEquals(-1, edited.getId());
         assertEquals("newGroup", edited.getName());
         assertEquals(1, edited.getContacts().size());
         assertEquals(1, edited.getContacts().get(0));
-        assertEquals(edited, contactService.getGroup(1, 1));
+        assertEquals(edited, contactService.getGroup(1, -1));
     }
     
     @Test
     void addToGroupTest() {
-        ContactGroupDTO edited = contactService.addToGroup(1, 1, 3);
+        ContactGroupDTO edited = contactService.addToGroup(1, -1, 3);
         assertNotNull(edited);
-        assertEquals(1, edited.getId());
+        assertEquals(-1, edited.getId());
         assertEquals("oldGroup", edited.getName());
         assertNotNull(edited.getContacts());
         assertEquals(Set.of(1, 3), new HashSet<>(edited.getContacts()));
         
-        assertEquals(edited, contactService.getGroup(1, 1));
+        assertEquals(edited, contactService.getGroup(1, -1));
         assertTrue(contactService.getContacts(1).getUngrouped().isEmpty());
     }
     
     @Test
     void removeFromGroupTest() {
-        ContactGroupDTO edited = contactService.removeFromGroup(1, 1,1);
+        ContactGroupDTO edited = contactService.removeFromGroup(1, -1,1);
         assertNotNull(edited);
-        assertEquals(1, edited.getId());
+        assertEquals(-1, edited.getId());
         assertEquals("oldGroup", edited.getName());
         assertTrue(edited.getContacts().isEmpty());
-        assertEquals(edited, contactService.getGroup(1, 1));
+        assertEquals(edited, contactService.getGroup(1, -1));
         assertEquals(2, contactService.getContacts(1).getUngrouped().size());
     }
     
     @Test
     void deleteGroupTest() {
-        contactService.deleteGroup(1, 1);
+        contactService.deleteGroup(1, -1);
         
         AllContactsDTO allContacts = contactService.getContacts(1);
         assertNotNull(allContacts);
@@ -213,8 +213,8 @@ public class ContactServiceTest {
     
     @Test
     void deleteBadGroupTest() {
-        contactService.deleteGroup(1, 2);
-        assertNotNull(contactService.getGroup(1, 1));
-        assertNotNull(contactService.getGroup(2, 2));
+        contactService.deleteGroup(1, -2);
+        assertNotNull(contactService.getGroup(1, -1));
+        assertNotNull(contactService.getGroup(2, -2));
     }
 }

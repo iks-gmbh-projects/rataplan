@@ -1,5 +1,5 @@
 <dataset>
-	<rataplanuser id="1" username="cGV0ZXI=" mail="cGV0ZXJAc2NoLm1pdHo=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="cGV0ZXI=" version="1" accountconfirmed="true"/>
-	<rataplanuser id="2" username="aGFucw==" mail="aGFuc0BtZWkuZXI=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="aGFucw==" version="1" accountconfirmed="true"/>
-	<rataplanuser id="3" username="am9obg==" mail="am9obkBzbWl0aA==" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="am9obg==" version="1" accountconfirmed="false"/>
+	<rataplanuser id="-1" username="cGV0ZXI=" mail="cGV0ZXJAc2NoLm1pdHo=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="cGV0ZXI=" version="1" accountconfirmed="true"/>
+	<rataplanuser id="-2" username="aGFucw==" mail="aGFuc0BtZWkuZXI=" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="aGFucw==" version="1" accountconfirmed="true"/>
+	<rataplanuser id="-3" username="am9obg==" mail="am9obkBzbWl0aA==" password="$2a$10$Skgx2udjKuRtJmbugrZdR.a4KC1D6T.f.mr9BLPqqLwDHESFPNLti" displayname="am9obg==" version="1" accountconfirmed="false"/>
 </dataset>

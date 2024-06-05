@@ -99,7 +99,7 @@ public class ContactsControllerIT {
         lenient().when(jwtDecoder.decode(anyString()))
             .then(a -> delegate.decode(a.getArgument(0, String.class)));
         
-        String token = jwtTokenService.generateLoginToken(new RataplanUserDetails(1, "peter", "peter@sch.mitz", null, true));
+        String token = jwtTokenService.generateLoginToken(new RataplanUserDetails(-1, "peter", "peter@sch.mitz", null, true));
         headers.setBearerAuth(token);
     }
     
@@ -108,12 +108,12 @@ public class ContactsControllerIT {
     void addContact() {
         ResponseEntity<Integer> response = restTemplate.exchange(CONTACTS,
             HttpMethod.POST,
-            new HttpEntity<>(2, headers),
+            new HttpEntity<>(-2, headers),
             Integer.class
         );
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertTrue(response.hasBody());
-        assertEquals(2, response.getBody());
+        assertEquals(-2, response.getBody());
         
         //TODO check new state
     }
@@ -124,7 +124,7 @@ public class ContactsControllerIT {
     void addExistingContact() {
         ResponseEntity<Integer> response = restTemplate.exchange(CONTACTS,
             HttpMethod.POST,
-            new HttpEntity<>(3, headers),
+            new HttpEntity<>(-3, headers),
             Integer.class
         );
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -138,7 +138,7 @@ public class ContactsControllerIT {
             HttpMethod.DELETE,
             new HttpEntity<>(headers),
             void.class,
-            1
+            -1
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertFalse(response.hasBody());
@@ -154,7 +154,7 @@ public class ContactsControllerIT {
             HttpMethod.DELETE,
             new HttpEntity<>(headers),
             void.class,
-            2
+            -2
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertFalse(response.hasBody());
@@ -209,11 +209,11 @@ public class ContactsControllerIT {
             HttpMethod.GET,
             new HttpEntity<>(headers),
             ContactGroupDTO.class,
-            1
+            -1
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.hasBody());
-        assertEquals(new ContactGroupDTO(1L, "oldGroup", List.of(1)), response.getBody());
+        assertEquals(new ContactGroupDTO(-1L, "oldGroup", List.of(-1)), response.getBody());
     }
     @Test
     @DatabaseSetup(CONTACT_FILE_INITIAL)
@@ -223,7 +223,7 @@ public class ContactsControllerIT {
             HttpMethod.GET,
             new HttpEntity<>(headers),
             ContactGroupDTO.class,
-            2
+            -2
         );
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertFalse(response.hasBody());
@@ -236,18 +236,18 @@ public class ContactsControllerIT {
             HttpMethod.PUT,
             new HttpEntity<>("newGroup", headers),
             ContactGroupDTO.class,
-            1
+            -1
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.hasBody());
         ContactGroupDTO body = response.getBody();
-        assertEquals(new ContactGroupDTO(1L, "newGroup", List.of(1)), body);
+        assertEquals(new ContactGroupDTO(-1L, "newGroup", List.of(-1)), body);
         
         ResponseEntity<ContactGroupDTO> response2 = restTemplate.exchange(GROUP_ID,
             HttpMethod.GET,
             new HttpEntity<>(headers),
             ContactGroupDTO.class,
-            1
+            -1
         );
         assertEquals(HttpStatus.OK, response2.getStatusCode());
         assertTrue(response2.hasBody());
@@ -262,7 +262,7 @@ public class ContactsControllerIT {
             HttpMethod.PUT,
             new HttpEntity<>("oldGroup", headers),
             ContactGroupDTO.class,
-            3
+            -3
         );
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertFalse(response.hasBody());
@@ -276,7 +276,7 @@ public class ContactsControllerIT {
             HttpMethod.PUT,
             new HttpEntity<>("oldGroup", headers),
             ContactGroupDTO.class,
-            2
+            -2
         );
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertFalse(response.hasBody());
@@ -295,10 +295,10 @@ public class ContactsControllerIT {
         assertTrue(response.hasBody());
         AllContactsDTO compare = new AllContactsDTO(
             List.of(
-                new ContactGroupDTO(1L, "oldGroup", List.of(1)),
-                new ContactGroupDTO(3L, "emptyGroup", List.of())
+                new ContactGroupDTO(-3L, "emptyGroup", List.of()),
+                new ContactGroupDTO(-1L, "oldGroup", List.of(-1))
             ),
-            List.of(3)
+            List.of(-3)
         );
         assertEquals(compare, response.getBody());
     }
@@ -308,22 +308,22 @@ public class ContactsControllerIT {
     void groupContact() {
         ResponseEntity<ContactGroupDTO> response = restTemplate.exchange(GROUP_CONTACT,
             HttpMethod.POST,
-            new HttpEntity<>(3, headers),
+            new HttpEntity<>(-3, headers),
             ContactGroupDTO.class,
-            3
+            -3
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.hasBody());
         ContactGroupDTO body = response.getBody();
         assertEquals(new ContactGroupDTO(
-            3L, "emptyGroup", List.of(3)
+            -3L, "emptyGroup", List.of(-3)
         ), body);
         
         ResponseEntity<ContactGroupDTO> response2 = restTemplate.exchange(GROUP_ID,
             HttpMethod.GET,
             new HttpEntity<>(headers),
             ContactGroupDTO.class,
-            3
+            -3
         );
         assertEquals(HttpStatus.OK, response2.getStatusCode());
         assertTrue(response2.hasBody());
@@ -338,12 +338,12 @@ public class ContactsControllerIT {
         assertTrue(response3.hasBody());
         AllContactsDTO compare = new AllContactsDTO(
             List.of(
+                body,
                 new ContactGroupDTO(
-                    1L,
+                    -1L,
                     "oldGroup",
-                    List.of(1)
-                ),
-                body
+                    List.of(-1)
+                )
             ),
             List.of()
         );
@@ -357,14 +357,14 @@ public class ContactsControllerIT {
             HttpMethod.DELETE,
             new HttpEntity<>(headers),
             ContactGroupDTO.class,
-            1,
-            1
+            -1,
+            -1
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.hasBody());
         ContactGroupDTO body = response.getBody();
         assertNotNull(body);
-        assertEquals(1, body.getId());
+        assertEquals(-1, body.getId());
         assertEquals("oldGroup", body.getName());
         assertNotNull(body.getContacts());
         assertTrue(body.getContacts().isEmpty());
@@ -373,7 +373,7 @@ public class ContactsControllerIT {
             HttpMethod.GET,
             new HttpEntity<>(headers),
             ContactGroupDTO.class,
-            1
+            -1
         );
         assertEquals(HttpStatus.OK, response2.getStatusCode());
         assertTrue(response2.hasBody());
@@ -386,8 +386,8 @@ public class ContactsControllerIT {
         );
         assertEquals(HttpStatus.OK, response3.getStatusCode());
         assertTrue(response3.hasBody());
-        AllContactsDTO compare = new AllContactsDTO(List.of(body, new ContactGroupDTO(3L, "emptyGroup", List.of())),
-            List.of(1, 3)
+        AllContactsDTO compare = new AllContactsDTO(List.of(new ContactGroupDTO(-3L, "emptyGroup", List.of()), body),
+            List.of(-3, -1)
         );
         assertEquals(compare, response3.getBody());
     }
@@ -399,7 +399,7 @@ public class ContactsControllerIT {
             HttpMethod.DELETE,
             new HttpEntity<>(headers),
             void.class,
-            1
+            -1
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertFalse(response.hasBody());
@@ -411,8 +411,8 @@ public class ContactsControllerIT {
         );
         assertEquals(HttpStatus.OK, response2.getStatusCode());
         assertTrue(response2.hasBody());
-        AllContactsDTO compare = new AllContactsDTO(List.of(new ContactGroupDTO(3L, "emptyGroup", List.of())),
-            List.of(1, 3)
+        AllContactsDTO compare = new AllContactsDTO(List.of(new ContactGroupDTO(-3L, "emptyGroup", List.of())),
+            List.of(-3, -1)
         );
         assertEquals(compare, response2.getBody());
     }
@@ -425,7 +425,7 @@ public class ContactsControllerIT {
             HttpMethod.DELETE,
             new HttpEntity<>(headers),
             void.class,
-            2
+            -2
         );
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertFalse(response.hasBody());
