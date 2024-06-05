@@ -212,7 +212,7 @@ public class SurveyServiceImpl implements SurveyService {
         }
         final Survey oldSurvey = optionalSurvey.get();
         if(oldSurvey.getStartDate().toInstant().isAfter(completeSurveyDTO.getStartDate()) &&
-           !oldSurvey.getStartDate().toInstant().isAfter(Instant.now()))
+           Instant.now().isAfter(completeSurveyDTO.getStartDate()))
             throw new InvalidEntityException("Invalid Start Date", oldSurvey);
         if(!completeSurveyDTO.getEndDate().isAfter(completeSurveyDTO.getStartDate()))
             throw new InvalidEntityException("Invalid End Date", oldSurvey);
