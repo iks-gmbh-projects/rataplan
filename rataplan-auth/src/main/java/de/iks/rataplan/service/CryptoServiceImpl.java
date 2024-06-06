@@ -16,7 +16,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -36,7 +35,7 @@ public class CryptoServiceImpl implements CryptoService {
             byte[] bytes;
             final String encKey = db.getKey();
             if(encKey == null) {
-                bytes = Files.readAllBytes(Paths.get(db.getPath()));
+                bytes = Files.readAllBytes(db.getPath());
             } else bytes = Base64.getDecoder().decode(encKey);
             dbKey = new SecretKeySpec(bytes, db.getAlgorithm());
             log.info("DB key loaded");

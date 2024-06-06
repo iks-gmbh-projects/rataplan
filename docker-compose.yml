@@ -1,0 +1,128 @@
+services:
+  postgres:
+    image: iks/rataplan-postgres
+    build:
+      context: postgres
+    secrets:
+      - source: pg-admin-pw
+        target: pg-admin-pw
+      - source: pg-auth-pw
+        target: pg-auth-pw
+      - source: pg-backend-pw
+        target: pg-backend-pw
+      - source: pg-survey-pw
+        target: pg-survey-pw
+    volumes:
+      - type: volume
+        source: pg-data
+        target: /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      start_period: 1m
+      start_interval: 1s
+      retries: 3
+      timeout: 5s
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg-admin-pw
+  rataplan-auth:
+    image: iks/rataplan-auth
+    build:
+      target: run-auth
+    depends_on:
+      postgres:
+        condition: service_healthy
+    secrets:
+      - source: pg-auth-pw
+        target: pg-auth-pw
+      - source: auth-dbkey
+        target: auth-dbkey
+      - source: sendInBlueAPIKey
+        target: sendInBlueAPIKey
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rataplan-auth
+      SPRING_DATASOURCE_USERNAME: rataplan-auth
+      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/pg-auth-pw
+      KEYS_DB_PATH: /run/secrets/auth-dbkey
+      MAIL_SENDINBLUE_API-KEY: /run/secrets/sendInBlueAPIKey
+      MAIL_SENDINBLUE_API-KEY-FILE: true
+      TOKEN_ISSUER: http://rataplan-auth:8081/issuer
+      RATAPLAN_FRONTEND_URL: http://localhost:4200
+      TRUSTED_ISSUERS: http://rataplan-[a-z]+:808\d(?:/|$)
+      BACKEND_SURVEYTOOL_URL: http://rataplan-survey:8082
+      BACKEND_VOTE_URL: http://rataplan-vote:8080
+    ports:
+      - target: 8081
+        published: 8081
+  rataplan-backend:
+    image: iks/rataplan-backend
+    build:
+      target: run-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    secrets:
+      - source: pg-backend-pw
+        target: pg-backend-pw
+      - source: backend-dbkey
+        target: backend-dbkey
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rataplan-backend
+      SPRING_DATASOURCE_USERNAME: rataplan-backend
+      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/pg-backend-pw
+      KEYS_DB_PATH: /run/secrets/backend-dbkey
+      TOKEN_ISSUER: http://rataplan-backend:8080
+      RATAPLAN_FRONTEND_URL: http://localhost:4200
+      TRUSTED_ISSUERS: http://rataplan-[a-z]+:808\d(?:/|$)
+      AUTH_URL_BASE: http://rataplan-auth:8081
+      BACKEND_SURVEYTOOL_URL: http://rataplan-survey:8082
+      BACKEND_VOTE_URL: http://rataplan-vote:8080
+    ports:
+      - target: 8080
+        published: 8080
+  rataplan-survey:
+    image: iks/rataplan-survey
+    build:
+      target: run-survey
+    depends_on:
+      postgres:
+        condition: service_healthy
+    secrets:
+      - source: pg-survey-pw
+        target: pg-survey-pw
+      - source: survey-dbkey
+        target: survey-dbkey
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rataplan-survey
+      SPRING_DATASOURCE_USERNAME: rataplan-survey
+      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/pg-survey-pw
+      KEYS_DB_PATH: /run/secrets/survey-dbkey
+      TOKEN_ISSUER: http://rataplan-survey:8082
+      RATAPLAN_FRONTEND_URL: http://localhost:4200
+      TRUSTED_ISSUERS: http://rataplan-[a-z]+:808\d(?:/|$)
+      AUTH_URL_BASE: http://rataplan-auth:8081
+      BACKEND_SURVEYTOOL_URL: http://rataplan-survey:8082
+      BACKEND_VOTE_URL: http://rataplan-vote:8080
+    ports:
+      - target: 8082
+        published: 8082
+secrets:
+  pg-admin-pw:
+    file: secrets/pg-admin-pw.txt
+  pg-auth-pw:
+    file: secrets/pg-auth-pw.txt
+  pg-backend-pw:
+    file: secrets/pg-backend-pw.txt
+  pg-survey-pw:
+    file: secrets/pg-survey-pw.txt
+  auth-dbkey:
+    file: secrets/auth-dbkey.raw
+  backend-dbkey:
+    file: secrets/backend-dbkey.raw
+  survey-dbkey:
+    file: secrets/survey-dbkey.raw
+  sendInBlueAPIKey:
+    file: secrets/sendinblue.txt
+volumes:
+  pg-data:
+    driver: local

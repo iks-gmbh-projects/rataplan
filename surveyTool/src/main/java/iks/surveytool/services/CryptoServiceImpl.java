@@ -12,22 +12,25 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.*;
+import java.nio.file.Path;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.util.Base64;
 
 @Service
 public class CryptoServiceImpl implements CryptoService {
     private final String dbKeyAlgorithm;
     private final String dbKeyBytes;
-    private final String dbKeyPath;
+    private final Path dbKeyPath;
 
     private Key dbKey;
 
     public CryptoServiceImpl(
         @Value("${keys.db.algorithm:AES}") String dbKeyAlgorithm,
         @Value("${keys.db.key:}") String dbKeyBytes,
-        @Value("${keys.db.path:}") String dbKeyPath
+        @Value("${keys.db.path:null}") Path dbKeyPath
     ) {
         this.dbKeyAlgorithm = dbKeyAlgorithm;
         this.dbKeyBytes = dbKeyBytes;
@@ -38,7 +41,7 @@ public class CryptoServiceImpl implements CryptoService {
     public void init() throws IOException {
         byte[] bytes;
         if (dbKeyBytes.isEmpty()) {
-            bytes = Files.readAllBytes(Paths.get(dbKeyPath));
+            bytes = Files.readAllBytes(dbKeyPath);
         } else bytes = Base64.getDecoder().decode(dbKeyBytes);
         dbKey = new SecretKeySpec(bytes, dbKeyAlgorithm);
     }

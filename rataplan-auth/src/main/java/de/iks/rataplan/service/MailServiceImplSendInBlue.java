@@ -12,19 +12,12 @@ import sendinblue.ApiException;
 import sibApi.TransactionalEmailsApi;
 import sibModel.SendSmtpEmail;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
-@Primary
-@Service
-@ConditionalOnBean(TransactionalEmailsApi.class)
 public class MailServiceImplSendInBlue implements MailService {
     private final MailBuilderSendInBlue mailBuilder;
     private final TransactionalEmailsApi transactionalEmailsApi;
