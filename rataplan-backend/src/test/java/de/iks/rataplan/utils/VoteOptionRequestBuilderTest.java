@@ -1,32 +1,17 @@
 package de.iks.rataplan.utils;
 
-import static de.iks.rataplan.testutils.TestConstants.DATE_2050_10_10;
-import static de.iks.rataplan.testutils.TestConstants.DATE_2050_11_11__11_11_00;
-import static de.iks.rataplan.testutils.TestConstants.DATE_2050_12_12__12_12_00;
-import static de.iks.rataplan.testutils.TestConstants.IKS_NAME;
-import static de.iks.rataplan.testutils.TestConstants.IKS_MAIL;
-import static de.iks.rataplan.testutils.TestConstants.createSimpleVote;
-import static org.junit.Assert.assertEquals;
+import de.iks.rataplan.domain.*;
+
+import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import de.iks.rataplan.domain.*;
+import static de.iks.rataplan.testutils.TestConstants.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import de.iks.rataplan.config.AppConfig;
-import de.iks.rataplan.config.TestConfig;
-
-@ActiveProfiles("test")
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class, TestConfig.class})
 public class VoteOptionRequestBuilderTest {
     
     @Test

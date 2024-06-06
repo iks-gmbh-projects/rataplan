@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestExecutionListeners;
 
 import static de.iks.rataplan.testutils.TestConstants.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestExecutionListeners(
@@ -30,20 +30,20 @@ public class TokenGeneratorServiceTest {
     private VoteRepository voteRepository;
 
     @Test
-    public void checkValidFormParticipationToken() throws Exception {
+    public void checkValidFormParticipationToken() {
         String token = tokenGeneratorService.generateToken(8);
-        assertTrue(String.format("Invalid Token: %s", token), token.matches("[a-zA-Z0-9]{8}"));
+        assertTrue(token.matches("[a-zA-Z0-9]{8}"), String.format("Invalid Token: %s", token));
     }
 
     @Test
-    public void checkValidFormEditToken() throws Exception {
+    public void checkValidFormEditToken() {
         String token = tokenGeneratorService.generateToken(10);
-        assertTrue(String.format("Invalid Token: %s", token), token.matches("[a-zA-Z0-9]{10}"));
+        assertTrue(token.matches("[a-zA-Z0-9]{10}"), String.format("Invalid Token: %s", token));
     }
 
     @Test
     @DatabaseSetup(FILE_EMPTY_DB)
-    public void generateParticipationToken() throws Exception {
+    public void generateParticipationToken() {
         Vote vote = createSimpleVote();
 
         String token = tokenGeneratorService.generateToken(8);
@@ -56,7 +56,7 @@ public class TokenGeneratorServiceTest {
 
     @Test
     @DatabaseSetup(FILE_EMPTY_DB)
-    public void generateEditToken() throws Exception {
+    public void generateEditToken() {
         Vote vote = createSimpleVote();
 
         String token = tokenGeneratorService.generateToken(10);
@@ -69,14 +69,14 @@ public class TokenGeneratorServiceTest {
 
     @Test
     @DatabaseSetup(FILE_PATH + FILE_INITIAL)
-    public void TestIfTokeIsUnique() throws Exception {
+    public void TestIfTokeIsUnique() {
         assertTrue(tokenGeneratorService.isTokenUnique("coding02",8));
         assertFalse(tokenGeneratorService.isTokenUnique("coding01",8));
     }
 
     @Test
     @DatabaseSetup(FILE_PATH + FILE_INITIAL)
-    public void generateNewTokenWhenExistsInDB() throws Exception {
+    public void generateNewTokenWhenExistsInDB() {
         String token;
         if (!tokenGeneratorService.isTokenUnique("coding01", 8)) {
             token = tokenGeneratorService.generateToken(8);

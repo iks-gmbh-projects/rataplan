@@ -87,7 +87,7 @@ public class VoteOptionRequestServiceTest {
     
     @Test
     @DatabaseSetup(FILE_EMPTY_DB)
-    @ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void createVote() {
         Vote vote = createSimpleVote();
         
@@ -231,7 +231,7 @@ public class VoteOptionRequestServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void updateVote() {
         
         Vote oldVote = voteService.getVoteById(1);

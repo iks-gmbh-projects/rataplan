@@ -36,7 +36,7 @@ public class BackendControllerIT {
     
     @Test
     @DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testDelete() {
         Assertions.assertEquals(HttpStatus.OK, backendController.deleteData(2).getStatusCode());
         rawRepository1.flush();
@@ -45,7 +45,7 @@ public class BackendControllerIT {
     
     @Test
     @DatabaseSetup(FILE_PATH + ANONYMIZE + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + ANONYMIZE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + ANONYMIZE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testAnonymize() {
         Assertions.assertEquals(HttpStatus.OK, backendController.anonymizeData(2).getStatusCode());
         rawRepository1.flush();

@@ -55,7 +55,7 @@ public class ConsigneeServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testGetVotesForConsignee() {
         List<Vote> votes = voteParticipantService.getVotesForConsignee(AUTHUSER_1);
         Assertions.assertEquals(1, votes.size(), "votes.size()");
@@ -64,7 +64,7 @@ public class ConsigneeServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + TRANSCRIBE_CONSIGNEES_TO_BACKEND_USER_ACCESSES + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + TRANSCRIBE_CONSIGNEES_TO_BACKEND_USER_ACCESSES + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void testTranscribeConsigneesToBackendUserAccesses() {
         Vote vote = voteService.getVoteById(1);
         vote.setConsigneeList(Collections.singletonList("user2@drumdibum.test"));

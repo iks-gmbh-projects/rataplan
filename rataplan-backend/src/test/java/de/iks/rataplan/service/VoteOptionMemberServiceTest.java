@@ -42,7 +42,7 @@ public class VoteOptionMemberServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + CREATE + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void addParticipant() {
         Vote vote = voteRepository.findById(1).orElseThrow();
         
@@ -205,7 +205,7 @@ public class VoteOptionMemberServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + DELETE + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + DELETE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void deleteParticipant() {
         Vote vote = voteRepository.findById(1).orElseThrow();
         
@@ -225,7 +225,7 @@ public class VoteOptionMemberServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void updateParticipant() {
         Vote vote = voteRepository.findById(1).orElseThrow();
         VoteParticipant dbVoteParticipant = vote.getParticipantById(1);
@@ -241,7 +241,7 @@ public class VoteOptionMemberServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT)
+    @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     public void updateParticipantShouldFailTooManyDecisions() {
         Vote vote = voteRepository.findById(1).orElseThrow();
         VoteParticipant dbVoteParticipant = vote.getParticipantById(1);
