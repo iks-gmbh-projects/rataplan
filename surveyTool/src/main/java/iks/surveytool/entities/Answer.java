@@ -42,27 +42,26 @@ public class Answer extends AbstractEntity {
         this.text = text;
     }
 
-    public boolean validate() {
+    public void validate() throws InvalidEntityException {
         if (this.response == null || this.question == null) {
-            return false;
+            throw new InvalidEntityException("no response or questions", this);
         }
         if(!Objects.equals(this.response.getSurvey().getId(), this.question.getQuestionGroup().getSurvey().getId())) {
-            return false;
+            throw new InvalidEntityException("Inconsistent survey id", this);
         }
-        if(this.question.isHasCheckbox() && (this.checkboxes == null)) return false;
         if(this.question.isHasCheckbox()) {
+            if(this.checkboxes == null) throw new InvalidEntityException("checkbox state inconsistent", this);
             CheckboxGroup grp = this.question.getCheckboxGroup();
             int count = this.checkboxes.size();
             if(grp.isMultipleSelect()) {
-                if(grp.getMinSelect() > count || grp.getMaxSelect() < count) return false;
+                if(grp.getMinSelect() > count || grp.getMaxSelect() < count) throw new InvalidEntityException("multi-selection limitations exceeded", this);
             } else {
-                if(count > 1 || (count < 1 && question.isRequired())) return false;
+                if(count > 1 || (count < 1 && question.isRequired())) throw new InvalidEntityException("single-selection limitations exceeded", this);
             }
         }
         if (!this.question.isHasCheckbox() || this.checkboxes.stream().anyMatch(Checkbox::isHasTextField)) {
-            return this.checkIfAnswerTextValid();
+            if(!this.checkIfAnswerTextValid()) throw new InvalidEntityException("missing text", this);
         }
-        return true;
     }
 
     private boolean checkIfAnswerTextValid() {

@@ -24,7 +24,7 @@ public class CheckboxDTO extends AbstractDTO {
     }
     
     @Override
-    public boolean valid() {
-        return text != null && !text.isBlank();
+    public void valid() throws DTOValidationException {
+        if(this.text != null && this.text.isBlank()) throw new DTOValidationException("CheckboxDTO.text", "blank non-null");
     }
 }

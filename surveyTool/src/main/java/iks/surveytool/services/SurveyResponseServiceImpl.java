@@ -2,6 +2,7 @@ package iks.surveytool.services;
 
 import iks.surveytool.domain.AuthUser;
 import iks.surveytool.dtos.SurveyResponseDTO;
+import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.entities.SurveyResponse;
 import iks.surveytool.repositories.SurveyRepository;
@@ -33,11 +34,11 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     private final ModelMapper modelMapper;
     
     @Transactional
-    public ResponseEntity<SurveyResponseDTO> processSurveyResponseDTOs(SurveyResponseDTO surveyResponseDTO) {
+    public ResponseEntity<SurveyResponseDTO> processSurveyResponseDTOs(SurveyResponseDTO surveyResponseDTO) throws
+        InvalidEntityException
+    {
         SurveyResponse surveyResponse = modelMapper.map(surveyResponseDTO, SurveyResponse.class);
-        if(!surveyResponse.validate()) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
+        surveyResponse.validate();
         if(!validateUniqueParticipation(surveyResponse)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

@@ -28,7 +28,10 @@ public class QuestionGroupDTO extends AbstractDTO {
     }
     
     @Override
-    public boolean valid() {
-        return title != null && !title.isBlank() && questions.stream().allMatch(QuestionDTO::valid);
+    public void valid() throws DTOValidationException {
+        if(this.title != null && this.title.isBlank()) throw new DTOValidationException("QuestionGroupDTO.title", "blank non-null");
+        for(QuestionDTO q : questions) {
+            q.valid();
+        }
     }
 }

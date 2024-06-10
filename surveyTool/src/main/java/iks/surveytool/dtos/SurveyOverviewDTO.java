@@ -36,9 +36,11 @@ public class SurveyOverviewDTO extends AbstractDTO {
     }
     
     @Override
-    public boolean valid() {
-        return name != null && !name.isBlank() &&
-            description != null && !description.isBlank() &&
-            startDate != null && endDate != null && startDate.isBefore(endDate);
+    public void valid() throws DTOValidationException {
+        if(this.name != null && this.name.isBlank()) throw new DTOValidationException("SurveyOverviewDTO.name", "blank non-null");
+        if(this.description != null && this.description.isBlank()) throw new DTOValidationException("SurveyOverviewDTO.description", "blank non-null");
+        if(this.startDate == null) throw new DTOValidationException("SurveyOverviewDTO.startDate", "missing");
+        if(this.endDate == null) throw new DTOValidationException("SurveyOverviewDTO.endDate", "missing");
+        if(!startDate.isBefore(endDate)) throw new DTOValidationException("SurveyOverviewDTO.endDate", "before startDate");
     }
 }

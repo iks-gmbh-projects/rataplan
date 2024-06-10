@@ -2,6 +2,8 @@ package iks.surveytool.controller;
 
 import iks.surveytool.domain.AuthUser;
 import iks.surveytool.dtos.SurveyResponseDTO;
+import iks.surveytool.dtos.DTOValidationException;
+import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.services.AuthService;
 import iks.surveytool.services.SurveyResponseService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,8 @@ public class SurveyResponseController {
     public ResponseEntity<SurveyResponseDTO> addAnswers(
         @RequestBody SurveyResponseDTO surveyResponseDTO,
         @AuthenticationPrincipal Jwt jwttoken
-    ) {
+    ) throws DTOValidationException, InvalidEntityException
+    {
         if (jwttoken == null) surveyResponseDTO.setUserId(null);
         else {
             final AuthUser user = authService.getUserData(jwttoken);
@@ -33,7 +36,7 @@ public class SurveyResponseController {
             surveyResponseDTO.setUserId(user.getId());
         }
         surveyResponseDTO.trimAndNull();
-        if(!surveyResponseDTO.valid()) return ResponseEntity.badRequest().build();
+        surveyResponseDTO.valid();
         return responseService.processSurveyResponseDTOs(surveyResponseDTO);
     }
 

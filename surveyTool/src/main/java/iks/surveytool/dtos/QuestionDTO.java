@@ -34,7 +34,9 @@ public class QuestionDTO extends AbstractDTO {
     }
     
     @Override
-    public boolean valid() {
-        return text != null && !text.isBlank() && (hasCheckbox ? checkboxGroup != null && checkboxGroup.valid() : checkboxGroup == null);
+    public void valid() throws DTOValidationException {
+        if(this.text != null && this.text.isBlank()) throw new DTOValidationException("QuestionDTO.text", "blank non-null");
+        if(hasCheckbox == (checkboxGroup == null)) throw new DTOValidationException("QuestionDTO.hasCheckbox", "state-mismatch");
+        if(checkboxGroup != null) checkboxGroup.valid();
     }
 }

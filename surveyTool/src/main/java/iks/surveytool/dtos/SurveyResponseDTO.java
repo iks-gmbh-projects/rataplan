@@ -20,7 +20,10 @@ public class SurveyResponseDTO extends AbstractDTO {
     }
     
     @Override
-    public boolean valid() {
-        return answers != null && answers.values().stream().allMatch(AnswerDTO::valid);
+    public void valid() throws DTOValidationException {
+        if(answers == null) throw new DTOValidationException("SurveyResponse.answers", "is null");
+        for(AnswerDTO a : answers.values()) {
+            a.valid();
+        }
     }
 }

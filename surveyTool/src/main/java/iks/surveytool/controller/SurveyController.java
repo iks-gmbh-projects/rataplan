@@ -4,6 +4,7 @@ import iks.surveytool.domain.AuthUser;
 import iks.surveytool.dtos.CompleteSurveyDTO;
 import iks.surveytool.dtos.SurveyOverviewDTO;
 import iks.surveytool.entities.InvalidEntityException;
+import iks.surveytool.dtos.DTOValidationException;
 import iks.surveytool.services.AuthService;
 import iks.surveytool.services.SurveyService;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +30,15 @@ public class SurveyController {
     public ResponseEntity<SurveyOverviewDTO> createSurvey(
         @RequestBody CompleteSurveyDTO surveyDTO,
         @AuthenticationPrincipal Jwt jwttoken
-    ) throws InvalidEntityException {
+    ) throws InvalidEntityException, DTOValidationException
+    {
         if (jwttoken == null) surveyDTO.setUserId(null);
         else {
             final AuthUser user = authService.getUserData(jwttoken);
             if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             surveyDTO.setUserId(user.getId());
         }
-        if(!surveyDTO.valid()) return ResponseEntity.badRequest().build();
+        surveyDTO.valid();
         return surveyService.processSurveyDTO(surveyDTO);
     }
 
@@ -45,8 +47,9 @@ public class SurveyController {
         @RequestParam String accessId,
         @RequestBody CompleteSurveyDTO surveyDTO,
         @AuthenticationPrincipal Jwt jwttoken
-    ) throws InvalidEntityException {
-        if(!surveyDTO.valid()) return ResponseEntity.badRequest().build();
+    ) throws InvalidEntityException, DTOValidationException
+    {
+        surveyDTO.valid();
         return surveyService.processEditSurveyByAccessId(accessId, surveyDTO, jwttoken);
     }
 

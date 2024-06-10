@@ -19,15 +19,11 @@ public class SurveyResponse extends AbstractEntity {
     @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
 
-    public boolean validate() {
-        return survey != null && answers != null && validateNonAnon() && validateAnswers();
-    }
-
-    private boolean validateNonAnon() {
-        return survey.isAnonymousParticipation() || userId != null;
-    }
-
-    private boolean validateAnswers() {
-        return this.answers.stream().allMatch(Answer::validate);
+    public void validate() throws InvalidEntityException {
+        if(survey == null || answers == null) throw new InvalidEntityException("missing survey or answers", this);
+        if(survey.isAnonymousParticipation() || userId != null) throw new InvalidEntityException("non-anon", this);
+        for(Answer a : answers) {
+            a.validate();
+        }
     }
 }

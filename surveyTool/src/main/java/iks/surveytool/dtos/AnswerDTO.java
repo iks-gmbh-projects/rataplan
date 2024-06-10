@@ -27,7 +27,7 @@ public class AnswerDTO extends AbstractDTO {
     }
     
     @Override
-    public boolean valid() {
-        return this.text == null || !this.text.isBlank();
+    public void valid() throws DTOValidationException {
+        if(this.text != null && this.text.isBlank()) throw new DTOValidationException("AnswerDTO.text", "blank non-null");
     }
 }

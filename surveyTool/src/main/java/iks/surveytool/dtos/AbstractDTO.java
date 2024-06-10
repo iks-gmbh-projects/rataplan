@@ -16,5 +16,5 @@ abstract class AbstractDTO {
         return s.trim();
     }
     
-    public abstract boolean valid();
+    public abstract void valid() throws DTOValidationException;
 }

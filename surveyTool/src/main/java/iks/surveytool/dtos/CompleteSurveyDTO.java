@@ -22,7 +22,10 @@ public class CompleteSurveyDTO extends SurveyOverviewDTO {
     }
     
     @Override
-    public boolean valid() {
-        return super.valid() && questionGroups.stream().allMatch(QuestionGroupDTO::valid);
+    public void valid() throws DTOValidationException {
+        super.valid();
+        for(QuestionGroupDTO g : questionGroups) {
+            g.valid();
+        }
     }
 }

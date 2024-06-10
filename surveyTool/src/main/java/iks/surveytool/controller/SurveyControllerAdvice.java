@@ -1,6 +1,7 @@
 package iks.surveytool.controller;
 
 import iks.surveytool.entities.InvalidEntityException;
+import iks.surveytool.dtos.DTOValidationException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,14 @@ public class SurveyControllerAdvice {
         log.atWarn()
             .withThrowable(exception)
             .log("Invalid user input for Survey:\n{}", exception.getEntity());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exception.getMessage());
+    }
+    
+    @ExceptionHandler(DTOValidationException.class)
+    public ResponseEntity<String> onDTOValidationException(DTOValidationException exception) {
+        log.atWarn()
+            .withThrowable(exception)
+            .log("Invalid user input {} for Survey: {}", exception.field, exception.reason);
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exception.getMessage());
     }
 }

@@ -2,13 +2,12 @@ package iks.surveytool.validation;
 
 import iks.surveytool.entities.*;
 import iks.surveytool.utils.builder.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -440,7 +439,7 @@ class ValidationTest {
         Answer answer = new AnswerBuilder()
                 .createAnswer(1L, "Test Answer", question, null);
 
-        assertFalse(answer.validate());
+        assertThrows(InvalidEntityException.class, answer::validate);
     }
 
     @Test
@@ -461,7 +460,7 @@ class ValidationTest {
         Answer answer = new AnswerBuilder()
                 .createAnswerIn(response, 1L, "Test Answer", question, null);
 
-        assertFalse(answer.validate());
+        assertThrows(InvalidEntityException.class, answer::validate);
     }
 
     @Test
@@ -488,7 +487,7 @@ class ValidationTest {
         Answer answer = new AnswerBuilder()
                 .createAnswerIn(response, 1L, null, question, List.of(checkbox));
 
-        assertFalse(answer.validate());
+        assertThrows(InvalidEntityException.class, answer::validate);
     }
 
     @Test
@@ -509,12 +508,12 @@ class ValidationTest {
         Answer answer = new AnswerBuilder()
                 .createAnswerIn(response, 1L, null, question, null);
 
-        assertFalse(answer.validate());
+        assertThrows(InvalidEntityException.class, answer::validate);
     }
     
     @Test
     @DisplayName("Successful validation - Answer missing Text when text Question and not required")
-    void answerMissingTextWhenQuestionWithTextFieldNotRequired() {
+    void answerMissingTextWhenQuestionWithTextFieldNotRequired() throws InvalidEntityException {
         Survey survey = new SurveyBuilder()
             .createDefaultSurvey();
         
@@ -530,12 +529,12 @@ class ValidationTest {
         Answer answer = new AnswerBuilder()
             .createAnswerIn(response, 1L, null, question, null);
         
-        assertTrue(answer.validate());
+        answer.validate();
     }
 
     @Test
     @DisplayName("Successful validation - Complete Answer to text Question")
-    void answerToTextQuestionIsComplete() {
+    void answerToTextQuestionIsComplete() throws InvalidEntityException {
         Survey survey = new SurveyBuilder()
                 .createDefaultSurvey();
 
@@ -551,12 +550,12 @@ class ValidationTest {
         Answer answer = new AnswerBuilder()
                 .createAnswerIn(response, 1L, "Test", question, null);
 
-        assertTrue(answer.validate());
+        answer.validate();
     }
 
     @Test
     @DisplayName("Successful validation - Complete Answer to multiple choice Question")
-    void answerToChoiceQuestionIsComplete() {
+    void answerToChoiceQuestionIsComplete() throws InvalidEntityException {
         Survey survey = new SurveyBuilder()
                 .createDefaultSurvey();
 
@@ -578,7 +577,7 @@ class ValidationTest {
         Answer answer = new AnswerBuilder()
                 .createAnswerIn(response, 1L, null, question, List.of(checkbox));
 
-        assertTrue(answer.validate());
+        answer.validate();
     }
 
 }
