@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.CascadeType;
@@ -15,6 +14,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 @Entity
 @Data
@@ -46,6 +46,9 @@ public class Survey extends AbstractEntity {
     
     private Long userId;
     
+    @Column
+    private String timezone;
+    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "survey")
     private List<QuestionGroup> questionGroups = new ArrayList<>();
     
@@ -63,7 +66,8 @@ public class Survey extends AbstractEntity {
         boolean anonymousParticipation,
         String accessId,
         String participationId,
-        List<QuestionGroup> questionGroups
+        List<QuestionGroup> questionGroups,
+        String timezone
     )
     {
         this.name = name;
@@ -75,6 +79,7 @@ public class Survey extends AbstractEntity {
         this.accessId = accessId;
         this.participationId = participationId;
         this.questionGroups = questionGroups;
+        this.timezone = timezone;
     }
     
     

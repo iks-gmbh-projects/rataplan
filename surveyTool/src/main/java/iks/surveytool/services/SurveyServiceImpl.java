@@ -138,7 +138,9 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> editSurvey(
-        String accessId, CompleteSurveyDTO completeSurveyDTO, Jwt jwttoken
+        String accessId,
+        CompleteSurveyDTO completeSurveyDTO,
+        Jwt jwttoken
     ) throws InvalidEntityException
     {
         final Optional<Survey> optionalSurvey = surveyRepository.findSurveyByAccessId(accessId);
