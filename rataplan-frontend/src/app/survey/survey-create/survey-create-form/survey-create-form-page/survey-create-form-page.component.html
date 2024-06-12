@@ -54,7 +54,9 @@
                     color="warn"
                     class="answerDelete"
                     type="button"
-                    (click)="getCheckboxes(question).removeAt(k)"
+                    (click)="getCheckboxes(question).removeAt(k);;
+                      question.get(['checkboxGroup', 'minSelect'])?.updateValueAndValidity();
+                      question.get(['checkboxGroup', 'maxSelect'])?.updateValueAndValidity()"
                   >
                     <mat-icon>delete</mat-icon>
                   </button>
@@ -75,7 +77,9 @@
         </button>
         <button
           mat-icon-button color="primary" type="button"
-          (click)="getCheckboxes(question).push(createCheckbox())"
+          (click)="getCheckboxes(question).push(createCheckbox());
+            question.get(['checkboxGroup', 'minSelect'])?.updateValueAndValidity();
+            question.get(['checkboxGroup', 'maxSelect'])?.updateValueAndValidity()"
         >
           <mat-icon>add</mat-icon>
         </button>
@@ -93,7 +97,7 @@
     </div>
   </div>
   <div style="display: flex; margin-bottom: 1ex;">
-    <button type="button" mat-raised-button color="basic" (click)="revert.emit()">
+    <button type="button" mat-raised-button (click)="revert.emit()">
       <mat-icon>navigate_before</mat-icon>
     </button>
     <div style="flex: 2;"></div>

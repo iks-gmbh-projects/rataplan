@@ -3,6 +3,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
 import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
+import { checkboxFormGroup, questionFormGroup } from './survey-create-form-page/survey-create-form-page.component';
 
 @Component({
   selector: 'app-survey-create-form',
@@ -68,7 +69,7 @@ export class SurveyCreateFormComponent {
     });
   }
   
-  public static createQuestion(question?: Question) {
+  public static createQuestion(question?: Question): questionFormGroup {
     const checkboxes = new FormArray(question?.checkboxGroup?.checkboxes?.map(
       SurveyCreateFormComponent.createCheckbox,
       this,
@@ -104,7 +105,7 @@ export class SurveyCreateFormComponent {
     });
   }
   
-  public static createCheckbox(checkbox?: Checkbox) {
+  public static createCheckbox(checkbox?: Checkbox): checkboxFormGroup {
     return new FormGroup({
       id: new FormControl(checkbox?.id ?? null),
       text: new FormControl(checkbox?.text ?? null, [

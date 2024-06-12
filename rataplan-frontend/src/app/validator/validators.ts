@@ -1,4 +1,4 @@
-import { AbstractControl, UntypedFormArray, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { AbstractControl, FormArray, UntypedFormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export class ExtraValidators {
   static valueMatching(control: AbstractControl): ValidatorFn {
@@ -15,7 +15,7 @@ export class ExtraValidators {
     return ctrl => (ctrl.value < control.value || (allowEqual && ctrl.value == control.value)) ? null : {max:{max: control.value, actual: ctrl.value}};
   }
 
-  static indexValue(array: UntypedFormArray, allowLength: boolean = false, allowAnyOnEmpty: boolean = true): ValidatorFn {
+  static indexValue(array: FormArray | UntypedFormArray, allowLength: boolean = false, allowAnyOnEmpty: boolean = true): ValidatorFn {
     return ctrl => (ctrl.value < array.length || (allowLength && ctrl.value == array.length) || (allowAnyOnEmpty && array.length == 0)) ? null : {index:{length: array.length, index: ctrl.value}};
   }
 
