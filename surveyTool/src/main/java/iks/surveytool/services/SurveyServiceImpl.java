@@ -41,7 +41,8 @@ public class SurveyServiceImpl implements SurveyService {
     private final AuthService authService;
     private final Random random = new Random();
     
-    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) throws InvalidEntityException
+    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) throws
+        InvalidEntityException
     {
         Survey newSurvey = mapSurveyToEntity(surveyDTO);
         newSurvey.validate();
@@ -204,7 +205,9 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional
     public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(
-        String accessId, CompleteSurveyDTO completeSurveyDTO, Jwt jwttoken
+        String accessId,
+        CompleteSurveyDTO completeSurveyDTO,
+        Jwt jwttoken
     ) throws InvalidEntityException
     {
         final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
@@ -249,7 +252,7 @@ public class SurveyServiceImpl implements SurveyService {
         to.setEndDate(from.getEndDate());
         to.setAnonymousParticipation(from.isAnonymousParticipation());
         to.setOpenAccess(from.isOpenAccess());
-        
+        to.setTimezone(from.getTimezone());
         Map<Boolean, List<QuestionGroup>> fromGroups = from.getQuestionGroups()
             .stream()
             .collect(Collectors.partitioningBy(idExistsIn(to.getQuestionGroups())));

@@ -26,7 +26,8 @@ public class SurveyOverviewDTO extends AbstractDTO {
     private boolean anonymousParticipation;
     private String accessId;
     private String participationId;
-
+    private String timezone;
+    
     private Long userId;
     
     @Override

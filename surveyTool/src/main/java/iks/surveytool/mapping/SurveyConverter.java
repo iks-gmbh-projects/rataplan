@@ -31,8 +31,7 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
     public Survey toSurveyEntity(CompleteSurveyDTO surveyDTO) {
         List<QuestionGroup> questionGroups = toQuestionGroupEntityList(surveyDTO.getQuestionGroups());
         
-        Survey newSurvey = new Survey(
-            toEncryptedStringConverter.convert(surveyDTO.getName()),
+        Survey newSurvey = new Survey(toEncryptedStringConverter.convert(surveyDTO.getName()),
             toEncryptedStringConverter.convert(surveyDTO.getDescription()),
             toLocalZoneDateTime(surveyDTO.getStartDate()),
             toLocalZoneDateTime(surveyDTO.getEndDate()),
@@ -40,7 +39,8 @@ public class SurveyConverter extends AbstractConverter<CompleteSurveyDTO, Survey
             surveyDTO.isAnonymousParticipation(),
             surveyDTO.getAccessId(),
             surveyDTO.getParticipationId(),
-            questionGroups
+            questionGroups,
+            surveyDTO.getTimezone()
         );
         for(QuestionGroup qg: newSurvey.getQuestionGroups()) {
             qg.setSurvey(newSurvey);
