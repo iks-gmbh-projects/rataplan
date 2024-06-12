@@ -4,10 +4,23 @@ import { Action, Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
+import { TimezoneService } from '../../../../services/timezone-service/timezone-service';
 import { ExtraValidators } from '../../../../validator/validators';
 import { SurveyHead } from '../../../survey.model';
 import { DeepPartial, surveyCreateActions } from '../../state/survey-create.action';
-import { surveyCreateFeature } from '../../state/survey-create.feature';
+
+export type HeadFormFields = {
+  id: string | number | null,
+  accessId: string | null,
+  participationId: string | null,
+  name: string | null,
+  description: string | null,
+  startDate: Date | null,
+  endDate: Date | null,
+  timezone: string | undefined,
+  openAccess: boolean | null,
+  anonymousParticipation: boolean | null,
+};
 
 @Component({
   selector: 'app-survey-create-form-head',
@@ -17,6 +30,9 @@ import { surveyCreateFeature } from '../../state/survey-create.feature';
 export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   public readonly head$: Observable<DeepPartial<SurveyHead> | undefined>;
   public readonly minStartDate$: Observable<Date>;
+  setTimezone: boolean = false;
+  minDate!: Date;
+  filteredOptions!: Observable<string[]>;
   public readonly formGroup = new FormGroup({
     id: new FormControl<string | number | null>(null),
     accessId: new FormControl<string | null>(null),
@@ -53,6 +69,7 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store,
     public readonly errorMessageService: FormErrorMessageService,
+    private timezoneService: TimezoneService,
   )
   {
     this.head$ = this.store.select(surveyCreateFeature.selectHead);
@@ -94,6 +111,11 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   
   public submit(): void {
     this.doSubmit(this.formGroup.value);
+ }
+  updateMinDate(timezone: string) {
+    this.minDate = new Date(this.timezoneService.getMinDateForTimeZone(timezone));
+    const datePresent = !!this.formGroup!.get('startDate')?.value || !!this.formGroup!.get('endDate')?.value;
+    if(datePresent) this.validateDate();
   }
   
   doSubmit(value: typeof this.formGroup.value, next?: Action): void {
@@ -114,4 +136,57 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   }
   
   protected readonly surveyCreateActions = surveyCreateActions;
+  
+  validateDate() {
+    const startDateControl = this.formGroup!.get('startDate');
+    const endDateControl = this.formGroup!.get('endDate');
+    const timezone = this.setTimezone ? this.formGroup!.get('timezone')!.value : undefined;
+    if(startDateControl?.value) this.timezoneService.resetDateIfNecessary(startDateControl, this.minDate, timezone);
+    if(endDateControl?.value) this.timezoneService.resetDateIfNecessary(endDateControl, this.minDate, timezone);
+  }
+  
+  convertDates(timezone: string) {
+    this.formGroup?.get('timezone')!.setValue(timezone);
+    this.updateMinDate(timezone);
+  }
+  
+  enableAndDisableTimeoneSettings() {
+    const timezone = this.formGroup!.get('timezone')!;
+    timezone.setErrors(null);
+    this.setTimezone = !this.setTimezone;
+    this.setMinDate(this.formGroup!.get('startDate')?.value?.toString() ?? undefined)
+    this.validateDate();
+  }
+  
+  setMinDate(deadline: string | undefined) {
+    const timezone = this.formGroup?.get('timezone')?.value;
+    let minDate = timezone ? new Date(this.timezoneService.getMinDateForTimeZone(timezone)) : new Date();
+    if(deadline) {
+      const setDeadline = new Date(deadline);
+      if(setDeadline.getTime() < minDate.getTime()) minDate = setDeadline;
+    }
+    this.minDate = minDate;
+  }
+  
+  // resetDateValuesIfNecessary(control: AbstractControl<Date | null>) {
+  //   const date = control.value;
+  //   if(!this.setTimezone && date!.getTime() < this.minDate.getTime()) control.reset();
+  //   else if(this.setTimezone &&
+  //     this.timezoneService.convertDate(date!, this.formGroup!.get('timezone')!.value!).getTime() <
+  //     this.minDate.getTime()) control.reset();
+  // }
+  
 }
+
+//   this.filteredOptions = this.formGroup!.get('timezone')!.valueChanges.pipe(
+//   startWith(''),
+//   map(value => this.timezoneService.filterTimezones(value || '')),
+// );
+//   const tz = this.formGroup!.get('timezone')?.value;
+//   if(tz) {
+//     this.setTimezone = true;
+//     this.minDate = new Date(this.timezoneService.getMinDateForTimeZone(tz));
+//   } else this.minDate = new Date();
+//   if(this.formGroup?.get('startDate')?.value) this.setMinDate(this.formGroup!.get('startDate')!.value!.toISOString());
+// // if(this.formGroup?.get('startDate')) this.minDate = new Date(this.formGroup!.get('startDate')!.value!);
+//

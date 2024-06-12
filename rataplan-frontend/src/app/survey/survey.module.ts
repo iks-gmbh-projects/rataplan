@@ -1,10 +1,12 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgModule } from '@angular/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { NgChartsModule } from 'ng2-charts';
 
 import { AppCommonModule } from '../app-common.module';
+import { TimezoneService } from '../services/timezone-service/timezone-service';
 import { DateRangeComponent } from './date-range/date-range.component';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
 import { SurveyCreateEffects } from './survey-create/state/survey-create.effects';
@@ -57,6 +59,10 @@ import { SurveyRoutingModule } from './survey.routing.module';
     SurveyRoutingModule,
     DragDropModule,
     NgChartsModule,
+    MatAutocompleteModule,
+  ],
+  providers: [
+    TimezoneService,
     StoreModule.forFeature(surveyListFeature),
     StoreModule.forFeature(surveyFormFeature),
     StoreModule.forFeature(surveyCreateFeature),

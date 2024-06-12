@@ -48,6 +48,32 @@
         <mat-error [textContent]="errorMessageService.genericFormError(formGroup.get('endDate'))"/>
       </mat-form-field>
       <br>
+      <mat-checkbox
+        (change)="enableAndDisableTimeoneSettings()"
+        [checked]="setTimezone"
+        style="margin-bottom: 1rem"
+      >Zeitzone einstellen
+      </mat-checkbox>
+      <br>
+      <mat-form-field appearance="fill" *ngIf="setTimezone">
+        <mat-label>Zeitzone</mat-label>
+        <input
+          [disabled]="!setTimezone"
+          formControlName="timezone"
+          matInput
+          [matAutocomplete]="auto"
+          aria-label="Land auswählen"
+        >
+        <mat-error>{{ errorMessageService.genericFormError(formGroup.get('timezone')) }}</mat-error>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="convertDates($event.option.viewValue)">
+          <mat-option
+            *ngFor="let timeZone of filteredOptions | async"
+            [value]="timeZone"
+          >{{ timeZone }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <br>
       <mat-checkbox formControlName="openAccess"><span class="newLine">Öffentliche Umfrage</span>
       </mat-checkbox>
       <br><br>
