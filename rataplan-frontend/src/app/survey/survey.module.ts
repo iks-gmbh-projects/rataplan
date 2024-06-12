@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NgChartsModule } from 'ng2-charts';
 
 import { AppCommonModule } from '../app-common.module';
+import { TimezoneService } from '../services/timezone-service/timezone-service';
 import { DateRangeComponent } from './date-range/date-range.component';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyRoutingModule } from './survey.routing.module';
@@ -45,11 +47,13 @@ import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unkno
     AppCommonModule,
     SurveyRoutingModule,
     NgChartsModule,
+    MatAutocompleteModule,
   ],
   providers: [
     SurveyService,
     AccessIDSurveyResolver,
     ParticipationIDSurveyResolver,
+    TimezoneService,
   ],
 })
 export class SurveyModule {}

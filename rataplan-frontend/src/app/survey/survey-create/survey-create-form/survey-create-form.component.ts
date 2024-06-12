@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
+import { TimezoneService } from '../../../services/timezone-service/timezone-service';
 import { ExtraValidators } from '../../../validator/validators';
 import { Checkbox, Question, QuestionGroup, Survey } from '../../survey.model';
 import { checkboxFormGroup, questionFormGroup } from './survey-create-form-page/survey-create-form-page.component';
@@ -28,11 +29,23 @@ export class SurveyCreateFormComponent {
   
   public page: number = -1;
   
-  constructor(public readonly errorMessageService: FormErrorMessageService) { }
+  constructor(
+    public readonly errorMessageService: FormErrorMessageService,
+    private timezoneService: TimezoneService,
+  )
+  { }
   
   private createSurvey(survey?: Survey) {
-    const startDate = new FormControl<Date | null>(survey?.startDate ?? null);
-    const endDate = new FormControl<Date | null>(survey?.endDate ?? null);
+    const startDate = new FormControl<Date | null>(survey?.startDate && survey.startDate !== null ?
+      new Date(survey.startDate) :
+      null);
+    const endDate = new FormControl<Date | null>(survey?.endDate && survey.endDate !== null ?
+      new Date(survey.endDate) :
+      null);
+    if(survey?.timezone) {
+      startDate.setValue(this.timezoneService.convertToDesiredTimezone(startDate.value!, survey.timezone));
+      endDate.setValue(this.timezoneService.convertToDesiredTimezone(endDate.value!, survey.timezone));
+    }
     return new FormGroup({
       id: new FormControl(survey?.id ?? null),
       accessId: new FormControl(survey?.accessId ?? null),
@@ -49,6 +62,7 @@ export class SurveyCreateFormComponent {
       ]),
       startDate: startDate,
       endDate: endDate,
+      timezone: new FormControl(survey?.timezone || '', ExtraValidators.isValidTimezone()),
       openAccess: new FormControl(survey?.openAccess ?? false),
       anonymousParticipation: new FormControl(survey?.anonymousParticipation ?? false),
       questionGroups: new FormArray(survey?.questionGroups.map(this.createQuestionGroup, this) ||

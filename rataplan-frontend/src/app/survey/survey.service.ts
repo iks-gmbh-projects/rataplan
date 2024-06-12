@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { exhaustMap, map, Observable } from 'rxjs';
+import { TimezoneService } from '../services/timezone-service/timezone-service';
 import { Survey, SurveyHead, SurveyResponse } from './survey.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 
@@ -19,6 +20,7 @@ export class SurveyService {
   constructor(
     private readonly http: HttpClient,
     private readonly urlService: BackendUrlService,
+    private readonly timezoneService: TimezoneService,
   )
   {
     this.surveyURL = urlService.surveyBackendURL('surveys');
@@ -62,7 +64,15 @@ export class SurveyService {
         return this.http.get<Survey>(surveyURL, {
           params: new HttpParams().append('accessId', accessId),
           withCredentials: true,
-        });
+        })
+          // .pipe(
+          // map(survey => {
+          //   if(!survey.timezone) return survey;
+          //   survey.startDate = this.timezoneService.convertToDesiredTimezone(survey.startDate, survey.timezone);
+            // survey.endDate = this.timezoneService.convertToDesiredTimezone(survey.endDate, survey.timezone);
+            // return survey;
+          // }),
+        ;
       }),
       ensureDateOperator,
     );
@@ -71,6 +81,7 @@ export class SurveyService {
   public createSurvey(survey: Survey): Observable<SurveyHead> {
     return this.surveyURL.pipe(
       exhaustMap(surveyURL => {
+        if(survey.timezone) this.timezoneService.convertSurveyDates(survey);
         return this.http.post<SurveyHead>(surveyURL, survey, {
           withCredentials: true,
         });
@@ -82,6 +93,7 @@ export class SurveyService {
   public editSurvey(survey: Survey): Observable<SurveyHead> {
     return this.surveyURL.pipe(
       exhaustMap(surveyURL => {
+        if(survey.timezone) this.timezoneService.convertSurveyDates(survey);
         return this.http.put<SurveyHead>(surveyURL, survey, {
           params: new HttpParams().append('accessId', survey.accessId!),
           withCredentials: true,

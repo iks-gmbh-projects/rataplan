@@ -38,6 +38,7 @@ export class FormErrorMessageService {
     if(element.hasError('min')) return 'Muss größer sein';
     if(element.hasError('max')) return 'Muss kleiner sein';
     if(element.hasError('index')) return 'So viele Möglichkeiten gibt es nicht.';
+    if(element.hasError('invalidTimezone')) return 'Kein gültige Zeitzone';
     return null;
   }
 }
