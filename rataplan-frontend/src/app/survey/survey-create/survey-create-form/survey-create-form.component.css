@@ -19,3 +19,7 @@
 .max-width mat-form-field input {
   width: 100%;
 }
+
+.right>* {
+    margin-left: 1ex;
+}

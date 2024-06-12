@@ -39,9 +39,10 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  public toPreview(survey: Survey): void {
+  public toPreview({survey, preview}: {survey: Survey, preview: boolean}): void {
     this.survey = survey;
-    this.preview = true;
+    if(preview) this.preview = true;
+    else this.submit(survey);
   }
 
   public submit(survey?: Survey): void {

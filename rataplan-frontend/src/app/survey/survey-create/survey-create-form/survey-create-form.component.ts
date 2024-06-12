@@ -22,7 +22,7 @@ export class SurveyCreateFormComponent {
     this.formGroup = this.createSurvey(this._survey);
   }
   
-  @Output() public readonly onSubmit: EventEmitter<Survey> = new EventEmitter<Survey>();
+  @Output() public readonly onSubmit = new EventEmitter<{survey: Survey, preview: boolean}>();
   public formGroup? = this.createSurvey(this.survey);
   
   public page: number = -1;
@@ -128,7 +128,7 @@ export class SurveyCreateFormComponent {
     if(this.page >= arr.length) this.page = arr.length - 1;
   }
   
-  public preview(): void {
+  public submit(preview: boolean = false): void {
     if(!this.formGroup || this.formGroup.invalid) return;
     let survey: Survey = this.formGroup.value as Survey;
     survey.startDate = new Date(survey.startDate);
@@ -148,6 +148,6 @@ export class SurveyCreateFormComponent {
         q.hasCheckbox = 'checkboxGroup' in q;
       }
     });
-    this.onSubmit.emit(survey);
+    this.onSubmit.emit({survey, preview});
   }
 }

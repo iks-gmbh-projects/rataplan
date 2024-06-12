@@ -34,7 +34,6 @@ export class SurveyPreviewComponent {
       if(this.page >= this.survey.questionGroups.length-1) this.onSubmit.emit(this.survey);
       else this.page++;
     } else if(this.page) this.page--;
-    else this.onSubmit.emit();
   }
 
   public previewify(questionGroup: QuestionGroup): QuestionGroup {

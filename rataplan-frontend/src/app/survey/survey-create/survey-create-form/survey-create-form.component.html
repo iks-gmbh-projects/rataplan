@@ -19,8 +19,11 @@
   </div>
   <div class="middle"></div>
   <div class="right">
-    <button mat-raised-button color="primary" type="button" (click)="preview()" [disabled]="!!formGroup?.invalid">
+    <button mat-raised-button color="primary" type="button" (click)="submit(true)" [disabled]="!!formGroup?.invalid">
       Vorschau
+    </button>
+    <button mat-raised-button color="primary" type="button" (click)="submit()" [disabled]="!!formGroup?.invalid">
+      Fertig
     </button>
   </div>
 </div>
