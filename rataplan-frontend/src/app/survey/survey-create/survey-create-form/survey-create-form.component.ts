@@ -62,7 +62,8 @@ export class SurveyCreateFormComponent {
       ]),
       startDate: startDate,
       endDate: endDate,
-      timezone: new FormControl(survey?.timezone || '', ExtraValidators.isValidTimezone()),
+      timezoneActive: new FormControl(!!survey?.timezone),
+      timezone: new FormControl(survey?.timezone || '',ExtraValidators.isValidTimezone()),
       openAccess: new FormControl(survey?.openAccess ?? false),
       anonymousParticipation: new FormControl(survey?.anonymousParticipation ?? false),
       questionGroups: new FormArray(survey?.questionGroups.map(this.createQuestionGroup, this) ||

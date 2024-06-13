@@ -69,10 +69,10 @@ export class SurveyService {
           // map(survey => {
           //   if(!survey.timezone) return survey;
           //   survey.startDate = this.timezoneService.convertToDesiredTimezone(survey.startDate, survey.timezone);
-            // survey.endDate = this.timezoneService.convertToDesiredTimezone(survey.endDate, survey.timezone);
-            // return survey;
+          // survey.endDate = this.timezoneService.convertToDesiredTimezone(survey.endDate, survey.timezone);
+          // return survey;
           // }),
-        ;
+          ;
       }),
       ensureDateOperator,
     );
@@ -81,7 +81,8 @@ export class SurveyService {
   public createSurvey(survey: Survey): Observable<SurveyHead> {
     return this.surveyURL.pipe(
       exhaustMap(surveyURL => {
-        if(survey.timezone) this.timezoneService.convertSurveyDates(survey);
+        if(survey.timezoneActive && survey.timezone) this.timezoneService.convertSurveyDates(survey);
+        else survey.timezone = undefined;
         return this.http.post<SurveyHead>(surveyURL, survey, {
           withCredentials: true,
         });
@@ -93,7 +94,8 @@ export class SurveyService {
   public editSurvey(survey: Survey): Observable<SurveyHead> {
     return this.surveyURL.pipe(
       exhaustMap(surveyURL => {
-        if(survey.timezone) this.timezoneService.convertSurveyDates(survey);
+        if(survey.timezoneActive && survey.timezone) this.timezoneService.convertSurveyDates(survey);
+        else survey.timezone = undefined;
         return this.http.put<SurveyHead>(surveyURL, survey, {
           params: new HttpParams().append('accessId', survey.accessId!),
           withCredentials: true,

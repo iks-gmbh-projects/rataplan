@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Observable, startWith } from 'rxjs';
-import { MatAutocomplete } from '@angular/material/autocomplete';
 import { map } from 'rxjs/operators';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
 import { TimezoneService } from '../../../../services/timezone-service/timezone-service';
@@ -15,6 +14,7 @@ export type HeadFormFields = {
   startDate: Date | null,
   endDate: Date | null,
   timezone: string | undefined,
+  timezoneActive:boolean,
   openAccess: boolean | null,
   anonymousParticipation: boolean | null,
 };
@@ -50,7 +50,7 @@ export class SurveyCreateFormHeadComponent implements OnInit {
       this.minDate = new Date(this.timezoneService.getMinDateForTimeZone(tz));
     } else this.minDate = new Date();
     if(this.formGroup?.get('startDate')?.value) this.setMinDate(this.formGroup!.get('startDate')!.value!.toISOString());
-    // if(this.formGroup?.get('startDate')) this.minDate = new Date(this.formGroup!.get('startDate')!.value!);
+    
   }
   
   public headerComplete(): boolean {
@@ -58,7 +58,6 @@ export class SurveyCreateFormHeadComponent implements OnInit {
     return this.formGroup.controls.name.valid
       && this.formGroup.controls.description.valid
       && this.formGroup.controls.startDate.valid
-      && this.formGroup.controls.timezone.valid
       && this.formGroup.controls.endDate.valid;
   }
   
@@ -82,10 +81,9 @@ export class SurveyCreateFormHeadComponent implements OnInit {
   }
   
   enableAndDisableTimeoneSettings() {
-    const timezone = this.formGroup!.get('timezone')!;
-    timezone.setErrors(null);
     this.setTimezone = !this.setTimezone;
-    this.setMinDate(this.formGroup!.get('startDate')?.value?.toString() ?? undefined)
+    this.formGroup!.get('timezone')!.setErrors(null);
+    this.setMinDate(this.formGroup!.get('startDate')?.value?.toString() ?? undefined);
     this.validateDate();
   }
   
@@ -108,8 +106,6 @@ export class SurveyCreateFormHeadComponent implements OnInit {
   // }
   
   emitSurvey() {
-    if(!this.setTimezone || !this.formGroup!.get('timezone')!.value!) this.formGroup?.get('timezone')!.setValue(
-      undefined);
     this.submit.emit();
   }
   
