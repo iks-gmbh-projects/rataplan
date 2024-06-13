@@ -29,6 +29,7 @@ export class VoteFormEffects {
     private readonly router: Router,
     private readonly activeRoute: ActivatedRoute,
     private readonly dialog: MatDialog,
+    private readonly timezoneService: TimezoneService,
   )
   {
   }
@@ -84,6 +85,17 @@ export class VoteFormEffects {
         first(),
         filter(state => state.complete),
       )),
+      map(state => {
+        const vote = state.vote!;
+        return vote.timezone && vote.timezoneActive ?
+          {
+            ...state,
+            vote: {
+              ...vote,
+              deadline: this.timezoneService.convertDate(new Date(vote.deadline), vote.timezone!).toISOString(),
+            },
+          } : {...state};
+      }),
       map(state => (
         {request: state.vote!, appointmentsEdited: state.appointmentsChanged}
       )),

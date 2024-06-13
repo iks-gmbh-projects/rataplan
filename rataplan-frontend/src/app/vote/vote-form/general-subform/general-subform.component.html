@@ -48,6 +48,34 @@
     <mtx-datetimepicker #picker></mtx-datetimepicker>
     <mat-error>{{ errorMessageService.genericFormError(generalSubform.get("deadline")) }}</mat-error>
   </mat-form-field>
+  <mat-checkbox
+    #setTimezone
+    formControlName="timezoneActive"
+    (change)="enableAndDisableTimeoneSettings()"
+    style="margin-bottom: 1rem"
+  >Zeitzone einstellen
+  </mat-checkbox>
+  <mat-form-field appearance="fill" *ngIf="setTimezone.checked">
+    <mat-label>Zeitzone</mat-label>
+    <input
+      [disabled]="!setTimezone.checked"
+      formControlName="timezone"
+      matInput
+      [matAutocomplete]="auto"
+      aria-label="Zeitzone auswählen"
+    >
+    <mat-error>{{ errorMessageService.genericFormError(generalSubform.get('timezone')) }}</mat-error>
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="configureTimezone($event.option.viewValue)"
+    >
+      <mat-option
+        *ngFor="let timeZone of filteredOptions | async"
+        [value]="timeZone"
+      >{{ timeZone }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
   <label id="example-radio-group-label">Antwortmöglichkeiten</label>
   <mat-radio-group formControlName="decision">
     <mat-radio-button [value]="DecisionType.DEFAULT">
