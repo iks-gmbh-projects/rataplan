@@ -56,6 +56,7 @@ public class VoteServiceImpl implements VoteService {
             voteOption.setId(null);
         }
         
+        
         vote.setParticipationToken(tokenGeneratorService.generateToken(8));
         vote.setEditToken(tokenGeneratorService.generateToken(10));
         
@@ -132,6 +133,8 @@ public class VoteServiceImpl implements VoteService {
                 dbVote.setNotified(false);
             }
         }
+        
+        dbVote.setTimezone(newVote.getTimezone());
         
         if(newVote.getTitle() != null) dbVote.setTitle(newVote.getTitle());
         dbVote.setDescription(newVote.getDescription());

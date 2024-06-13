@@ -55,6 +55,8 @@ public class Vote implements Serializable {
     private List<BackendUserAccess> accessList = new ArrayList<>();
     private String personalisedInvitation;
     
+    private String timezone;
+    
     public Vote(
         EncryptedString title,
         EncryptedString description,

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -31,15 +32,15 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     public VoteParticipant createParticipant(Vote vote, VoteParticipant voteParticipant) {
         
         this.validateExpirationDate(vote);
-        if (!this.validateDecisions(vote,voteParticipant))
+        if(!this.validateDecisions(vote, voteParticipant))
             throw new MalformedException("Vote decision violate yes limit or participant limit configuration");
         voteParticipant.setId(null);
         
-        if (vote.validateDecisionsForParticipant(voteParticipant)) {
+        if(vote.validateDecisionsForParticipant(voteParticipant)) {
             voteParticipant.setVote(vote);
             vote.getParticipants().add(voteParticipant);
             
-            for (VoteDecision decision : voteParticipant.getVoteDecisions()) {
+            for(VoteDecision decision : voteParticipant.getVoteDecisions()) {
                 decision.setVoteParticipant(voteParticipant);
             }
             
@@ -62,13 +63,13 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     
     @Override
     public VoteParticipant updateParticipant(
-        Vote vote, VoteParticipant dbVoteParticipant,
-        VoteParticipant newVoteParticipant
-    ) {
+        Vote vote, VoteParticipant dbVoteParticipant, VoteParticipant newVoteParticipant
+    )
+    {
         
         this.validateExpirationDate(vote);
         
-        if (!vote.validateDecisionsForParticipant(newVoteParticipant)) {
+        if(!vote.validateDecisionsForParticipant(newVoteParticipant)) {
             throw new MalformedException("VoteDecisions don't fit the DecisionType in the Vote.");
         }
         
@@ -105,41 +106,34 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
             .filter(e -> e.getKey().isParticipantLimitActive())
             .allMatch(e -> e.getKey().getParticipantLimit() >= e.getValue());
     }
-
+    
     @Override
     public void anonymizeParticipants(int userId) {
-        voteParticipantRepository.findByUserId(userId)
-            .peek(member -> {
-                member.setName(null);
-                member.setUserId(null);
-            })
-            .forEach(voteParticipantRepository::save);
+        voteParticipantRepository.findByUserId(userId).peek(member -> {
+            member.setName(null);
+            member.setUserId(null);
+        }).forEach(voteParticipantRepository::save);
     }
-
+    
     /**
      * updates the oldDecisions decisions to the new ones based on the
      * voteOptionId's
-     *
-     * @param oldDecisions
-     * @param newDecisions
      */
     private void updateDecisionsForParticipant(
-        List<VoteDecision> oldDecisions,
-        List<VoteDecision> newDecisions
-    ) {
-        for (VoteDecision voteDecision : oldDecisions) {
-            for (VoteDecision newdecision : newDecisions) {
-                if (Objects.equals(voteDecision.getVoteOption().getId(), newdecision.getVoteOption().getId())) {
+        List<VoteDecision> oldDecisions, List<VoteDecision> newDecisions
+    )
+    {
+        for(VoteDecision voteDecision : oldDecisions) {
+            for(VoteDecision newdecision : newDecisions) {
+                if(Objects.equals(voteDecision.getVoteOption().getId(), newdecision.getVoteOption().getId())) {
                     voteDecision.setDecision(newdecision.getDecision());
                     voteDecision.setParticipants(newdecision.getParticipants());
                 }
             }
         }
     }
-
+    
     private void validateExpirationDate(Vote vote) {
-        if (vote.isNotified()) {
-            throw new ForbiddenException("Vote is expired!");
-        }
+        if(vote.getDeadline().isBefore(Instant.now())) throw new ForbiddenException("uh uh");
     }
 }
