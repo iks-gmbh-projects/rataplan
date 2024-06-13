@@ -31,6 +31,7 @@ public class VoteDTO implements Serializable {
     private List<VoteOptionDTO> options;
     private List<VoteParticipantDTO> participants;
     private String personalisedInvitation;
+    private String timezone;
     
 
     public VoteDTO(Integer id, String title, String description, Instant deadline, String organizerName,
