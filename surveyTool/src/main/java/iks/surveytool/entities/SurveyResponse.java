@@ -6,6 +6,7 @@ import iks.surveytool.entities.question.*;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,8 @@ public class SurveyResponse extends AbstractEntity {
         if(survey == null || openAnswers == null || choiceAnswers == null || choiceAnswerTexts == null) invalid("missing survey or answers");
         if(!survey.isAnonymousParticipation() && userId == null) invalid("non-anon");
         {
-            for(OpenAnswer a : openAnswers) {
+            if(!validatePunctualSubmission()) throw new InvalidEntityException("Submission too late or too early",this);
+        for(OpenAnswer a : openAnswers) {
                 a.validate();
             }
             Map<Boolean, Set<Long>> surveyQuestionIds = survey.getQuestionGroups()
@@ -133,4 +135,11 @@ public class SurveyResponse extends AbstractEntity {
             }
         }
     }
+    
+    private boolean validatePunctualSubmission() {
+        return Instant.now().isAfter(survey.getStartDate().toInstant()) &&
+               Instant.now().isBefore(survey.getEndDate().toInstant());
+    }
+    
+    
 }
