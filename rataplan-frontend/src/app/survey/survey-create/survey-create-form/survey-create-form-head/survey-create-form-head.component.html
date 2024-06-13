@@ -52,13 +52,15 @@
         (change)="enableAndDisableTimeoneSettings()"
         [checked]="setTimezone"
         style="margin-bottom: 1rem"
+        formControlName="timezoneActive"
+        #timezoneActive
       >Zeitzone einstellen
       </mat-checkbox>
       <br>
       <mat-form-field appearance="fill" *ngIf="setTimezone">
         <mat-label>Zeitzone</mat-label>
         <input
-          [disabled]="!setTimezone"
+          [required]="timezoneActive.checked"
           formControlName="timezone"
           matInput
           [matAutocomplete]="auto"

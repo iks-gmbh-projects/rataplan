@@ -18,6 +18,7 @@ export type HeadFormFields = {
   startDate: Date | null,
   endDate: Date | null,
   timezone: string | undefined,
+  timezoneActive:boolean,
   openAccess: boolean | null,
   anonymousParticipation: boolean | null,
 };
@@ -151,10 +152,9 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   }
   
   enableAndDisableTimeoneSettings() {
-    const timezone = this.formGroup!.get('timezone')!;
-    timezone.setErrors(null);
     this.setTimezone = !this.setTimezone;
-    this.setMinDate(this.formGroup!.get('startDate')?.value?.toString() ?? undefined)
+    this.formGroup!.get('timezone')!.setErrors(null);
+    this.setMinDate(this.formGroup!.get('startDate')?.value?.toString() ?? undefined);
     this.validateDate();
   }
   

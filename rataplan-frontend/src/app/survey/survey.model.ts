@@ -10,6 +10,7 @@ export type SurveyHead = {
   accessId?: string,
   participationId?: string,
   userId?: string | number,
+  timezoneActive?: boolean
 };
 
 export type Survey = SurveyHead & {

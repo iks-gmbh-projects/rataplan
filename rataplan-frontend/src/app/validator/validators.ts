@@ -116,6 +116,7 @@ export class ExtraValidators {
   
   static isValidTimezone(): ValidatorFn {
     return (ctrl) => {
+      if(!ctrl.parent?.get('timezoneActive')!.value) return null;
       const timezones: Set<string> = new Set(moment.tz.names());
       if(timezones.has(ctrl.value)) return null;
       return {invalidTimezone: true};
