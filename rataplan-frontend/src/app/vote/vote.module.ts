@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { NgChartsModule } from 'ng2-charts';
 import { AppCommonModule } from '../app-common.module';
 import { ExcelService } from '../services/excel-service/excel-service';
+import { TimezoneService } from '../services/timezone-service/timezone-service';
 import { VoteRoutingModule } from './vote-routing.module';
 import { VoteFormComponent } from './vote-form/vote-form.component';
 import { GeneralSubformComponent } from './vote-form/general-subform/general-subform.component';
@@ -21,6 +22,7 @@ import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-dialog/vote-option-info-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,6 @@ import { MatMenuModule } from '@angular/material/menu';
     ConfigSubformComponent,
     OverviewSubformComponent,
     VoteListComponent,
-    
     VoteResultsComponent,
     VoteOptionInfoDialogComponent,
   ],
@@ -45,10 +46,12 @@ import { MatMenuModule } from '@angular/material/menu';
     EffectsModule.forFeature([VoteEffects]),
     MatSelectModule,
     MatMenuModule,
+    MatAutocompleteModule,
     NgChartsModule
   ],
   providers: [
     ExcelService,
-  ]
+    TimezoneService,
+  ],
 })
 export class VoteModule {}

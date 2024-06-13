@@ -51,107 +51,119 @@ const ActionRequiresInitTypeAssertion: {
 
 export class InitVoteAction implements Action {
   readonly type = VoteActions.INIT;
-
+  
   constructor(
-    readonly id?: string | number
-  ) {
+    readonly id?: string | number,
+  )
+  {
   }
 }
 
 export class InitVoteSuccessAction implements Action {
   readonly type = VoteActions.INIT_SUCCESS;
-
+  
   constructor(
-    readonly request: VoteModel
-  ) {
+    readonly request: VoteModel,
+  )
+  {
   }
 }
 
 export class InitVoteErrorAction implements Action {
   readonly type = VoteActions.INIT_ERROR;
-
+  
   constructor(
-    readonly error: any
-  ) {
+    readonly error: any,
+  )
+  {
   }
 }
 
 export class SetGeneralValuesVoteOptionAction implements Action {
   readonly type = VoteActions.SET_GENERAL_VALUES;
-
+  
   constructor(
     readonly payload: {
       title: string,
       description?: string,
       deadline: Date,
+      timezone?: string,
+      timezoneActive: boolean,
       decisionType: DecisionType,
       yesLimitActive: boolean,
       yesAnswerLimit: number | null
-    }
-  ) {
+    },
+  )
+  {
   }
 }
 
 export class SetVoteOptionConfigAction implements Action {
   readonly type = VoteActions.SET_VOTE_CONFIG;
-
+  
   constructor(
-    readonly config: VoteOptionConfig
-  ) {
+    readonly config: VoteOptionConfig,
+  )
+  {
   }
 }
 
 export class SetVoteOptionsAction implements Action {
   readonly type = VoteActions.SET_VOTES;
-
+  
   constructor(
-    readonly votes: VoteOptionModel[]
-  ) {
+    readonly votes: VoteOptionModel[],
+  )
+  {
   }
 }
 
 export class AddVoteOptionsAction implements Action {
   readonly type = VoteActions.ADD_VOTES;
   readonly votes: VoteOptionModel[];
-
+  
   constructor(
     ...votes: VoteOptionModel[]
-  ) {
+  )
+  {
     this.votes = votes;
   }
 }
 
 export class EditVoteOptionAction implements Action {
   readonly type = VoteActions.EDIT_VOTE;
-
+  
   constructor(
     readonly index: number,
-    readonly voteOption: VoteOptionModel
-  ) {
+    readonly voteOption: VoteOptionModel,
+  )
+  {
   }
 }
 
 export class RemoveVoteOptionAction implements Action {
   readonly type = VoteActions.REMOVE_VOTE;
-
+  
   constructor(
-    readonly index: number
-  ) {
+    readonly index: number,
+  )
+  {
   }
 }
 
 export class SetOrganizerInfoVoteOptionAction implements Action {
   readonly type = VoteActions.SET_ORGANIZER_INFO;
-
+  
   constructor(
     readonly payload: {
       name?: string,
       notificationSettings?: VoteNotificationSettings,
       consigneeList: string[],
-      userConsignees: (string|number)[],
-      personalisedInvitation?:string
-    }
-  ) {
+      userConsignees: (string | number)[],
+      personalisedInvitation?: string
+    },
+  )
+  {
   }
 }
 
@@ -161,20 +173,22 @@ export class PostVoteAction implements Action {
 
 export class PostVoteSuccessAction implements Action {
   readonly type = VoteActions.POST_SUCCESS;
-
+  
   constructor(
     readonly created: VoteModel,
     readonly editToken?: string,
-  ) {
+  )
+  {
   }
 }
 
 export class PostVoteErrorAction implements Action {
   readonly type = VoteActions.POST_ERROR;
-
+  
   constructor(
-    readonly error: any
-  ) {
+    readonly error: any,
+  )
+  {
   }
 }
 

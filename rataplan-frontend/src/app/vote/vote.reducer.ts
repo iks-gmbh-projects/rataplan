@@ -95,6 +95,8 @@ export function voteReducer(
         title: action.payload.title,
         description: action.payload.description,
         deadline: action.payload.deadline.toISOString(),
+        timezone: action.payload.timezone,
+        timezoneActive: action.payload.timezoneActive,
         voteConfig: {
           ...state.vote!.voteConfig,
           decisionType: action.payload.decisionType,

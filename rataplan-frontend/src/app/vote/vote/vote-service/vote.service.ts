@@ -32,7 +32,7 @@ export class VoteService {
           },
         );
       }),
-      map(deserializeVoteModel),
+      map(deserializeVoteModel)
     );
   }
   

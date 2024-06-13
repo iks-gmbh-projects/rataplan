@@ -9,6 +9,7 @@ import { filter, map, tap } from 'rxjs/operators';
 import { FeedbackDialogComponent } from '../dialogs/feedback-dialog/feedback-dialog.component';
 import { deserializeVoteModel, VoteModel } from '../models/vote.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
+import { TimezoneService } from '../services/timezone-service/timezone-service';
 import {
   InitVoteAction,
   InitVoteErrorAction,
@@ -33,6 +34,7 @@ export class VoteEffects {
     private readonly activeRoute: ActivatedRoute,
     private readonly urlService: BackendUrlService,
     private readonly dialog: MatDialog,
+    private readonly timezoneService: TimezoneService,
   )
   {
   }
@@ -77,6 +79,17 @@ export class VoteEffects {
         filter(state => state.complete),
         take(1),
       )),
+      map(state => {
+        const vote = state.vote!;
+        return vote.timezone && vote.timezoneActive ?
+          {
+            ...state,
+            vote: {
+              ...vote,
+              deadline: this.timezoneService.convertDate(new Date(vote.deadline), vote.timezone!).toISOString(),
+            },
+          } : {...state};
+      }),
       map(state => (
         {request: state.vote!, appointmentsEdited: state.appointmentsChanged}
       )),
