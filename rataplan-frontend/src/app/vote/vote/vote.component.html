@@ -12,7 +12,7 @@
     <h2 class="mat-card-title" style="align-self: center" [textContent]="state.vote.title"></h2>
     <p [textContent]="state.vote.description ?? ''"></p>
     <p class="mat-card-subtitle">
-      Abstimmung aktiv bis: {{ state.vote.deadline! | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
+      Abstimmung aktiv bis: {{ state.vote.deadline! | date:'medium' }}
     </p>
     <p class="mat-card-subtitle" *ngIf="hasDeadlinePassed(state.vote)">
       <span class="mat-error">Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>

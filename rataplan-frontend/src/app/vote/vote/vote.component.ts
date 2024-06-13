@@ -164,7 +164,6 @@ export class VoteComponent {
     if(!deadline) {
       throw new Error('Deadline has not been set.');
     }
-    deadline.setDate(deadline.getDate() + 1);
     return deadline.getTime() < Date.now();
   }
   
