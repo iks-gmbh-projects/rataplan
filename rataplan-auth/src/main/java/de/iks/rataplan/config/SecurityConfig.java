@@ -4,10 +4,13 @@ import de.iks.rataplan.service.JwtTokenService;
 import de.iks.rataplan.service.RataplanUserDetails;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,11 +27,14 @@ import java.io.PrintWriter;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
     private final FrontendConfig frontendConfig;
     
     @Bean
-    public SecurityFilterChain normalSecurity(HttpSecurity httpSecurity, JwtTokenService jwtTokenService) throws Exception {
+    public SecurityFilterChain normalSecurity(HttpSecurity httpSecurity, JwtTokenService jwtTokenService) throws
+        Exception
+    {
         UsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter =
             new UsernamePasswordAuthenticationFilter();
         usernamePasswordAuthenticationFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
@@ -39,7 +45,8 @@ public class SecurityConfig {
             writer.close();
         });
         usernamePasswordAuthenticationFilter.setAuthenticationFailureHandler((request, response, exception) -> response.sendError(
-            HttpStatus.UNAUTHORIZED.value()));
+            (exception instanceof DisabledException ? HttpStatus.FORBIDDEN : HttpStatus.UNAUTHORIZED).value())
+        );
         return httpSecurity.cors(Customizer.withDefaults())
             .csrf(CsrfConfigurer::disable)
             .addFilter(usernamePasswordAuthenticationFilter)
@@ -59,10 +66,11 @@ public class SecurityConfig {
                     "/v1/resend-confirmation-email",
                     "/v1/notifications/list-settings"
                 ).permitAll();
-                r.mvcMatchers("/userid", "/notification").hasAuthority("SCOPE_"+JwtTokenService.SCOPE_ID);
-                r.mvcMatchers("/v1/users/resetPassword").hasAuthority("SCOPE_"+JwtTokenService.SCOPE_RESET_PASSWORD);
-                r.mvcMatchers("/v1/confirm-account").hasAuthority("SCOPE_"+JwtTokenService.SCOPE_ACCOUNT_CONFIRMATION);
-                r.mvcMatchers("/v1/**").hasAuthority("SCOPE_"+JwtTokenService.SCOPE_LOGIN);
+                r.mvcMatchers("/userid", "/notification").hasAuthority("SCOPE_" + JwtTokenService.SCOPE_ID);
+                r.mvcMatchers("/v1/users/resetPassword").hasAuthority("SCOPE_" + JwtTokenService.SCOPE_RESET_PASSWORD);
+                r.mvcMatchers("/v1/confirm-account")
+                    .hasAuthority("SCOPE_" + JwtTokenService.SCOPE_ACCOUNT_CONFIRMATION);
+                r.mvcMatchers("/v1/**").hasAuthority("SCOPE_" + JwtTokenService.SCOPE_LOGIN);
                 r.anyRequest().authenticated();
             })
             .build();

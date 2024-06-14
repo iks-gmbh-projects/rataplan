@@ -53,9 +53,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private handleError(errorRes: LoginErrorAction) {
-    if (errorRes.error.error.errorCode === 'WRONG_CREDENTIALS') {
+    if (errorRes.error.status === 401) {
       this.password.setErrors({ invalidCredentials: true });
-    } else if (errorRes.error.error.errorCode === 'FORBIDDEN') {
+    } else if (errorRes.error.status === 403) {
       this.router.navigate(['/confirm-account/']);
     } else this.snackBar.open('Unbekannter Fehler bei Login', 'Ok');
   }
