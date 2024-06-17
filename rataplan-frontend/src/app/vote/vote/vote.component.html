@@ -67,9 +67,9 @@
       maximal {{ vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
     <div *ngFor="let option of (vote?.options ?? []); let voteIndex=index" class="option-container" #scrollTo>
       <div style="min-width: 40%; max-width: 40%">
-        <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
+        <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : '') }}</span>
         <span *ngIf="option.endDate">
-          {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
+          {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : '')}}
         </span>
         <div class="break-text">{{ option.description || '' }}</div>
         <span>
