@@ -2,7 +2,6 @@ import { AbstractControl, AsyncValidatorFn, FormArray, UntypedFormArray, Validat
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { AbstractControl, FormArray, UntypedFormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { AbstractControl, UntypedFormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
 import * as moment from 'moment-timezone';
 
 export class ExtraValidators {
