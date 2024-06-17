@@ -17,6 +17,7 @@ import { voteAction } from '../../vote/state/vote.action';
 import { DecisionType } from '../decision-type.enum';
 import { voteFormAction } from './vote-form.action';
 import { voteFormFeature } from './vote-form.feature';
+import { voteState } from './vote.reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -62,6 +63,31 @@ export class VoteFormEffects {
           first(),
           switchMap(url => this.http.get<VoteModel<true>>(url, {withCredentials: true})),
           map(deserializeVoteModel),
+          map(vote => {
+            if(!vote.timezone) return vote;
+            if(vote.voteConfig.voteOptionConfig.startDate && vote.voteConfig.voteOptionConfig.startDate)
+              vote.options = vote.options.map(option => (
+                {
+                  ...option,
+                  startDate: this.timezoneService.convertToDesiredTimezone(
+                    new Date(option.startDate!),
+                    vote.timezone!,
+                  ).toISOString(),
+                  
+                }
+              ));
+            if(vote.voteConfig.voteOptionConfig.endTime && vote.voteConfig.voteOptionConfig.endDate)
+              vote.options = vote.options.map(option => (
+                {
+                  ...option,
+                  endDate: this.timezoneService.convertToDesiredTimezone(
+                    new Date(option.endDate!),
+                    vote.timezone!,
+                  ).toISOString(),
+                }
+              ));
+            return vote;
+          }),
           map(vote => voteFormAction.initSuccess({vote})),
           catchError(err => of(voteFormAction.initError(err))),
         );
@@ -95,6 +121,29 @@ export class VoteFormEffects {
               deadline: this.timezoneService.convertDate(new Date(vote.deadline), vote.timezone!).toISOString(),
             },
           } : {...state};
+      }),
+      map(state => {
+        let vote = state.vote!;
+        if(!vote.timezoneActive || !vote.timezone) return state;
+        if(vote.voteConfig.voteOptionConfig.startDate && vote.voteConfig.voteOptionConfig.startTime) {
+          vote.options = vote.options.map(vo => {
+            const date = this.timezoneService.convertDate(
+              new Date(vo.startDate!),
+              vote.timezone!,
+            );
+            return {...vo, startDate: date.toISOString()};
+          });
+        }
+        if(vote.voteConfig.voteOptionConfig.endDate && vote.voteConfig.voteOptionConfig.endTime) {
+          vote.options = vote.options.map(vo => {
+            const date = this.timezoneService.convertDate(
+              new Date(vo.endDate!),
+              vote.timezone!,
+            );
+            return {...vo, endDate: date.toISOString()};
+          });
+        }
+        return {...state, vote};
       }),
       map(state => (
         {request: state.vote!, appointmentsEdited: state.appointmentsChanged}

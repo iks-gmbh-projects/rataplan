@@ -18,7 +18,7 @@ export type HeadFormFields = {
   startDate: Date | null,
   endDate: Date | null,
   timezone: string | undefined,
-  timezoneActive:boolean,
+  timezoneActive: boolean,
   openAccess: boolean | null,
   anonymousParticipation: boolean | null,
 };
@@ -31,7 +31,6 @@ export type HeadFormFields = {
 export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   public readonly head$: Observable<DeepPartial<SurveyHead> | undefined>;
   public readonly minStartDate$: Observable<Date>;
-  setTimezone: boolean = false;
   minDate!: Date;
   filteredOptions!: Observable<string[]>;
   public readonly formGroup = new FormGroup({
@@ -139,20 +138,28 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   protected readonly surveyCreateActions = surveyCreateActions;
   
   validateDate() {
+    this.setNewMinDate();
     const startDateControl = this.formGroup!.get('startDate');
     const endDateControl = this.formGroup!.get('endDate');
-    const timezone = this.setTimezone ? this.formGroup!.get('timezone')!.value : undefined;
+    const timezone = this.formGroup!.get('timezoneActive')?.value ? this.formGroup!.get('timezone')!.value : undefined;
     if(startDateControl?.value) this.timezoneService.resetDateIfNecessary(startDateControl, this.minDate, timezone);
     if(endDateControl?.value) this.timezoneService.resetDateIfNecessary(endDateControl, this.minDate, timezone);
   }
   
+  setNewMinDate() {
+    const timezoneActive = this.formGroup!.get('timezoneActive')?.value;
+    const timezoneValue = timezoneActive ? this.formGroup!.get('timezone')?.value : undefined;
+    this.minDate = timezoneActive ?
+      new Date(this.timezoneService.getMinDateForTimeZone(timezoneValue!)) :
+      new Date();
+  }
+  
   convertDates(timezone: string) {
     this.formGroup?.get('timezone')!.setValue(timezone);
-    this.updateMinDate(timezone);
+    this.validateDate();
   }
   
   enableAndDisableTimeoneSettings() {
-    this.setTimezone = !this.setTimezone;
     this.formGroup!.get('timezone')!.setErrors(null);
     this.setMinDate(this.formGroup!.get('startDate')?.value?.toString() ?? undefined);
     this.validateDate();

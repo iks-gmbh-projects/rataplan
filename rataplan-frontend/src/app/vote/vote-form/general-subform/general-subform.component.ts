@@ -76,6 +76,8 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
           const decision = vote?.voteConfig?.decisionType;
           const yesLimitActive = vote?.voteConfig.yesLimitActive;
           const yesAnswerLimit = vote?.voteConfig.yesAnswerLimit;
+          const timezoneActive = vote?.timezoneActive;
+          const timezone = vote?.timezone;
           if(title || deadline) {
             this.generalSubform.get('title')?.setValue(title);
             this.generalSubform.get('description')?.setValue(vote?.description);
@@ -83,9 +85,11 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
             this.generalSubform.get('decision')?.setValue(decision);
             this.generalSubform.get('yesAnswerLimit')?.setValue(yesAnswerLimit);
             this.generalSubform.get('yesLimitActive')?.setValue(yesLimitActive);
+            this.generalSubform.get('timezoneActive')?.setValue(timezoneActive);
+            this.generalSubform.get('timezone')?.setValue(timezone);
           }
-          if(vote?.timezone) {
-            this.generalSubform.get('timezone')?.setValue(vote!.timezone!);
+          
+          if(vote?.timezoneActive === undefined && vote?.timezone && this.router.url.includes('edit')) {
             this.generalSubform.get('timezoneActive')?.setValue(true);
             const deadline = this.generalSubform.get('deadline')!;
             deadline.setValue(this.timezoneService.convertToDesiredTimezone(
@@ -121,7 +125,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     const timezone = this.generalSubform?.get('timezone')?.value;
     let minDate = timezone ? new Date(this.timezoneService.getMinDateForTimeZone(timezone)) : new Date();
     if(deadline) {
-      const setDeadline = new Date(deadline);
+      const setDeadline = timezone ? this.timezoneService.convertToDesiredTimezone(new Date(deadline),timezone) : new Date(deadline);
       if(setDeadline.getTime() < minDate.getTime()) minDate = setDeadline;
     }
     this.minDate = minDate;
@@ -133,6 +137,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   
   reconfigureTimezoneSettings() {
     const timezoneActive = this.generalSubform.get('timezoneActive')?.value;
+    this.generalSubform!.get('timezone')!.setErrors(null);
     const timezoneValue = timezoneActive ? this.generalSubform.get('timezone')?.value : undefined;
     this.minDate = timezoneActive ?
       new Date(this.timezoneService.getMinDateForTimeZone(timezoneValue)) :
