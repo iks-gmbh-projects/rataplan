@@ -20,6 +20,7 @@ export class VoteListComponent implements OnInit, OnDestroy {
   );
   createdVotes: VoteModel[] = [];
   consignedVotes: VoteModel[] = [];
+  consignedNonExpiredVoteCount: number = 0;
   participatedVotes: VoteModel[] = [];
 
   constructor(readonly voteListService: VoteListService) { }
@@ -31,10 +32,14 @@ export class VoteListComponent implements OnInit, OnDestroy {
         this.createdVotes = res;
         this.busies$[0].next(false);
       });
-    this.voteListService.getCondignedVotes()
-      .pipe(takeUntil(this.destroySubject))
+    this.voteListService.getConsignedVotes()
+      .pipe(
+        takeUntil(this.destroySubject),
+      )
       .subscribe(res => {
         this.consignedVotes = res;
+        const n = Date.now();
+        this.consignedNonExpiredVoteCount = res.map(v => Date.parse(v.deadline)).filter(d => d > n).length;
         this.busies$[1].next(false);
       })
     this.voteListService.getParticipatedVotes()

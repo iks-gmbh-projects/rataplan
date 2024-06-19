@@ -23,7 +23,7 @@ export class VoteListService {
     );
   }
   
-  public getCondignedVotes(): Observable<VoteModel[]> {
+  public getConsignedVotes(): Observable<VoteModel[]> {
     return this.urlService.voteBackendURL('users', 'votes', 'consigns').pipe(
       exhaustMap(url => this.http.get<VoteModel[]>(url, {withCredentials: true})),
     );
