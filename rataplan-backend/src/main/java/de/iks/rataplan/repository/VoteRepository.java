@@ -14,7 +14,7 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
     
     int deleteAllByUserId(Integer userId);
     
-    @Query("SELECT DISTINCT v FROM Vote v WHERE :userId IN (SELECT p.id FROM v.participants p)")
+    @Query("SELECT DISTINCT p.vote FROM VoteParticipant p WHERE p.userId = :userId")
     List<Vote> findDistinctByParticipantIn(Integer userId);
     
     List<Vote> findByDeadlineBeforeAndNotifiedFalse(Date deadline);// find by deadline == xx and organizermail not null
