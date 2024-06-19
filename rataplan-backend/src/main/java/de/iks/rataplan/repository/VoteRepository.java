@@ -5,7 +5,7 @@ import de.iks.rataplan.domain.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.sql.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,7 +17,7 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
     @Query("SELECT DISTINCT p.vote FROM VoteParticipant p WHERE p.userId = :userId")
     List<Vote> findDistinctByParticipantIn(Integer userId);
     
-    List<Vote> findByDeadlineBeforeAndNotifiedFalse(Date deadline);// find by deadline == xx and organizermail not null
+    List<Vote> findByDeadlineBeforeAndNotifiedFalse(Instant deadline);// find by deadline == xx and organizermail not null
     
     Vote findByParticipationToken(String participationToken);
     

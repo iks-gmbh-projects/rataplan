@@ -8,8 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.List;
 
 @Component
@@ -26,7 +25,7 @@ public class SchedulerService {
 //	@Scheduled(fixedRate = 10000)		// Alle 10 Sekunden
     public void reportCurrentTime() {
 
-        List<Vote> requests = voteRepository.findByDeadlineBeforeAndNotifiedFalse(new Date(Calendar.getInstance().getTimeInMillis()));
+        List<Vote> requests = voteRepository.findByDeadlineBeforeAndNotifiedFalse(Instant.now());
 
         for (Vote request : requests) {
             try {
