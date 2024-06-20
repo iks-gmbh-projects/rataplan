@@ -1,7 +1,6 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.domain.*;
-import de.iks.rataplan.dto.ResultDTO;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.exceptions.ResourceNotFoundException;
 import de.iks.rataplan.repository.BackendUserAccessRepository;
@@ -14,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -288,29 +289,5 @@ public class VoteServiceImpl implements VoteService {
     public Vote addAccess(Vote vote, Collection<? extends BackendUserAccess> backendUserAccesses) {
         vote.getAccessList().addAll(backendUserAccesses);
         return voteRepository.saveAndFlush(vote);
-    }
-    @Override
-    public List<ResultDTO> getVoteResults(String accessToken) {
-        Vote vote = getVoteByParticipationToken(accessToken);
-        List<ResultDTO> resultDTOS = new ArrayList<>();
-        boolean isParticipantVote = vote.getVoteConfig().getDecisionType() == DecisionType.NUMBER;
-        for(VoteParticipant vo : vote.getParticipants()) {
-            ResultDTO ResultDTO = mapResultDTO(vo, isParticipantVote);
-            resultDTOS.add(ResultDTO);
-        }
-        return resultDTOS;
-    }
-    
-    public ResultDTO mapResultDTO(VoteParticipant voteParticipant, boolean isParticipantVote) {
-        ResultDTO resultDTO = new ResultDTO(
-            cryptoService.decryptDB(voteParticipant.getName().getString()),
-            voteParticipant.getVoteDecisions().get(0).getLastUpdated().toLocalDateTime()
-        );
-        Map<Integer, Integer> votesByOptionId = voteParticipant.getVoteDecisions().stream().collect(Collectors.toMap(
-            voteDecision -> voteDecision.getVoteDecisionId().getVoteOption().getId(),
-            v -> isParticipantVote ? v.getParticipants() : v.getDecision().getValue().intValue()
-        ));
-        resultDTO.setVoteOptionAnswers(votesByOptionId);
-        return resultDTO;
     }
 }
