@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { ChartData } from 'chart.js';
 import { VoteOptionModel } from '../../models/vote-option.model';
 import { VoteModel } from '../../models/vote.model';
 import { ExcelService } from '../../services/excel-service/excel-service';
@@ -50,6 +51,8 @@ export class VoteResultsComponent implements OnInit {
   filterVoteOption: number = 0;
   filterSortOption: string = GeneralFilterSortOption.ASCENDING;
   showVoteOptionsInFilter: boolean = false;
+  tableView: boolean = true;
+  pieChartResults!: Map<number, ChartData>;
   
   constructor(
     private store: Store,
@@ -57,16 +60,17 @@ export class VoteResultsComponent implements OnInit {
     private dialog: MatDialog,
     private excelService: ExcelService,
   )
-  {
-  }
+  {}
   
   ngOnInit(): void {
     const resolvedData: {
       vote: VoteModel,
-      results: UserVoteResults[]
+      results: UserVoteResults[],
+      pieCharts: Map<number, ChartData>;
     } = this.route.snapshot.data['voteResultData'];
     this.vote = resolvedData.vote;
     this.allVoteResults = resolvedData.results;
+    this.pieChartResults = resolvedData.pieCharts;
   }
   
   updateFilterOptions(filterByOption: string) {
@@ -164,4 +168,5 @@ export class VoteResultsComponent implements OnInit {
   protected readonly VoteAnswerFilterOptions = VoteAnswerFilterOptions;
   protected readonly GeneralFilterSortOption = GeneralFilterSortOption;
   
+  protected readonly Number = Number;
 }

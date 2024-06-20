@@ -1,11 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { exhaustMap, map, Observable } from 'rxjs';
-
-import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
+import { ChartData } from 'chart.js';
+import { exhaustMap, iif, map, mergeMap, Observable, of, toArray } from 'rxjs';
 import { deserializeVoteOptionDecisionModel } from '../../../models/vote-decision.model';
 import { VoteParticipantModel } from '../../../models/vote-participant.model';
+
+import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
 import { BackendUrlService } from '../../../services/backend-url-service/backend-url.service';
+import { DecisionType } from '../../vote-form/decision-type.enum';
 import { UserVoteResultResponse, UserVoteResults } from '../../vote-results/vote-results.component';
 
 @Injectable({
@@ -115,7 +117,7 @@ export class VoteService {
               let mappedUserVoteResult: UserVoteResults = {
                 username: userVoteResultResponse.username,
                 voteOptionAnswers: new Map<number, number>(),
-                lastUpdated: new Date(userVoteResultResponse.lastUpdated)
+                lastUpdated: new Date(userVoteResultResponse.lastUpdated),
               };
               Object.entries(userVoteResultResponse.voteOptionAnswers).forEach(mapElement => mappedUserVoteResult.voteOptionAnswers.set(
                   Number(mapElement[0]),
@@ -129,5 +131,51 @@ export class VoteService {
         ),
       ),
     );
+  }
+  
+  createPieChartMap(vote: Observable<VoteModel>) {
+    return vote.pipe(
+      mergeMap(v =>
+        iif(
+          () => v.voteConfig.decisionType === DecisionType.NUMBER,
+          of(undefined),
+          of(v).pipe(
+            mergeMap(v => v.participants),
+            mergeMap(p => p.decisions),
+            toArray(),
+            map((arr) => {
+              const map = new Map<number, ChartData<'pie'>>;
+              arr.forEach(d => {
+                if(!map.get(Number(d.optionId!))) {
+                  v.voteConfig.decisionType === DecisionType.EXTENDED ?
+                    map.set(Number(d.optionId!), this.createPieChart([0, 0, 0])) :
+                    map.set(Number(d.optionId), this.createPieChart([0, 0]));
+                }
+                if(d.decision === 1) map.get(Number(d.optionId!))!.datasets[0]!.data[0]!++;
+                if(d.decision === 2) map.get(Number(d.optionId!))!.datasets[0]!.data[2]!++;
+                if(d.decision === 3) map.get(Number(d.optionId!))!.datasets[0]!.data[1]!++;
+              });
+              return map;
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+  
+  createPieChart(results: number[]) {
+    const labels = results.length === 3 ? ['Ja', 'Nein', 'Vielleicht'] : ['Ja', 'Nein'];
+    const backgroundColor = results.length === 3 ?
+      ['rgb(14,72,35)', 'rgb(135, 28, 55)', 'rgb(244, 196, 46)'] : ['rgb(14,72,35)', 'rgb(135, 28, 55)'];
+    
+    return {
+      labels: labels,
+      datasets: [
+        {
+          data: results,
+          backgroundColor: backgroundColor,
+        },
+      ],
+    };
   }
 }

@@ -21,48 +21,50 @@
     </mat-card-title>
     <mat-card-content>
       <div style="margin-bottom: 1rem">
-        <mat-form-field>
-          <mat-label>Filtern nach</mat-label>
-          <mat-select [(ngModel)]="filterByOption">
-            <mat-option
-              *ngFor="let filterBy of FilterByOptions | keyvalue"
-              (click)="updateFilterOptions(filterBy.value)"
-              [value]="filterBy.value"
-            >
-              {{ filterBy.value }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field *ngIf="filterByOption !== FilterByOptions.PARTICIPANT">
-          <mat-label>Termin</mat-label>
-          <mat-select [(ngModel)]="filterVoteOption">
-            <mat-option *ngFor="let v of vote.options;let i = index" [value]="i">
-              Termin {{ i + 1 }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field *ngIf="filterByOption === FilterByOptions.VOTE_OPTION; else sortByNameDropDownOptions">
-          <mat-label>Sortieren</mat-label>
-          <mat-select [(ngModel)]="filterSortOption">
-            <mat-option
-              *ngFor="let sortOption of VoteAnswerFilterOptions | keyvalue"
-              [value]="sortOption.value"
-            >{{ sortOption.value }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <ng-template #sortByNameDropDownOptions>
+        <div>
           <mat-form-field>
-            <mat-label>Sortieren</mat-label>
-            <mat-select [(ngModel)]="filterSortOption">
+            <mat-label>Filtern nach</mat-label>
+            <mat-select [(ngModel)]="filterByOption" [disabled]="!tableView">
               <mat-option
-                *ngFor="let sortOption of GeneralFilterSortOption | keyvalue"
+                *ngFor="let filterBy of FilterByOptions | keyvalue"
+                (click)="updateFilterOptions(filterBy.value)"
+                [value]="filterBy.value"
+              >
+                {{ filterBy.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="filterByOption !== FilterByOptions.PARTICIPANT">
+            <mat-label>Termin</mat-label>
+            <mat-select [(ngModel)]="filterVoteOption" [disabled]="!tableView">
+              <mat-option *ngFor="let v of vote.options;let i = index" [value]="i">
+                Termin {{ i + 1 }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="filterByOption === FilterByOptions.VOTE_OPTION; else sortByNameDropDownOptions">
+            <mat-label>Sortieren</mat-label>
+            <mat-select [(ngModel)]="filterSortOption" [disabled]="!tableView">
+              <mat-option
+                *ngFor="let sortOption of VoteAnswerFilterOptions | keyvalue"
                 [value]="sortOption.value"
               >{{ sortOption.value }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-        </ng-template>
+          <ng-template #sortByNameDropDownOptions>
+            <mat-form-field>
+              <mat-label>Sortieren</mat-label>
+              <mat-select [(ngModel)]="filterSortOption" [disabled]="!tableView">
+                <mat-option
+                  *ngFor="let sortOption of GeneralFilterSortOption | keyvalue"
+                  [value]="sortOption.value"
+                >{{ sortOption.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+        </div>
         <!--        <div style="margin-bottom: 10px">-->
         <button
           mat-raised-button
@@ -72,10 +74,21 @@
           style="margin-right: 15px"
         >Anwenden
         </button>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="tableView = !tableView"
+          *ngIf="vote.voteConfig.decisionType !== DecisionType.NUMBER"
+          style="margin-right: 15px"
+        >
+          <mat-icon>
+            {{ tableView ? 'pie_chart' : 'table_chart' }}
+          </mat-icon>
+        </button>
         <button mat-raised-button class="back-to-vote-button" [routerLink]="['../']">Zur Abstimmung</button>
         <!--        </div>-->
       </div>
-      <table #resultsTable style="margin-bottom: 1rem">
+      <table *ngIf="tableView; else pieChart" #resultsTable style="margin-bottom: 1rem">
         <thead>
         <tr>
           <th class="participant-column-title">Teilnehmer</th>
@@ -130,6 +143,29 @@
       <button mat-mini-fab color="primary" style="float: right" (click)="createExcel()">
         <mat-icon>download</mat-icon>
       </button>
+      <ng-template #pieChart>
+        <div style="display: flex; flex-direction: row; overflow-x: scroll; scrollbar-width: none">
+          <div
+            style="display: flex; align-content: center; justify-content: center; flex-direction: column; text-align: center"
+            *ngFor="let option of vote.options"
+          >
+            <p *ngIf="option.startDate">{{ option.endDate ? 'Start' : option.startDate ? 'Zeit' : 'Datum' }}
+              : {{ option.startDate| date:'dd.MM.yyyy' + (option.startDate ? ' HH:mm' : ''): undefined: 'de' }}</p>
+            <p *ngIf="option.endDate">
+              Ende: {{ option.endDate | date:'dd.MM.yyyy' + (option.startDate ? ' HH:mm' : ''): undefined: 'de' }}</p>
+            <p *ngIf="option.description">Beschreibung: {{ option.description }}</p>
+            <p *ngIf="option.url">url: <a [href]="option.url" [textContent]="option.url"></a></p>
+            <div style="min-width: 75%;">
+              <canvas
+                style="max-height: 35vh"
+                baseChart
+                type="pie"
+                [data]="pieChartResults.get(Number(option.id!))"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 </div>

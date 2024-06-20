@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { NgChartsModule } from 'ng2-charts';
 import { AppCommonModule } from '../app-common.module';
 import { ExcelService } from '../services/excel-service/excel-service';
 import { VoteRoutingModule } from './vote-routing.module';
@@ -44,6 +45,7 @@ import { MatMenuModule } from '@angular/material/menu';
     EffectsModule.forFeature([VoteEffects]),
     MatSelectModule,
     MatMenuModule,
+    NgChartsModule
   ],
   providers: [
     ExcelService,
