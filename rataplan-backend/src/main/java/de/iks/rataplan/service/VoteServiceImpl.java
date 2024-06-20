@@ -59,6 +59,10 @@ public class VoteServiceImpl implements VoteService {
         vote.setEditToken(tokenGeneratorService.generateToken(10));
         
         Vote createdVote = voteRepository.saveAndFlush(vote);
+        backendUserAccessRepository.saveAllAndFlush(createdVote.getUserConsignees()
+            .stream()
+            .map(i -> new BackendUserAccess(createdVote.getId(), i, false, true))
+            .collect(Collectors.toUnmodifiableList()));
         notificationService.notifyForVoteCreation(createdVote);
         this.notificationService.notifyForVoteInvitations(vote);
         return createdVote;
