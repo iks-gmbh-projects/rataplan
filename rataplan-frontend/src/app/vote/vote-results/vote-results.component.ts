@@ -93,29 +93,23 @@ export class VoteResultsComponent implements OnInit {
   }
   
   showVoteOptionInfo(voteOption: VoteOptionModel) {
-    this.dialog.open(VoteOptionInfoDialogComponent, {data: {voteOption, config: this.vote.voteConfig.voteOptionConfig}});
+    this.dialog.open(
+      VoteOptionInfoDialogComponent,
+      {data: {voteOption, config: this.vote.voteConfig.voteOptionConfig}},
+    );
   }
   
   getVoteOptionSum(voteOptionId: number) {
-    return this.allVoteResults
-      .map(results => results.voteOptionAnswers)
-      .map(answers => answers.get(voteOptionId))
-      .map(answer => this.vote.voteConfig.decisionType === DecisionType.NUMBER ?
-        answer! :
-        (
-          answer === 1 ? 1 : 0
-        ))
-      .reduce<number>((a, b) => a + b, 0);
+    return (this.rawResults[voteOptionId] ?? [0, 0, 0, 0])[VoteOptionDecisionType.ACCEPT];
   }
   
   sort(descending = false, voteOption = -1) {
     switch(this.filterByOption) {
     case FilterByOptions.VOTE_SUBMISSION_TIME:
-      this.allVoteResults.sort((
-        a,
-        b,
-      ) => a.lastUpdated.getTime() -
-        b.lastUpdated.getTime());
+      this.allVoteResults.sort((a, b) =>
+        new Date(a.lastUpdated!).getTime() -
+        new Date(b.lastUpdated!).getTime(),
+      );
       break;
     case FilterByOptions.VOTE_OPTION:
       this.allVoteResults.sort((a, b) => this.sortByVoteOption(a, b, voteOption));

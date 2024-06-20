@@ -7,7 +7,6 @@ import { VoteParticipantModel } from '../../../models/vote-participant.model';
 import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
 import { BackendUrlService } from '../../../services/backend-url-service/backend-url.service';
 import { DecisionType, VoteOptionDecisionType } from '../../vote-form/decision-type.enum';
-import { UserVoteResultResponse, UserVoteResults } from '../../vote-results/vote-results.component';
 
 @Injectable({
   providedIn: 'root',
@@ -107,26 +106,28 @@ export class VoteService {
     return '' + vote.id;
   }
   
-  getVoteResults(voteParticipationToken: string) {
-    return this.urlService.voteBackendURL('vote', voteParticipationToken, 'results').pipe(
-      exhaustMap(url => this.http.get<UserVoteResultResponse[]>(url, {withCredentials: true}).pipe(
-          map(response => {
-            const mappedUserVoteResults: UserVoteResults[] = [];
-            for(const userVoteResultResponse of response) {
-              let mappedUserVoteResult: UserVoteResults = {
-                username: userVoteResultResponse.username,
-                voteOptionAnswers: new Map<number, number>(),
-                lastUpdated: new Date(userVoteResultResponse.lastUpdated),
-              };
-              Object.entries(userVoteResultResponse.voteOptionAnswers).forEach(mapElement => mappedUserVoteResult.voteOptionAnswers.set(
-                  Number(mapElement[0]),
-                  mapElement[1],
-                ),
-              );
-              mappedUserVoteResults.push(mappedUserVoteResult);
-            }
-            return mappedUserVoteResults;
-          }),
+  getResults(vote: Observable<VoteModel>) {
+    return vote.pipe(
+      mergeMap(v =>
+        iif(
+          () => v.participants.length === 0,
+          of(undefined),
+          of(v).pipe(
+            mergeMap(v => v.participants),
+            mergeMap(p => p.decisions),
+            toArray(),
+            map((arr) => {
+              return v.participants.map(p => {
+                const answerTime = arr.find(d => d.participantId! === p.id!)!.lastUpdated!
+               return ({
+                  username: p.name!,
+                  voteOptionAnswers: new Map<number, number>(arr.filter(d => d.participantId! ===
+                    p.id!).map(d => [Number(d.optionId), Number(d.decision)])),
+                  lastUpdated: answerTime,
+                });
+              });
+            }),
+          ),
         ),
       ),
     );

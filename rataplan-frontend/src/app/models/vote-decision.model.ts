@@ -1,11 +1,13 @@
 import {
   deserializeVoteOptionDecisionType,
   SerializedVoteOptionDecisionType,
-  VoteOptionDecisionType } from '../vote/vote-form/decision-type.enum';
+  VoteOptionDecisionType,
+} from '../vote/vote-form/decision-type.enum';
 
 export type VoteDecisionModel<serialized extends boolean = false> = {
-  optionId: number|string,
-  participantId?: number|string,
+  optionId: number | string,
+  participantId?: number | string,
+  lastUpdated?: Date
 } & ({
   decision: serialized extends false ? VoteOptionDecisionType : SerializedVoteOptionDecisionType,
   participants?: undefined,

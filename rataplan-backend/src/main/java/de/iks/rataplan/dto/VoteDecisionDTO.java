@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +19,7 @@ public class VoteDecisionDTO implements Serializable {
     private Integer participantId;
     private Integer decision;
     private Integer participants = null;
+    private Timestamp lastUpdated;
     
     public void assertAddValid() {
         if(optionId == null || (decision == null && participants == null)) throw new MalformedException("Missing fields");
