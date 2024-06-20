@@ -146,7 +146,7 @@
       <ng-template #pieChart>
         <div style="display: flex; flex-direction: row; overflow-x: scroll; scrollbar-width: none">
           <div
-            style="display: flex; align-content: center; justify-content: center; flex-direction: column; text-align: center"
+            style="display: flex; align-content: center; justify-content: center; flex-direction: column; text-align: center;min-width: 100%"
             *ngFor="let option of vote.options"
           >
             <p *ngIf="option.startDate">{{ option.endDate ? 'Start' : option.startDate ? 'Zeit' : 'Datum' }}
