@@ -162,6 +162,11 @@
                 type="pie"
                 [data]="pieChartResults.get(Number(option.id!))"
               ></canvas>
+              <p>Ja: {{ pieChartResults.get(Number(option.id))!.datasets[0].data[0] }}</p>
+              <p *ngIf="pieChartResults.get(Number(option.id))!.datasets[0].data[2]">
+                Vielleicht: {{ pieChartResults.get(Number(option.id))!.datasets[0].data[2] }}</p>
+              <p>Nein: {{ pieChartResults.get(Number(option.id))!.datasets[0].data[1] }}</p>
+              <b>Gesamt: {{ getVoteOptionSum(option.id!) }}</b>
             </div>
           </div>
         </div>
