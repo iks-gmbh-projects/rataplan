@@ -140,11 +140,11 @@
           </tbody>
         </ng-template>
       </table>
-      <button mat-mini-fab color="primary" style="float: right" (click)="createExcel()">
+      <button mat-mini-fab *ngIf="tableView" color="primary" style="float: right" (click)="createExcel()">
         <mat-icon>download</mat-icon>
       </button>
-      <ng-template #pieChart>
-        <div style="display: flex; flex-direction: row; overflow-x: scroll; scrollbar-width: none">
+      <ng-template #pieChart style="overflow-x: scroll; scrollbar-width: thin">
+        <div style="display: flex; flex-direction: row;">
           <div
             style="display: flex; align-content: center; justify-content: center; flex-direction: column; text-align: center;min-width: 100%"
             *ngFor="let option of vote.options"
