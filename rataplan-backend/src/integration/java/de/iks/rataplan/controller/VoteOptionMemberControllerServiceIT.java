@@ -34,6 +34,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,8 +181,10 @@ public class VoteOptionMemberControllerServiceIT {
         
         List<VoteDecisionDTO> decisions = new ArrayList<>();
         
-        decisions.add(new VoteDecisionDTO(1, 1, 0, null));
-        decisions.add(new VoteDecisionDTO(2, 1, 1, null));
+        Timestamp t = Timestamp.from(Instant.now());
+        
+        decisions.add(new VoteDecisionDTO(1, 1, 0, null, t));
+        decisions.add(new VoteDecisionDTO(2, 1, 1, null, t));
         
         voteParticipantDTO.setDecisions(decisions);
         return voteParticipantDTO;

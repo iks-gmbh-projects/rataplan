@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @SpringBootTest
 public class VoteDecisionDTOTest {
@@ -33,7 +34,7 @@ public class VoteDecisionDTOTest {
 
     @Test
     public void mapToDomain_VoteDecision_mapped() {
-    	VoteDecisionDTO decisionDTO = new VoteDecisionDTO(1, 1, 1, null);
+    	VoteDecisionDTO decisionDTO = new VoteDecisionDTO(1, 1, 1, null, Timestamp.from(Instant.now()));
         
         VoteDecision decision = mapper.map(decisionDTO, VoteDecision.class);
         Assertions.assertEquals(decisionDTO.getDecision(), decision.getDecision().getValue());

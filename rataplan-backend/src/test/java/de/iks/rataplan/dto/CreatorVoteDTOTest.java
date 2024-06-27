@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -203,10 +204,12 @@ public class CreatorVoteDTOTest {
         VoteParticipantDTO participant1 = new VoteParticipantDTO("Ingo");
         VoteParticipantDTO participant2 = new VoteParticipantDTO("Fabian");
         
-        VoteDecisionDTO decision11 = new VoteDecisionDTO(option1.getId(), participant1.getId(), 1, null);
-        VoteDecisionDTO decision12 = new VoteDecisionDTO(option1.getId(), participant2.getId(), 2, null);
-        VoteDecisionDTO decision21 = new VoteDecisionDTO(option2.getId(), participant1.getId(), 3, null);
-        VoteDecisionDTO decision22 = new VoteDecisionDTO(option2.getId(), participant2.getId(), 0, null);
+        Timestamp lastUpdated = Timestamp.from(Instant.now());
+        
+        VoteDecisionDTO decision11 = new VoteDecisionDTO(option1.getId(), participant1.getId(), 1, null, lastUpdated);
+        VoteDecisionDTO decision12 = new VoteDecisionDTO(option1.getId(), participant2.getId(), 2, null, lastUpdated);
+        VoteDecisionDTO decision21 = new VoteDecisionDTO(option2.getId(), participant1.getId(), 3, null, lastUpdated);
+        VoteDecisionDTO decision22 = new VoteDecisionDTO(option2.getId(), participant2.getId(), 0, null, lastUpdated);
         
         option2.setVoteId(dtoVote.getId());
         option1.setVoteId(dtoVote.getId());
