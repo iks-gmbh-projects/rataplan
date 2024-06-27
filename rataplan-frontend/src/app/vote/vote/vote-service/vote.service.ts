@@ -1,13 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ChartData } from 'chart.js';
 import { exhaustMap, iif, map, mergeMap, Observable, of, toArray } from 'rxjs';
 import { deserializeVoteOptionDecisionModel } from '../../../models/vote-decision.model';
 import { VoteParticipantModel } from '../../../models/vote-participant.model';
 
 import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
 import { BackendUrlService } from '../../../services/backend-url-service/backend-url.service';
-import { DecisionType } from '../../vote-form/decision-type.enum';
+import { DecisionType, VoteOptionDecisionType } from '../../vote-form/decision-type.enum';
 import { UserVoteResultResponse, UserVoteResults } from '../../vote-results/vote-results.component';
 
 @Injectable({
@@ -144,18 +143,17 @@ export class VoteService {
             mergeMap(p => p.decisions),
             toArray(),
             map((arr) => {
-              const map = new Map<number, ChartData<'pie'>>;
-              arr.forEach(d => {
-                if(!map.get(Number(d.optionId!))) {
-                  v.voteConfig.decisionType === DecisionType.EXTENDED ?
-                    map.set(Number(d.optionId!), this.createPieChart([0, 0, 0])) :
-                    map.set(Number(d.optionId), this.createPieChart([0, 0]));
-                }
-                if(d.decision === 1) map.get(Number(d.optionId!))!.datasets[0]!.data[0]!++;
-                if(d.decision === 2) map.get(Number(d.optionId!))!.datasets[0]!.data[2]!++;
-                if(d.decision === 3) map.get(Number(d.optionId!))!.datasets[0]!.data[1]!++;
-              });
-              return map;
+              const data = arr.reduce<Record<string, number[]>>((a, v) => ({
+                ...a,
+                [String(v.optionId)]: (a[v.optionId] ?? [0, 0, 0, 0]).map((o, i) => i == v.decision! ? 1+o : o),
+              }), {});
+              return {
+                raw: data,
+                pieChart: Object.fromEntries(
+                  Object.entries(data)
+                    .map(([k, v]) => [k, this.createPieChart(v)])
+                ),
+              };
             }),
           ),
         ),
@@ -164,16 +162,27 @@ export class VoteService {
   }
   
   createPieChart(results: number[]) {
-    const labels = results.length === 3 ? ['Ja', 'Nein', 'Vielleicht'] : ['Ja', 'Nein'];
-    const backgroundColor = results.length === 3 ?
-      ['rgb(14,72,35)', 'rgb(135, 28, 55)', 'rgb(244, 196, 46)'] : ['rgb(14,72,35)', 'rgb(135, 28, 55)'];
+    const remapArr = [VoteOptionDecisionType.ACCEPT, VoteOptionDecisionType.ACCEPT_IF_NECESSARY, VoteOptionDecisionType.DECLINE, VoteOptionDecisionType.NO_ANSWER]
+      .filter(v => results[v]);
+    const labels = {
+      [VoteOptionDecisionType.ACCEPT]: 'Ja',
+      [VoteOptionDecisionType.ACCEPT_IF_NECESSARY]: 'Vielleicht',
+      [VoteOptionDecisionType.DECLINE]: 'Nein',
+      [VoteOptionDecisionType.NO_ANSWER]: 'Keine Antwort'
+    };
+    const backgroundColor = {
+      [VoteOptionDecisionType.ACCEPT]: 'rgb(14,72,35)',
+      [VoteOptionDecisionType.ACCEPT_IF_NECESSARY]: 'rgb(244, 196, 46)',
+      [VoteOptionDecisionType.DECLINE]: 'rgb(135, 28, 55)',
+      [VoteOptionDecisionType.NO_ANSWER]: 'lightgray'
+    };
     
     return {
-      labels: labels,
+      labels: remapArr.map(v => labels[v]),
       datasets: [
         {
-          data: results,
-          backgroundColor: backgroundColor,
+          data: remapArr.map(v => results[v]),
+          backgroundColor: remapArr.map(v => backgroundColor[v]),
         },
       ],
     };

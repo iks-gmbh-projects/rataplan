@@ -1,7 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { ChartData } from 'chart.js';
 import { VoteOptionModel } from '../../models/vote-option.model';
 import { VoteModel } from '../../models/vote.model';
@@ -52,10 +51,10 @@ export class VoteResultsComponent implements OnInit {
   filterSortOption: string = GeneralFilterSortOption.ASCENDING;
   showVoteOptionsInFilter: boolean = false;
   tableView: boolean = true;
-  pieChartResults!: Map<number, ChartData>;
+  rawResults!: Record<string | number, number[]>
+  pieChartResults!: Record<string | number, ChartData>;
   
   constructor(
-    private store: Store,
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private excelService: ExcelService,
@@ -66,11 +65,26 @@ export class VoteResultsComponent implements OnInit {
     const resolvedData: {
       vote: VoteModel,
       results: UserVoteResults[],
-      pieCharts: Map<number, ChartData>;
+      pieCharts: {
+        raw: Record<string | number, number[]>,
+        pieChart: Record<string | number, ChartData>,
+      };
     } = this.route.snapshot.data['voteResultData'];
     this.vote = resolvedData.vote;
     this.allVoteResults = resolvedData.results;
-    this.pieChartResults = resolvedData.pieCharts;
+    this.rawResults = resolvedData.pieCharts.raw;
+    this.pieChartResults = Object.fromEntries(resolvedData.vote.options.map(o => [
+      o.id!,
+      resolvedData.pieCharts.pieChart[o.id!] ?? {
+        labels: ['Keine Antwort'],
+        datasets: [
+          {
+            data: [0.000001],
+            backgroundColor: ['lightgray'],
+          },
+        ],
+      },
+    ]));
   }
   
   updateFilterOptions(filterByOption: string) {
@@ -167,6 +181,5 @@ export class VoteResultsComponent implements OnInit {
   protected readonly FilterByOptions = FilterByOptions;
   protected readonly VoteAnswerFilterOptions = VoteAnswerFilterOptions;
   protected readonly GeneralFilterSortOption = GeneralFilterSortOption;
-  
-  protected readonly Number = Number;
+  protected readonly VoteOptionDecisionType = VoteOptionDecisionType;
 }
