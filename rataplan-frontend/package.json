@@ -27,7 +27,7 @@
     "@ngrx/store": "^14.3.3",
     "chart.js": "^3.6.0",
     "exceljs": "^4.4.0",
-    "momentjs": "^2.0.0",
+    "moment-timezone": "^0.5.45",
     "ng2-charts": "^4.1.1",
     "path": "^0.12.7",
     "rxjs": "~7.5.0",
