@@ -7,15 +7,15 @@ ADD surveyTool/pom.xml surveyTool/
 RUN ["mvn", "dependency:resolve", "dependency:resolve-plugins"]
 
 FROM build-setup AS build-auth
-ADD rataplan-auth/ rataplan-auth/
+ADD rataplan-auth/src/ rataplan-auth/src/
 RUN ["mvn", "-pl", "rataplan-auth", "-am", "verify", "-Duser.timezone=Europe/Berlin"]
 
 FROM build-setup AS build-backend
-ADD rataplan-backend/ rataplan-backend/
+ADD rataplan-backend/src/ rataplan-backend/src/
 RUN ["mvn", "-pl", "rataplan-backend", "-am", "verify", "-Duser.timezone=Europe/Berlin"]
 
 FROM build-setup AS build-survey
-ADD surveyTool/ surveyTool/
+ADD surveyTool/src/ surveyTool/src/
 RUN ["mvn", "-pl", "surveyTool", "-am", "verify", "-Duser.timezone=Europe/Berlin"]
 
 FROM eclipse-temurin:11-jre-alpine AS run-auth
