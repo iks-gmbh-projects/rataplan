@@ -63,6 +63,7 @@
               maxlength="1500"
               matInput
               [disabled]="disableTextField(question, modelQuestionGroup.control)"
+              [required]="question.required && !disableTextField(question, modelQuestionGroup.control)"
               #answerText="ngModel"
             >
             <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
@@ -72,7 +73,7 @@
       </div>
     </div>
     <div>
-      <button class="left" *ngIf="!isFirst" type="button" mat-raised-button color="basic" (click)="revert()">
+      <button class="left" *ngIf="!isFirst" type="button" mat-raised-button (click)="revert()">
         <mat-icon>navigate_before</mat-icon>
       </button>
       <div class="middle"></div>
