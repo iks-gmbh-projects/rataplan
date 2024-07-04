@@ -21,7 +21,7 @@ public class SurveyResponse extends AbstractEntity {
 
     public void validate() throws InvalidEntityException {
         if(survey == null || answers == null) throw new InvalidEntityException("missing survey or answers", this);
-        if(survey.isAnonymousParticipation() || userId != null) throw new InvalidEntityException("non-anon", this);
+        if(!survey.isAnonymousParticipation() && userId == null) throw new InvalidEntityException("non-anon", this);
         for(Answer a : answers) {
             a.validate();
         }
