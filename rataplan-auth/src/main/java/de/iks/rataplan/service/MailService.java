@@ -16,4 +16,5 @@ public interface MailService {
     void sendNotification(String recipient, NotificationMailData notification);
     void sendNotificationSummary(String recipient, Collection<? extends NotificationMailData> notifications);
     void sendFeedbackReport(Map<FeedbackCategory, ? extends List<? extends FeedbackDTO>> feedback);
+    void sendUpdateEmailAddressEmail(String recipient,String token);
 }

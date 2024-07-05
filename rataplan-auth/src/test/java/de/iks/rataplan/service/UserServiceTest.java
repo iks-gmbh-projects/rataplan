@@ -287,7 +287,7 @@ public class UserServiceTest {
         assertNotNull(token);
         Jwt jwt = jwtDecoder.decode(token);
         assertEquals(JwtTokenService.SCOPE_ACCOUNT_CONFIRMATION, jwt.getClaimAsString(JwtTokenService.CLAIM_SCOPE));
-        userService.confirmAccount(jwt.getSubject());
+        userService.confirmAccount(jwt);
         
         assertTrue(userService.getUserFromUsername("fritz").isAccountConfirmed());
     }

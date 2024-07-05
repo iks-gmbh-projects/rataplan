@@ -78,8 +78,7 @@ public class MailBuilderSendInBlue {
             .htmlContent(notification.getContent());
     }
     public SendSmtpEmail buildNotificationSummaryMail(
-        String recipient,
-        Collection<? extends NotificationMailData> notifications
+        String recipient, Collection<? extends NotificationMailData> notifications
     )
     {
         Context ctx = new Context();
@@ -88,5 +87,15 @@ public class MailBuilderSendInBlue {
             .to(Collections.singletonList(new SendSmtpEmailTo().email(recipient)))
             .subject(templateEngine.process("notification_summary_subject", ctx))
             .htmlContent(templateEngine.process("notification_summary_content", ctx));
+    }
+    
+    public SendSmtpEmail buildMailForUpdateEmail(String recipient, String token) {
+        Context ctx = new Context();
+        String updateEmailLink = frontendConfig.getUrl() + "/confirm-account/" + token;
+        ctx.setVariable("link", updateEmailLink);
+        return new SendSmtpEmail().sender(sender)
+            .to(Collections.singletonList(new SendSmtpEmailTo().email(recipient)))
+            .subject(templateEngine.process("updateEmail_subject", ctx))
+            .htmlContent(templateEngine.process("confirmAccount_content", ctx));
     }
 }

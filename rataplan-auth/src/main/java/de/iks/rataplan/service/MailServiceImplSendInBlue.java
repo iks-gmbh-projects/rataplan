@@ -27,19 +27,30 @@ public class MailServiceImplSendInBlue implements MailService {
         SendSmtpEmail mail = mailBuilder.buildMailForResetPassword(resetPasswordMailData);
         try {
             transactionalEmailsApi.sendTransacEmail(mail);
-        } catch (ApiException ex) {
+        } catch(ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
             throw new RuntimeException(ex);
         }
     }
-
+    
     @Override
     public void sendAccountConfirmationEmail(ConfirmAccountMailData confirmAccountMailData) {
         SendSmtpEmail mail = mailBuilder.buildAccountConfirmationEmail(confirmAccountMailData);
         try {
             log.info(mail.getHtmlContent());
             transactionalEmailsApi.sendTransacEmail(mail);
-        } catch (ApiException ex) {
+        } catch(ApiException ex) {
+            log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    @Override
+    public void sendUpdateEmailAddressEmail(String recipient, String token) {
+        SendSmtpEmail mail = mailBuilder.buildMailForUpdateEmail(recipient, token);
+        try {
+            transactionalEmailsApi.sendTransacEmail(mail);
+        } catch(ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
             throw new RuntimeException(ex);
         }
@@ -50,7 +61,7 @@ public class MailServiceImplSendInBlue implements MailService {
         SendSmtpEmail mail = mailBuilder.buildFeedbackReportMail(feedback);
         try {
             transactionalEmailsApi.sendTransacEmail(mail);
-        } catch (ApiException ex) {
+        } catch(ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
             throw new RuntimeException(ex);
         }
@@ -61,7 +72,7 @@ public class MailServiceImplSendInBlue implements MailService {
         SendSmtpEmail mail = mailBuilder.buildNotificationMail(recipient, notification);
         try {
             transactionalEmailsApi.sendTransacEmail(mail);
-        } catch (ApiException ex) {
+        } catch(ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
             throw new RuntimeException(ex);
         }
@@ -71,7 +82,7 @@ public class MailServiceImplSendInBlue implements MailService {
         SendSmtpEmail mail = mailBuilder.buildNotificationSummaryMail(recipient, notifications);
         try {
             transactionalEmailsApi.sendTransacEmail(mail);
-        } catch (ApiException ex) {
+        } catch(ApiException ex) {
             log.error("API-Exception: {}\n{}\n{}", ex.getCode(), ex.getResponseHeaders(), ex.getResponseBody());
             throw new RuntimeException(ex);
         }

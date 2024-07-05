@@ -86,8 +86,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = getUserFromId(Integer.parseInt(jwt.getSubject()));
         Long version = jwt.getClaim("version");
         boolean update = false;
-        if(version != null) update = user.getVersion() == Integer.parseInt(version.toString());
         boolean confirm = !user.isAccountConfirmed();
+        if(version != null) update = user.getVersion() == Integer.parseInt(version.toString()) && !confirm;
         if(update || confirm) {
             if(confirm) user.setAccountConfirmed(true);
             else user.setMail(this.cryptoService.encryptDB(jwt.getClaim("mail")));

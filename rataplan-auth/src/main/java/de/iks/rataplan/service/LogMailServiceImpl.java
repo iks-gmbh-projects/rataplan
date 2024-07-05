@@ -45,6 +45,10 @@ public class LogMailServiceImpl implements MailService {
             }
         });
     }
+    @Override
+    public void sendUpdateEmailAddressEmail(String recipient, String token) {
+        log.info("Account confirmation link: " + frontendConfig.getUrl() + "/confirm-account/" + token);
+    }
     
     @Override
     public void sendNotification(String recipient, NotificationMailData notification) {
