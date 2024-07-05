@@ -87,7 +87,8 @@ public class SecurityConfig {
                 r.mvcMatchers("/userid", "/notification").hasAuthority("SCOPE_" + JwtTokenService.SCOPE_ID);
                 r.mvcMatchers("/v1/users/resetPassword").hasAuthority("SCOPE_" + JwtTokenService.SCOPE_RESET_PASSWORD);
                 r.mvcMatchers("/v1/confirm-account")
-                    .hasAuthority("SCOPE_" + JwtTokenService.SCOPE_ACCOUNT_CONFIRMATION);
+                    .hasAnyAuthority("SCOPE_" + JwtTokenService.SCOPE_ACCOUNT_CONFIRMATION,
+                        "SCOPE_" + JwtTokenService.SCOPE_UPDATE_EMAIL);
                 r.mvcMatchers("/v1/**").hasAuthority("SCOPE_" + JwtTokenService.SCOPE_LOGIN);
                 r.anyRequest().authenticated();
             })

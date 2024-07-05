@@ -1,6 +1,7 @@
 package de.iks.rataplan.service;
 
 import de.iks.rataplan.config.JwtConfig;
+import de.iks.rataplan.domain.User;
 import de.iks.rataplan.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -16,15 +17,12 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class JwtTokenServiceImpl implements JwtTokenService {
-    private static final String CLAIM_USERID = "user_id";
     private final JwtConfig jwtConfig;
     private final JwtEncoder encoder;
     
     @Override
     public Integer getUserId(Jwt jwt) {
-        return Optional.ofNullable(jwt.<Number>getClaim(CLAIM_USERID))
-            .map(Number::intValue)
-            .orElse(null);
+        return Optional.ofNullable(jwt.<Number>getClaim(CLAIM_USERID)).map(Number::intValue).orElse(null);
     }
     @Override
     public String generateResetPasswordToken(String email) {
@@ -49,6 +47,16 @@ public class JwtTokenServiceImpl implements JwtTokenService {
         claims.subject(userDTO.getId().toString());
         claims.claim(CLAIM_SCOPE, SCOPE_ACCOUNT_CONFIRMATION);
         return generateToken(claims, 20*60);
+    }
+    
+    @Override
+    public String generateConfirmEmailUpdateToken(UserDTO userDTO, User user) {
+        JwtClaimsSet.Builder claims = JwtClaimsSet.builder();
+        claims.subject(userDTO.getId().toString());
+        claims.claim(CLAIM_VERSION, user.getVersion());
+        claims.claim(CLAIM_MAIL, userDTO.getMail());
+        claims.claim(CLAIM_SCOPE, SCOPE_UPDATE_EMAIL);
+        return generateToken(claims, jwtConfig.getLifetime());
     }
     
     private String generateToken(JwtClaimsSet.Builder claims, long lifetime) {
