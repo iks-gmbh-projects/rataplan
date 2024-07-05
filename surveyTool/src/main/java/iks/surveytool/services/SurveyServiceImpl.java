@@ -1,10 +1,10 @@
 package iks.surveytool.services;
 
 import iks.surveytool.domain.AuthUser;
-import iks.surveytool.dtos.CompleteSurveyDTO;
-import iks.surveytool.dtos.SurveyOverviewDTO;
+import iks.surveytool.dtos.*;
 import iks.surveytool.entities.*;
-import iks.surveytool.repositories.*;
+import iks.surveytool.repositories.SurveyRepository;
+import iks.surveytool.repositories.SurveyResponseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -16,41 +16,41 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
 public class SurveyServiceImpl implements SurveyService {
     private final SurveyRepository surveyRepository;
-    private final QuestionGroupRepository questionGroupRepository;
-    private final QuestionRepository questionRepository;
-    private final CheckboxGroupRepository checkboxGroupRepository;
-    private final CheckboxRepository checkboxRepository;
     private final SurveyResponseRepository surveyResponseRepository;
-    private final ModelMapper modelMapper;
+    private final ModelMapper mapper;
     private final AuthService authService;
     private final Random random = new Random();
     
-    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) throws InvalidEntityException
+    @Transactional
+    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO, Jwt jwtToken) throws
+        InvalidEntityException
     {
-        Survey newSurvey = mapSurveyToEntity(surveyDTO);
-        newSurvey.validate();
-        generateIds(newSurvey);
-        Survey savedSurvey = saveSurvey(newSurvey);
+        final AuthUser user = authService.getUserData(jwtToken);
+        final Long userId = user == null ? null : user.getId();
+        surveyDTO.setId(null);
+        surveyDTO.setUserId(userId);
+        Survey survey = mapper.map(surveyDTO, Survey.class);
+        generateIds(survey);
+        survey.validate();
+        Survey savedSurvey = saveSurvey(survey);
         SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
         return ResponseEntity.ok(completeSurveyDTO);
     }
     
+    @Transactional(readOnly = true)
     public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, Jwt jwttoken) {
         SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
         if(surveyOverviewDTO != null) {
@@ -69,6 +69,7 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
     
+    @Transactional(readOnly = true)
     public ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId) {
         SurveyOverviewDTO surveyDTO = mapSurveyToDTOByParticipationId(participationId);
         if(surveyDTO != null) {
@@ -84,6 +85,7 @@ public class SurveyServiceImpl implements SurveyService {
         }
     }
     
+    @Transactional(readOnly = true)
     public ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys() {
         List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
         return ResponseEntity.ok(openAccessSurveys);
@@ -103,14 +105,14 @@ public class SurveyServiceImpl implements SurveyService {
     }
     
     private SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
-        return modelMapper.map(savedSurvey, CompleteSurveyDTO.class);
+        return mapper.map(savedSurvey, CompleteSurveyDTO.class);
     }
     
     private SurveyOverviewDTO mapSurveyToDTOByAccessId(String accessId) {
         Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
         if(surveyOptional.isPresent()) {
             Survey survey = surveyOptional.get();
-            return modelMapper.map(survey, CompleteSurveyDTO.class);
+            return mapper.map(survey, CompleteSurveyDTO.class);
         }
         return null;
     }
@@ -123,11 +125,11 @@ public class SurveyServiceImpl implements SurveyService {
             ZonedDateTime zonedEndDate = survey.getEndDate();
             ZonedDateTime currentDateTime = ZonedDateTime.now();
             if(currentDateTime.isAfter(zonedStartDate) && currentDateTime.isBefore(zonedEndDate)) {
-                return modelMapper.map(survey, CompleteSurveyDTO.class);
+                return mapper.map(survey, CompleteSurveyDTO.class);
             } else {
                 // If current time is not within start- and endDate: return survey without questions to fill information
                 // in front-end
-                return modelMapper.map(survey, SurveyOverviewDTO.class);
+                return mapper.map(survey, SurveyOverviewDTO.class);
             }
         } else {
             return null;
@@ -136,16 +138,12 @@ public class SurveyServiceImpl implements SurveyService {
     
     private List<SurveyOverviewDTO> mapSurveysToDTO(List<Survey> surveys) {
         Type surveyOverviewList = new TypeToken<List<SurveyOverviewDTO>>() {}.getType();
-        return modelMapper.map(surveys, surveyOverviewList);
+        return mapper.map(surveys, surveyOverviewList);
     }
     
     private List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
         List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
         return mapSurveysToDTO(openAccessSurveys);
-    }
-    
-    private Survey mapSurveyToEntity(CompleteSurveyDTO surveyDTO) {
-        return modelMapper.map(surveyDTO, Survey.class);
     }
     
     private Survey saveSurvey(Survey survey) {
@@ -212,6 +210,7 @@ public class SurveyServiceImpl implements SurveyService {
             return ResponseEntity.notFound().build();
         }
         final Survey oldSurvey = optionalSurvey.get();
+        completeSurveyDTO.setId(oldSurvey.getId());
         if(oldSurvey.getStartDate().toInstant().isAfter(completeSurveyDTO.getStartDate()) &&
            Instant.now().isAfter(completeSurveyDTO.getStartDate()))
             throw new InvalidEntityException("Invalid Start Date", oldSurvey);
@@ -226,127 +225,20 @@ public class SurveyServiceImpl implements SurveyService {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
-        Survey survey = mapSurveyToEntity(completeSurveyDTO);
-        survey.setId(oldSurvey.getId());
-        survey.setUserId(oldSurvey.getUserId());
-        survey.setAccessId(oldSurvey.getAccessId());
-        survey.setParticipationId(oldSurvey.getParticipationId());
+        completeSurveyDTO.setUserId(oldSurvey.getUserId());
+        completeSurveyDTO.setAccessId(oldSurvey.getAccessId());
+        completeSurveyDTO.setParticipationId(oldSurvey.getParticipationId());
+        mapper.map(completeSurveyDTO, oldSurvey);
+        oldSurvey.validate();
         
-        survey.validate();
-        
-        transferValues(survey, oldSurvey);
-        
-        survey = saveSurvey(oldSurvey);
+        Survey survey = saveSurvey(oldSurvey);
         surveyResponseRepository.deleteAllBySurvey(survey);
         SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTO(survey);
         return ResponseEntity.ok(surveyOverviewDTO);
     }
     
-    private void transferValues(Survey from, Survey to) {
-        to.setName(from.getName());
-        to.setDescription(from.getDescription());
-        to.setStartDate(from.getStartDate());
-        to.setEndDate(from.getEndDate());
-        to.setAnonymousParticipation(from.isAnonymousParticipation());
-        to.setOpenAccess(from.isOpenAccess());
-        
-        Map<Boolean, List<QuestionGroup>> fromGroups = from.getQuestionGroups()
-            .stream()
-            .collect(Collectors.partitioningBy(idExistsIn(to.getQuestionGroups())));
-        Map<Long, QuestionGroup> fromMap = fromGroups.get(true)
-            .stream()
-            .collect(Collectors.toMap(QuestionGroup::getId, Function.identity()));
-        
-        ListIterator<QuestionGroup> it = to.getQuestionGroups().listIterator();
-        while(it.hasNext()) {
-            QuestionGroup toQuestionGroup = it.next();
-            QuestionGroup fromQuestionGroup = fromMap.get(toQuestionGroup.getId());
-            if(fromQuestionGroup == null) {
-                it.remove();
-                questionGroupRepository.delete(toQuestionGroup);
-                continue;
-            }
-            transferValues(fromQuestionGroup, toQuestionGroup);
-        }
-        to.getQuestionGroups().addAll(fromGroups.get(false));
-        fromGroups.get(false).forEach(qg -> qg.setSurvey(to));
-    }
-    
-    private void transferValues(QuestionGroup from, QuestionGroup to) {
-        to.setTitle(from.getTitle());
-        
-        Map<Boolean, List<Question>> fromQuestions = from.getQuestions()
-            .stream()
-            .collect(Collectors.partitioningBy(idExistsIn(to.getQuestions())));
-        Map<Long, Question> fromMap = fromQuestions.get(true)
-            .stream()
-            .collect(Collectors.toMap(Question::getId, Function.identity()));
-        
-        ListIterator<Question> it = to.getQuestions().listIterator();
-        while(it.hasNext()) {
-            Question toQuestion = it.next();
-            Question fromQuestion = fromMap.get(toQuestion.getId());
-            if(fromQuestion == null) {
-                it.remove();
-                questionRepository.delete(toQuestion);
-                continue;
-            }
-            transferValues(fromQuestion, toQuestion);
-        }
-        to.getQuestions().addAll(fromQuestions.get(false));
-        fromQuestions.get(false).forEach(q -> q.setQuestionGroup(to));
-    }
-    
-    private void transferValues(Question from, Question to) {
-        to.setText(from.getText());
-        to.setRequired(from.isRequired());
-        to.setHasCheckbox(from.isHasCheckbox());
-        
-        if(to.getCheckboxGroup() != null && from.getCheckboxGroup() != null) {
-            transferValues(from.getCheckboxGroup(), to.getCheckboxGroup());
-        } else {
-            if(from.getCheckboxGroup() != null) from.getCheckboxGroup().setQuestion(to);
-            if(to.getCheckboxGroup() != null) checkboxGroupRepository.delete(to.getCheckboxGroup());
-            to.setCheckboxGroup(from.getCheckboxGroup());
-        }
-    }
-    
-    private void transferValues(CheckboxGroup from, CheckboxGroup to) {
-        to.setMultipleSelect(from.isMultipleSelect());
-        to.setMinSelect(from.getMinSelect());
-        to.setMaxSelect(from.getMaxSelect());
-        
-        Map<Boolean, List<Checkbox>> fromQuestions = from.getCheckboxes()
-            .stream()
-            .collect(Collectors.partitioningBy(idExistsIn(to.getCheckboxes())));
-        Map<Long, Checkbox> fromMap = fromQuestions.get(true)
-            .stream()
-            .collect(Collectors.toMap(Checkbox::getId, Function.identity()));
-        
-        ListIterator<Checkbox> it = to.getCheckboxes().listIterator();
-        while(it.hasNext()) {
-            Checkbox toCheckbox = it.next();
-            Checkbox fromCheckbox = fromMap.get(toCheckbox.getId());
-            if(fromCheckbox == null) {
-                it.remove();
-                checkboxRepository.delete(toCheckbox);
-                continue;
-            }
-            toCheckbox.setText(fromCheckbox.getText());
-            toCheckbox.setHasTextField(fromCheckbox.isHasTextField());
-        }
-        fromQuestions.get(false).forEach(c -> {
-            c.setCheckboxGroup(to);
-            c.setId(null);
-        });
-        to.getCheckboxes().addAll(fromQuestions.get(false));
-    }
-    
-    private static <T extends AbstractEntity> Predicate<T> idExistsIn(Collection<T> collection) {
-        return e -> e.getId() != null && collection.stream().map(T::getId).anyMatch(e.getId()::equals);
-    }
-    
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(Jwt jwttoken) {
         AuthUser user = authService.getUserData(jwttoken);
         if(user == null) {
@@ -358,6 +250,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
     
     @Override
+    @Transactional
     public ResponseEntity<?> deleteSurveysByUserId(long id) {
         try {
             surveyRepository.deleteSurveysByUserId(id);
@@ -369,6 +262,7 @@ public class SurveyServiceImpl implements SurveyService {
     }
     
     @Override
+    @Transactional
     public ResponseEntity<?> anonymizeSurveysByUserId(long id) {
         try {
             final List<Survey> surveys = surveyRepository.findAllByUserId(id);

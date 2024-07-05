@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     @Override
     public AuthUser getUserData(Jwt token) {
+        if(token == null) return null;
         return new AuthUser(token.<Number>getClaim(CLAIM_USERID).longValue(), token.getSubject());
     }
 }

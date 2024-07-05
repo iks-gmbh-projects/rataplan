@@ -11,7 +11,9 @@ public class SurveyResponseBuilder {
         newResponse.setId(id);
         newResponse.setSurvey(survey);
         newResponse.setUserId(userId);
-        newResponse.setAnswers(new ArrayList<>());
+        newResponse.setOpenAnswers(new ArrayList<>());
+        newResponse.setChoiceAnswers(new ArrayList<>());
+        newResponse.setChoiceAnswerTexts(new ArrayList<>());
         return newResponse;
     }
 }

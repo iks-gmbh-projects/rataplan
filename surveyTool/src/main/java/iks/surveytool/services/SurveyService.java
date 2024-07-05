@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.List;
 
 public interface SurveyService {
-    ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO) throws InvalidEntityException;
+    ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO, Jwt jwttoken) throws InvalidEntityException;
     ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, Jwt jwttoken)
         throws InvalidEntityException;
     ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, Jwt jwttoken);

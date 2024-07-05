@@ -27,4 +27,14 @@ public abstract class AbstractEntity {
 
     @Version
     private Integer version;
+    
+    protected void invalid(String message) throws InvalidEntityException {
+        throw new InvalidEntityException(message, this);
+    }
+    protected void invalid(Throwable cause) throws InvalidEntityException {
+        throw new InvalidEntityException(cause, this);
+    }
+    protected void invalid(String message, Throwable cause) throws InvalidEntityException {
+        throw new InvalidEntityException(message, cause, this);
+    }
 }

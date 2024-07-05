@@ -18,9 +18,6 @@ import java.util.function.Supplier;
 public class DBEncrypter implements ApplicationRunner {
     private final SurveyRepository surveyRepository;
     private final QuestionGroupRepository questionGroupRepository;
-    private final QuestionRepository questionRepository;
-    private final CheckboxRepository checkboxRepository;
-    private final AnswerRepository answerRepository;
     private final CryptoService cryptoService;
     
     @Override
@@ -36,18 +33,6 @@ public class DBEncrypter implements ApplicationRunner {
             .peek(questionGroup -> ensureEncrypted(questionGroup::getTitle, questionGroup::setTitle))
             .forEach(questionGroupRepository::save);
         questionGroupRepository.flush();
-        questionRepository.findAllUnencrypted()
-            .peek(question -> ensureEncrypted(question::getText, question::setText))
-            .forEach(questionRepository::save);
-        questionRepository.flush();
-        checkboxRepository.findAllUnencrypted()
-            .peek(checkbox -> ensureEncrypted(checkbox::getText, checkbox::setText))
-            .forEach(checkboxRepository::save);
-        checkboxRepository.flush();
-        answerRepository.findAllUnencrypted()
-            .peek(answer -> ensureEncrypted(answer::getText, answer::setText))
-            .forEach(answerRepository::save);
-        answerRepository.flush();
     }
     
     private void ensureEncrypted(

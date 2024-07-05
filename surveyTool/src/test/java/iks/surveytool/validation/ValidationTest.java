@@ -1,6 +1,13 @@
 package iks.surveytool.validation;
 
-import iks.surveytool.entities.*;
+import iks.surveytool.entities.InvalidEntityException;
+import iks.surveytool.entities.QuestionGroup;
+import iks.surveytool.entities.Survey;
+import iks.surveytool.entities.SurveyResponse;
+import iks.surveytool.entities.answer.OpenAnswer;
+import iks.surveytool.entities.question.ChoiceQuestion;
+import iks.surveytool.entities.question.ChoiceQuestionChoice;
+import iks.surveytool.entities.question.OpenQuestion;
 import iks.surveytool.utils.builder.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,569 +23,400 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Testing validation of entities")
 class ValidationTest {
-
     @Test
     @DisplayName("Failed validation - Survey missing QuestionGroups")
     void surveyIsMissingQuestionGroups() {
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey without QuestionGroup", 1L);
-
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L, "Survey without QuestionGroup", 1L);
+        
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - QuestionGroup missing Questions")
     void questionGroupIsMissingQuestion() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-        QuestionGroup questionGroupWithoutQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(2L, "QuestionGroup without Question");
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with empty QuestionGroup", 1L);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion, questionGroupWithoutQuestion));
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L, "Survey with empty QuestionGroup", 1L);
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            1L,
+            "QuestionGroup with Question"
+        );
+        
+        QuestionBuilder.createQuestionIn(questionGroupWithQuestion, 1L, 0, "Test Question", false);
+        
+        QuestionGroupBuilder.createQuestionGroupIn(survey, 2L, "QuestionGroup without Question");
         
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - No Checkboxes - No multipleSelect")
     void questionNoCheckboxes() {
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, false, 0, 2);
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with no checkboxes for question", 1L);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L,
+            "Survey with no checkboxes for question",
+            1L
+        );
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            1L,
+            "QuestionGroup with Question"
+        );
+        
+        QuestionBuilder.createQuestionIn(questionGroupWithQuestion, 1L, 0, "Test Question", 0, 2);
         
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - Not enough Checkboxes - No multipleSelect")
     void questionNotEnoughCheckboxes() {
-        Checkbox onlyCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, false, 0, 2);
-        checkboxGroup.setCheckboxes(List.of(onlyCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L,
+            "Survey with not enough checkboxes for question",
+            1L
+        );
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            1L,
+            "QuestionGroup with Question"
+        );
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestionIn(questionGroupWithQuestion,
+            1L,
+            0,
+            "Test Question",
+            0,
+            2
+        );
+        
+        ChoiceBuilder.createChoiceIn(question, 1L, "First Test Checkbox", false);
         
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - Not enough Checkboxes - With multipleSelect (max: 4)")
     void questionNotEnoughCheckboxesMultipleSelect() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 2, 4);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L,
+            "Survey with not enough checkboxes for question",
+            1L
+        );
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroup(1L,
+            "QuestionGroup with Question"
+        );
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestion(1L, 0, "Test Question", 2, 4);
+        
+        ChoiceQuestionChoice firstCheckbox = ChoiceBuilder.createChoice(1L, "First Test Checkbox", false);
+        ChoiceQuestionChoice secondCheckbox = ChoiceBuilder.createChoice(2L, "Second Test Checkbox", true);
+        ChoiceQuestionChoice thirdCheckbox = ChoiceBuilder.createChoice(3L, "Third Test Checkbox", true);
+        
+        question.setChoices(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+        
+        questionGroupWithQuestion.setChoiceQuestions(List.of(question));
+        
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
         
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
-    @Test
-    @DisplayName("Failed validation - Question with hasCheckbox == true, but no CheckboxGroup")
-    void questionHasCheckboxTrueButNoCheckboxGroup() {
-        Question firstQuestion = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        Question secondQuestion = new QuestionBuilder()
-                .createQuestion(2L, "Test Question", false, false);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(firstQuestion, secondQuestion));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Survey with not enough checkboxes for question", 1L);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-        
-        assertThrows(InvalidEntityException.class, survey::validate);
-    }
-
+    
     @Test
     @DisplayName("Failed validation - Survey name missing")
     void surveyBasicInfoMissing() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
+        Survey survey = SurveyBuilder.createDefaultSurvey();
         survey.setName(null);
-
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            1L,
+            "QuestionGroup with Question"
+        );
+        
+        QuestionBuilder.createQuestionIn(questionGroupWithQuestion, 1L, 0, "Test Question", false);
+        
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - endDate before startDate")
     void surveyEndDateBeforeStartDate() {
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
+        Survey survey = SurveyBuilder.createDefaultSurvey();
+        
         survey.setEndDate(survey.getStartDate().minusDays(2));
-
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            1L,
+            "QuestionGroup with Question"
+        );
+        
+        QuestionBuilder.createQuestionIn(questionGroupWithQuestion, 1L, 0, "Test Question", false);
+        
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - QuestionGroup missing title")
     void questionGroupIsMissingTitle() {
-        Question firstQuestion = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, false);
-        Question secondQuestion = new QuestionBuilder()
-                .createQuestion(2L, "Test Question", false, false);
-
-        QuestionGroup firstQuestionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, null);
-        firstQuestionGroupWithQuestion.setQuestions(List.of(firstQuestion));
-        QuestionGroup secondQuestionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(2L, "Test Title");
-        secondQuestionGroupWithQuestion.setQuestions(List.of(secondQuestion));
-
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-        survey.setQuestionGroups(List.of(firstQuestionGroupWithQuestion, secondQuestionGroupWithQuestion));
-
+        Survey survey = SurveyBuilder.createDefaultSurvey();
+        
+        QuestionGroup firstQuestionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, null);
+        QuestionGroup secondQuestionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            2L,
+            "Test Title"
+        );
+        
+        QuestionBuilder.createQuestionIn(firstQuestionGroupWithQuestion, 1L, 0, "Test Question", false);
+        QuestionBuilder.createQuestionIn(secondQuestionGroupWithQuestion, 2L, 0, "Test Question", false);
+        
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - Question missing text")
     void questionIsMissingText() {
-        Question firstQuestion = new QuestionBuilder()
-                .createQuestion(1L, null, false, false);
-        Question secondQuestion = new QuestionBuilder()
-                .createQuestion(2L, "Test", false, false);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Questions");
-        questionGroupWithQuestion.setQuestions(List.of(firstQuestion, secondQuestion));
-
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
+        Survey survey = SurveyBuilder.createDefaultSurvey();
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L,
+            "QuestionGroup with Questions"
+        );
+        
+        QuestionBuilder.createQuestionIn(questionGroupWithQuestion, 1L, 0, null, false);
+        QuestionBuilder.createQuestionIn(questionGroupWithQuestion, 2L, 0, "Test", false);
+        
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - minSelect > maxSelect")
     void minSelectGreaterThanMaxSelect() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 3, 2);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
+        ChoiceQuestionChoice firstCheckbox = ChoiceBuilder.createChoice(1L, "First Test Checkbox", false);
+        ChoiceQuestionChoice secondCheckbox = ChoiceBuilder.createChoice(2L, "Second Test Checkbox", true);
+        ChoiceQuestionChoice thirdCheckbox = ChoiceBuilder.createChoice(3L, "Third Test Checkbox", true);
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestion(1L, 0, "Test Question", 3, 2);
+        question.setChoices(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroup(1L,
+            "QuestionGroup with Question"
+        );
+        questionGroupWithQuestion.setChoiceQuestions(List.of(question));
+        
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
+        
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - minSelect < 0")
     void minSelectLessThanZero() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, -1, 2);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
+        ChoiceQuestionChoice firstCheckbox = ChoiceBuilder.createChoice(1L, "First Test Checkbox", false);
+        ChoiceQuestionChoice secondCheckbox = ChoiceBuilder.createChoice(2L, "Second Test Checkbox", true);
+        ChoiceQuestionChoice thirdCheckbox = ChoiceBuilder.createChoice(3L, "Third Test Checkbox", true);
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestion(1L, 0, "Test Question", -1, 2);
+        question.setChoices(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroup(1L,
+            "QuestionGroup with Question"
+        );
+        questionGroupWithQuestion.setChoiceQuestions(List.of(question));
+        
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
+        
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
+    
     @Test
-    @DisplayName("Failed validation - maxSelect < 2")
-    void maxSelectLessThanTwo() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 0, 1);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
+    @DisplayName("Successful validation - maxSelect = 1")
+    void maxSelectLessThanTwo() throws InvalidEntityException {
+        ChoiceQuestionChoice firstCheckbox = ChoiceBuilder.createChoice(1L, "First Test Checkbox", false);
+        ChoiceQuestionChoice secondCheckbox = ChoiceBuilder.createChoice(2L, "Second Test Checkbox", true);
+        ChoiceQuestionChoice thirdCheckbox = ChoiceBuilder.createChoice(3L, "Third Test Checkbox", true);
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestion(1L, 0, "Test Question", 0, 1);
+        question.setChoices(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroup(1L,
+            "QuestionGroup with Question"
+        );
+        questionGroupWithQuestion.setChoiceQuestions(List.of(question));
+        
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
         survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
-        assertThrows(InvalidEntityException.class, survey::validate);
+        
+        survey.validate();
     }
-
+    
     @Test
     @DisplayName("Failed validation - Checkbox missing text")
     void checkboxIsMissingText() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, null, true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 0, 2);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            1L,
+            "QuestionGroup with Question"
+        );
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestionIn(questionGroupWithQuestion,
+            1L,
+            0,
+            "Test Question",
+            0,
+            2
+        );
+        
+        ChoiceBuilder.createChoiceIn(question, 1L, "First Test Checkbox", false);
+        ChoiceBuilder.createChoiceIn(question, 2L, null, true);
+        ChoiceBuilder.createChoiceIn(question, 3L, "Third Test Checkbox", true);
+        
         assertThrows(InvalidEntityException.class, survey::validate);
     }
-
-    @Test
-    @DisplayName("Failed validation - Question required but minSelect = 0")
-    void requiredButMinSelectZero() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 0, 2);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", true, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
-        assertThrows(InvalidEntityException.class, survey::validate);
-    }
-
+    
     @Test
     @DisplayName("Successful validation - User missing")
     void surveyMissingUser() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-        Checkbox fourthCheckbox = new CheckboxBuilder()
-                .createCheckbox(4L, "Fourth Test Checkbox", false);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 1, 3);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithDefaultDate(1L, "User missing");
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
+        Survey survey = SurveyBuilder.createSurveyWithDefaultDate(1L, "User missing");
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            1L,
+            "QuestionGroup with Question"
+        );
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestionIn(questionGroupWithQuestion,
+            1L,
+            0,
+            "Test Question",
+            1,
+            3
+        );
+        
+        ChoiceBuilder.createChoiceIn(question, 1L, "First Test Checkbox", false);
+        ChoiceBuilder.createChoiceIn(question, 2L, "Second Test Checkbox", true);
+        ChoiceBuilder.createChoiceIn(question, 3L, "Third Test Checkbox", true);
+        ChoiceBuilder.createChoiceIn(question, 4L, "Fourth Test Checkbox", false);
+        
         assertDoesNotThrow(survey::validate);
     }
-
+    
     @Test
     @DisplayName("Successful validation - Complete survey")
     void surveyIsComplete() {
-        Checkbox firstCheckbox = new CheckboxBuilder()
-                .createCheckbox(1L, "First Test Checkbox", false);
-        Checkbox secondCheckbox = new CheckboxBuilder()
-                .createCheckbox(2L, "Second Test Checkbox", true);
-        Checkbox thirdCheckbox = new CheckboxBuilder()
-                .createCheckbox(3L, "Third Test Checkbox", true);
-        Checkbox fourthCheckbox = new CheckboxBuilder()
-                .createCheckbox(4L, "Fourth Test Checkbox", false);
-
-        CheckboxGroup checkboxGroup = new CheckboxGroupBuilder()
-                .createCheckboxGroup(1L, true, 1, 3);
-        checkboxGroup.setCheckboxes(List.of(firstCheckbox, secondCheckbox, thirdCheckbox, fourthCheckbox));
-
-        Question question = new QuestionBuilder()
-                .createQuestion(1L, "Test Question", false, true);
-        question.setCheckboxGroup(checkboxGroup);
-
-        QuestionGroup questionGroupWithQuestion = new QuestionGroupBuilder()
-                .createQuestionGroup(1L, "QuestionGroup with Question");
-        questionGroupWithQuestion.setQuestions(List.of(question));
-
-        Survey survey = new SurveyBuilder()
-                .createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
-        survey.setQuestionGroups(List.of(questionGroupWithQuestion));
-
+        Survey survey = SurveyBuilder.createSurveyWithUserAndDefaultDate(1L, "Complete Survey", 1L);
+        
+        QuestionGroup questionGroupWithQuestion = QuestionGroupBuilder.createQuestionGroupIn(survey,
+            1L,
+            "QuestionGroup with Question"
+        );
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestionIn(questionGroupWithQuestion,
+            1L,
+            0,
+            "Test Question",
+            1,
+            3
+        );
+        
+        ChoiceBuilder.createChoiceIn(question, 1L, "First Test Checkbox", false);
+        ChoiceBuilder.createChoiceIn(question, 2L, "Second Test Checkbox", true);
+        ChoiceBuilder.createChoiceIn(question, 3L, "Third Test Checkbox", true);
+        ChoiceBuilder.createChoiceIn(question, 4L, "Fourth Test Checkbox", false);
+        
         assertDoesNotThrow(survey::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - Answer missing response")
     void answerMissingUser() {
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-
-        QuestionGroup group = new QuestionGroupBuilder()
-                .createQuestionGroupIn(survey, 1L, "Bla");
-
-        Question question = new QuestionBuilder()
-                .createQuestionIn(group, 1L, "Test Question", false, false);
-
-        Answer answer = new AnswerBuilder()
-                .createAnswer(1L, "Test Answer", question, null);
-
+        Survey survey = SurveyBuilder.createDefaultSurvey();
+        
+        QuestionGroup group = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Bla");
+        
+        OpenQuestion question = QuestionBuilder.createQuestionIn(group, 1L, 0, "Test Question", false);
+        
+        OpenAnswer answer = AnswerBuilder.createAnswer(1L, null, question);
+        
         assertThrows(InvalidEntityException.class, answer::validate);
     }
-
-    @Test
-    @DisplayName("Failed validation - Answer missing Checkbox")
-    void answerMissingQuestion() {
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-
-        QuestionGroup group = new QuestionGroupBuilder()
-                .createQuestionGroupIn(survey, 1L, "Bla");
-
-        Question question = new QuestionBuilder()
-                .createQuestionIn(group, 1L, "Test Question", false, true);
-
-        SurveyResponse response = new SurveyResponseBuilder()
-                .createResponse(1L, survey, null);
-
-        Answer answer = new AnswerBuilder()
-                .createAnswerIn(response, 1L, "Test Answer", question, null);
-
-        assertThrows(InvalidEntityException.class, answer::validate);
-    }
-
+    
     @Test
     @DisplayName("Failed validation - Answer missing Text when Checkbox has text field")
     void answerMissingTextWhenCheckboxHasTextField() {
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-
-        QuestionGroup group = new QuestionGroupBuilder()
-                .createQuestionGroupIn(survey, 1L, "Bla");
-
-        Question question = new QuestionBuilder()
-                .createQuestionIn(group, 1L, "Test Question", true, true);
+        Survey survey = SurveyBuilder.createDefaultSurvey();
         
-        Checkbox checkbox = new CheckboxBuilder()
-                .createCheckbox(1L, "Test Checkbox", true);
+        QuestionGroup group = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Bla");
         
-        CheckboxGroup checkboxGroup = new CheckboxGroup(false, 0, 1, List.of(checkbox));
-        question.setCheckboxGroup(checkboxGroup);
-
-        SurveyResponse response = new SurveyResponseBuilder()
-                .createResponse(1L, survey, null);
-
-        Answer answer = new AnswerBuilder()
-                .createAnswerIn(response, 1L, null, question, List.of(checkbox));
-
-        assertThrows(InvalidEntityException.class, answer::validate);
+        ChoiceQuestionChoice checkbox = ChoiceBuilder.createChoice(1L, "Test Checkbox", true);
+        
+        ChoiceQuestion question = new ChoiceQuestion(0, "Test Question".getBytes(StandardCharsets.UTF_8), 0, 1);
+        question.setChoices(List.of(checkbox));
+        
+        group.setChoiceQuestions(List.of(question));
+        
+        SurveyResponse response = new SurveyResponseBuilder().createResponse(1L, survey, null);
+        response.setChoiceAnswers(List.of(checkbox));
+        
+        assertThrows(InvalidEntityException.class, response::validate);
     }
-
+    
     @Test
     @DisplayName("Failed validation - Answer missing Text when text Question")
     void answerMissingTextWhenQuestionWithTextField() {
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-
-        QuestionGroup group = new QuestionGroupBuilder()
-                .createQuestionGroupIn(survey, 1L, "Bla");
-
-        Question question = new QuestionBuilder()
-                .createQuestionIn(group, 1L, "Test Question", true, false);
-
-        SurveyResponse response = new SurveyResponseBuilder()
-                .createResponse(1L, survey, null);
-
-        Answer answer = new AnswerBuilder()
-                .createAnswerIn(response, 1L, null, question, null);
-
-        assertThrows(InvalidEntityException.class, answer::validate);
+        Survey survey = SurveyBuilder.createDefaultSurvey();
+        
+        QuestionGroup group = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Bla");
+        
+        QuestionBuilder.createQuestionIn(group, 1L, 0, "Test Question", true);
+        
+        SurveyResponse response = new SurveyResponseBuilder().createResponse(1L, survey, null);
+        
+        assertThrows(InvalidEntityException.class, response::validate);
     }
     
     @Test
     @DisplayName("Successful validation - Answer missing Text when text Question and not required")
     void answerMissingTextWhenQuestionWithTextFieldNotRequired() throws InvalidEntityException {
-        Survey survey = new SurveyBuilder()
-            .createDefaultSurvey();
+        Survey survey = SurveyBuilder.createDefaultSurvey();
         
-        QuestionGroup group = new QuestionGroupBuilder()
-            .createQuestionGroupIn(survey, 1L, "Bla");
+        QuestionGroup group = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Bla");
         
-        Question question = new QuestionBuilder()
-            .createQuestionIn(group, 1L, "Test Question", false, false);
+        QuestionBuilder.createQuestionIn(group, 1L, 0, "Test Question", false);
         
-        SurveyResponse response = new SurveyResponseBuilder()
-            .createResponse(1L, survey, null);
+        SurveyResponse response = new SurveyResponseBuilder().createResponse(1L, survey, 1L);
         
-        Answer answer = new AnswerBuilder()
-            .createAnswerIn(response, 1L, null, question, null);
-        
-        answer.validate();
+        response.validate();
     }
-
+    
     @Test
     @DisplayName("Successful validation - Complete Answer to text Question")
     void answerToTextQuestionIsComplete() throws InvalidEntityException {
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-
-        QuestionGroup group = new QuestionGroupBuilder()
-                .createQuestionGroupIn(survey, 1L, "Bla");
-
-        Question question = new QuestionBuilder()
-                .createQuestionIn(group, 1L, "Test Question", false, false);
-
-        SurveyResponse response = new SurveyResponseBuilder()
-                .createResponse(1L, survey, null);
-
-        Answer answer = new AnswerBuilder()
-                .createAnswerIn(response, 1L, "Test", question, null);
-
-        answer.validate();
+        Survey survey = SurveyBuilder.createDefaultSurvey();
+        
+        QuestionGroup group = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Bla");
+        
+        OpenQuestion question = QuestionBuilder.createQuestionIn(group, 1L, 0, "Test Question", false);
+        
+        SurveyResponse response = new SurveyResponseBuilder().createResponse(1L, survey, 1L);
+        
+        AnswerBuilder.createAnswerIn(response, 1L, "Test", question);
+        
+        response.validate();
     }
-
+    
     @Test
     @DisplayName("Successful validation - Complete Answer to multiple choice Question")
     void answerToChoiceQuestionIsComplete() throws InvalidEntityException {
-        Survey survey = new SurveyBuilder()
-                .createDefaultSurvey();
-
-        QuestionGroup group = new QuestionGroupBuilder()
-                .createQuestionGroupIn(survey, 1L, "Bla");
-
-        Question question = new QuestionBuilder()
-                .createQuestionIn(group, 1L, "Test Question", false, true);
-
-        Checkbox checkbox = new CheckboxBuilder()
-                .createCheckbox(1L, "Test Checkbox", false);
+        Survey survey = SurveyBuilder.createDefaultSurvey();
         
-        CheckboxGroup checkboxGroup = new CheckboxGroup(true, 1, 1, List.of(checkbox));
-        question.setCheckboxGroup(checkboxGroup);
-
-        SurveyResponse response = new SurveyResponseBuilder()
-                .createResponse(1L, survey, null);
-
-        Answer answer = new AnswerBuilder()
-                .createAnswerIn(response, 1L, null, question, List.of(checkbox));
-
-        answer.validate();
+        QuestionGroup group = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Bla");
+        
+        ChoiceQuestion question = QuestionBuilder.createQuestionIn(group, 1L, 0, "Test Question", 1, 1);
+        
+        ChoiceQuestionChoice checkbox = ChoiceBuilder.createChoiceIn(question, 1L, "Test Checkbox", false);
+        
+        SurveyResponse response = new SurveyResponseBuilder().createResponse(1L, survey, 1L);
+        
+        response.setChoiceAnswers(List.of(checkbox));
+        
+        response.validate();
     }
-
 }
