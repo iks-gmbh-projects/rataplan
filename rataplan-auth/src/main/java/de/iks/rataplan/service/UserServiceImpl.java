@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,11 +36,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     
     private final BackendMessageService backendMessageService;
     
+    private final JwtTokenService jwtTokenService;
+    
+    private final MailService mailService;
+    
+    //used by filter chain to retrieve UserDetails.
+    // as users can use email or username to login we have to check for both
+    // the name loadByUsername is misleading but the interface forces this method name
+    // in reality it functions as load by username or email
     @Override
     @Transactional(readOnly = true)
     public RataplanUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findOneByUsername(cryptoService.encryptDB(username.trim().toLowerCase()))
-            .map(u -> new RataplanUserDetails(u, cryptoService))
+        Optional<User> userOpt = userRepository.findOneByUsername(cryptoService.encryptDB(username.trim()
+            .toLowerCase()));
+        if(userOpt.isEmpty())
+            userOpt = userRepository.findOneByMail(cryptoService.encryptDB(username.trim().toLowerCase()));
+        return userOpt.map(u -> new RataplanUserDetails(u, cryptoService))
             .orElseThrow(() -> new UsernameNotFoundException(username));
     }
     
@@ -70,14 +82,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
     
     @Override
-    public Boolean confirmAccount(String id) {
-        int userId = Integer.parseInt(id);
-        User user = getUserFromId(userId);
-        if(!user.isAccountConfirmed()) {
-            user.setAccountConfirmed(true);
+    public Boolean confirmAccount(Jwt jwt) {
+        User user = getUserFromId(Integer.parseInt(jwt.getSubject()));
+        Long version = jwt.getClaim("version");
+        boolean update = false;
+        if(version != null) update = user.getVersion() == Integer.parseInt(version.toString());
+        boolean confirm = !user.isAccountConfirmed();
+        if(update || confirm) {
+            if(confirm) user.setAccountConfirmed(true);
+            else user.setMail(this.cryptoService.encryptDB(jwt.getClaim("mail")));
             userRepository.saveAndFlush(user);
-            return true;
-        } else return false;
+        }
+        return update || confirm;
     }
     
     @Override
@@ -189,17 +205,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Boolean updateProfileDetails(UserDTO userDTO) {
         User user = getUserFromUsername(userDTO.getUsername());
-        if(user != null) {
-            if(!checkIfMailExists(userDTO.getMail()) ||
-               user.getId().equals(getUserFromEmail(userDTO.getMail()).getId()))
-            {
-                user.setMail(cryptoService.encryptDB((userDTO.getMail()).toLowerCase().trim()));
-                user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
-                userRepository.saveAndFlush(user);
-                return true;
-            }
+        boolean update = user != null && (
+            !checkIfMailExists(userDTO.getMail()) || user.getId().equals(getUserFromEmail(userDTO.getMail()).getId())
+        );
+        if(update) {
+            if(user.getMail() != this.cryptoService.encryptDB(userDTO.getMail()))
+                this.sendUpdateEmailAdressEmail(userDTO, user);
+            user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
+            userRepository.saveAndFlush(user);
         }
-        return false;
+        return update;
+    }
+    
+    public void sendUpdateEmailAdressEmail(UserDTO userDTO, User user) {
+        String token = this.jwtTokenService.generateConfirmEmailUpdateToken(userDTO, user);
+        this.mailService.sendUpdateEmailAddressEmail(userDTO.getMail(), token);
+        //send warning email
     }
     
     @Override
@@ -275,13 +296,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<Integer> searchUsers(String query) {
         final byte[] enc = this.cryptoService.encryptDBRaw(query.toLowerCase().trim());
-        return Stream.concat(
-                Stream.of(
-                    this.userRepository.findOneByUsername(enc),
+        return Stream.concat(Stream.of(this.userRepository.findOneByUsername(enc),
                     this.userRepository.findOneByMail(enc)
-                ).flatMap(Optional::stream),
-                this.userRepository.findByDisplayname(enc)
-            ).map(User::getId)
+                )
+                .flatMap(Optional::stream), this.userRepository.findByDisplayname(enc))
+            .map(User::getId)
             .collect(Collectors.toUnmodifiableList());
     }
 }

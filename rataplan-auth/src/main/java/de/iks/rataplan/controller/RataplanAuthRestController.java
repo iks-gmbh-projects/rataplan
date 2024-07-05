@@ -52,7 +52,7 @@ public class RataplanAuthRestController {
     
     @PostMapping("/confirm-account")
     public ResponseEntity<Boolean> confirmAccount(@AuthenticationPrincipal Jwt token) {
-        Boolean accountConfirmed = userService.confirmAccount(token.getSubject());
+        Boolean accountConfirmed = userService.confirmAccount(token);
         return new ResponseEntity<>(accountConfirmed, HttpStatus.OK);
     }
     

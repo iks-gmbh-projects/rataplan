@@ -7,6 +7,8 @@ import de.iks.rataplan.dto.UserDTO;
 import de.iks.rataplan.exceptions.UserDeletionException;
 import de.iks.rataplan.exceptions.WrongCredentialsException;
 
+import org.springframework.security.oauth2.jwt.Jwt;
+
 import java.util.List;
 
 public interface UserService {
@@ -25,7 +27,7 @@ public interface UserService {
     void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException;
     User getUserFromEmail (String mail);
     String getDisplayNameFromId(int id);
-    Boolean confirmAccount(String token);
+    Boolean confirmAccount(Jwt token);
     UserDTO validateResendConfirmationEmailRequest(String email);
 
     String getEmailFromId(Integer id);
