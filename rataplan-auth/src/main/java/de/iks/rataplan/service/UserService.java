@@ -9,6 +9,7 @@ import de.iks.rataplan.exceptions.WrongCredentialsException;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.util.List;
 
 public interface UserService {
@@ -20,7 +21,7 @@ public interface UserService {
     boolean verifyPassword(User user, String password);
     void verifyPasswordOrThrow(User user, String password) throws WrongCredentialsException;
     User getUserFromUsername(String username);
-    Boolean updateProfileDetails(UserDTO userDTO);
+    Boolean updateProfileDetails(UserDTO userDTO) throws CredentialNotFoundException;
     Boolean changePassword(String token, PasswordChange passwords);
     Boolean changePasswordByToken(User user, String password);
     User getUserFromId(int userId);

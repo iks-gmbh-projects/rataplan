@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -203,13 +204,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
     
     @Override
-    public Boolean updateProfileDetails(UserDTO userDTO) {
+    public Boolean updateProfileDetails(UserDTO userDTO) throws CredentialNotFoundException {
         User user = getUserFromUsername(userDTO.getUsername());
+        if(!passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) throw new InvalidUserDataException();
         boolean update = user != null && (
             !checkIfMailExists(userDTO.getMail()) || user.getId().equals(getUserFromEmail(userDTO.getMail()).getId())
         );
         if(update) {
-            if(user.getMail() != this.cryptoService.encryptDB(userDTO.getMail()))
+            if(!cryptoService.decryptDB(user.getMail()).equals(userDTO.getMail()))
                 this.sendUpdateEmailAdressEmail(userDTO, user);
             user.setDisplayname(cryptoService.encryptDB(userDTO.getDisplayname()));
             userRepository.saveAndFlush(user);
