@@ -1,0 +1,40 @@
+<div style="min-height: 50vh; text-align: center">
+  <h2>Profil Änderungen bestätigen</h2>
+  <div
+    *ngIf="enterPassword; else confirmChanges"
+    class="container"
+  >
+    <mat-form-field style="max-width: max-content; align-self: center">
+      <mat-label>Passwort eingeben</mat-label>
+      <input matInput type="password" [formControl]="password">
+      <mat-error>{{ errorMessagingService.genericFormError(password) }}</mat-error>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      [disabled]="!password.valid"
+      (click)="confirmProfileChanges()"
+      class="next-button"
+    >
+      Bestätigen
+    </button>
+  </div>
+  <ng-template #confirmChanges>
+    <div class="container">
+      <span style="font-weight: bold;min-height: 5vh; margin-bottom: 1rem">Bitte prüfen Sie, dass die Änderungen richtig sind</span>
+      <span style="min-height: 5vh;">
+      Anzeigename: {{ data.displayname }}
+      </span>
+      <span style="min-height: 5vh;">
+      Mail: {{ data.mail }}
+      </span>
+      <button
+        mat-raised-button
+        class="next-button"
+        (click)="enterPassword=true"
+        color="primary"
+      >
+        <mat-icon>navigate_next</mat-icon>
+      </button>
+    </div>
+  </ng-template>
+</div>

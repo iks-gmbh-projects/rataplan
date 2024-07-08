@@ -24,6 +24,7 @@ export type FrontendUser = {
   id: number,
   mail: string,
   displayname: string,
+  password?: string
 };
 export type RegisterData = {
   username: string,

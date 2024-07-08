@@ -45,7 +45,7 @@ const routes: Routes = [
   { path: 'contacts', component: ContactListComponent, canActivate: [ensureLoggedIn] },
   { path: 'survey', loadChildren: () => import('./survey/survey.module').then(m => m.SurveyModule) },
   { path: 'confirm-account', component: ConfirmAccountInstructionComponent },
-  { path: 'confirm-account/:token', component: ConfirmAccountComponent, canActivate: [ ensureLoggedOut ] },
+  { path: 'confirm-account/:token', component: ConfirmAccountComponent },
   { path: 'resend-confirmation-email', component: ResendAccountConfirmationEmailComponent, canActivate: [ ensureLoggedOut ] },
   { path: '**', redirectTo: '' }
 ];

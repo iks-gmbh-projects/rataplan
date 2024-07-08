@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResourceAccessException;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Objects;
@@ -128,7 +129,7 @@ public class RataplanAuthRestController {
     public ResponseEntity<Boolean> updateProfileDetails(
         @AuthenticationPrincipal Jwt token,
         @RequestBody UserDTO userDTO
-    )
+    ) throws CredentialNotFoundException
     {
         userDTO.setUsername(token.getSubject());
         if(userService.checkIfUsernameExists(userDTO.getUsername())) {

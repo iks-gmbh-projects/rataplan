@@ -1,6 +1,6 @@
 <div class="center">
   <h1>Profil Bearbeiten</h1>
-  <div class="left-bound">
+  <div class="center">
     <mat-form-field appearance="fill">
       <mat-label>Anzeigename</mat-label>
       <input
@@ -26,9 +26,11 @@
       >Zurück
       </button>
       <button
-        mat-raised-button color="primary"
+        mat-raised-button
+        color="primary"
         [loading]="busy$ | async"
-        [disabled]="(store.select(authFeature.selectBusy) | async) ?? false || displayNameField.invalid || emailField.invalid" (click)="updateProfile()"
+        [disabled]="(store.select(authFeature.selectBusy) | async) ?? false || displayNameField.invalid || emailField.invalid"
+        (click)="updateProfile()"
       >
         Speichern
       </button>

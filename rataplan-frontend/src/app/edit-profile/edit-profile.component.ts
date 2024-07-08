@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormControl, ValidationErrors, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
@@ -12,6 +13,7 @@ import { FormErrorMessageService } from '../services/form-error-message-service/
 import {
   UsernameEmailValidatorsService,
 } from '../services/username-email-validators-service/username-email-validators.service';
+import { ValidateProfileUpdateComponent } from '../validate-profile-update/validate-profile-update.component';
 import { ExtraValidators } from '../validator/validators';
 import { authFeature } from '../authentication/auth.feature';
 
@@ -44,6 +46,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     private snackbar: MatSnackBar,
     private emailValidatorsService: UsernameEmailValidatorsService,
     public readonly errorMessageService: FormErrorMessageService,
+    private dialog: MatDialog,
   )
   {
     this.busy$ = this.store.select(authFeature.selectBusy)
@@ -76,6 +79,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     ).subscribe(() => {
       this.snackbar.open('Profil erfolgreich akutalisiert', 'OK');
       this.router.navigateByUrl('/view-profile');
+      this.dialog.closeAll();
     });
     this.errorSub = this.actions$.pipe(
       ofType(AuthActions.CHANGE_PROFILE_DETAILS_ERROR_ACTION),
@@ -90,13 +94,13 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   }
   
   updateProfile() {
-    const payload: FrontendUser = {
+    const data: FrontendUser = {
       id: this.userData!.id,
       displayname: this.displayNameField.value,
       mail: this.emailField.value,
       username: this.userData!.username,
     };
-    this.store.dispatch(new ChangeProfileDetailsAction(payload));
+    this.dialog.open(ValidateProfileUpdateComponent, {data});
   }
   
   checkIfEmailIsAvailable(ctrl: AbstractControl): Observable<ValidationErrors | null> {

@@ -14,8 +14,19 @@ export function authReducer(
 ): AuthData {
   switch(action.type) {
   case AuthActions.UPDATE_USERDATA_SUCCESS_ACTION:
+    return {
+      ...state,
+      user: action.payload,
+      busy: false,
+      error: undefined,
+    };
   case AuthActions.CHANGE_PROFILE_DETAILS_SUCCESS_ACTION:
-    return {...state, user: action.payload, busy: false, error: undefined};
+    return {
+      ...state,
+      user: {...state.user!, displayname: action.payload.displayname, username: action.payload.username},
+      busy: false,
+      error: undefined,
+    };
   case AuthActions.LOGIN_SUCCESS_ACTION:
     return {...state, token: action.payload};
   case AuthActions.LOGIN_ERROR_ACTION:
