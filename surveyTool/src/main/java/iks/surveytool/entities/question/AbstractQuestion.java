@@ -1,5 +1,6 @@
 package iks.surveytool.entities.question;
 
+import iks.surveytool.domain.QuestionType;
 import iks.surveytool.entities.AbstractEntity;
 import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.entities.QuestionGroup;
@@ -27,6 +28,8 @@ public abstract class AbstractQuestion extends AbstractEntity {
         this.rank = rank;
         this.text = text;
     }
+    
+    public abstract QuestionType getType();
     
     public abstract void checkIfComplete() throws InvalidEntityException;
     

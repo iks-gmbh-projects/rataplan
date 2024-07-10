@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CheckboxDTO extends AbstractDTO {
+public class ChoiceDTO extends AbstractDTO {
 
     private String text;
     private boolean hasTextField;
 
-    public CheckboxDTO(Long id, String text, boolean hasTextField) {
+    public ChoiceDTO(Long id, String text, boolean hasTextField) {
         super(id);
         this.text = text;
         this.hasTextField = hasTextField;

@@ -1,5 +1,6 @@
 package iks.surveytool.entities.question;
 
+import iks.surveytool.domain.QuestionType;
 import iks.surveytool.entities.answer.OpenAnswer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,12 @@ public class OpenQuestion extends AbstractQuestion {
         super(rank, text);
         this.required = required;
     }
+    
+    @Override
+    public QuestionType getType() {
+        return QuestionType.OPEN;
+    }
+    
     @Override
     public void checkIfComplete() {}
 }

@@ -1,42 +1,74 @@
 package iks.surveytool.dtos;
 
+import iks.surveytool.domain.QuestionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class QuestionDTO extends AbstractDTO {
-
+    private QuestionType type;
     private String text;
-    private boolean required;
-    private boolean hasCheckbox;
+    private Boolean required;
+    private Integer minSelect;
+    private Integer maxSelect;
 
-    private CheckboxGroupDTO checkboxGroup;
+    private List<ChoiceDTO> choices;
 
-    public QuestionDTO(Long id, String text, boolean required, boolean hasCheckbox) {
+    public QuestionDTO(Long id, String text, boolean required) {
         super(id);
+        type = QuestionType.OPEN;
         this.text = text;
         this.required = required;
-        this.hasCheckbox = hasCheckbox;
     }
-
-    public QuestionDTO(Long id, String text, boolean required, boolean hasCheckbox, CheckboxGroupDTO checkboxGroup) {
-        this(id, text, required, hasCheckbox);
-        this.checkboxGroup = checkboxGroup;
+    
+    public QuestionDTO(Long id, String text, int minSelect, int maxSelect, Collection<? extends ChoiceDTO> choices) {
+        super(id);
+        type = QuestionType.CHOICE;
+        this.text = text;
+        this.minSelect = minSelect;
+        this.maxSelect = maxSelect;
+        this.choices = new ArrayList<>(choices);
+    }
+    
+    public QuestionDTO(Long id, String text, int minSelect, int maxSelect) {
+        this(id, text, minSelect, maxSelect, List.of());
+    }
+    
+    public QuestionDTO(Long id, String text, int minSelect, int maxSelect, ChoiceDTO ...choices) {
+        this(id, text, minSelect, maxSelect, Arrays.asList(choices));
     }
     
     @Override
     public void trimAndNull() {
         text = trimAndNull(text);
-        if(checkboxGroup != null) checkboxGroup.trimAndNull();
+        if(choices != null) choices.forEach(ChoiceDTO::trimAndNull);
     }
     
     @Override
     public void valid() throws DTOValidationException {
+        if(type == null) throw new DTOValidationException("QuestionDTO.type", "null");
         if(this.text != null && this.text.isBlank()) throw new DTOValidationException("QuestionDTO.text", "blank non-null");
-        if(hasCheckbox == (checkboxGroup == null)) throw new DTOValidationException("QuestionDTO.hasCheckbox", "state-mismatch");
-        if(checkboxGroup != null) checkboxGroup.valid();
+        switch(type) {
+            case OPEN:
+                if(required == null) throw new DTOValidationException("QuestionDTO.required", "null");
+                break;
+            case CHOICE:
+                if(minSelect == null) throw new DTOValidationException("QuestionDTO.minSelect", "null");
+                if(maxSelect == null) throw new DTOValidationException("QuestionDTO.maxSelect", "null");
+                if(choices == null) throw new DTOValidationException("QuestionDTO.choices", "null");
+                if(choices.isEmpty()) throw new DTOValidationException("QuestionDTO.choices", "empty");
+                for(ChoiceDTO choice : choices) choice.valid();
+                break;
+            default:
+                throw new DTOValidationException("QuestionDTO.type", "unknown");
+        }
     }
 }
