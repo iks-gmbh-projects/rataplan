@@ -9,9 +9,8 @@ import java.util.List;
 
 @Configuration
 public class MappingConfig {
-
     @Bean
-    public ModelMapper modelMapper(List<Converter<?,?>> converters) {
+    public static ModelMapper modelMapper(List<Converter<?,?>> converters) {
         ModelMapper modelMapper = new ModelMapper();
         converters.forEach(modelMapper::addConverter);
         return modelMapper;
