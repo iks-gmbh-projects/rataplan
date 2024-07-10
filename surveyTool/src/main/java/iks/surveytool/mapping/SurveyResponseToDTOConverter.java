@@ -1,0 +1,55 @@
+package iks.surveytool.mapping;
+
+import iks.surveytool.dtos.AnswerDTO;
+import iks.surveytool.dtos.SurveyResponseDTO;
+import iks.surveytool.entities.SurveyResponse;
+import iks.surveytool.entities.question.ChoiceQuestionChoice;
+
+import org.modelmapper.Converter;
+import org.modelmapper.spi.MappingContext;
+import org.modelmapper.spi.MappingEngine;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@Component
+public class SurveyResponseToDTOConverter implements Converter<SurveyResponse, SurveyResponseDTO> {
+    @Override
+    public SurveyResponseDTO convert(MappingContext<SurveyResponse, SurveyResponseDTO> context) {
+        final MappingEngine mappingEngine = context.getMappingEngine();
+        final SurveyResponse source = context.getSource();
+        if(source == null) return null;
+        final SurveyResponseDTO dest = Objects.requireNonNullElseGet(context.getDestination(), SurveyResponseDTO::new);
+        dest.setId(source.getId());
+        dest.setUserId(source.getUserId());
+        dest.setSurveyId(source.getSurvey().getId());
+        Map<Long, AnswerDTO> answers = new HashMap<>();
+        answers.putAll(source.getOpenAnswers()
+            .stream()
+            .collect(Collectors.toUnmodifiableMap(
+                a -> a.getQuestion().getId(),
+                a -> mappingEngine.map(context.create(a, AnswerDTO.class))
+            )));
+        answers.putAll(source.getChoiceAnswerTexts()
+            .stream()
+            .collect(Collectors.toUnmodifiableMap(
+                a -> a.getQuestion().getId(),
+                a -> mappingEngine.map(context.create(a, AnswerDTO.class))
+            )));
+        for(ChoiceQuestionChoice choice : source.getChoiceAnswers()) {
+            AnswerDTO answer = answers.computeIfAbsent(choice.getQuestion().getId(), AnswerDTO::new);
+            Map<Long, Boolean> checkboxes = answer.getCheckboxes();
+            if(checkboxes == null) {
+                checkboxes = new HashMap<>();
+                answer.setCheckboxes(checkboxes);
+            }
+            answer.getCheckboxes()
+                .put(choice.getId(), true);
+        }
+        dest.setAnswers(answers);
+        return dest;
+    }
+}

@@ -15,6 +15,10 @@ public class AnswerDTO extends AbstractDTO {
 
     private String text;
     private Map<Long, Boolean> checkboxes;
+    
+    public AnswerDTO(Long id) {
+        super(id);
+    }
 
     public AnswerDTO(Long id, String text) {
         super(id);
