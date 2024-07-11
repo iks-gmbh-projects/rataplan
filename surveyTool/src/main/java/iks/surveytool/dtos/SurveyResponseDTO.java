@@ -1,18 +1,17 @@
 package iks.surveytool.dtos;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class SurveyResponseDTO extends AbstractDTO {
     private long surveyId;
     private Long userId;
-    private Map<Long, AnswerDTO> answers;
+    private Map<Long, AnswerDTO> answers = new HashMap<>();
     
     @Override
     public void trimAndNull() {

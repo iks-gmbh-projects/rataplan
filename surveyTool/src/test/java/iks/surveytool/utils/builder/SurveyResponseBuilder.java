@@ -6,7 +6,7 @@ import iks.surveytool.entities.SurveyResponse;
 import java.util.ArrayList;
 
 public class SurveyResponseBuilder {
-    public SurveyResponse createResponse(Long id, Survey survey, Long userId) {
+    public static SurveyResponse createResponse(Long id, Survey survey, Long userId) {
         SurveyResponse newResponse = new SurveyResponse();
         newResponse.setId(id);
         newResponse.setSurvey(survey);

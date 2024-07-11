@@ -1,15 +1,13 @@
 package iks.surveytool.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.Instant;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class SurveyOverviewDTO extends AbstractDTO {

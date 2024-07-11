@@ -3,17 +3,15 @@ package iks.surveytool.entities;
 import iks.surveytool.entities.question.ChoiceQuestion;
 import iks.surveytool.entities.question.OpenQuestion;
 import iks.surveytool.mapping.crypto.DBEncryptedStringConverter;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class QuestionGroup extends AbstractEntity {
     
@@ -22,6 +20,8 @@ public class QuestionGroup extends AbstractEntity {
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "surveyId", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Survey survey;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "questionGroup")

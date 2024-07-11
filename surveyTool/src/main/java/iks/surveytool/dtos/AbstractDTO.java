@@ -2,8 +2,7 @@ package iks.surveytool.dtos;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class AbstractDTO {

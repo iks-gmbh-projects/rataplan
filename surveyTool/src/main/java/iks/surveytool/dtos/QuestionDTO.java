@@ -1,17 +1,15 @@
 package iks.surveytool.dtos;
 
 import iks.surveytool.domain.QuestionType;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class QuestionDTO extends AbstractDTO {
     private QuestionType type;

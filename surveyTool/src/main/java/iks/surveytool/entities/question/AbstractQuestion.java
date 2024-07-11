@@ -4,20 +4,20 @@ import iks.surveytool.domain.QuestionType;
 import iks.surveytool.entities.AbstractEntity;
 import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.entities.QuestionGroup;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 @NoArgsConstructor
 public abstract class AbstractQuestion extends AbstractEntity {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "questionGroupId", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private QuestionGroup questionGroup;
     private int rank;
     @Column(nullable = false)

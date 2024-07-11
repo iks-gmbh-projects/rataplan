@@ -1,19 +1,19 @@
 package iks.surveytool.entities;
 
 import iks.surveytool.mapping.crypto.DBEncryptedStringConverter;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class Survey extends AbstractEntity {
     
@@ -39,10 +39,12 @@ public class Survey extends AbstractEntity {
     private Long userId;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "survey")
-    private List<QuestionGroup> questionGroups;
+    private List<QuestionGroup> questionGroups = new ArrayList<>();
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
-    private List<SurveyResponse> surveyResponses;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private List<SurveyResponse> surveyResponses = new ArrayList<>();
     
     public Survey(
         EncryptedString name,

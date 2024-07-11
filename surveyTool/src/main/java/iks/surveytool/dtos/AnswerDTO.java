@@ -1,14 +1,11 @@
 package iks.surveytool.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnswerDTO extends AbstractDTO {
@@ -21,8 +18,13 @@ public class AnswerDTO extends AbstractDTO {
     }
 
     public AnswerDTO(Long id, String text) {
-        super(id);
+        this(id);
         this.text = text;
+    }
+    
+    public AnswerDTO(Long id, Map<Long, Boolean> checkboxes) {
+        this(id);
+        this.checkboxes = checkboxes;
     }
     
     @Override

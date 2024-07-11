@@ -1,13 +1,11 @@
 package iks.surveytool.dtos;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class QuestionGroupDTO extends AbstractDTO {
 
@@ -15,7 +13,8 @@ public class QuestionGroupDTO extends AbstractDTO {
 
     private List<QuestionDTO> questions;
 
-    public QuestionGroupDTO(Long id, String title, List<QuestionDTO> questions) {
+    @Builder
+    public QuestionGroupDTO(Long id, String title, @Singular List<QuestionDTO> questions) {
         super(id);
         this.title = title;
         this.questions = questions;

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,16 +26,16 @@ public class SurveyResponse extends AbstractEntity {
     private Survey survey;
     private Long userId;
     @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OpenAnswer> openAnswers;
+    private List<OpenAnswer> openAnswers = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(
         name = "choiceAnswer",
         joinColumns = @JoinColumn(name = "responseId"),
         inverseJoinColumns = @JoinColumn(name = "choiceId")
     )
-    private List<ChoiceQuestionChoice> choiceAnswers;
+    private List<ChoiceQuestionChoice> choiceAnswers = new ArrayList<>();
     @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChoiceAnswerText> choiceAnswerTexts;
+    private List<ChoiceAnswerText> choiceAnswerTexts = new ArrayList<>();
 
     public void validate() throws InvalidEntityException {
         if(survey == null || openAnswers == null || choiceAnswers == null || choiceAnswerTexts == null) invalid("missing survey or answers");

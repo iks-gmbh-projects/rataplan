@@ -3,9 +3,7 @@ package iks.surveytool.entities.question;
 import iks.surveytool.domain.QuestionType;
 import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.entities.answer.ChoiceAnswerText;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -14,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class ChoiceQuestion extends AbstractQuestion {
     private int minSelect;
@@ -23,6 +21,8 @@ public class ChoiceQuestion extends AbstractQuestion {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
     private List<ChoiceQuestionChoice> choices = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question", orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<ChoiceAnswerText> textAnswers = new ArrayList<>();
 
     public ChoiceQuestion(int rank, byte[] text, int minSelect, int maxSelect) {

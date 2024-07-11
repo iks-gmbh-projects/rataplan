@@ -1,17 +1,16 @@
 package iks.surveytool.dtos;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class ChoiceDTO extends AbstractDTO {
 
     private String text;
     private boolean hasTextField;
 
+    @Builder
     public ChoiceDTO(Long id, String text, boolean hasTextField) {
         super(id);
         this.text = text;
