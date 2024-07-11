@@ -52,8 +52,8 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
       if((qg.id || 0) < 0) delete qg.id;
       for (let question of qg.questions) {
         if((question.id || 0) < 0) delete question.id;
-        if (question.checkboxGroup) {
-          for (let checkbox of question.checkboxGroup.checkboxes) {
+        if (question.choices) {
+          for (let checkbox of question.choices) {
             if((checkbox.id || 0) < 0) delete checkbox.id;
           }
         }

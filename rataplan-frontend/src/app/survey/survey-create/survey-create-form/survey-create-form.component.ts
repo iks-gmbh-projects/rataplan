@@ -70,16 +70,16 @@ export class SurveyCreateFormComponent {
   }
   
   public static createQuestion(question?: Question): questionFormGroup {
-    const checkboxes = new FormArray(question?.checkboxGroup?.checkboxes?.map(
+    const checkboxes = new FormArray(question?.choices?.map(
       SurveyCreateFormComponent.createCheckbox,
       this,
-    ) || []);
+    ) ?? []);
     const minSelect = new FormControl(
-      question?.checkboxGroup?.minSelect ?? 0,
+      question?.minSelect ?? 0,
       [ExtraValidators.integer, Validators.min(0), ExtraValidators.indexValue(checkboxes, true)],
     );
     const maxSelect = new FormControl(
-      question?.checkboxGroup?.maxSelect ?? 2,
+      question?.maxSelect ?? 1,
       [
         ExtraValidators.integer,
         Validators.min(1),
@@ -95,13 +95,11 @@ export class SurveyCreateFormComponent {
         Validators.maxLength(255),
         ExtraValidators.containsSomeWhitespace,
       ]),
+      type: new FormControl<string>(question?.type ?? 'OPEN'),
       required: new FormControl(question?.required ?? false),
-      checkboxGroup: new FormGroup({
-        multipleSelect: new FormControl(question?.checkboxGroup?.multipleSelect ?? false),
-        minSelect: minSelect,
-        maxSelect: maxSelect,
-        checkboxes: checkboxes,
-      }),
+      minSelect: minSelect,
+      maxSelect: maxSelect,
+      choices: checkboxes,
     });
   }
   
@@ -139,14 +137,13 @@ export class SurveyCreateFormComponent {
       qg.id ??= -i;
       for(let q of qg.questions) {
         q.id ??= j;
-        if(q.checkboxGroup) {
-          if(q.checkboxGroup.checkboxes.length == 0) {
-            delete q.checkboxGroup;
+        if(q.choices) {
+          if(q.choices.length == 0) {
+            delete q.choices;
           } else {
-            q.checkboxGroup.checkboxes.forEach((checkbox, k) => checkbox.id = k);
+            q.choices.forEach((checkbox, k) => checkbox.id = k);
           }
         }
-        q.hasCheckbox = 'checkboxGroup' in q;
       }
     });
     this.onSubmit.emit({survey, preview});

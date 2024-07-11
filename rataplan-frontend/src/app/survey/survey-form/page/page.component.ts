@@ -55,7 +55,7 @@ export class PageComponent implements AfterViewInit{
       delete answer.checkboxId;
     }
     if(!answer.checkboxes) return false;
-    for(let checkbox of question.checkboxGroup!.checkboxes) {
+    for(let checkbox of question.choices!) {
       if(checkbox.hasTextField && answer.checkboxes![checkbox.id!]) return false;
     }
     return true;

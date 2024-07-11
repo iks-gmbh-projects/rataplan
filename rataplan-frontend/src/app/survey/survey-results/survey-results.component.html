@@ -34,23 +34,25 @@
                           >{{ (answer.userId | displayName | async) || "Anonym" }}
                           </td>
                         </ng-container>
-                        <ng-template [ngIf]="question.checkboxGroup">
-                          <ng-container
-                            *ngFor="let checkbox of question.checkboxGroup.checkboxes"
-                            [matColumnDef]="'checkbox'+checkbox.id!"
-                          >
-                            <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ checkbox.text }}
-                              <br>{{ checkboxPercentage(question.id, checkbox.id!) | number : "1.0-1" }}%
-                            </th>
-                            <td mat-cell *matCellDef="let answer">
-                              <mat-icon>{{ toCheckbox(answer.answers[question.id].checkboxes[checkbox.id!]) }}
-                              </mat-icon>
-                            </td>
+                        <ng-container [ngSwitch]="question.type">
+                          <ng-template [ngSwitchCase]="'CHOICE'">
+                            <ng-container
+                              *ngFor="let checkbox of question.choices"
+                              [matColumnDef]="'checkbox'+checkbox.id!"
+                            >
+                              <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ checkbox.text }}
+                                <br>{{ checkboxPercentage(question.id, checkbox.id!) | number : "1.0-1" }}%
+                              </th>
+                              <td mat-cell *matCellDef="let answer">
+                                <mat-icon>{{ toCheckbox(answer.answers[question.id].checkboxes[checkbox.id!]) }}
+                                </mat-icon>
+                              </td>
+                            </ng-container>
+                          </ng-template>
+                          <ng-container *ngIf="hasTextfield(question)" matColumnDef="answer">
+                            <th mat-header-cell mat-sort-header *matHeaderCellDef> Freitextantwort</th>
+                            <td mat-cell *matCellDef="let answer">{{ answer.answers[question.id].text }}</td>
                           </ng-container>
-                        </ng-template>
-                        <ng-container *ngIf="hasTextfield(question)" matColumnDef="answer">
-                          <th mat-header-cell mat-sort-header *matHeaderCellDef> Freitextantwort</th>
-                          <td mat-cell *matCellDef="let answer">{{ answer.answers[question.id].text }}</td>
                         </ng-container>
                         <tr mat-header-row *matHeaderRowDef="columns[question.id]"></tr>
                         <tr mat-row *matRowDef="let row; columns: columns[question.id]"></tr>
@@ -66,7 +68,13 @@
     </ng-template>
     <div class="button">
       <a mat-raised-button color="primary" routerLink="..">Zurück</a>
-      <button *ngIf="!error" [disabled]="(busy$ | async) ?? false" mat-icon-button color="primary" (click)="downloadResults()">
+      <button
+        *ngIf="!error"
+        [disabled]="(busy$ | async) ?? false"
+        mat-icon-button
+        color="primary"
+        (click)="downloadResults()"
+      >
         <mat-icon id="icon">download</mat-icon>
       </button>
     </div>

@@ -80,19 +80,25 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
         if(question.id) {
           this.columns[question.id] = ['user'];
           this.columnNames[question.id] = ['Nutzer'];
-          let hasTextfield: boolean = false;
-          if(question.checkboxGroup) {
-            for(let checkbox of question.checkboxGroup.checkboxes) {
+          switch(question.type) {
+          case 'CHOICE':
+            let txt = false;
+            for(let checkbox of question.choices!) {
               if(checkbox.id) {
                 this.columns[question.id].push('checkbox' + checkbox.id);
                 this.columnNames[question.id].push(this.safeEscape(checkbox.text));
               }
-              if(checkbox.hasTextField) hasTextfield = true;
+              if(checkbox.hasTextField) txt = true;
             }
-          } else hasTextfield = true;
-          if(hasTextfield) {
+            if(txt) {
+              this.columns[question.id].push('answer');
+              this.columnNames[question.id].push('Antwort');
+            }
+            break;
+          case 'OPEN':
             this.columns[question.id].push('answer');
             this.columnNames[question.id].push('Antwort');
+            break;
           }
         }
       }
@@ -103,14 +109,14 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
       next: answers => {
         this.answers = answers;
         for(const question of survey.questionGroups.flatMap(qg => qg.questions)) {
-          if(!question.id || !question.checkboxGroup?.checkboxes) continue;
+          if(!question.id || !question.choices) continue;
           const dataset: number[] = [];
           const datalabels: string[] = [];
           const datacolors: Color[] = [];
           const red = inf(reds);
           const green = inf(greens);
           const other = inf(colors);
-          for(const checkbox of question.checkboxGroup.checkboxes) {
+          for(const checkbox of question.choices) {
             if(!checkbox.id) continue;
             let count = 0;
             for(let response of this.answers) {
@@ -142,11 +148,15 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
   }
   
   public hasTextfield(question: Question): boolean {
-    if(!question.checkboxGroup) return true;
-    for(let checkbox of question.checkboxGroup.checkboxes) {
-      if(checkbox.hasTextField) return true;
+    switch(question.type) {
+    case 'OPEN':
+      return true;
+    case 'CHOICE':
+      for(let checkbox of question.choices!) {
+        if(checkbox.hasTextField) return true;
+      }
+      return false;
     }
-    return false;
   }
   
   public toCheckbox(checked: boolean): string {

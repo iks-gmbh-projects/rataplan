@@ -15,13 +15,11 @@ export type checkboxesFormArray = FormArray<checkboxFormGroup>;
 export type questionFormGroup = FormGroup<{
   id: FormControl<string | number | null>,
   text: FormControl<string | null>,
+  type: FormControl<string | null>,
   required: FormControl<boolean | null>,
-  checkboxGroup: FormGroup<{
-    multipleSelect: FormControl<boolean | null>,
-    minSelect: FormControl<number | null>,
-    maxSelect: FormControl<number | null>,
-    checkboxes: checkboxesFormArray,
-  }>,
+  minSelect: FormControl<number | null>,
+  maxSelect: FormControl<number | null>,
+  choices: checkboxesFormArray,
 }>;
 
 export type questionsFormArray = FormArray<questionFormGroup>;
@@ -52,7 +50,7 @@ export class SurveyCreateFormPageComponent {
   }
 
   public getCheckboxes(question: AbstractControl): checkboxesFormArray {
-    return question?.get(["checkboxGroup", "checkboxes"]) as checkboxesFormArray;
+    return question?.get(["choices"]) as checkboxesFormArray;
   }
 
   readonly createQuestion = SurveyCreateFormComponent.createQuestion;

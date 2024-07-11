@@ -42,9 +42,8 @@ export class SurveyPreviewComponent {
       questionGroup.id = idCounter++;
       for (let question of questionGroup.questions) {
         question.id = idCounter++;
-        if (question.checkboxGroup) {
-          question.checkboxGroup.id = idCounter++;
-          for (let checkbox of question.checkboxGroup.checkboxes) {
+        if (question.choices) {
+          for (let checkbox of question.choices) {
             checkbox.id = idCounter++;
           }
         }

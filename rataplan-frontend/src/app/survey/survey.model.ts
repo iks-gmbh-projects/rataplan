@@ -22,19 +22,13 @@ export type QuestionGroup = {
 };
 
 export type Question = {
+  type: 'OPEN'|'CHOICE',
   id?: string|number,
   text: string,
-  required: boolean,
-  hasCheckbox?: boolean,
-  checkboxGroup?: CheckboxGroup
-};
-
-export type CheckboxGroup = {
-  id?: string|number,
-  multipleSelect: boolean,
-  minSelect: number,
-  maxSelect: number,
-  checkboxes: Checkbox[]
+  required?: boolean,
+  minSelect?: number,
+  maxSelect?: number,
+  choices?: Checkbox[],
 };
 
 export type Checkbox = {
