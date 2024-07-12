@@ -3,7 +3,6 @@ package iks.surveytool.mapping;
 import iks.surveytool.domain.QuestionType;
 import iks.surveytool.dtos.QuestionDTO;
 import iks.surveytool.dtos.QuestionGroupDTO;
-import iks.surveytool.entities.EncryptedString;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.question.AbstractQuestion;
 import iks.surveytool.entities.question.ChoiceQuestion;
@@ -26,7 +25,7 @@ public class QuestionGroupFromDTOConverter implements Converter<QuestionGroupDTO
         if(source == null) return null;
         final QuestionGroup dest = Objects.requireNonNullElseGet(context.getDestination(), QuestionGroup::new);
         dest.setId(source.getId());
-        dest.setTitle(mappingEngine.map(context.create(source.getTitle(), EncryptedString.class)));
+        dest.setTitle(mappingEngine.map(context.create(source.getTitle(), byte[].class)));
         ListIterator<QuestionDTO> it = source.getQuestions().listIterator();
         while(it.hasNext()) {
             int i = it.nextIndex();

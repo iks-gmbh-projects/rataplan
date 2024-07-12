@@ -9,9 +9,7 @@ import iks.surveytool.entities.SurveyResponse;
 import iks.surveytool.entities.question.ChoiceQuestion;
 import iks.surveytool.entities.question.ChoiceQuestionChoice;
 import iks.surveytool.entities.question.OpenQuestion;
-import iks.surveytool.mapping.crypto.FromEncryptedStringConverter;
 import iks.surveytool.mapping.crypto.FromRawEncryptedStringConverter;
-import iks.surveytool.mapping.crypto.ToEncryptedStringConverter;
 import iks.surveytool.mapping.crypto.ToRawEncryptedStringConverter;
 import iks.surveytool.repositories.SurveyRepository;
 import iks.surveytool.services.CryptoServiceImpl;
@@ -51,7 +49,6 @@ public class MappingTest {
         lenient().when(cryptoService.decryptDBRaw(any(byte[].class))).then(a -> new String(a.getArgument(0), StandardCharsets.UTF_8));
         lenient().when(cryptoService.encryptDBRaw(anyString())).then(a -> a.getArgument(0, String.class).getBytes(StandardCharsets.UTF_8));
         modelMapper = MappingConfig.modelMapper(List.of(
-            new FromEncryptedStringConverter(cryptoService), new ToEncryptedStringConverter(cryptoService),
             new FromRawEncryptedStringConverter(cryptoService), new ToRawEncryptedStringConverter(cryptoService),
             new ToInstantConverter(), new ToZonedTimeConverter(),
             new ListConverter<>(),

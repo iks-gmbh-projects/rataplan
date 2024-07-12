@@ -2,8 +2,10 @@ package iks.surveytool.entities;
 
 import iks.surveytool.entities.question.ChoiceQuestion;
 import iks.surveytool.entities.question.OpenQuestion;
-import iks.surveytool.mapping.crypto.DBEncryptedStringConverter;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,8 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class QuestionGroup extends AbstractEntity {
     
-    @Convert(converter= DBEncryptedStringConverter.class)
-    private EncryptedString title;
+    private byte[] title;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "surveyId", nullable = false)
@@ -32,7 +33,7 @@ public class QuestionGroup extends AbstractEntity {
     @OrderBy("rank")
     private List<ChoiceQuestion> choiceQuestions = new ArrayList<>();
 
-    public QuestionGroup(EncryptedString title, List<OpenQuestion> openQuestions, List<ChoiceQuestion> choiceQuestions) {
+    public QuestionGroup(byte[] title, List<OpenQuestion> openQuestions, List<ChoiceQuestion> choiceQuestions) {
         this.title = title;
         this.openQuestions = openQuestions;
         this.choiceQuestions = choiceQuestions;
@@ -67,7 +68,6 @@ public class QuestionGroup extends AbstractEntity {
 
     private void validateData() throws InvalidEntityException {
         if(this.title == null) throw new InvalidEntityException("Question group without title", this);
-        if(this.title.getString().length() > 255) throw new InvalidEntityException("Question group title too long", this);
     }
 
     private void validateQuestions() throws InvalidEntityException {

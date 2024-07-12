@@ -1,9 +1,9 @@
 package iks.surveytool.utils.builder;
 
-import iks.surveytool.entities.EncryptedString;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class QuestionGroupBuilder {
@@ -11,7 +11,7 @@ public class QuestionGroupBuilder {
                                              String title) {
         QuestionGroup newQuestionGroup = new QuestionGroup();
         newQuestionGroup.setId(id);
-        newQuestionGroup.setTitle(title == null ? null : new EncryptedString(title, true));
+        newQuestionGroup.setTitle(title == null ? null : title.getBytes(StandardCharsets.UTF_8));
         newQuestionGroup.setOpenQuestions(new ArrayList<>());
         newQuestionGroup.setChoiceQuestions(new ArrayList<>());
         return newQuestionGroup;

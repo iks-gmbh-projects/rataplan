@@ -1,12 +1,16 @@
 package iks.surveytool.entities;
 
-import iks.surveytool.mapping.crypto.DBEncryptedStringConverter;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -19,23 +23,25 @@ import java.util.List;
 @NoArgsConstructor
 public class Survey extends AbstractEntity {
     
-    @NotNull
-    @Convert(converter = DBEncryptedStringConverter.class)
-    private EncryptedString name;
-    @Convert(converter = DBEncryptedStringConverter.class)
-    private EncryptedString description;
+    @Column(nullable = false)
+    private byte[] name;
+    private byte[] description;
     
+    @Column(nullable = false)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private ZonedDateTime startDate;
     
+    @Column(nullable = false)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private ZonedDateTime endDate;
     
     private boolean openAccess;
     private boolean anonymousParticipation;
     // id for creator of survey to view results
+    @Column(nullable = false)
     private String accessId;
     // id for users to participate in survey
+    @Column(nullable = false)
     private String participationId;
     
     private Long userId;
@@ -49,8 +55,8 @@ public class Survey extends AbstractEntity {
     private List<SurveyResponse> surveyResponses = new ArrayList<>();
     
     public Survey(
-        EncryptedString name,
-        EncryptedString description,
+        byte[] name,
+        byte[] description,
         ZonedDateTime startDate,
         ZonedDateTime endDate,
         boolean openAccess,
@@ -109,8 +115,6 @@ public class Survey extends AbstractEntity {
     
     private void checkNameAndDescription() throws InvalidEntityException {
         if(this.name == null) throw new InvalidEntityException("Name is empty", this);
-        if(this.name.getString().length() > 255) throw new InvalidEntityException("Name too long", this);
-        if(this.description.getString().length() > 3000) throw new InvalidEntityException("Description too long", this);
     }
     
     private void checkTimeframe() throws InvalidEntityException {
