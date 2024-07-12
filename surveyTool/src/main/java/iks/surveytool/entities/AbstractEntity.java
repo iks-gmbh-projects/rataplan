@@ -31,6 +31,10 @@ public abstract class AbstractEntity {
     @Version
     private Integer version;
     
+    public void resetId() {
+        id = null;
+    }
+    
     protected void invalid(String message) throws InvalidEntityException {
         throw new InvalidEntityException(message, this);
     }

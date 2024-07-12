@@ -7,10 +7,16 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompleteSurveyDTO extends SurveyOverviewDTO {
     private List<QuestionGroupDTO> questionGroups;
+    
+    @Override
+    public void resetId() {
+        questionGroups.forEach(AbstractDTO::resetId);
+    }
     
     @Override
     public void trimAndNull() {

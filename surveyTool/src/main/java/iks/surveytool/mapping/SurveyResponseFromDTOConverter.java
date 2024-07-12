@@ -68,6 +68,7 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
             .map(e -> {
                 OpenAnswer a = mappingEngine.map(context.create(e.getValue(), OpenAnswer.class));
                 a.setQuestion((OpenQuestion) questions.get(e.getKey()));
+                a.setResponse(dest);
                 return a;
             })
             .collect(Collectors.toList())
@@ -77,9 +78,10 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
             .map(e -> {
                 ChoiceAnswerText a = mappingEngine.map(context.create(e.getValue(), ChoiceAnswerText.class));
                 a.setQuestion((ChoiceQuestion) questions.get(e.getKey()));
+                a.setResponse(dest);
                 return a;
             })
-            .filter(a -> a.getText() == null || a.getText().length == 0)
+            .filter(a -> a.getText() != null && a.getText().length != 0)
             .collect(Collectors.toList())
         );
         Map<Long, ChoiceQuestionChoice> choices = survey.getQuestionGroups()
@@ -93,9 +95,10 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
             .stream()
             .map(Map.Entry::getValue)
             .map(AnswerDTO::getCheckboxes)
+            .filter(Objects::nonNull)
             .map(Map::entrySet)
             .flatMap(Set::stream)
-            .filter(Map.Entry::getValue)
+            .filter(e -> e.getValue() != null && e.getValue())
             .map(Map.Entry::getKey)
             .map(choices::get)
             .collect(Collectors.toList())

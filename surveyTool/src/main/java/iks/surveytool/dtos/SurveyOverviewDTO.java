@@ -8,6 +8,7 @@ import java.time.Instant;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class SurveyOverviewDTO extends AbstractDTO {

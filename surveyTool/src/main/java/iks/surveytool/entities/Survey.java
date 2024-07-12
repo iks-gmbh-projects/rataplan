@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class Survey extends AbstractEntity {
     
@@ -68,6 +69,12 @@ public class Survey extends AbstractEntity {
         this.accessId = accessId;
         this.participationId = participationId;
         this.questionGroups = questionGroups;
+    }
+    
+    
+    @Override
+    public void resetId() {
+        questionGroups.forEach(AbstractEntity::resetId);
     }
     
     public boolean isActiveAt(Instant instant) {

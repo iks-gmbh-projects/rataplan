@@ -2,15 +2,14 @@ package iks.surveytool.entities.answer;
 
 import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.entities.question.OpenQuestion;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class OpenAnswer extends AbstractAnswer {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

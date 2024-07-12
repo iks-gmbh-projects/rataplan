@@ -7,11 +7,16 @@ import java.util.Map;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class SurveyResponseDTO extends AbstractDTO {
     private long surveyId;
     private Long userId;
     private Map<Long, AnswerDTO> answers = new HashMap<>();
+    
+    @Override
+    public void resetId() {
+    }
     
     @Override
     public void trimAndNull() {

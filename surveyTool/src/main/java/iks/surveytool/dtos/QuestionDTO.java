@@ -10,15 +10,17 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class QuestionDTO extends AbstractDTO {
     private QuestionType type;
+    private int rank;
     private String text;
     private Boolean required;
     private Integer minSelect;
     private Integer maxSelect;
 
-    private List<ChoiceDTO> choices;
+    private List<ChoiceDTO> choices = new ArrayList<>();
 
     public QuestionDTO(Long id, String text, boolean required) {
         super(id);
@@ -42,6 +44,12 @@ public class QuestionDTO extends AbstractDTO {
     
     public QuestionDTO(Long id, String text, int minSelect, int maxSelect, ChoiceDTO ...choices) {
         this(id, text, minSelect, maxSelect, Arrays.asList(choices));
+    }
+    
+    @Override
+    public void resetId() {
+        super.resetId();
+        choices.forEach(AbstractDTO::resetId);
     }
     
     @Override

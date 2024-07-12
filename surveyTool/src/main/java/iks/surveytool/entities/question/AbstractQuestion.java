@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @MappedSuperclass
 @NoArgsConstructor
 public abstract class AbstractQuestion extends AbstractEntity {

@@ -54,9 +54,9 @@ public class MappingTest {
             new FromEncryptedStringConverter(cryptoService), new ToEncryptedStringConverter(cryptoService),
             new FromRawEncryptedStringConverter(cryptoService), new ToRawEncryptedStringConverter(cryptoService),
             new ToInstantConverter(), new ToZonedTimeConverter(),
+            new ListConverter<>(),
             new SurveyResponseToDTOConverter(), new SurveyResponseFromDTOConverter(surveyRepository),
-            new QuestionGroupFromDTOConverter(), new QuestionGroupToDTOConverter(),
-            new QuestionFromDTOConverter()
+            new QuestionGroupFromDTOConverter(), new QuestionGroupToDTOConverter()
         ));
     }
 
@@ -78,6 +78,8 @@ public class MappingTest {
         ChoiceBuilder.createChoiceIn(question, 4L, "Fourth Test Checkbox", false);
         
         CompleteSurveyDTO surveyDTO = modelMapper.map(survey, CompleteSurveyDTO.class);
+        
+        survey.resetId();
 
         assertEquals(survey, modelMapper.map(surveyDTO, Survey.class));
     }
@@ -127,6 +129,8 @@ public class MappingTest {
         surveyDTO.setQuestionGroups(List.of(questionGroupDTO));
 
         Survey surveyConverted = modelMapper.map(surveyDTO, Survey.class);
+        
+        surveyDTO.resetId();
 
         assertEquals(surveyDTO, modelMapper.map(surveyConverted, CompleteSurveyDTO.class));
     }
@@ -159,6 +163,8 @@ public class MappingTest {
         SurveyResponseDTO responseDTO = modelMapper.map(response, SurveyResponseDTO.class);
         
         when(surveyRepository.findById(survey.getId())).thenReturn(Optional.of(survey));
+        
+        response.resetId();
 
         assertEquals(response, modelMapper.map(responseDTO, SurveyResponse.class));
     }
@@ -170,24 +176,20 @@ public class MappingTest {
         
         QuestionGroup questionGroup = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Group");
         
-        QuestionBuilder.createQuestionIn(questionGroup, 1L, 0, "Frage 1", true);
+        OpenQuestion firstQuestion = QuestionBuilder.createQuestionIn(questionGroup, 1L, 0, "Frage 1", true);
         ChoiceQuestion secondQuestion = QuestionBuilder.createQuestionIn(questionGroup, 2L, 1, "Frage 2", 1, 1);
         
         ChoiceBuilder.createChoiceIn(secondQuestion, 1L, "Option 1", false);
         ChoiceBuilder.createChoiceIn(secondQuestion, 2L, "Option 2", false);
         
-        AnswerDTO firstAnswerDTO = new AnswerDTO();
-        firstAnswerDTO.setId(1L);
-        firstAnswerDTO.setText("Text");
-        AnswerDTO secondAnswerDTO = new AnswerDTO();
-        secondAnswerDTO.setId(2L);
-        secondAnswerDTO.setCheckboxes(Map.of(1L, true));
+        AnswerDTO firstAnswerDTO = new AnswerDTO("Text");
+        AnswerDTO secondAnswerDTO = new AnswerDTO(Map.of(1L, true));
 
         SurveyResponseDTO surveyResponseDTO = new SurveyResponseDTO();
         surveyResponseDTO.setSurveyId(survey.getId());
         surveyResponseDTO.setAnswers(Map.of(
-            firstAnswerDTO.getId(), firstAnswerDTO,
-            secondAnswerDTO.getId(), secondAnswerDTO
+            firstQuestion.getId(), firstAnswerDTO,
+            secondQuestion.getId(), secondAnswerDTO
         ));
         
         when(surveyRepository.findById(survey.getId())).thenReturn(Optional.of(survey));

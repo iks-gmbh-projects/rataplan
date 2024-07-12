@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class ChoiceQuestionChoice extends AbstractEntity {
     @Column(nullable = false)

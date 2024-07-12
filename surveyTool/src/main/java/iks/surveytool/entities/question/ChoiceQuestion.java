@@ -1,6 +1,7 @@
 package iks.surveytool.entities.question;
 
 import iks.surveytool.domain.QuestionType;
+import iks.surveytool.entities.AbstractEntity;
 import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.entities.answer.ChoiceAnswerText;
 import lombok.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class ChoiceQuestion extends AbstractQuestion {
     private int minSelect;
@@ -30,10 +32,18 @@ public class ChoiceQuestion extends AbstractQuestion {
         this.minSelect = minSelect;
         this.maxSelect = maxSelect;
     }
+    
+    @Override
+    public void resetId() {
+        super.resetId();
+        choices.forEach(AbstractEntity::resetId);
+    }
+    
     @Override
     public QuestionType getType() {
         return QuestionType.CHOICE;
     }
+    
     @Override
     public void checkIfComplete() throws InvalidEntityException {
         if(choices.isEmpty()) invalid("no choices");

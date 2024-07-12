@@ -40,7 +40,7 @@ public class SurveyResponseToDTOConverter implements Converter<SurveyResponse, S
                 a -> mappingEngine.map(context.create(a, AnswerDTO.class))
             )));
         for(ChoiceQuestionChoice choice : source.getChoiceAnswers()) {
-            AnswerDTO answer = answers.computeIfAbsent(choice.getQuestion().getId(), AnswerDTO::new);
+            AnswerDTO answer = answers.computeIfAbsent(choice.getQuestion().getId(), i -> new AnswerDTO());
             Map<Long, Boolean> checkboxes = answer.getCheckboxes();
             if(checkboxes == null) {
                 checkboxes = new HashMap<>();

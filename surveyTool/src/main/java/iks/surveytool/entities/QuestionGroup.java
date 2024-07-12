@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class QuestionGroup extends AbstractEntity {
     
@@ -35,6 +36,14 @@ public class QuestionGroup extends AbstractEntity {
         this.title = title;
         this.openQuestions = openQuestions;
         this.choiceQuestions = choiceQuestions;
+    }
+    
+    
+    @Override
+    public void resetId() {
+        super.resetId();
+        openQuestions.forEach(AbstractEntity::resetId);
+        choiceQuestions.forEach(AbstractEntity::resetId);
     }
 
     void checkIfComplete() throws InvalidEntityException {

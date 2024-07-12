@@ -5,9 +5,7 @@ import iks.surveytool.entities.answer.OpenAnswer;
 import iks.surveytool.entities.question.ChoiceQuestion;
 import iks.surveytool.entities.question.ChoiceQuestionChoice;
 import iks.surveytool.entities.question.OpenQuestion;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,8 +15,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class SurveyResponse extends AbstractEntity {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
@@ -36,6 +35,12 @@ public class SurveyResponse extends AbstractEntity {
     private List<ChoiceQuestionChoice> choiceAnswers = new ArrayList<>();
     @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChoiceAnswerText> choiceAnswerTexts = new ArrayList<>();
+    
+    @Override
+    public void resetId() {
+        openAnswers.forEach(AbstractEntity::resetId);
+        choiceAnswerTexts.forEach(AbstractEntity::resetId);
+    }
 
     public void validate() throws InvalidEntityException {
         if(survey == null || openAnswers == null || choiceAnswers == null || choiceAnswerTexts == null) invalid("missing survey or answers");

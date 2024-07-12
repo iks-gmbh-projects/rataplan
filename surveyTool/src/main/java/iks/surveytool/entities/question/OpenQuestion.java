@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class OpenQuestion extends AbstractQuestion {
     private boolean required;

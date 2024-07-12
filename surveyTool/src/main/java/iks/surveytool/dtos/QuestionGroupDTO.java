@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class QuestionGroupDTO extends AbstractDTO {
 
@@ -18,6 +19,12 @@ public class QuestionGroupDTO extends AbstractDTO {
         super(id);
         this.title = title;
         this.questions = questions;
+    }
+    
+    @Override
+    public void resetId() {
+        super.resetId();
+        questions.forEach(AbstractDTO::resetId);
     }
     
     @Override

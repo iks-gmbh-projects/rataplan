@@ -5,12 +5,16 @@ import lombok.*;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-abstract class AbstractDTO {
+public abstract class AbstractDTO {
     private Long id;
+    
+    public void resetId() {
+        this.id = null;
+    }
     
     public abstract void trimAndNull();
     
-    protected static String trimAndNull(String s) {
+    static String trimAndNull(String s) {
         if(s == null || s.isBlank()) return null;
         return s.trim();
     }
