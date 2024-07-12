@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class JwtConfig {
     private long lifetime = 10;
-    private String issuer = "https://backend.drumdibum.de/issuer";
+    private String issuer = "https://survey.drumdibum.de/issuer";
     
     @Bean
     @Qualifier("jwkSet")
