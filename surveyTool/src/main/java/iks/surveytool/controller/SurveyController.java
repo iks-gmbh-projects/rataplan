@@ -29,7 +29,7 @@ public class SurveyController {
     ) throws InvalidEntityException, DTOValidationException
     {
         surveyDTO.valid();
-        return surveyService.processSurveyDTO(surveyDTO, jwttoken);
+        return surveyService.createSurvey(surveyDTO, jwttoken);
     }
 
     @PutMapping(params = {"accessId"})
@@ -40,31 +40,31 @@ public class SurveyController {
     ) throws InvalidEntityException, DTOValidationException
     {
         surveyDTO.valid();
-        return surveyService.processEditSurveyByAccessId(accessId, surveyDTO, jwttoken);
+        return surveyService.editSurvey(accessId, surveyDTO, jwttoken);
     }
 
     @GetMapping(params = {"accessId"})
-    public ResponseEntity<SurveyOverviewDTO> findSurveyByAccessId(
+    public ResponseEntity<? extends SurveyOverviewDTO> findSurveyByAccessId(
         @RequestParam String accessId,
         @AuthenticationPrincipal Jwt jwttoken
     ) {
-        return surveyService.processSurveyByAccessId(accessId, jwttoken);
+        return surveyService.getSurveyByAccessId(accessId, jwttoken);
     }
 
     @GetMapping(params = {"participationId"})
-    public ResponseEntity<SurveyOverviewDTO> findSurveyByParticipationId(@RequestParam String participationId) {
-        return surveyService.processSurveyByParticipationId(participationId);
+    public ResponseEntity<? extends SurveyOverviewDTO> findSurveyByParticipationId(@RequestParam String participationId) {
+        return surveyService.getSurveyByParticipationId(participationId);
     }
 
     @GetMapping
     public ResponseEntity<List<SurveyOverviewDTO>> findOpenAccessSurveys() {
-        return surveyService.processOpenAccessSurveys();
+        return surveyService.getCurrentOpenSurveys();
     }
 
     @GetMapping("/own")
     public ResponseEntity<List<SurveyOverviewDTO>> findMySurveys(
         @AuthenticationPrincipal Jwt jwtToken
     ) {
-        return surveyService.processMySurveys(jwtToken);
+        return surveyService.getUserSurveys(jwtToken);
     }
 }

@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +34,7 @@ public class SurveyServiceImpl implements SurveyService {
     private final Random random = new Random();
     
     @Transactional
-    public ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO, Jwt jwtToken) throws
+    public ResponseEntity<SurveyOverviewDTO> createSurvey(CompleteSurveyDTO surveyDTO, Jwt jwtToken) throws
         InvalidEntityException
     {
         final AuthUser user = authService.getUserData(jwtToken);
@@ -45,109 +44,45 @@ public class SurveyServiceImpl implements SurveyService {
         Survey survey = mapper.map(surveyDTO, Survey.class);
         generateIds(survey);
         survey.validate();
-        Survey savedSurvey = saveSurvey(survey);
-        SurveyOverviewDTO completeSurveyDTO = mapSurveyToDTO(savedSurvey);
+        Survey savedSurvey = surveyRepository.save(survey);
+        SurveyOverviewDTO completeSurveyDTO = mapper.map(savedSurvey, CompleteSurveyDTO.class);
         return ResponseEntity.ok(completeSurveyDTO);
     }
     
     @Transactional(readOnly = true)
-    public ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, Jwt jwttoken) {
-        SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTOByAccessId(accessId);
-        if(surveyOverviewDTO != null) {
-            if(surveyOverviewDTO.getUserId() != null) {
-                AuthUser user = authService.getUserData(jwttoken);
-                if(user == null) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<? extends SurveyOverviewDTO> getSurveyByAccessId(String accessId, Jwt jwttoken) {
+        return surveyRepository.findSurveyByAccessId(accessId)
+            .map(survey -> mapper.map(survey, CompleteSurveyDTO.class))
+            .map(surveyOverviewDTO -> {
+                if(surveyOverviewDTO.getUserId() != null) {
+                    AuthUser user = authService.getUserData(jwttoken);
+                    if(user == null) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).<SurveyOverviewDTO>build();
+                    }
+                    if(!Objects.equals(surveyOverviewDTO.getUserId(), user.getId())) {
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).<SurveyOverviewDTO>build();
+                    }
                 }
-                if(surveyOverviewDTO.getUserId().longValue() != user.getId().longValue()) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-                }
-            }
-            return ResponseEntity.ok(surveyOverviewDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+                return ResponseEntity.ok(surveyOverviewDTO);
+            })
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
     
     @Transactional(readOnly = true)
-    public ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId) {
-        SurveyOverviewDTO surveyDTO = mapSurveyToDTOByParticipationId(participationId);
-        if(surveyDTO != null) {
-            if(surveyDTO instanceof CompleteSurveyDTO) {
-                return ResponseEntity.ok(surveyDTO);
-            } else {
-                // If current time is not within start- and endDate: return survey without questions to fill information
-                // in front-end
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(surveyDTO);
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<? extends CompleteSurveyDTO> getSurveyByParticipationId(String participationId) {
+        return surveyRepository.findSurveyByParticipationId(participationId)
+            .filter(survey -> survey.isActiveAt(Instant.now()))
+            .map(survey -> mapper.map(survey, CompleteSurveyDTO.class))
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
     
     @Transactional(readOnly = true)
-    public ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys() {
-        List<SurveyOverviewDTO> openAccessSurveys = mapSurveysToDTOByOpenIsTrue();
-        return ResponseEntity.ok(openAccessSurveys);
-    }
-    
-    private Optional<Survey> findSurveyByParticipationId(String participationId) {
-        return surveyRepository.findSurveyByParticipationId(participationId);
-    }
-    
-    private Optional<Survey> findSurveyByAccessId(String accessId) {
-        return surveyRepository.findSurveyByAccessId(accessId);
-    }
-    
-    private List<Survey> findSurveysByOpenAccessIsTrue() {
-        ZonedDateTime currentDateTime = ZonedDateTime.now();
-        return surveyRepository.findAllByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(currentDateTime);
-    }
-    
-    private SurveyOverviewDTO mapSurveyToDTO(Survey savedSurvey) {
-        return mapper.map(savedSurvey, CompleteSurveyDTO.class);
-    }
-    
-    private SurveyOverviewDTO mapSurveyToDTOByAccessId(String accessId) {
-        Optional<Survey> surveyOptional = findSurveyByAccessId(accessId);
-        if(surveyOptional.isPresent()) {
-            Survey survey = surveyOptional.get();
-            return mapper.map(survey, CompleteSurveyDTO.class);
-        }
-        return null;
-    }
-    
-    private SurveyOverviewDTO mapSurveyToDTOByParticipationId(String participationId) {
-        Optional<Survey> surveyOptional = findSurveyByParticipationId(participationId);
-        if(surveyOptional.isPresent()) {
-            Survey survey = surveyOptional.get();
-            ZonedDateTime zonedStartDate = survey.getStartDate();
-            ZonedDateTime zonedEndDate = survey.getEndDate();
-            ZonedDateTime currentDateTime = ZonedDateTime.now();
-            if(currentDateTime.isAfter(zonedStartDate) && currentDateTime.isBefore(zonedEndDate)) {
-                return mapper.map(survey, CompleteSurveyDTO.class);
-            } else {
-                // If current time is not within start- and endDate: return survey without questions to fill information
-                // in front-end
-                return mapper.map(survey, SurveyOverviewDTO.class);
-            }
-        } else {
-            return null;
-        }
-    }
-    
-    private List<SurveyOverviewDTO> mapSurveysToDTO(List<Survey> surveys) {
-        Type surveyOverviewList = new TypeToken<List<SurveyOverviewDTO>>() {}.getType();
-        return mapper.map(surveys, surveyOverviewList);
-    }
-    
-    private List<SurveyOverviewDTO> mapSurveysToDTOByOpenIsTrue() {
-        List<Survey> openAccessSurveys = findSurveysByOpenAccessIsTrue();
-        return mapSurveysToDTO(openAccessSurveys);
-    }
-    
-    private Survey saveSurvey(Survey survey) {
-        return surveyRepository.save(survey);
+    public ResponseEntity<List<SurveyOverviewDTO>> getCurrentOpenSurveys() {
+        return ResponseEntity.ok(mapper.map(
+            surveyRepository.findAllByOpenAccessIsTrueAndEndDateIsAfterOrderByStartDate(ZonedDateTime.now()),
+            new TypeToken<List<SurveyOverviewDTO>>() {}.getType()
+        ));
     }
     
     private void generateIds(Survey survey) {
@@ -201,11 +136,11 @@ public class SurveyServiceImpl implements SurveyService {
     
     @Override
     @Transactional
-    public ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(
+    public ResponseEntity<SurveyOverviewDTO> editSurvey(
         String accessId, CompleteSurveyDTO completeSurveyDTO, Jwt jwttoken
     ) throws InvalidEntityException
     {
-        final Optional<Survey> optionalSurvey = findSurveyByAccessId(accessId);
+        final Optional<Survey> optionalSurvey = surveyRepository.findSurveyByAccessId(accessId);
         if(optionalSurvey.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -231,22 +166,21 @@ public class SurveyServiceImpl implements SurveyService {
         mapper.map(completeSurveyDTO, oldSurvey);
         oldSurvey.validate();
         
-        Survey survey = saveSurvey(oldSurvey);
+        Survey survey = surveyRepository.saveAndFlush(oldSurvey);
         surveyResponseRepository.deleteAllBySurvey(survey);
-        SurveyOverviewDTO surveyOverviewDTO = mapSurveyToDTO(survey);
+        surveyResponseRepository.flush();
+        SurveyOverviewDTO surveyOverviewDTO = mapper.map(survey, CompleteSurveyDTO.class);
         return ResponseEntity.ok(surveyOverviewDTO);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(Jwt jwttoken) {
+    public ResponseEntity<List<SurveyOverviewDTO>> getUserSurveys(Jwt jwttoken) {
         AuthUser user = authService.getUserData(jwttoken);
         if(user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        List<Survey> surveys = surveyRepository.findAllByUserId(user.getId());
-        List<SurveyOverviewDTO> surveyDTOs = mapSurveysToDTO(surveys);
-        return ResponseEntity.ok(surveyDTOs);
+        return ResponseEntity.ok(mapper.map(surveyRepository.findAllByUserId(user.getId()), new TypeToken<List<SurveyOverviewDTO>>() {}.getType()));
     }
     
     @Override

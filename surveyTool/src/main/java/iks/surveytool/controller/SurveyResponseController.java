@@ -37,7 +37,7 @@ public class SurveyResponseController {
         }
         surveyResponseDTO.trimAndNull();
         surveyResponseDTO.valid();
-        return responseService.processSurveyResponseDTOs(surveyResponseDTO);
+        return responseService.acceptSurveyResponse(surveyResponseDTO);
     }
 
     @GetMapping("/survey/{accessId}")
@@ -45,6 +45,6 @@ public class SurveyResponseController {
         @PathVariable String accessId,
         @AuthenticationPrincipal Jwt jwtToken
     ) {
-        return responseService.processSurveyResponseDTOs(accessId, jwtToken);
+        return responseService.getSurveyResponses(accessId, jwtToken);
     }
 }

@@ -2,19 +2,17 @@ package iks.surveytool.services;
 
 import iks.surveytool.dtos.SurveyResponseDTO;
 import iks.surveytool.entities.InvalidEntityException;
-import iks.surveytool.entities.SurveyResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
 
 public interface SurveyResponseService {
-    ResponseEntity<SurveyResponseDTO> processSurveyResponseDTOs(SurveyResponseDTO surveyResponseDTO) throws
+    ResponseEntity<SurveyResponseDTO> acceptSurveyResponse(SurveyResponseDTO surveyResponseDTO) throws
         InvalidEntityException;
 
-    boolean validateUniqueParticipation(SurveyResponse surveyResponse);
-
-    ResponseEntity<List<SurveyResponseDTO>> processSurveyResponseDTOs(String accessId, Jwt authToken);
+    ResponseEntity<List<SurveyResponseDTO>> getSurveyResponses(String accessId, Jwt authToken);
     ResponseEntity<?> deleteSurveyResponsesByUserId(long id);
     ResponseEntity<?> anonymizeSurveyResponsesByUserId(long id);
 }

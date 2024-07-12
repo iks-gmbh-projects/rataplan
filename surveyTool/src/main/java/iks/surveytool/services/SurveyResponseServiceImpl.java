@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +32,9 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     private final AuthService authService;
     private final ModelMapper modelMapper;
     
+    @Override
     @Transactional
-    public ResponseEntity<SurveyResponseDTO> processSurveyResponseDTOs(SurveyResponseDTO surveyResponseDTO) throws
+    public ResponseEntity<SurveyResponseDTO> acceptSurveyResponse(SurveyResponseDTO surveyResponseDTO) throws
         InvalidEntityException
     {
         SurveyResponse surveyResponse = modelMapper.map(surveyResponseDTO, SurveyResponse.class);
@@ -42,13 +42,12 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
         if(!validateUniqueParticipation(surveyResponse)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        SurveyResponse savedAnswers = saveSurveyResponse(surveyResponse);
+        SurveyResponse savedAnswers = surveyResponseRepository.save(surveyResponse);
         SurveyResponseDTO savedAnswerDTOs = modelMapper.map(savedAnswers, SurveyResponseDTO.class);
         return ResponseEntity.ok(savedAnswerDTOs);
     }
     
-    @Override
-    public boolean validateUniqueParticipation(SurveyResponse surveyResponse) {
+    private boolean validateUniqueParticipation(SurveyResponse surveyResponse) {
         if(surveyResponse.getUserId() != null) {
             return !surveyResponseRepository.existsBySurveyIdAndAndUserId(surveyResponse.getSurvey().getId(),
                 surveyResponse.getUserId()
@@ -57,17 +56,9 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
         return true;
     }
     
-    private SurveyResponse saveSurveyResponse(SurveyResponse response) {
-        return surveyResponseRepository.save(response);
-    }
-    
-    private List<SurveyResponseDTO> mapSurveyResponsesToDTO(List<SurveyResponse> answers) {
-        Type answerDTOList = new TypeToken<List<SurveyResponseDTO>>() {}.getType();
-        return modelMapper.map(answers, answerDTOList);
-    }
-    
-    @Transactional
-    public ResponseEntity<List<SurveyResponseDTO>> processSurveyResponseDTOs(String accessId, Jwt authToken) {
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<SurveyResponseDTO>> getSurveyResponses(String accessId, Jwt authToken) {
         final Optional<Survey> optSurvey = surveyRepository.findSurveyByAccessId(accessId);
         if(optSurvey.isEmpty()) return ResponseEntity.notFound().build();
         final Survey survey = optSurvey.get();
@@ -77,19 +68,14 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
             if(survey.getUserId().longValue() != user.getId().longValue())
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.ok(mapSurveyResponsesToDTOBySurvey(survey));
-    }
-    
-    private List<SurveyResponseDTO> mapSurveyResponsesToDTOBySurvey(Survey survey) {
-        List<SurveyResponse> answers = findSurveyResponsesBySurvey(survey);
-        return mapSurveyResponsesToDTO(answers);
-    }
-    
-    private List<SurveyResponse> findSurveyResponsesBySurvey(Survey survey) {
-        return surveyResponseRepository.findAllBySurvey(survey);
+        return ResponseEntity.ok(modelMapper.map(
+            surveyResponseRepository.findAllBySurvey(survey),
+            new TypeToken<List<SurveyResponseDTO>>() {}.getType()
+        ));
     }
     
     @Override
+    @Transactional
     public ResponseEntity<?> deleteSurveyResponsesByUserId(long id) {
         try {
             surveyResponseRepository.deleteAllByUserId(id);
@@ -101,6 +87,7 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
     }
     
     @Override
+    @Transactional
     public ResponseEntity<?> anonymizeSurveyResponsesByUserId(long id) {
         try {
             final List<SurveyResponse> surveyResponses = surveyResponseRepository.findAllByUserId(id);

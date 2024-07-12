@@ -9,13 +9,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.List;
 
 public interface SurveyService {
-    ResponseEntity<SurveyOverviewDTO> processSurveyDTO(CompleteSurveyDTO surveyDTO, Jwt jwttoken) throws InvalidEntityException;
-    ResponseEntity<SurveyOverviewDTO> processEditSurveyByAccessId(String accessId, CompleteSurveyDTO completeSurveyDTO, Jwt jwttoken)
+    ResponseEntity<SurveyOverviewDTO> createSurvey(CompleteSurveyDTO surveyDTO, Jwt jwttoken) throws InvalidEntityException;
+    ResponseEntity<SurveyOverviewDTO> editSurvey(String accessId, CompleteSurveyDTO completeSurveyDTO, Jwt jwttoken)
         throws InvalidEntityException;
-    ResponseEntity<SurveyOverviewDTO> processSurveyByAccessId(String accessId, Jwt jwttoken);
-    ResponseEntity<SurveyOverviewDTO> processSurveyByParticipationId(String participationId);
-    ResponseEntity<List<SurveyOverviewDTO>> processOpenAccessSurveys();
-    ResponseEntity<List<SurveyOverviewDTO>> processMySurveys(Jwt jwttoken);
+    ResponseEntity<? extends SurveyOverviewDTO> getSurveyByAccessId(String accessId, Jwt jwttoken);
+    ResponseEntity<? extends SurveyOverviewDTO> getSurveyByParticipationId(String participationId);
+    ResponseEntity<List<SurveyOverviewDTO>> getCurrentOpenSurveys();
+    ResponseEntity<List<SurveyOverviewDTO>> getUserSurveys(Jwt jwttoken);
     ResponseEntity<?> deleteSurveysByUserId(long id);
     ResponseEntity<?> anonymizeSurveysByUserId(long id);
 }

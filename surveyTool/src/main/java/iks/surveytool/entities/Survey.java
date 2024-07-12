@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,10 @@ public class Survey extends AbstractEntity {
         this.accessId = accessId;
         this.participationId = participationId;
         this.questionGroups = questionGroups;
+    }
+    
+    public boolean isActiveAt(Instant instant) {
+        return startDate.toInstant().isBefore(instant) && endDate.toInstant().isAfter(instant);
     }
     
     public void validate() throws InvalidEntityException {
