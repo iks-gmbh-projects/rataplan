@@ -72,6 +72,7 @@ public class SecurityConfig {
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(r -> {
+                r.mvcMatchers("/notifications").permitAll();
                 r.mvcMatchers("/actuator/**").permitAll();
                 r.mvcMatchers("/issuer/**").permitAll();
                 r.mvcMatchers(
