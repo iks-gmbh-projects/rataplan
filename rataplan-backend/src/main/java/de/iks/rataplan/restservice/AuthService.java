@@ -20,7 +20,7 @@ public interface AuthService {
         int recipient, NotificationType type, String subject, String content, String summaryContent
     )
     {
-        sendUserNotifications(List.of(recipient), type, subject, content, summaryContent);
+        sendUserNotifications(List.of(recipient), type, subject, content, summaryContent, null);
     }
     default void sendNotification(int recipient, NotificationType type, String subject, String content) {
         sendNotification(recipient, type, subject, content, content);
@@ -34,20 +34,21 @@ public interface AuthService {
             type,
             subject,
             content,
-            summaryContent
+            summaryContent,
+            null
         );
     }
     default void sendNotifications(int[] recipients, NotificationType type, String subject, String content) {
         sendNotifications(recipients, type, subject, content, content);
     }
     void sendUserNotifications(
-        Collection<Integer> recipients, NotificationType type, String subject, String content, String summaryContent
+        Collection<Integer> recipients, NotificationType type, String subject, String content, String summaryContent, String link
     );
     default void sendUserNotifications(
         Collection<Integer> recipients, NotificationType type, String subject, String content
     )
     {
-        sendUserNotifications(recipients, type, subject, content, content);
+        sendUserNotifications(recipients, type, subject, content, content, null);
     }
     default void sendNotification(
         String email, NotificationType type, String subject, String content, String summaryContent

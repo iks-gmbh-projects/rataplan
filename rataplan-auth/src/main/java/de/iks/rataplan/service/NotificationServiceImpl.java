@@ -10,9 +10,9 @@ import de.iks.rataplan.repository.NotificationRepository;
 import de.iks.rataplan.repository.NotificationTypeRepository;
 import de.iks.rataplan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +32,8 @@ public class NotificationServiceImpl implements NotificationService {
     
     private final CryptoService cryptoService;
     private final MailService mailService;
+    
+    private final SimpMessagingTemplate messagingTemplate;
     @Override
     @Transactional(readOnly = true)
     public NotificationSettingsDTO getNotificationSettings(int userId) {
@@ -59,11 +61,9 @@ public class NotificationServiceImpl implements NotificationService {
             .stream()
             .collect(Collectors.groupingBy(NotificationCategory::getName,
                 Collectors.mapping(NotificationCategory::getTypes,
-                    Collectors.mapping(Map::values,
-                        Collectors.flatMapping(Collection::stream,
-                            Collectors.mapping(NotificationType::getName, Collectors.toUnmodifiableList())
-                        )
-                    )
+                    Collectors.mapping(Map::values, Collectors.flatMapping(Collection::stream,
+                        Collectors.mapping(NotificationType::getName, Collectors.toUnmodifiableList())
+                    ))
                 )
             ));
     }
@@ -75,7 +75,8 @@ public class NotificationServiceImpl implements NotificationService {
         if(settings.getCategorySettings() != null) user.setNotificationCategorySettings(settings.getCategorySettings()
             .entrySet()
             .stream()
-            .collect(Collectors.toMap(e -> notificationCategoryRepository.findByNameIgnoreCase(e.getKey()).orElseThrow(),
+            .collect(Collectors.toMap(e -> notificationCategoryRepository.findByNameIgnoreCase(e.getKey())
+                    .orElseThrow(),
                 Map.Entry::getValue
             )));
         if(settings.getCategorySettings() != null) user.setNotificationTypeSettings(settings.getTypeSettings()
@@ -100,6 +101,10 @@ public class NotificationServiceImpl implements NotificationService {
     @Transactional
     public void notify(Collection<? extends NotificationDTO> notifications) {
         Map<Boolean, List<Notification>> instantPartition = notifications.stream()
+            .peek(n -> {
+                if(n.getRecipientId() != null)
+                    messagingTemplate.convertAndSend("/notifications/" + n.getRecipientId(), n);
+            })
             .map(this::fromDTO)
             .collect(Collectors.groupingBy(Notification::getCycle))
             .entrySet()
@@ -111,8 +116,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.saveAllAndFlush(instantPartition.get(false));
         instantPartition.get(true)
             .stream()
-            .collect(Collectors.groupingBy(
-                this::getNotificationMail,
+            .collect(Collectors.groupingBy(this::getNotificationMail,
                 Collectors.mapping(this::toMailData, Collectors.toUnmodifiableList())
             ))
             .forEach((recipientMail, notifs) -> {

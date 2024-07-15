@@ -43,10 +43,13 @@ public class NotificationServiceImpl implements NotificationService {
             subjectString,
             contentString
         );
-        authService.sendUserNotifications(vote.getUserConsignees(),
+        authService.sendUserNotifications(
+            vote.getUserConsignees(),
             NotificationType.INVITE,
             subjectString,
-            contentString
+            contentString,
+            null,
+            vote.getParticipationToken()
         );
     }
     private String getParticipationUrl(Vote vote) {

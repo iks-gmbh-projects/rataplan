@@ -27,17 +27,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AuthServiceImpl implements AuthService {
     
-    
     private final AuthBackendUrlConfig authBackendUrlConfig;
     private final JwtTokenService jwtTokenService;
     private final RestTemplate restTemplate;
     
     @Override
     public AuthUser getUserData(Jwt token) {
-        return new AuthUser(
-            token.<Number>getClaim(CLAIM_USERID).intValue(),
-            token.getSubject()
-        );
+        return new AuthUser(token.<Number>getClaim(CLAIM_USERID).intValue(), token.getSubject());
     }
     @Override
     public Integer fetchUserIdFromEmail(String email) {
@@ -46,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
                 .queryParam("email", email)
                 .toUriString();
             ResponseEntity<Integer> response = restTemplate.getForEntity(url, Integer.class);
-            if (response.getStatusCode().is2xxSuccessful() && response.hasBody()) return response.getBody();
+            if(response.getStatusCode().is2xxSuccessful() && response.hasBody()) return response.getBody();
         } catch(RestClientException ignored) {}
         return null;
     }
@@ -65,55 +61,30 @@ public class AuthServiceImpl implements AuthService {
         NotificationType type,
         String subject,
         String content,
-        String summaryContent
-    ) {
+        String summaryContent,
+        String link
+    )
+    {
         if(recipients.isEmpty()) return;
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtTokenService.generateIDToken().getTokenValue());
         HttpEntity<List<UserNotificationDTO>> request = new HttpEntity<>(recipients.stream()
-            .map(recipient -> new UserNotificationDTO(
-                recipient,
-                type.name,
-                subject,
-                content,
-                summaryContent
-            ))
-            .collect(Collectors.toUnmodifiableList()),
-            headers
-        );
-        restTemplate.postForObject(
-            authBackendUrlConfig.getNotification(),
-            request,
-            Boolean.class
-        );
+            .map(recipient -> new UserNotificationDTO(recipient, type.name, subject, content, summaryContent, link))
+            .collect(Collectors.toUnmodifiableList()), headers);
+        restTemplate.postForObject(authBackendUrlConfig.getNotification(), request, Boolean.class);
     }
     
     @Override
     public void sendMailNotifications(
-        Collection<String> recipients,
-        NotificationType type,
-        String subject,
-        String content,
-        String summaryContent
-    ) {
+        Collection<String> recipients, NotificationType type, String subject, String content, String summaryContent
+    )
+    {
         if(recipients.isEmpty()) return;
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(jwtTokenService.generateIDToken().getTokenValue());
         HttpEntity<List<EmailNotificationDTO>> request = new HttpEntity<>(recipients.stream()
-            .map(recipient -> new EmailNotificationDTO(
-                recipient,
-                type.name,
-                subject,
-                content,
-                summaryContent
-            ))
-            .collect(Collectors.toUnmodifiableList()),
-            headers
-        );
-        restTemplate.postForObject(
-            authBackendUrlConfig.getNotification(),
-            request,
-            Boolean.class
-        );
+            .map(recipient -> new EmailNotificationDTO(recipient, type.name, subject, content, summaryContent))
+            .collect(Collectors.toUnmodifiableList()), headers);
+        restTemplate.postForObject(authBackendUrlConfig.getNotification(), request, Boolean.class);
     }
 }
