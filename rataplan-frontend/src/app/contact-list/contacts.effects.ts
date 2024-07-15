@@ -38,7 +38,7 @@ export class ContactsEffects {
       withCredentials: true,
     }).pipe(
       map(allContacts => contactActions.fetchSuccess({contacts: allContacts})),
-      catchError(error => of(contactActions.error({error}))),
+      catchError(error => of(contactActions.error(error))),
     )),
   ));
   
@@ -54,7 +54,7 @@ export class ContactsEffects {
       withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
-      catchError(error => of(contactActions.error({error}))),
+      catchError(error => of(contactActions.error(error))),
     )),
   ));
   
@@ -65,7 +65,7 @@ export class ContactsEffects {
       withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
-      catchError(error => of(contactActions.error({error}))),
+      catchError(error => of(contactActions.error(error))),
     )),
   ));
   
@@ -76,7 +76,7 @@ export class ContactsEffects {
       withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
-      catchError(error => of(contactActions.error({error}))),
+      catchError(error => of(contactActions.error(error))),
     )),
   ));
   
@@ -89,7 +89,7 @@ export class ContactsEffects {
       withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
-      catchError(error => of(contactActions.error({error}))),
+      catchError(error => of(contactActions.error(error))),
     )),
   ));
   
@@ -100,7 +100,7 @@ export class ContactsEffects {
       withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
-      catchError(error => of(contactActions.error({error}))),
+      catchError(error => of(contactActions.error(error))),
     )),
   ));
   
@@ -113,7 +113,7 @@ export class ContactsEffects {
       withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
-      catchError(error => of(contactActions.error({error}))),
+      catchError(error => of(contactActions.error(error))),
     )),
   ));
   removeContactFromGroup = createEffect(() => this.actions$.pipe(
@@ -129,7 +129,7 @@ export class ContactsEffects {
       withCredentials: true,
     }).pipe(
       map(() => contactActions.changeSuccess()),
-      catchError(error => of(contactActions.error({error}))),
+      catchError(error => of(contactActions.error(error))),
     )),
   ));
 }

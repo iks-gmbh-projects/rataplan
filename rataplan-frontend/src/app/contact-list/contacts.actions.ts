@@ -6,7 +6,7 @@ export const contactActions = createActionGroup({
   events: {
     'reset': emptyProps(),
     'fetch': emptyProps(),
-    'error': props<{error: any}>(),
+    'error': (error: any) => ({error}),
     'fetch success': props<{contacts: AllContacts}>(),
     'change success': emptyProps(),
     'create contact': props<{userId: string|number}>(),
