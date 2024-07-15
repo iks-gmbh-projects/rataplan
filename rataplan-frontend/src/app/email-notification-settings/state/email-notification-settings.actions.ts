@@ -6,7 +6,7 @@ export const emailNotificationSettingsActions = createActionGroup({
   events: {
     fetch: emptyProps(),
     success: props<{response: NetworkEmailNotificationSettings}>(),
-    failure: props<{error: any}>(),
+    error: (error: any) => ({error}),
     'Set Default Setting': props<{cycle: EmailCycle}>(),
     'Set Category Setting': props<{notificationCategory: string, cycle: EmailCycle}>(),
     'Clear Category Setting': props<{notificationCategory: string}>(),

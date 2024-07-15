@@ -40,7 +40,7 @@ export const emailNotificationSettingsReducer = createReducer(
     busy: false,
     error: undefined,
   })),
-  on(emailNotificationSettingsActions.failure, (state, {error}) => ({
+  on(emailNotificationSettingsActions.error, (state, {error}) => ({
     ...state,
     busy: false,
     error,

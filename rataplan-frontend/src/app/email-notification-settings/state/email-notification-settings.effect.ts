@@ -33,7 +33,7 @@ export class EmailNotificationSettingsEffect {
       withCredentials: true,
     }).pipe(
       map(response => emailNotificationSettingsActions.success({response})),
-      catchError(error => of(emailNotificationSettingsActions.failure({error}))),
+      catchError(error => of(emailNotificationSettingsActions.error(error))),
     ))
   ));
   
@@ -50,7 +50,7 @@ export class EmailNotificationSettingsEffect {
       }
     ).pipe(
       map(response => emailNotificationSettingsActions.success({response})),
-      catchError(error => of(emailNotificationSettingsActions.failure({error}))),
+      catchError(error => of(emailNotificationSettingsActions.error(error))),
     )),
   ));
 }
