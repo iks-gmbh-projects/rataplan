@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { Store } from '@ngrx/store';
-import { AcceptCookieAction } from './cookie.actions';
+import { cookieActions } from './cookie.actions';
 
 @Component({
   selector: 'app-cookie-banner',
@@ -16,7 +16,7 @@ export class CookieBannerComponent {
   ) { }
 
   accept(): void {
-    this.store.next(new AcceptCookieAction());
+    this.store.next(cookieActions.accept({onLoad: false}));
     this.ref.dismiss();
   }
 

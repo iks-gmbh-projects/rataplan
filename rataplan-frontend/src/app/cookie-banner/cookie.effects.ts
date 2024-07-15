@@ -1,6 +1,6 @@
 import { Actions, createEffect, ofType, rootEffectsInit } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
-import { AcceptCookieAction, CookieActions, LoadCookieAction } from './cookie.actions';
+import { cookieActions } from './cookie.actions';
 import { filter, map, tap } from 'rxjs/operators';
 
 const localStorageKey = "cookieAccept";
@@ -16,22 +16,22 @@ export class CookieEffects {
   onInit = createEffect(() => {
     return this.actions$.pipe(
       ofType(rootEffectsInit),
-      map(() => new LoadCookieAction()),
+      map(cookieActions.load),
     );
   });
 
   loadCookie = createEffect(() => {
     return this.actions$.pipe(
-      ofType(CookieActions.LOAD_COOKIE),
+      ofType(cookieActions.load),
       map(() => localStorage.getItem(localStorageKey) || "false"),
       filter(v => v == "true"),
-      map(() => new AcceptCookieAction(true))
+      map(() => cookieActions.accept({onLoad: true}))
     );
   });
 
   acceptCookie = createEffect(() => {
     return this.actions$.pipe(
-      ofType(CookieActions.ACCEPT_COOKIE),
+      ofType(cookieActions.accept),
       tap(() => localStorage.setItem(localStorageKey, "true"))
     );
   }, {

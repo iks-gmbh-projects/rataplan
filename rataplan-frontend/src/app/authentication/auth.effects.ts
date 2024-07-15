@@ -8,7 +8,7 @@ import { concatLatestFrom } from '@ngrx/operators';
 import { Store } from '@ngrx/store';
 import { combineLatestWith, first, from, of, timer } from 'rxjs';
 import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
-import { AcceptCookieAction, CookieActions } from '../cookie-banner/cookie.actions';
+import { cookieActions } from '../cookie-banner/cookie.actions';
 import { cookieFeature } from '../cookie-banner/cookie.feature';
 
 import { FrontendUser } from '../models/user.model';
@@ -48,8 +48,8 @@ export class AuthEffects {
   
   autoLoginStart = createEffect(() => {
     return this.actions$.pipe(
-      ofType(CookieActions.ACCEPT_COOKIE),
-      filter((a: AcceptCookieAction) => a.onLoad),
+      ofType(cookieActions.accept),
+      filter(a => a.onLoad),
       map(authActions.autoLogin),
     );
   });
