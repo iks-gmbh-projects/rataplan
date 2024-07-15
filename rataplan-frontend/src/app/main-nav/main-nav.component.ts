@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { delay, NEVER, Observable, of, Subscription } from 'rxjs';
 import { map, shareReplay, switchMap } from 'rxjs/operators';
-import { LogoutAction } from '../authentication/auth.actions';
+import { authActions } from '../authentication/auth.actions';
 import { authFeature } from '../authentication/auth.feature';
 import { LoginComponent } from '../login/login.component';
 import { FrontendUser } from '../models/user.model';
@@ -62,7 +62,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
     this.loggedInSub = this.store.select(authFeature.selectAuthState)
       .subscribe(state => {
         this.currentUser = state.user;
-        this.busy = state.busy;
+        this.busy = Object.values(state.busy).some(v => v);
       });
     this.notificationSub = this.store.select(notificationFeature.selectNotificationState)
       .subscribe(n => {
@@ -77,7 +77,7 @@ export class MainNavComponent implements OnInit, OnDestroy {
   }
   
   onLogout() {
-    this.store.dispatch(new LogoutAction());
+    this.store.dispatch(authActions.logout());
   }
   
   onClick() {

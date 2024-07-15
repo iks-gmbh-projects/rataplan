@@ -7,7 +7,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { delay, NEVER, Observable, of, Subscription, switchMap } from 'rxjs';
 
-import { AuthActions } from '../authentication/auth.actions';
+import { authActions } from '../authentication/auth.actions';
 import { authFeature } from '../authentication/auth.feature';
 import { FrontendUser } from '../models/user.model';
 import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
@@ -73,14 +73,14 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         }
       });
     this.successSub = this.actions$.pipe(
-      ofType(AuthActions.CHANGE_PROFILE_DETAILS_SUCCESS_ACTION),
+      ofType(authActions.changeProfileDetailsSuccess),
     ).subscribe(() => {
       this.router.navigateByUrl('/view-profile');
       this.snackbar.open(`Aktualisierung erfolgreich! Falls verändert, bitte bestätigen Sie Ihre neue Emailadresse.`, 'OK',)
       this.dialog.closeAll();
     });
     this.errorSub = this.actions$.pipe(
-      ofType(AuthActions.CHANGE_PROFILE_DETAILS_ERROR_ACTION),
+      ofType(authActions.error),
     ).subscribe(() => this.snackbar.open('Fehler beim Ändern der Daten', 'Ok'));
     
   }

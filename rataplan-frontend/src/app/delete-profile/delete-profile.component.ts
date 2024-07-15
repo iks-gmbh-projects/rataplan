@@ -5,9 +5,9 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { delay, NEVER, Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { AuthActions, DeleteUserAction } from '../authentication/auth.actions';
+import { authActions } from '../authentication/auth.actions';
 import { authFeature } from '../authentication/auth.feature';
-import { deletionChoices, deletionMethod } from '../models/delete-profile.model';
+import { DeletionChoices, deletionMethod } from '../models/delete-profile.model';
 import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class DeleteProfileComponent implements OnInit, OnDestroy {
         switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
       )
     this.errorSub = this.actions$.pipe(
-      ofType(AuthActions.DELETE_USER_ERROR_ACTION),
+      ofType(authActions.error),
     ).subscribe(() => {
       this.snackbar.open("An error occurred while trying to delete your profile", "Ok");
     });
@@ -49,9 +49,10 @@ export class DeleteProfileComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    const request: deletionChoices = this.formGroup.value as deletionChoices;
     this.formGroup.disable();
-    this.store.dispatch(new DeleteUserAction(request));
+    this.store.dispatch(authActions.deleteUser({
+      choices: this.formGroup.value as DeletionChoices,
+    }));
   }
   
   protected readonly authFeature = authFeature;

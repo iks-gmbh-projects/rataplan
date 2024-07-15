@@ -7,7 +7,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { delay, NEVER, Observable, of, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { AuthActions, LoginAction, LoginErrorAction } from '../authentication/auth.actions';
+import { authActions } from '../authentication/auth.actions';
 import { authFeature } from '../authentication/auth.feature';
 import { CookieBannerComponent } from '../cookie-banner/cookie-banner.component';
 import { cookieFeature } from '../cookie-banner/cookie.feature';
@@ -48,16 +48,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         username: this.inputField.value!,
         password: this.password.value!,
       };
-      this.store.dispatch(new LoginAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
+      this.store.dispatch(authActions.login({
+        user: frontendUser,
+        redirect: this.activatedRoute.snapshot.queryParams['redirect'],
+      }));
     }
-  }
-
-  private handleError(errorRes: LoginErrorAction) {
-    if (errorRes.error.status === 401) {
-      this.password.setErrors({ invalidCredentials: true });
-    } else if (errorRes.error.status === 403) {
-      this.router.navigate(['/confirm-account/']);
-    } else this.snackBar.open('Unbekannter Fehler bei Login', 'Ok');
   }
 
   constructor(
@@ -87,8 +82,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     ).subscribe(cookieAllowed => this.cookieAllowed = cookieAllowed);
 
     this.errorSub = this.actions$.pipe(
-      ofType(AuthActions.LOGIN_ERROR_ACTION)
-    ).subscribe((err: LoginErrorAction) => this.handleError(err));
+      ofType(authActions.error),
+    ).subscribe(err => {
+      if(err.error.status === 401) {
+        this.password.setErrors({invalidCredentials: true});
+      } else if(err.error.status === 403) {
+        this.router.navigate(['/confirm-account/']);
+      } else this.snackBar.open('Unbekannter Fehler bei Login', 'Ok');
+    });
   }
 
   ngOnDestroy() {

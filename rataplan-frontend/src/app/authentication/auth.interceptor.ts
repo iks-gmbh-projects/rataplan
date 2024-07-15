@@ -13,7 +13,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private readonly store: Store,
   ) {}
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if(req.withCredentials) {
+    if(req.withCredentials && !req.headers.has('Authorization')) {
       return this.store.select(authFeature.selectAuthState).pipe(
         debounceTime(1),
         map(({token}) => token),

@@ -9,7 +9,7 @@ import { RegisterData } from "../models/user.model";
 import { FormErrorMessageService } from "../services/form-error-message-service/form-error-message.service";
 import { ExtraValidators } from "../validator/validators";
 import { Store } from "@ngrx/store";
-import { AuthActions, RegisterAction } from "../authentication/auth.actions";
+import { authActions } from "../authentication/auth.actions";
 import { Subscription } from "rxjs";
 import { Actions, ofType } from "@ngrx/effects";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -84,7 +84,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         else this.registerForm.enable();
       });
     this.errorSub = this.actions$.pipe(
-      ofType(AuthActions.REGISTER_ERROR_ACTION),
+      ofType(authActions.error),
     ).subscribe(() => this.snackbar.open("Es ist ein Fehler aufgetreten.", "Ok"));
   }
 
@@ -102,6 +102,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
       displayname: this.displayname.value,
     };
 
-    this.store.dispatch(new RegisterAction(frontendUser, this.activatedRoute.snapshot.queryParams['redirect']));
+    this.store.dispatch(authActions.register({
+      user: frontendUser,
+      redirect: this.activatedRoute.snapshot.queryParams['redirect'],
+    }));
   }
 }

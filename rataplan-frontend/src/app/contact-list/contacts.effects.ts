@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, combineLatestWith, debounceTime, of, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthActions } from '../authentication/auth.actions';
+import { authActions } from '../authentication/auth.actions';
 import { AllContacts } from '../models/contact.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 import { contactActions } from './contacts.actions';
@@ -21,13 +21,13 @@ export class ContactsEffects {
   }
   
   clearOnLogout$ = createEffect(() => this.actions$.pipe(
-    ofType(AuthActions.LOGOUT_ACTION),
-    map(a => contactActions.reset()),
+    ofType(authActions.logout),
+    map(contactActions.reset),
   ));
   
   fetchOnAuth = createEffect(() => this.actions$.pipe(
-    ofType(AuthActions.LOGIN_SUCCESS_ACTION),
-    map(() => contactActions.fetch()),
+    ofType(authActions.loginSuccess),
+    map(contactActions.fetch),
   ));
   
   fetch = createEffect(() => this.actions$.pipe(

@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { AuthActions, ResetPasswordAction } from '../authentication/auth.actions';
+import { authActions } from '../authentication/auth.actions';
 import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../validator/validators';
 
@@ -15,7 +15,7 @@ import { ExtraValidators } from '../validator/validators';
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
-
+  private token?: string;
   password = new FormControl('', [Validators.required, Validators.minLength(3)]);
   confirmPassword = new FormControl('', [Validators.required, ExtraValidators.valueMatching(this.password)]);
   hide = true;
@@ -26,6 +26,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     confirmPassword: this.confirmPassword
   });
 
+  private tokenSub?: Subscription;
   private errorSub?: Subscription;
 
   constructor(private formBuilder: FormBuilder,
@@ -37,24 +38,24 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.tokenSub = this.route.queryParams.subscribe(params => {
+      this.token = params['token'];
+    });
     this.errorSub = this.actions$.pipe(
-      ofType(AuthActions.RESET_PASSWORD_ERROR_ACTION),
+      ofType(authActions.error),
     ).subscribe(() => this.snackbar.open("Es ist ein Fehler aufgetreten.", "Ok"));
   }
 
   ngOnDestroy(): void {
+    this.tokenSub?.unsubscribe();
     this.errorSub?.unsubscribe();
   }
 
   resetPassword() {
-    let token: string;
-    this.route.queryParams.subscribe(params => {
-      token = params['token'];
-      this.store.dispatch(new ResetPasswordAction({
-        token,
-        password: this.password.value!,
-      }));
-    });
+    this.store.dispatch(authActions.resetPassword({
+      token: this.token!,
+      password: this.password.value!,
+    }));
   }
 
 }

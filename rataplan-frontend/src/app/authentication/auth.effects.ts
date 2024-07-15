@@ -6,14 +6,14 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 
 import { Store } from '@ngrx/store';
-import { combineLatestWith, EMPTY, first, from, of, timer } from 'rxjs';
+import { combineLatestWith, first, from, of, timer } from 'rxjs';
 import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
 import { AcceptCookieAction, CookieActions } from '../cookie-banner/cookie.actions';
 import { cookieFeature } from '../cookie-banner/cookie.feature';
 
 import { FrontendUser } from '../models/user.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
-import { AuthActions, AutoLoginAction, ChangeProfileDetailsAction, ChangeProfileDetailsErrorAction, ChangeProfileDetailsSuccessAction, DeleteUserAction, DeleteUserErrorAction, DeleteUserSuccessAction, LoginAction, LoginErrorAction, LoginSuccessAction, LogoutAction, RegisterAction, RegisterErrorAction, RegisterSuccessAction, ResetPasswordAction, ResetPasswordErrorAction, ResetPasswordSuccessAction, UpdateUserdataAction, UpdateUserdataSuccessAction } from './auth.actions';
+import { authActions } from './auth.actions';
 import { authFeature } from './auth.feature';
 
 @Injectable({
@@ -33,14 +33,14 @@ export class AuthEffects {
   
   registerUser = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.REGISTER_ACTION),
+      ofType(authActions.register),
       concatLatestFrom(() => this.urlService.authBackendURL('users', 'register')),
-      switchMap(([action, url]: [RegisterAction, string]) => {
-        return this.httpClient.post<FrontendUser>(url, action.payload, {withCredentials: true})
+      switchMap(([action, url]) => {
+        return this.httpClient.post<FrontendUser>(url, action.user, {withCredentials: true})
           .pipe(
-            map(userData => new RegisterSuccessAction(userData)),
+            map(user => authActions.registerSuccess({user})),
             tap(() => this.router.navigateByUrl(action.redirect || '/confirm-account')),
-            catchError(err => of(new RegisterErrorAction(err))),
+            catchError(error => of(authActions.error(error))),
           );
       }),
     );
@@ -50,21 +50,21 @@ export class AuthEffects {
     return this.actions$.pipe(
       ofType(CookieActions.ACCEPT_COOKIE),
       filter((a: AcceptCookieAction) => a.onLoad),
-      map(() => new AutoLoginAction()),
+      map(authActions.autoLogin),
     );
   });
   
   autoLogin = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.AUTO_LOGIN_ACTION),
+      ofType(authActions.autoLogin),
       switchMap(() => this.urlService.loginURL),
       switchMap(url => {
         return this.httpClient.get(url, {
           withCredentials: true,
           responseType: 'text',
         }).pipe(
-          map(jwt => new LoginSuccessAction(jwt)),
-          catchError(() => of(new LogoutAction())),
+          map(jwt => authActions.loginSuccess({jwt})),
+          catchError(() => of(authActions.logout())),
         );
       }),
     );
@@ -72,8 +72,8 @@ export class AuthEffects {
   
   refreshLogin = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.LOGIN_SUCCESS_ACTION),
-      map((action: LoginSuccessAction) => action.payload.split('.', 3)[1]),
+      ofType(authActions.loginSuccess),
+      map(action => action.jwt.split('.', 3)[1]),
       map(atob),
       map(json => JSON.parse(json)['exp']),
       map(Number),
@@ -81,18 +81,18 @@ export class AuthEffects {
         exp - 30
       )*1000)),
       switchMap(exp => timer(exp, 1000).pipe(first())),
-      map(() => new AutoLoginAction()),
+      map(authActions.autoLogin),
     );
   });
   
   manualLogin = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.LOGIN_ACTION),
+      ofType(authActions.login),
       combineLatestWith(this.urlService.loginURL, this.store.select(cookieFeature.selectCookieState)),
-      switchMap(([action, url, acceptCookies]: [LoginAction, string, boolean]) => {
+      switchMap(([action, url, acceptCookies]) => {
         const body = new FormData();
-        body.append('username', action.payload.username);
-        body.append('password', action.payload.password);
+        body.append('username', action.user.username);
+        body.append('password', action.user.password);
         body.append('remember-me', `${acceptCookies ?? false}`);
         return this.httpClient.post(url, body, {
           responseType: 'text',
@@ -100,8 +100,8 @@ export class AuthEffects {
         })
           .pipe(
             tap(() => this.router.navigateByUrl(action.redirect || '/')),
-            map(token => new LoginSuccessAction(token)),
-            catchError(err => of(new LoginErrorAction(err))),
+            map(jwt => authActions.loginSuccess({jwt})),
+            catchError(error => of(authActions.error(error))),
           );
       }),
     );
@@ -109,17 +109,17 @@ export class AuthEffects {
   
   resetPassword = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.RESET_PASSWORD_ACTION),
+      ofType(authActions.resetPassword),
       concatLatestFrom(() => this.urlService.authBackendURL('users', 'resetPassword')),
-      switchMap(([resetPasswordAction, url]: [ResetPasswordAction, string]) => {
-        return this.httpClient.post<boolean>(url, resetPasswordAction.payload.password, {
+      switchMap(([action, url]) => {
+        return this.httpClient.post<boolean>(url, action.password, {
           headers: {
             'Content-Type': 'application/json;charset=utf-8',
-            'Authorization': `Bearer ${resetPasswordAction.payload.token}`,
+            'Authorization': `Bearer ${action.token}`,
           },
         }).pipe(
-          map(success => success ? new ResetPasswordSuccessAction() : new ResetPasswordErrorAction(success)),
-          catchError(err => of(new ResetPasswordErrorAction(err))),
+          map(success => success ? authActions.resetPasswordSuccess() : authActions.error(success)),
+          catchError(error => of(authActions.error(error))),
         );
       }),
     );
@@ -127,45 +127,45 @@ export class AuthEffects {
   
   resetPasswordSuccess = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.RESET_PASSWORD_SUCCESS_ACTION),
+      ofType(authActions.resetPasswordSuccess),
       switchMap(() => from(this.router.navigateByUrl('/login'))),
     );
   }, {dispatch: false});
   
   changeProfileDetails = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.CHANGE_PROFILE_DETAILS_ACTION),
+      ofType(authActions.changeProfileDetails),
       concatLatestFrom(() => this.urlService.authBackendURL('users', 'profile', 'updateProfileDetails')),
-      switchMap(([displayNameAction, url]: [ChangeProfileDetailsAction, string]) => {
+      switchMap(([action, url]) => {
         const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
-        return this.httpClient.post<FrontendUser>(url, displayNameAction.payload, httpOptions)
+        return this.httpClient.post<boolean>(url, action.user, httpOptions)
           .pipe(
             map(success =>  success ?
-              new ChangeProfileDetailsSuccessAction(displayNameAction.payload) :
-              new ChangeProfileDetailsErrorAction(success)),
-            catchError(err => of(new ChangeProfileDetailsErrorAction(err))),
+              authActions.changeProfileDetailsSuccess(action) :
+              authActions.error(success)),
+            catchError(error => of(authActions.error(error))),
           );
       }),
     );
   }, {dispatch: true});
   updateUserData = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.UPDATE_USERDATA_ACTION),
+      ofType(authActions.updateUserData),
       switchMap(() => this.urlService.authBackendURL('users', 'profile')),
       concatMap(url => {
         const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
         
         return this.httpClient.get<FrontendUser>(url, httpOptions).pipe(
-          catchError(() => EMPTY),
         );
       }),
-      map(userData => new UpdateUserdataSuccessAction(userData)),
+      map(user => authActions.updateUserDataSuccess({user})),
+      catchError(error => of(authActions.error(error))),
     );
   });
   
   logoutUser = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.LOGOUT_ACTION),
+      ofType(authActions.logout),
       switchMap(() => this.urlService.logoutURL),
       switchMap(url => this.httpClient.get(url, {
         responseType: 'text',
@@ -176,23 +176,23 @@ export class AuthEffects {
   
   loginSuccess = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.LOGIN_SUCCESS_ACTION),
-      map(() => new UpdateUserdataAction()),
+      ofType(authActions.loginSuccess),
+      map(authActions.updateUserData),
     );
   });
   
   deleteUser = createEffect(() => {
     return this.actions$.pipe(
-      ofType(AuthActions.DELETE_USER_ACTION),
+      ofType(authActions.deleteUser),
       concatLatestFrom(() => this.urlService.authBackendURL('users', 'profile')),
-      switchMap(([action, url]: [DeleteUserAction, string]) => {
+      switchMap(([action, url]) => {
         return this.httpClient.delete(url, {
-          body: action.payload,
+          body: action.choices,
           withCredentials: true,
         }).pipe(
           tap(() => this.router.navigateByUrl('/')),
-          map(() => new DeleteUserSuccessAction()),
-          catchError(err => of(new DeleteUserErrorAction(err))),
+          map(() => authActions.deleteUserSuccess()),
+          catchError(error => of(authActions.error(error))),
         );
       }),
     );

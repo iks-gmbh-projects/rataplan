@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, combineLatestWith, of, sample, switchMap } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { AuthActions } from '../../authentication/auth.actions';
+import { authActions } from '../../authentication/auth.actions';
 import { BackendUrlService } from '../../services/backend-url-service/backend-url.service';
 import { emailNotificationSettingsActions } from './email-notification-settings.actions';
 import { emailNotificationSettingsFeature } from './email-notification-settings.feature';
@@ -22,7 +22,7 @@ export class EmailNotificationSettingsEffect {
   ) {}
   
   init = createEffect(() => this.actions$.pipe(
-    ofType(AuthActions.LOGIN_SUCCESS_ACTION),
+    ofType(authActions.loginSuccess),
     map(emailNotificationSettingsActions.fetch),
   ));
   

@@ -1,5 +1,5 @@
 export type deletionMethod = "DELETE"|"ANONYMIZE";
-export type deletionChoices = {
+export type DeletionChoices = {
   backendChoice: deletionMethod,
   surveyToolChoice: deletionMethod,
   password: string,

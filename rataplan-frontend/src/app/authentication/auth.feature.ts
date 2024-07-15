@@ -1,7 +1,7 @@
-import { ActionReducer, createFeature } from '@ngrx/store';
-import { AuthData, authReducer } from './auth.reducer';
+import { createFeature } from '@ngrx/store';
+import { authReducer } from './auth.reducer';
 
 export const authFeature = createFeature({
   name: 'auth',
-  reducer: authReducer as ActionReducer<AuthData>,
+  reducer: authReducer,
 });
