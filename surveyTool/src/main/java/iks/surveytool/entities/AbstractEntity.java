@@ -35,6 +35,8 @@ public abstract class AbstractEntity {
         id = null;
     }
     
+    public void bindChildren() {}
+    
     protected void invalid(String message) throws InvalidEntityException {
         throw new InvalidEntityException(message, this);
     }

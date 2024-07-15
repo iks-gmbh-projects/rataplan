@@ -41,7 +41,20 @@ public class SurveyResponse extends AbstractEntity {
         openAnswers.forEach(AbstractEntity::resetId);
         choiceAnswerTexts.forEach(AbstractEntity::resetId);
     }
-
+    
+    @Override
+    public void bindChildren() {
+        super.bindChildren();
+        for(OpenAnswer oa : openAnswers) {
+            if(oa.getResponse() == null) oa.setResponse(this);
+            oa.bindChildren();
+        }
+        for(ChoiceAnswerText cat : choiceAnswerTexts) {
+            if(cat.getResponse() == null) cat.setResponse(this);
+            cat.bindChildren();
+        }
+    }
+    
     public void validate() throws InvalidEntityException {
         if(survey == null || openAnswers == null || choiceAnswers == null || choiceAnswerTexts == null) invalid("missing survey or answers");
         if(!survey.isAnonymousParticipation() && userId == null) invalid("non-anon");

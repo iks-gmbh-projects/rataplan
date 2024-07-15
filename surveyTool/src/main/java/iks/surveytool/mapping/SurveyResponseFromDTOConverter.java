@@ -40,7 +40,7 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
         dest.setUserId(source.getUserId());
         Survey survey = surveyRepository.findById(source.getSurveyId()).orElseThrow();
         dest.setSurvey(survey);
-        Map<Long, ? extends AbstractQuestion> questions = survey.getQuestionGroups()
+        Map<Integer, ? extends AbstractQuestion> questions = survey.getQuestionGroups()
             .stream()
             .flatMap(g -> Stream.of(
                 g.getOpenQuestions(),
@@ -48,16 +48,13 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
             ))
             .flatMap(List::stream)
             .collect(Collectors.toUnmodifiableMap(
-                AbstractEntity::getId,
+                AbstractQuestion::getRank,
                 Function.identity()
             ));
-        Map<Long, QuestionType> types = survey.getQuestionGroups()
+        Map<Integer, QuestionType> types = questions.entrySet()
             .stream()
-            .flatMap(g -> Stream.of(g.getOpenQuestions(), g.getChoiceQuestions())
-                .flatMap(Collection::stream)
-            )
-            .collect(Collectors.toUnmodifiableMap(AbstractEntity::getId, AbstractQuestion::getType));
-        Map<QuestionType, List<Map.Entry<Long, AnswerDTO>>> answers = source.getAnswers()
+            .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().getType()));
+        Map<QuestionType, List<Map.Entry<Integer, AnswerDTO>>> answers = source.getAnswers()
             .entrySet()
             .stream()
             .collect(Collectors.groupingBy(

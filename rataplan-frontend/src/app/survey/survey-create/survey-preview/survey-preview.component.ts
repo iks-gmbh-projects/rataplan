@@ -40,14 +40,14 @@ export class SurveyPreviewComponent {
     if(!questionGroup.id) {
       let idCounter: number = 1;
       questionGroup.id = idCounter++;
-      for (let question of questionGroup.questions) {
-        question.id = idCounter++;
+      questionGroup.questions.forEach((question, i) => {
+        question.rank = i;
         if (question.choices) {
           for (let checkbox of question.choices) {
             checkbox.id = idCounter++;
           }
         }
-      }
+      });
     }
     return questionGroup;
   }

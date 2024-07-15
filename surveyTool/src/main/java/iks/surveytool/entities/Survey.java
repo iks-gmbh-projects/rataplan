@@ -82,7 +82,14 @@ public class Survey extends AbstractEntity {
     public void resetId() {
         questionGroups.forEach(AbstractEntity::resetId);
     }
-    
+    @Override
+    public void bindChildren() {
+        super.bindChildren();
+        for(QuestionGroup qg : questionGroups) {
+            if(qg.getSurvey() == null) qg.setSurvey(this);
+            qg.bindChildren();
+        }
+    }
     public boolean isActiveAt(Instant instant) {
         return startDate.toInstant().isBefore(instant) && endDate.toInstant().isAfter(instant);
     }

@@ -12,7 +12,7 @@ import java.util.Map;
 public class SurveyResponseDTO extends AbstractDTO {
     private long surveyId;
     private Long userId;
-    private Map<Long, AnswerDTO> answers = new HashMap<>();
+    private Map<Integer, AnswerDTO> answers = new HashMap<>();
     
     @Override
     public void resetId() {

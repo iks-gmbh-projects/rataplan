@@ -43,6 +43,7 @@ public class SurveyServiceImpl implements SurveyService {
         surveyDTO.setUserId(userId);
         Survey survey = mapper.map(surveyDTO, Survey.class);
         generateIds(survey);
+        survey.bindChildren();
         survey.validate();
         Survey savedSurvey = surveyRepository.save(survey);
         SurveyOverviewDTO completeSurveyDTO = mapper.map(savedSurvey, CompleteSurveyDTO.class);
@@ -164,6 +165,7 @@ public class SurveyServiceImpl implements SurveyService {
         completeSurveyDTO.setAccessId(oldSurvey.getAccessId());
         completeSurveyDTO.setParticipationId(oldSurvey.getParticipationId());
         mapper.map(completeSurveyDTO, oldSurvey);
+        oldSurvey.bindChildren();
         oldSurvey.validate();
         
         Survey survey = surveyRepository.saveAndFlush(oldSurvey);

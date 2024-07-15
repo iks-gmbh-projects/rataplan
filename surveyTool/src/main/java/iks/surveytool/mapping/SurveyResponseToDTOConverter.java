@@ -26,21 +26,21 @@ public class SurveyResponseToDTOConverter implements Converter<SurveyResponse, S
         dest.setId(source.getId());
         dest.setUserId(source.getUserId());
         dest.setSurveyId(source.getSurvey().getId());
-        Map<Long, AnswerDTO> answers = new HashMap<>();
+        Map<Integer, AnswerDTO> answers = new HashMap<>();
         answers.putAll(source.getOpenAnswers()
             .stream()
             .collect(Collectors.toUnmodifiableMap(
-                a -> a.getQuestion().getId(),
+                a -> a.getQuestion().getRank(),
                 a -> mappingEngine.map(context.create(a, AnswerDTO.class))
             )));
         answers.putAll(source.getChoiceAnswerTexts()
             .stream()
             .collect(Collectors.toUnmodifiableMap(
-                a -> a.getQuestion().getId(),
+                a -> a.getQuestion().getRank(),
                 a -> mappingEngine.map(context.create(a, AnswerDTO.class))
             )));
         for(ChoiceQuestionChoice choice : source.getChoiceAnswers()) {
-            AnswerDTO answer = answers.computeIfAbsent(choice.getQuestion().getId(), i -> new AnswerDTO());
+            AnswerDTO answer = answers.computeIfAbsent(choice.getQuestion().getRank(), i -> new AnswerDTO());
             Map<Long, Boolean> checkboxes = answer.getCheckboxes();
             if(checkboxes == null) {
                 checkboxes = new HashMap<>();

@@ -3,7 +3,7 @@
     <div
       style="margin-bottom: 1ex"
       *ngFor="let question of questionGroup.questions"
-      [ngModelGroup]="''+question.id!"
+      [ngModelGroup]="''+question.rank!"
       #modelQuestionGroup="ngModelGroup"
     >
       <h3>{{question.text}}</h3>
@@ -25,7 +25,7 @@
           </mat-form-field>
           <ng-template [ngSwitchCase]="'CHOICE'">
             <div
-              *ngIf="question.maxSelect! > 1; else singleSelect"
+              *ngIf="question.maxSelect! != 1 || question.minSelect != 1; else singleSelect"
               ngModelGroup="checkboxes"
               [checkboxCountMin]="question.minSelect!"
               [checkboxCountMax]="question.maxSelect!"
@@ -47,7 +47,7 @@
               </mat-error>
             </div>
             <ng-template #singleSelect>
-              <mat-radio-group ngModel [ngModelOptions]="{name: 'checkboxId'}" [required]="question.minSelect! > 0">
+              <mat-radio-group ngModel [ngModelOptions]="{name: 'checkboxId'}" required>
                 <ng-template ngFor [ngForOf]="question.choices" let-checkbox>
                   <mat-radio-button class="newLine" [value]="checkbox.id!">{{checkbox.text}}</mat-radio-button>
                   <br>

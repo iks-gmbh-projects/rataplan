@@ -24,6 +24,7 @@ export type QuestionGroup = {
 export type Question = {
   type: 'OPEN'|'CHOICE',
   id?: string|number,
+  rank: string|number,
   text: string,
   required?: boolean,
   minSelect?: number,

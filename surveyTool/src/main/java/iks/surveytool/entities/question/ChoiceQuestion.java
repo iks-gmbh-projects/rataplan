@@ -40,6 +40,15 @@ public class ChoiceQuestion extends AbstractQuestion {
     }
     
     @Override
+    public void bindChildren() {
+        super.bindChildren();
+        for(ChoiceQuestionChoice cqc : choices) {
+            if(cqc.getQuestion() == null) cqc.setQuestion(this);
+            cqc.bindChildren();
+        }
+    }
+    
+    @Override
     public QuestionType getType() {
         return QuestionType.CHOICE;
     }

@@ -46,7 +46,20 @@ public class QuestionGroup extends AbstractEntity {
         openQuestions.forEach(AbstractEntity::resetId);
         choiceQuestions.forEach(AbstractEntity::resetId);
     }
-
+    
+    @Override
+    public void bindChildren() {
+        super.bindChildren();
+        for(OpenQuestion oq : openQuestions) {
+            if(oq.getQuestionGroup() == null) oq.setQuestionGroup(this);
+            oq.bindChildren();
+        }
+        for(ChoiceQuestion cq : choiceQuestions) {
+            if(cq.getQuestionGroup() == null) cq.setQuestionGroup(this);
+            cq.bindChildren();
+        }
+    }
+    
     void checkIfComplete() throws InvalidEntityException {
         if(this.openQuestions.isEmpty() && this.choiceQuestions.isEmpty()) throw new InvalidEntityException("Empty question group", this);
         this.checkIfQuestionsComplete();
