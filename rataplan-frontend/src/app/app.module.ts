@@ -57,6 +57,7 @@ import { VersionComponent } from './version/version.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { voteListFeature } from './vote-list/state/vote-list.feature';
 import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
+import { WebSocketService } from './websocket-service/websocket-service';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 
 registerLocaleData(localeDE);
@@ -126,6 +127,7 @@ registerLocaleData(localeDE);
     {provide: MAT_DATE_LOCALE, useValue: 'de-DE'},
     {provide: DateAdapter, useClass: EUDateAdapter},
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    WebSocketService,
     provideHttpClient(withInterceptorsFromDi()),
   ],
 })

@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { Actions } from '@ngrx/effects';
 import { delay, Observable, of, scan } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { WebSocketService } from './websocket-service/websocket-service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +13,7 @@ import { switchMap } from 'rxjs/operators';
 export class AppComponent {
   loading$: Observable<boolean>;
   
-  constructor(private router: Router) {
+  constructor(private router: Router,private wss:WebSocketService) {
     this.loading$ = router.events.pipe(
       scan((state, event) => {
         switch(true) {

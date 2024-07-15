@@ -1,4 +1,5 @@
-import { createActionGroup, emptyProps } from '@ngrx/store';
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { Notification } from '../websocket-service/websocket-service';
 
 function notifyProps(type: string, message: string, count?: number): {
   notificationType: string,
@@ -32,8 +33,11 @@ function notifyProps(type: string, msgc: string|number, count?: number) {
 export const notificationActions = createActionGroup({
   source: "Notification",
   events: {
+    invitation: props<Notification>(),
     notify: notifyProps,
-    clear: (type: string) => ({notificationType: type}),
+    clear: (type: string) => (
+      {notificationType: type}
+    ),
     clearAll: emptyProps(),
   },
 });

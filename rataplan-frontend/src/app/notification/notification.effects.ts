@@ -6,6 +6,8 @@ import { of, switchMap } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { authActions } from '../authentication/auth.actions';
 import { voteListFeature } from '../vote-list/state/vote-list.feature';
+import { AuthActions, LoginSuccessAction } from '../authentication/auth.actions';
+import { VoteListService } from '../services/vote-list-service/vote-list.service';
 import { voteNotificationtypes } from '../vote/vote.notificationtypes';
 import { notificationActions } from './notification.actions';
 
