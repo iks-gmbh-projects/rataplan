@@ -22,6 +22,7 @@ import { appEffects } from './app.effects';
 import { authFeature } from './authentication/auth.feature';
 import { AuthInterceptor } from './authentication/auth.interceptor';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { configFeature } from './config/config.feature';
 import { ConfirmAccountInstructionComponent } from './confirm-account/confirm-account-instruction/confirm-account-instruction.component';
 import { ConfirmAccountComponent } from './confirm-account/confirm-account/confirm-account.component';
 import { ResendAccountConfirmationEmailComponent } from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
@@ -104,15 +105,16 @@ registerLocaleData(localeDE);
         MatBottomSheetModule,
         MatDialogModule,
         StoreModule.forRoot({}),
-        StoreModule.forFeature(authFeature),
-        StoreModule.forFeature(contactsFeature),
-        StoreModule.forFeature(cookieFeature),
-        StoreModule.forFeature(emailNotificationSettingsFeature),
-        StoreModule.forFeature(notificationFeature),
-        EffectsModule.forRoot(appEffects),
-        ...environment.devModules,
-        AppCommonModule,
-        MtxNativeDatetimeModule], providers: [
+        StoreModule.forFeature(configFeature),
+    StoreModule.forFeature(authFeature),
+    StoreModule.forFeature(contactsFeature),
+    StoreModule.forFeature(cookieFeature),
+    StoreModule.forFeature(emailNotificationSettingsFeature),
+    StoreModule.forFeature(notificationFeature),
+    EffectsModule.forRoot(appEffects),
+    ...environment.devModules,
+    AppCommonModule,
+    MtxNativeDatetimeModule], providers: [
         { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
         { provide: DateAdapter, useClass: EUDateAdapter },
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

@@ -1,38 +1,25 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { first, map, Observable, ReplaySubject } from 'rxjs';
-
-type config = {
-  authBackend: string,
-  voteBackend: string,
-  surveyBackend: string,
-};
+import { Store } from '@ngrx/store';
+import { filter, first, map, Observable } from 'rxjs';
+import { configFeature } from '../../config/config.feature';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BackendUrlService {
-  private readonly _authURL = new ReplaySubject<string>(1);
-  private readonly _voteURL = new ReplaySubject<string>(1);
-  private readonly _surveyURL = new ReplaySubject<string>(1);
-  
-  constructor(http: HttpClient) {
-    http.get<config>(window.location.origin + '/assets/config.json')
-      .subscribe({
-        next: conf => {
-          this._authURL.next(conf.authBackend);
-          this._voteURL.next(conf.voteBackend);
-          this._surveyURL.next(conf.surveyBackend);
-        },
-      });
+  constructor(
+    private readonly store: Store
+  ) {
   }
   
-  public readonly loginURL: Observable<string> = this._authURL.pipe(
+  public readonly loginURL: Observable<string> = this.store.select(configFeature.selectAuthBackend).pipe(
+    filter(url => !!url),
     map(url => `${url}login`),
     first(),
   );
   
-  public readonly logoutURL: Observable<string> = this._authURL.pipe(
+  public readonly logoutURL: Observable<string> = this.store.select(configFeature.selectAuthBackend).pipe(
+    filter(url => !!url),
     map(url => `${url}logout`),
     first(),
   );
@@ -44,7 +31,8 @@ export class BackendUrlService {
           .replace(/\/+$/, '') :
         s,
     ).join('/');
-    return this._authURL.pipe(
+    return this.store.select(configFeature.selectAuthBackend).pipe(
+      filter(url => !!url),
       map(url => `${url}v1/${p}`),
       first(),
     );
@@ -57,7 +45,8 @@ export class BackendUrlService {
           .replace(/\/+$/, '') :
         s,
     ).join('/');
-    return this._voteURL.pipe(
+    return this.store.select(configFeature.selectVoteBackend).pipe(
+      filter(url => !!url),
       map(url => `${url}${p}`),
       first(),
     );
@@ -70,7 +59,8 @@ export class BackendUrlService {
           .replace(/\/+$/, '') :
         s,
     ).join('/');
-    return this._surveyURL.pipe(
+    return this.store.select(configFeature.selectSurveyBackend).pipe(
+      filter(url => !!url),
       map(url => `${url}${p}`),
       first(),
     );
