@@ -38,8 +38,8 @@
   <div>
     <mat-form-field appearance="fill">
       <mat-label>Personen per E-Mail einladen</mat-label>
-      <mat-chip-list #chipList formControlName="consigneeList">
-        <mat-chip
+      <mat-chip-grid #chipList>
+        <mat-chip-row
           *ngFor="let group of groupList"
           (removed)="removeGroup(group)"
         >
@@ -48,8 +48,8 @@
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
           </button>
-        </mat-chip>
-        <mat-chip
+        </mat-chip-row>
+        <mat-chip-row
           *ngFor="let contact of contactList"
           (removed)="removeContact(contact)"
         >
@@ -60,8 +60,8 @@
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
           </button>
-        </mat-chip>
-        <mat-chip
+        </mat-chip-row>
+        <mat-chip-row
           *ngFor="let email of consigneeList"
           (removed)="remove(email)"
         >
@@ -69,16 +69,18 @@
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
           </button>
-        </mat-chip>
+        </mat-chip-row>
         <input
           placeholder="weitere E-Mails..."
           type="email"
           formControlName="consigneeList"
+          email
+          maxlength="60"
           [matChipInputFor]="chipList"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           (matChipInputTokenEnd)="add($event)"
         >
-      </mat-chip-list>
+      </mat-chip-grid>
       <button mat-icon-button matSuffix [matMenuTriggerFor]="groupMenu">
         <mat-icon>group_add</mat-icon>
       </button>
