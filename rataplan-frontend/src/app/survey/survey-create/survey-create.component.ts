@@ -49,12 +49,12 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
     if (!survey) return this.edit();
     survey = JSON.parse(JSON.stringify(survey)); // create copy of the input that we can modify freely
     for (let qg of survey!.questionGroups) {
-      if((qg.id || 0) < 0) delete qg.id;
+      if(Number(qg.id ?? 0) < 0) delete qg.id;
       for (let question of qg.questions) {
-        if((question.id || 0) < 0) delete question.id;
+        if(Number(question.id ?? 0) < 0) delete question.id;
         if (question.choices) {
           for (let checkbox of question.choices) {
-            if((checkbox.id || 0) < 0) delete checkbox.id;
+            if(Number(checkbox.id ?? 0) < 0) delete checkbox.id;
           }
         }
       }

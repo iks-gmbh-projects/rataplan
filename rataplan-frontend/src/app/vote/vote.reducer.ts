@@ -1,5 +1,5 @@
 import { VoteModel } from '../models/vote.model';
-import { isConfiguredEqual, matchConfiguration, matchesConfiguration } from '../models/vote-option.model';
+import { isConfiguredEqual, matchConfiguration, matchesConfiguration, VoteOptionModel } from '../models/vote-option.model';
 import { ActionRequiresInit, VoteActions, VoteOptionAction } from './vote.actions';
 
 export type voteState = {
@@ -54,7 +54,7 @@ export function voteReducer(
       },
     };
   }
-  if('voteOptions' in action && !matchConfiguration(action, state.vote!.voteConfig.voteOptionConfig)) {
+  if('voteOptions' in action && !matchConfiguration(action.voteOptions as VoteOptionModel<false>[], state.vote!.voteConfig.voteOptionConfig)) {
     return {
       ...state,
       error: {

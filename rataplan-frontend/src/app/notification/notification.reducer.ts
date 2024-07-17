@@ -13,5 +13,5 @@ export const notificationReducer = createReducer<notificationState>(
     ...state,
     [action.notificationType]: 0,
   })),
-  on(notificationActions.clearall, () => ({}))
+  on(notificationActions.clearAll, () => ({}))
 );

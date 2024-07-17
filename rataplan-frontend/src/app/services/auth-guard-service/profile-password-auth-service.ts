@@ -1,4 +1,4 @@
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
@@ -6,7 +6,7 @@ import { filter, map } from "rxjs/operators";
 import { authFeature } from '../../authentication/auth.feature';
 
 @Injectable({providedIn: 'root'})
-export class ProfilePasswordAuthService implements CanActivate{
+export class ProfilePasswordAuthService {
   constructor(
     private readonly router: Router,
     private readonly store: Store

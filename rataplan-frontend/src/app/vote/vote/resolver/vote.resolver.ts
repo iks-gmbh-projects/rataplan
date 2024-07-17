@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { VoteModel } from '../../../models/vote.model';
@@ -8,7 +8,7 @@ import { VoteService } from '../vote-service/vote.service';
 @Injectable({
   providedIn: 'root',
 })
-export class VoteResolver implements Resolve<VoteModel> {
+export class VoteResolver  {
 
   constructor(
     private router: Router,

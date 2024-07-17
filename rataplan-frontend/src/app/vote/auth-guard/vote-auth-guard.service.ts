@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { voteFeature } from '../vote.feature';
 @Injectable({
   providedIn: 'root',
 })
-export class VoteAuthGuard implements CanActivate {
+export class VoteAuthGuard  {
 
   constructor(
     private store: Store,

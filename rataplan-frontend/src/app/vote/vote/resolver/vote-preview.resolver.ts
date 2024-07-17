@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { catchError, EMPTY, filter, map, Observable, take, timeout } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { voteFeature } from '../../vote.feature';
 @Injectable({
   providedIn: 'root',
 })
-export class VotePreviewResolver implements Resolve<VoteModel> {
+export class VotePreviewResolver  {
 
   constructor(
     private router: Router,

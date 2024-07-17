@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { ChartData } from 'chart.js';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,14 +11,7 @@ import { VoteService } from '../vote-service/vote.service';
 @Injectable({
   providedIn: 'root',
 })
-export class VoteResultsResolver implements Resolve<{
-  vote: VoteModel,
-  results: UserVoteResults[] | undefined,
-  pieCharts: {
-    raw: Record<string | number, number[]>
-    pieChart: Record<string | number, ChartData<'pie'>>
-  } | undefined,
-}>
+export class VoteResultsResolver 
 {
   
   constructor(

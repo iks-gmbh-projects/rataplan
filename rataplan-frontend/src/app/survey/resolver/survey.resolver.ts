@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, EMPTY, Observable } from 'rxjs';
 import { Survey } from '../survey.model';
 import { SurveyService } from '../survey.service';
 
 @Injectable()
-export class AccessIDSurveyResolver implements Resolve<Survey> {
+export class AccessIDSurveyResolver  {
   constructor(private surveys: SurveyService, private router: Router) {
   }
 
@@ -37,7 +37,7 @@ export class AccessIDSurveyResolver implements Resolve<Survey> {
 }
 
 @Injectable()
-export class ParticipationIDSurveyResolver implements Resolve<Survey> {
+export class ParticipationIDSurveyResolver  {
   constructor(private surveys: SurveyService, private router: Router) {
   }
 

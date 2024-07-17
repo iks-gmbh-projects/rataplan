@@ -1,4 +1,4 @@
-import { ActivatedRouteSnapshot, CanActivate, Router,RouterStateSnapshot , UrlTree} from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
@@ -7,7 +7,7 @@ import { authFeature } from '../../authentication/auth.feature';
 
 @Injectable({providedIn: 'root'})
 
-export class AuthGuardService implements CanActivate {
+export class AuthGuardService  {
 
   constructor(
     private store: Store,

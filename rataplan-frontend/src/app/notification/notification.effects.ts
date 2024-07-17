@@ -33,7 +33,7 @@ export class NotificationEffects {
   clearOnLogout = createEffect(() => {
     return this.$actions.pipe(
       ofType(AuthActions.LOGOUT_ACTION),
-      map(() => notificationActions.clearall()),
+      map(() => notificationActions.clearAll()),
     );
   });
   
