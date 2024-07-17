@@ -20,7 +20,7 @@ import { VoteEffects } from './vote.effects';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-dialog/vote-option-info-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [

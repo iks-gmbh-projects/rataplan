@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacyMenuPanel as MatMenuPanel } from '@angular/material/legacy-menu';
+import { MatMenuPanel } from '@angular/material/menu';
 import { Store } from '@ngrx/store';
 import { filter, switchMap } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../../dialogs/confirm-dialog/confirm-dialog.component';
