@@ -112,16 +112,16 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.mat-form-field {
+.mat-mdc-form-field {
   width: 80vw;
   max-width: 400px;
 }
 
-.mat-form-field.unlimited {
+.mat-mdc-form-field.unlimited {
   display: block;
 }
 
-.mat-form-field.unlimited, .mat-form-field.inline-unlimited {
+.mat-mdc-form-field.unlimited, .mat-form-field.inline-unlimited {
   max-width: unset;
 }
 
