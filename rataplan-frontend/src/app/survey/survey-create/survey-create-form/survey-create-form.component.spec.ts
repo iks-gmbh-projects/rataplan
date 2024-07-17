@@ -1,15 +1,14 @@
-import { NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatStepperModule } from '@angular/material/stepper';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 
 import { SurveyCreateFormComponent } from './survey-create-form.component';
 
@@ -20,7 +19,7 @@ describe('SurveyCreateFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ SurveyCreateFormComponent ],
-      imports: [ RouterTestingModule, ReactiveFormsModule, MatStepperModule, NoopAnimationsModule, MatIconModule, MatFormFieldModule, MatCheckboxModule, MatButtonModule, MatDatepickerModule, NgxMatTimepickerModule ],
+      imports: [ RouterTestingModule, ReactiveFormsModule, MatStepperModule, NoopAnimationsModule, MatIconModule, MatFormFieldModule, MatCheckboxModule, MatButtonModule, MatDatepickerModule, MtxDatetimepickerModule ],
     })
     .compileComponents();
   });
