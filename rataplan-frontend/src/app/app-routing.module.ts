@@ -1,14 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ensureLoggedIn, ensureLoggedOut } from './authentication/auth.guard';
 
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ConfirmAccountInstructionComponent } from './confirm-account/confirm-account-instruction/confirm-account-instruction.component';
 import { ConfirmAccountComponent } from './confirm-account/confirm-account/confirm-account.component';
-import {
-  ConfirmAccountInstructionComponent
-} from './confirm-account/confirm-account-instruction/confirm-account-instruction.component';
-import {
-  ResendAccountConfirmationEmailComponent
-} from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
+import { ResendAccountConfirmationEmailComponent } from './confirm-account/resend-account-confirmation-email/resend-account-confirmation-email.component';
 import { ContactListComponent } from './contact-list/contact-list.component';
 import { DeleteProfileComponent } from './delete-profile/delete-profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
@@ -23,8 +20,6 @@ import { PrivacyComponent } from './legals/privacy/privacy.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { AuthGuardService } from './services/auth-guard-service/auth-guard-service';
-import { ProfilePasswordAuthService } from './services/auth-guard-service/profile-password-auth-service';
 import { VersionComponent } from './version/version.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
 
@@ -39,19 +34,19 @@ const routes: Routes = [
   { path: 'changes', component: VersionComponent },
   { path: 'feedback', component: FeedbackComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'login', component: LoginComponent, canActivate: [AuthGuardService] },
+  { path: 'login', component: LoginComponent, canActivate: [ensureLoggedOut] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'view-profile', component: ViewProfileComponent, canActivate: [ProfilePasswordAuthService] },
-  { path: 'edit-profile', component: EditProfileComponent, canActivate: [ProfilePasswordAuthService] },
-  { path: 'email-settings',  component: EmailNotificationSettingsComponent, canActivate: [ProfilePasswordAuthService] },
+  { path: 'view-profile', component: ViewProfileComponent, canActivate: [ensureLoggedIn] },
+  { path: 'edit-profile', component: EditProfileComponent, canActivate: [ensureLoggedIn] },
+  { path: 'email-settings',  component: EmailNotificationSettingsComponent, canActivate: [ensureLoggedIn] },
   { path: 'reset-password', component: ResetPasswordComponent },
-  { path: 'change-password', component: ChangePasswordComponent, canActivate: [ProfilePasswordAuthService] },
-  { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ProfilePasswordAuthService] },
-  { path: 'contacts', component: ContactListComponent, canActivate: [ProfilePasswordAuthService] },
+  { path: 'change-password', component: ChangePasswordComponent, canActivate: [ensureLoggedIn] },
+  { path: 'delete-profile', component: DeleteProfileComponent, canActivate: [ensureLoggedIn] },
+  { path: 'contacts', component: ContactListComponent, canActivate: [ensureLoggedIn] },
   { path: 'survey', loadChildren: () => import('./survey/survey.module').then(m => m.SurveyModule) },
   { path: 'confirm-account', component: ConfirmAccountInstructionComponent },
-  { path: 'confirm-account/:token', component: ConfirmAccountComponent, canActivate: [ AuthGuardService ] },
-  { path: 'resend-confirmation-email', component: ResendAccountConfirmationEmailComponent, canActivate: [ AuthGuardService ] },
+  { path: 'confirm-account/:token', component: ConfirmAccountComponent, canActivate: [ ensureLoggedOut ] },
+  { path: 'resend-confirmation-email', component: ResendAccountConfirmationEmailComponent, canActivate: [ ensureLoggedOut ] },
   { path: '**', redirectTo: '' }
 ];
 

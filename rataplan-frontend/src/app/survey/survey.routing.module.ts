@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ensureLoggedIn } from '../authentication/auth.guard';
 
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
@@ -11,7 +12,6 @@ import { SurveyMissingComponent } from './survey-missing/survey-missing.componen
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unknown-error.component';
-import { ProfilePasswordAuthService } from '../services/auth-guard-service/profile-password-auth-service';
 
 const surveyRoutes: Routes = [{
   path: '', children: [
@@ -28,7 +28,7 @@ const surveyRoutes: Routes = [{
     },
     { path: 'create', component: SurveyCreateComponent },
     { path: 'list', data: { own: false }, component: SurveyListComponent },
-    { path: 'own', data: { own: true }, component: SurveyListComponent, canActivate: [ProfilePasswordAuthService] },
+    { path: 'own', data: { own: true }, component: SurveyListComponent, canActivate: [ensureLoggedIn] },
     {
       path: 'participate/:participationID',
       resolve: { survey: ParticipationIDSurveyResolver },
