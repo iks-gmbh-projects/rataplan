@@ -8,6 +8,7 @@ form :is(div, mat-radio-group) {
     display: contents;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
 mat-radio-button {
     margin-left: auto;
     margin-right: auto;
