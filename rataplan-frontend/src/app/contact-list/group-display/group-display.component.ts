@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatMenuPanel } from '@angular/material/menu';
 import { Store } from '@ngrx/store';
 import { filter, switchMap } from 'rxjs/operators';

@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { SetGeneralValuesVoteOptionAction } from '../../vote.actions';
 import { DecisionType } from '../decision-type.enum';
 import { voteFeature } from '../../vote.feature';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-general-subform',

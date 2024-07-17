@@ -7,10 +7,10 @@
   justify-content: center;
 }
 
-.mat-table {
+.mat-mdc-table {
   overflow-x: scroll;
 }
-.mat-table>table {
+.mat-mdc-table>table {
   width: 100%;
 }
 

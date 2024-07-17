@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MtxDatetimepickerType } from '@ng-matero/extensions/datetimepicker';
 import { Store } from '@ngrx/store';
 import { filter, Observable, of, Subscription } from 'rxjs';
