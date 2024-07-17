@@ -19,8 +19,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { VoteEffects } from './vote.effects';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-dialog/vote-option-info-dialog.component';
-import { MatSelectModule } from '@angular/material/select';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 
 @NgModule({
   declarations: [

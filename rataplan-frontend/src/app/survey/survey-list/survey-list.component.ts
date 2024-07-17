@@ -5,7 +5,7 @@ import { switchMap } from 'rxjs/operators';
 
 import { SurveyHead } from '../survey.model';
 import { SurveyService } from '../survey.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({

@@ -9,8 +9,8 @@ import { SurveyCreateFormComponent } from './survey-create-form/survey-create-fo
 import { MatStepperModule } from '@angular/material/stepper';
 import { SurveyPreviewComponent } from './survey-preview/survey-preview.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card';
 
 describe('SurveyCreateComponent', () => {
   let component: SurveyCreateComponent;
