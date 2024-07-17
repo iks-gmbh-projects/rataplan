@@ -2,14 +2,14 @@
   <div class="margin-top">
     <form *ngIf="formGroup" [formGroup]="formGroup">
       <div class="inputFieldWrapper">
-        <mat-form-field class="mat-form-field-flex unlimited" appearance="fill">
+        <mat-form-field class="mat-form-field-flex" appearance="fill">
           <mat-label>Umfragename</mat-label>
           <input type="text" matInput formControlName="name">
           <mat-error>{{ errorMessageService.genericFormError(formGroup!.get('name')) }}</mat-error>
         </mat-form-field>
       </div>
       <div>
-        <mat-form-field class="mat-form-field-flex unlimited" appearance="fill">
+        <mat-form-field class="mat-form-field-flex" appearance="fill">
           <mat-label>Beschreibung</mat-label>
           <textarea matInput formControlName="description"></textarea>
           <mat-error>{{ errorMessageService.genericFormError(formGroup.get('description')) }}</mat-error>
@@ -18,7 +18,7 @@
       <mat-checkbox formControlName="anonymousParticipation"><span class="newLine">Erlaube anonyme Antworten</span>
       </mat-checkbox>
       <br><br>
-      <mat-form-field class="mat-form-field-flex unlimited" appearance="fill">
+      <mat-form-field class="mat-form-field-flex" appearance="fill">
         <mat-label>Von</mat-label>
         <input
           type="text"
@@ -33,7 +33,7 @@
         <mat-error>{{ errorMessageService.genericFormError(formGroup.get('startDate')) }}</mat-error>
       </mat-form-field>
       <br>
-      <mat-form-field class="mat-form-field-flex unlimited" appearance="fill">
+      <mat-form-field class="mat-form-field-flex" appearance="fill">
         <mat-label>Bis</mat-label>
         <input
           type="text"
