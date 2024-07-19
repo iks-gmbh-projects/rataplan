@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 @Table(name = "voteOption")
@@ -141,15 +140,10 @@ public class VoteOption implements Serializable {
     
     public boolean assertInvalid() {
         if(endDate != null && startDate == null) return true;
-        if(Optional.of(this.participantLimit).map(pl -> {
-            if(pl == null) return false;
-            else if(pl > 0) return false;
-            else return true;
-        }).get()) return true;
-        return (this.url == null
-                && this.startDate == null
-                && this.endDate == null
-                && this.description == null) || !this.voteDecisions.isEmpty();
+        if(this.participantLimit != null)
+            if(this.participantLimit <= 0) return true;
+        return (this.url == null && this.startDate == null && this.endDate == null && this.description == null) ||
+                    !this.voteDecisions.isEmpty();
     }
     
     public boolean assertConfigEqual(VoteOption voteOption) {
