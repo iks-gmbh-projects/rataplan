@@ -63,13 +63,13 @@
     <mat-error>{{ errorMessageService.genericFormError(nameField.control) }}</mat-error>
   </mat-form-field>
   <div *ngIf="!hasDeadlinePassed()" class="left-bound" style="margin-bottom: 1rem">
-    <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
-      maximal {{ vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
+    <p *ngIf="vote.yesAnswerLimit ?? false">Bei dieser Anfrage dürfen Sie zu
+      maximal {{ vote.yesAnswerLimit! }} Optionen zustimmen</p>
     <div *ngFor="let option of (vote?.options ?? []); let voteIndex=index" class="option-container" #scrollTo>
       <div style="min-width: 40%; max-width: 40%">
-        <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
+        <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
         <span *ngIf="option.endDate">
-          {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
+          {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.endTime ? ' HH:mm' : ''):undefined:'de' }}
         </span>
         <div class="break-text">{{ option.description || '' }}</div>
         <span>
@@ -89,7 +89,7 @@
         </button>
         <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option)"></span>
         <mat-form-field
-          *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
+          *ngIf="vote?.decisionType === DecisionType.NUMBER; else decisionComplex"
           appearance="fill"
           style="width: 8vw; min-width: 50px; max-width: 175px"
         >

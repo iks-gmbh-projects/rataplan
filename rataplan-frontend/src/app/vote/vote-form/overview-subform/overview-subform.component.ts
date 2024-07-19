@@ -142,6 +142,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
         voteOption.participantLimitActive = input.participantLimitActive ?? false;
         voteOption.participantLimit = input.participantLimitActive ? input.participantLimit : null;
         if(input.voteIndex !== null) {
+          voteOption.id = this.voteOptions[input.voteIndex!].id
           this.store.dispatch(new EditVoteOptionAction(input.voteIndex!, voteOption));
         } else {
           this.store.dispatch(new AddVoteOptionsAction(voteOption));
@@ -173,7 +174,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       descriptionInput: voteOption.description || null,
       linkInput: voteOption.url || null,
       voteIndex: index,
-      participantLimitActive: voteOption.participantLimitActive || false,
+      participantLimitActive: !!voteOption.participantLimit || false,
       participantLimit: voteOption.participantLimit || null,
     });
   }

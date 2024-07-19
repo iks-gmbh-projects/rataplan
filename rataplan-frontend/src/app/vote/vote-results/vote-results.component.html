@@ -78,7 +78,7 @@
           mat-raised-button
           color="primary"
           (click)="tableView = !tableView"
-          *ngIf="vote.voteConfig.decisionType !== DecisionType.NUMBER"
+          *ngIf="vote.decisionType !== DecisionType.NUMBER"
           style="margin-right: 15px"
         >
           <mat-icon>
@@ -98,7 +98,7 @@
           </th>
         </tr>
         </thead>
-        <tbody *ngIf="vote.voteConfig.decisionType !== DecisionType.NUMBER; else teilnehmerVote">
+        <tbody *ngIf="vote.decisionType !== DecisionType.NUMBER; else teilnehmerVote">
         <tr *ngFor="let userResults of allVoteResults; let i = index">
           <td class="username-result-entries">{{ userResults.username }}</td>
           <ng-container

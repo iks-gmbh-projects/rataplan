@@ -63,9 +63,9 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
         next: vote => {
           const title = vote?.title;
           const deadline = vote?.deadline;
-          const decision = vote?.voteConfig?.decisionType;
-          const yesLimitActive = vote?.voteConfig.yesLimitActive;
-          const yesAnswerLimit = vote?.voteConfig.yesAnswerLimit;
+          const decision = vote?.decisionType;
+          const yesLimitActive = !!vote?.yesAnswerLimit;
+          const yesAnswerLimit = vote?.yesAnswerLimit;
           if(title || deadline) {
             this.generalSubform.get('title')?.setValue(title);
             this.generalSubform.get('description')?.setValue(vote.description);
@@ -78,7 +78,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
             this.showDescription = true;
           }
           
-          this.minYesLimit = vote!.voteConfig!.yesAnswerLimit! || 0;
+          this.minYesLimit = vote!!.yesAnswerLimit! || 0;
         },
         error: err => {
           this.snackBar.open('Unbekannter Fehler beim Laden der Abstimmungsdaten', 'OK');

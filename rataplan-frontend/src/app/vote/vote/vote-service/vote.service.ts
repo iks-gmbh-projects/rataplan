@@ -137,7 +137,7 @@ export class VoteService {
     return vote.pipe(
       mergeMap(v =>
         iif(
-          () => v.voteConfig.decisionType === DecisionType.NUMBER,
+          () => v.decisionType === DecisionType.NUMBER,
           of(undefined),
           of(v).pipe(
             mergeMap(v => v.participants),

@@ -1,7 +1,7 @@
 import {
   DecisionType,
   deserializeDecisionType,
-  SerializedDecisionType
+  SerializedDecisionType,
 } from '../vote/vote-form/decision-type.enum';
 import { deserializeVoteOptionDecisionModel } from './vote-decision.model';
 import { deserializeVoteOptionModel, VoteOptionConfig, VoteOptionModel } from './vote-option.model';
@@ -15,27 +15,31 @@ export type VoteModel<serialized extends boolean = false> = {
   organizerName?: string,
   notificationSettings?: VoteNotificationSettings,
   consigneeList: string[],
-  userConsignees: (string|number)[],
-
+  userConsignees: (string | number)[],
+  
   backendUserid?: number,
   expired?: boolean,
   participationToken?: string,
   editToken?: string,
-
-  voteConfig: VoteConfig<serialized>,
+  
+  yesAnswerLimit?: number,
   options: VoteOptionModel<serialized>[],
   participants: VoteParticipantModel<serialized>[],
   
-  personalisedInvitation?:string,
+  endTime?: boolean,
+  startTime?: boolean,
+  decisionType: serialized extends false ? DecisionType : SerializedDecisionType,
+  voteOptionConfig?: VoteOptionConfig
+  
+  personalisedInvitation?: string,
 };
 
 export function deserializeVoteModel(request: VoteModel<boolean>): VoteModel {
   return {
     ...request,
-    voteConfig: {
-      ...request.voteConfig,
-      decisionType: deserializeDecisionType(request.voteConfig.decisionType)
-    },
+    decisionType: deserializeDecisionType(request.decisionType!),
+    voteOptionConfig: ascertainVoteConfig(request),
+    yesAnswerLimit: request.yesAnswerLimit,
     options: request.options.map(deserializeVoteOptionModel),
     participants: request.participants.map(participant => ({
       ...participant,
@@ -44,17 +48,27 @@ export function deserializeVoteModel(request: VoteModel<boolean>): VoteModel {
   };
 }
 
+export function ascertainVoteConfig(request: VoteModel): VoteOptionConfig {
+  const config = {
+    startDate: false,
+    startTime: request.startTime,
+    endDate: false,
+    endTime: request.endTime,
+    url: false,
+    description: false,
+  };
+  for(const vo of request.options) {
+    if(vo.startDate) config.startDate = true;
+    if(vo.endDate) config.endDate = true;
+    if(vo.url) config.url = true;
+    if(vo.description) config.description = true;
+  }
+  return config;
+}
+
 export type VoteNotificationSettings = {
   recipientEmail: string,
   sendLinkMail: boolean,
   notifyParticipation: boolean,
   notifyExpiration: boolean,
-};
-
-export type VoteConfig<serialized extends boolean = false> = {
-  id?: number,
-  voteOptionConfig: VoteOptionConfig,
-  decisionType: serialized extends false ? DecisionType : SerializedDecisionType,
-  yesLimitActive?:boolean,
-  yesAnswerLimit?:number|null,
 };

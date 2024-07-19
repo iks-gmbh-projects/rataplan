@@ -165,7 +165,7 @@ export class VoteComponent implements OnInit, OnDestroy {
   }
   
   setVoteOptions() {
-    if(this.vote?.voteConfig.decisionType === DecisionType.NUMBER) {
+    if(this.vote?.decisionType === DecisionType.NUMBER) {
       this.voteParticipant.decisions = this.vote!.options.map(vote => (
         {
           optionId: vote.id!,
@@ -187,7 +187,7 @@ export class VoteComponent implements OnInit, OnDestroy {
       data: {
         vote: vote,
         voteParticipants: this.vote!.participants,
-        decisionType: this.vote!.voteConfig.decisionType,
+        decisionType: this.vote!.decisionType,
       },
       autoFocus: false,
     });
@@ -202,7 +202,7 @@ export class VoteComponent implements OnInit, OnDestroy {
         ? d.participants ?? 1
         : 0
     ), 0);
-    if(this.vote.voteConfig.decisionType !== DecisionType.EXTENDED) return `${accepted}`;
+    if(this.vote.decisionType !== DecisionType.EXTENDED) return `${accepted}`;
     return `${accepted} (${decisions.reduce((a, d) => a + (
       d.decision === VoteOptionDecisionType.ACCEPT_IF_NECESSARY ? 1 : 0
     ), accepted)})`;
@@ -226,14 +226,14 @@ export class VoteComponent implements OnInit, OnDestroy {
   private canChooseDecision(decision: VoteOptionDecisionType, vote: VoteOptionModel): boolean {
     switch(decision) {
     case VoteOptionDecisionType.ACCEPT_IF_NECESSARY:
-      return this.vote!.voteConfig.decisionType == DecisionType.EXTENDED;
+      return this.vote!.decisionType == DecisionType.EXTENDED;
     case VoteOptionDecisionType.ACCEPT:
       if(this.isParticipantLimitMet(vote)) return false;
-      if(!this.vote!.voteConfig.yesLimitActive) return true;
+      if(!this.vote!.yesAnswerLimit ?? true) return true;
       return this.voteParticipant.decisions
         .map(d => d.decision)
         .filter(d => d == VoteOptionDecisionType.ACCEPT)
-        .length < this.vote!.voteConfig.yesAnswerLimit!;
+        .length < this.vote!.yesAnswerLimit!;
     }
     return true;
   }
@@ -292,7 +292,7 @@ export class VoteComponent implements OnInit, OnDestroy {
     switch(decision) {
     case 1:
       voteDecision.decision = VoteOptionDecisionType.ACCEPT;
-      if(this.votes.size < this.vote!.voteConfig?.yesAnswerLimit! && !this.votes.get(index)) {
+      if(this.votes.size < this.vote!.yesAnswerLimit! && !this.votes.get(index)) {
         this.updateYesAnswerRestrictions(1, index);
       }
       break;
@@ -341,12 +341,12 @@ export class VoteComponent implements OnInit, OnDestroy {
   }
   
   updateYesAnswerRestrictions(voteType: number, index: number) {
-    const voteConfig = this.vote?.voteConfig;
-    if(!voteConfig?.yesLimitActive) return;
+    const answerLimit =this.vote.yesAnswerLimit;
+    if(!answerLimit) return;
     switch(voteType) {
     case 1:
       this.votes.set(index, true);
-      this.isYesVoteLimitMet = this.votes.size >= voteConfig.yesAnswerLimit!;
+      this.isYesVoteLimitMet = this.votes.size >= answerLimit!;
       break;
     case 3:
       if(this.votes.get(index)) {

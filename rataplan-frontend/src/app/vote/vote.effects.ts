@@ -44,17 +44,15 @@ export class VoteEffects {
         if(!action.id) return of(new InitVoteSuccessAction({
           title: '',
           deadline: '',
-          voteConfig: {
-            voteOptionConfig: {
-              startDate: true,
-              startTime: false,
-              endDate: false,
-              endTime: false,
-              description: false,
-              url: false,
-            },
-            decisionType: DecisionType.DEFAULT,
+          voteOptionConfig: {
+            startDate: true,
+            startTime: false,
+            endDate: false,
+            endTime: false,
+            description: false,
+            url: false,
           },
+          decisionType: DecisionType.DEFAULT,
           options: [],
           participants: [],
           consigneeList: [],
@@ -98,6 +96,9 @@ export class VoteEffects {
         }
       }),
       map(([request, url]) => {
+        const config = request.request.voteOptionConfig!;
+        request.request = {...request.request, startTime: config.startTime, endTime: config.endTime};
+        delete request.request.voteOptionConfig;
         if(request.request.id) {
           const sanatizedRequest: Partial<VoteModel> = {...request.request};
           if(!request.appointmentsEdited) {

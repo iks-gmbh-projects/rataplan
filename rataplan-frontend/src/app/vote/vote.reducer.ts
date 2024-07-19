@@ -54,7 +54,7 @@ export function voteReducer(
       },
     };
   }
-  if('voteOptions' in action && !matchConfiguration(action, state.vote!.voteConfig.voteOptionConfig)) {
+  if('voteOptions' in action && !matchConfiguration(action, state.vote!.voteOptionConfig!)) {
     return {
       ...state,
       error: {
@@ -95,18 +95,14 @@ export function voteReducer(
         title: action.payload.title,
         description: action.payload.description,
         deadline: action.payload.deadline.toISOString(),
-        voteConfig: {
-          ...state.vote!.voteConfig,
-          decisionType: action.payload.decisionType,
-          yesLimitActive: action.payload.yesLimitActive,
-          yesAnswerLimit: action.payload.yesAnswerLimit,
-        },
+        decisionType: action.payload.decisionType,
+        yesAnswerLimit: action.payload.yesAnswerLimit ?? undefined,
       },
       state.appointmentsChanged!,
     );
   case VoteActions.SET_VOTE_CONFIG:
     if(isConfiguredEqual(
-      state.vote!.voteConfig.voteOptionConfig,
+      state.vote!.voteOptionConfig || {},
       action.config,
     ))
     {
@@ -115,10 +111,7 @@ export function voteReducer(
     return {
       vote: {
         ...state.vote!,
-        voteConfig: {
-          ...state.vote!.voteConfig,
-          voteOptionConfig: {...action.config},
-        },
+        voteOptionConfig: {...action.config},
         options: [],
       },
       complete: false,
@@ -145,7 +138,7 @@ export function voteReducer(
   case VoteActions.EDIT_VOTE:
     if(!matchesConfiguration(
       action.voteOption,
-      state.vote!.voteConfig.voteOptionConfig,
+      state.vote!.voteOptionConfig || {},
     )) return {
       ...state,
       error: {

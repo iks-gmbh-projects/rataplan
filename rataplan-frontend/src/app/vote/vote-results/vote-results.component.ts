@@ -95,7 +95,7 @@ export class VoteResultsComponent implements OnInit {
   showVoteOptionInfo(voteOption: VoteOptionModel) {
     this.dialog.open(
       VoteOptionInfoDialogComponent,
-      {data: {voteOption, config: this.vote.voteConfig.voteOptionConfig}},
+      {data: {voteOption, config: this.vote.voteOptionConfig}},
     );
   }
   

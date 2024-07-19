@@ -44,15 +44,15 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
     this.storeSub = this.store.select(voteFeature.selectVote)
       .pipe(
         filter(vote => !!vote),
-        map(vote => vote!.voteConfig.voteOptionConfig)
+        map(vote => vote!.voteOptionConfig)
       ).subscribe(voteConfig => {
         this.configForm.setValue({
-          isDateChecked: voteConfig.startDate,
-          isTimeChecked: voteConfig.startTime,
-          isEndDateChecked: voteConfig.endDate,
-          isEndTimeChecked: voteConfig.endTime,
-          isDescriptionChecked: voteConfig.description,
-          isUrlChecked: voteConfig.url,
+          isDateChecked: !!voteConfig?.startDate,
+          isTimeChecked: !!voteConfig?.startTime,
+          isEndDateChecked: !!voteConfig?.endDate,
+          isEndTimeChecked: !!voteConfig?.endTime,
+          isDescriptionChecked: !!voteConfig?.description,
+          isUrlChecked: !!voteConfig?.url,
         });
       });
     this.formSub1 = this.fields.isDateChecked.valueChanges.subscribe((enabled: boolean) => {
