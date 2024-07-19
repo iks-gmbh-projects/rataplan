@@ -1,6 +1,9 @@
 package de.iks.rataplan.service;
 
-import de.iks.rataplan.domain.*;
+import de.iks.rataplan.domain.Decision;
+import de.iks.rataplan.domain.Vote;
+import de.iks.rataplan.domain.VoteDecision;
+import de.iks.rataplan.domain.VoteParticipant;
 import de.iks.rataplan.exceptions.ForbiddenException;
 import de.iks.rataplan.exceptions.MalformedException;
 import de.iks.rataplan.repository.VoteParticipantRepository;
@@ -84,12 +87,12 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
     
     public boolean validateDecisions(Vote vote, VoteParticipant voteParticipant) {
         if(voteParticipant.getVoteDecisions().isEmpty()) return false;
-        if(vote.getVoteConfig().getYesLimitActive()) {
+        if(vote.getYesAnswerLimit() != null) {
             long yesVotes = voteParticipant.getVoteDecisions()
                 .stream()
                 .filter(decision -> decision.getDecision() == Decision.ACCEPT)
                 .count();
-            if(yesVotes > vote.getVoteConfig().getYesAnswerLimit()) return false;
+            if(yesVotes > vote.getYesAnswerLimit()) return false;
         }
         
         return Stream.concat(
@@ -102,7 +105,7 @@ public class VoteParticipantServiceImpl implements VoteParticipantService {
             .collect(Collectors.groupingBy(VoteDecision::getVoteOption, Collectors.counting()))
             .entrySet()
             .stream()
-            .filter(e -> e.getKey().isParticipantLimitActive())
+            .filter(e -> e.getKey().getParticipantLimit() != null)
             .allMatch(e -> e.getKey().getParticipantLimit() >= e.getValue());
     }
 

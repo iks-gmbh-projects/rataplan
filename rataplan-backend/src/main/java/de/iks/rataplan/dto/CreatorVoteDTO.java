@@ -1,10 +1,10 @@
 package de.iks.rataplan.dto;
 
-import de.iks.rataplan.domain.VoteConfig;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class CreatorVoteDTO extends VoteDTO implements Serializable {
-
+    
     private static final long serialVersionUID = 8169186536220940206L;
     
     private VoteNotificationSettingsDTO notificationSettings;
@@ -31,10 +31,10 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Instant deadline,
         String organizerName,
         VoteNotificationSettingsDTO notificationSettings,
-        VoteConfig voteConfig,
         String personalisedInvitation
-    ) {
-        super(id, title, description, deadline, organizerName, voteConfig,  personalisedInvitation);
+    )
+    {
+        super(id, title, description, deadline, organizerName, personalisedInvitation);
         this.notificationSettings = notificationSettings;
     }
     
@@ -44,12 +44,12 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Instant deadline,
         String organizerName,
         VoteNotificationSettingsDTO notificationSettings,
-        VoteConfig voteConfig,
         List<String> consigneeList,
         List<Integer> userConsignees,
         String personalisedInvitation
-    ) {
-        this(title, description, deadline, organizerName, notificationSettings, voteConfig, personalisedInvitation);
+    )
+    {
+        this(title, description, deadline, organizerName, notificationSettings, personalisedInvitation);
         this.consigneeList = consigneeList;
         this.userConsignees = userConsignees;
     }
@@ -60,10 +60,10 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
         Instant deadline,
         String organizerName,
         VoteNotificationSettingsDTO notificationSettings,
-        VoteConfig voteConfig,
         String personalisedInvitation
-    ) {
-        super(title, description, deadline, organizerName, voteConfig, personalisedInvitation);
+    )
+    {
+        super(title, description, deadline, organizerName, personalisedInvitation);
         this.notificationSettings = notificationSettings;
     }
     
