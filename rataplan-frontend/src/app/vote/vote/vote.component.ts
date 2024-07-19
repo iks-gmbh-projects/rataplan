@@ -79,7 +79,7 @@ export class VoteComponent {
         ? d.participants ?? 1
         : 0
     ), 0);
-    if(vote.voteConfig.decisionType !== DecisionType.EXTENDED) return `${accepted}`;
+    if(vote.decisionType !== DecisionType.EXTENDED) return `${accepted}`;
     return `${accepted} (${decisions.reduce((a, d) => a + (
       d.decision === VoteOptionDecisionType.ACCEPT_IF_NECESSARY ? 1 : 0
     ), accepted)})`;
