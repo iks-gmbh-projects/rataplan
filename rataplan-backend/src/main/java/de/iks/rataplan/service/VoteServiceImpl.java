@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,9 +51,8 @@ public class VoteServiceImpl implements VoteService {
         
         vote.setId(null);
         for(VoteOption voteOption : vote.getOptions()) {
-            if(!voteOption.validateVoteOptionConfig(vote.getVoteConfig().getVoteOptionConfig())) {
+            if(voteOption.assertInvalid())
                 throw new MalformedException("Can not create Vote with mismatching configurations.");
-            }
             voteOption.setId(null);
         }
         
@@ -125,7 +125,6 @@ public class VoteServiceImpl implements VoteService {
         Vote dbVote, Vote newVote
     )
     {
-        
         if(newVote.getDeadline() != null) {
             dbVote.setDeadline(newVote.getDeadline());
             if(newVote.getDeadline().isAfter(Instant.now())) {
@@ -133,43 +132,43 @@ public class VoteServiceImpl implements VoteService {
             }
         }
         
+        if(dbVote.isStartTime() != newVote.isStartTime()) dbVote.setStartTime(newVote.isStartTime());
+        if(dbVote.isEndTime() != newVote.isEndTime()) dbVote.setEndTime(newVote.isEndTime());
+        
         if(newVote.getTitle() != null) dbVote.setTitle(newVote.getTitle());
         dbVote.setDescription(newVote.getDescription());
-        if(newVote.getVoteConfig() != null) {
-            VoteConfig newConfig = newVote.getVoteConfig();
-            VoteConfig dbConfig = dbVote.getVoteConfig();
-            if(newConfig.getDecisionType() != null) {
-                if(dbConfig.getDecisionType() != newConfig.getDecisionType()) {
-                    if(dbConfig.getDecisionType() == DecisionType.NUMBER ||
-                       newConfig.getDecisionType() == DecisionType.NUMBER)
-                    {
-                        dbVote.getParticipants().clear();
-                    } else if(newConfig.getDecisionType() == DecisionType.DEFAULT) {
-                        dbVote.getParticipants()
-                            .stream()
-                            .map(VoteParticipant::getVoteDecisions)
-                            .flatMap(List::stream)
-                            .filter(d -> d.getDecision() == Decision.ACCEPT_IF_NECESSARY)
-                            .forEach(d -> d.setDecision(Decision.NO_ANSWER));
-                    }
-                    dbConfig.setDecisionType(newConfig.getDecisionType());
+        if(newVote.getDecisionType() != null) {
+            if(dbVote.getDecisionType() != newVote.getDecisionType()) {
+                if(dbVote.getDecisionType() == DecisionType.NUMBER ||
+                   newVote.getDecisionType() == DecisionType.NUMBER)
+                {
+                    dbVote.getParticipants().clear();
+                } else if(newVote.getDecisionType() == DecisionType.DEFAULT) {
+                    dbVote.getParticipants()
+                        .stream()
+                        .map(VoteParticipant::getVoteDecisions)
+                        .flatMap(List::stream)
+                        .filter(d -> d.getDecision() == Decision.ACCEPT_IF_NECESSARY)
+                        .forEach(d -> d.setDecision(Decision.NO_ANSWER));
                 }
+                dbVote.setDecisionType(newVote.getDecisionType());
             }
-            if(newConfig.getYesLimitActive()) {
-                dbVote.getParticipants()
-                    .removeIf(voteParticipant -> voteParticipant.getVoteDecisions()
-                                                     .stream()
-                                                     .filter(voteDecision -> voteDecision.getDecision() ==
-                                                                             Decision.ACCEPT)
-                                                     .count() > newConfig.getYesAnswerLimit());
-            }
-            if(newConfig.getVoteOptionConfig() != null &&
-               !dbConfig.getVoteOptionConfig().equals(newConfig.getVoteOptionConfig()))
-            {
-                dbConfig.setVoteOptionConfig(newConfig.getVoteOptionConfig());
-                dbVote.getOptions().clear();
-                dbVote.getParticipants().clear();
-            }
+        }
+        if(!Objects.equals(newVote.getYesAnswerLimit(), dbVote.getYesAnswerLimit())) {
+            dbVote.getParticipants()
+                .removeIf(voteParticipant -> voteParticipant.getVoteDecisions()
+                                                 .stream()
+                                                 .filter(voteDecision -> voteDecision.getDecision() == Decision.ACCEPT)
+                                                 .count() > newVote.getYesAnswerLimit());
+        }
+        if(newVote.getOptions() != null) for(VoteOption voteOption : newVote.getOptions()) {
+            if(Objects.equals(null, voteOption.getId())) continue;
+            Optional<VoteOption> dbVoteOption = this.voteOptionRepository.findById(voteOption.getId());
+            if(dbVoteOption.isEmpty()) voteOption.setId(null);
+            else if(!Objects.equals(dbVote.getId(), dbVoteOption.get().getVote().getId()))
+                throw new RuntimeException("bad");
+            else if(!dbVoteOption.get().assertConfigEqual(voteOption))
+                voteOption.getVoteDecisions().clear();
         }
         dbVote.setOrganizerName(newVote.getOrganizerName());
         dbVote.setNotificationSettings(newVote.getNotificationSettings());
@@ -180,11 +179,10 @@ public class VoteServiceImpl implements VoteService {
         if(newVote.getOptions() != null && newVote.getOptions() != dbVote.getOptions()) {
             if(newVote.getOptions().isEmpty()) throw new MalformedException("Must have at least 1 VoteOption");
             
-            voteRepository.saveAndFlush(dbVote);
-            
             removeOptions(newVote, dbVote.getOptions());
-            
             addOptions(dbVote, newVote.getOptions());
+            
+            voteRepository.saveAndFlush(dbVote);
             
             ret = voteRepository.findById(dbVote.getId()).orElse(null);
         } else {
@@ -207,8 +205,10 @@ public class VoteServiceImpl implements VoteService {
     
     private void addOptions(Vote oldRequest, List<VoteOption> newVoteOptions) {
         for(VoteOption voteOption : newVoteOptions) {
-            if(!voteOption.validateVoteOptionConfig(oldRequest.getVoteConfig().getVoteOptionConfig())) {
-                throw new MalformedException("Option does not fit the VoteConfig.");
+            if(voteOption.assertInvalid()) {
+                throw new MalformedException("Option Invalid");
+                //                        if(!voteOption.validateVoteOptionConfig(oldRequest.getVoteConfig()
+                //                        .getVoteOptionConfig())) {
             }
             
             if(voteOption.getId() == null || !voteOptionRepository.existsById(voteOption.getId())) {
@@ -236,10 +236,10 @@ public class VoteServiceImpl implements VoteService {
                 .orElse(null);
             if(dbVoteOption == null) continue;
             
-            dbVoteOption.setParticipantLimitActive(vo.isParticipantLimitActive());
+            //            dbVoteOption.setParticipantLimitActive(vo.isParticipantLimitActive());
             dbVoteOption.setParticipantLimit(vo.getParticipantLimit());
             
-            if(vo.isParticipantLimitActive()) {
+            if(vo.getParticipantLimit() != null) {
                 long votes = dbVoteOption.getVoteDecisions()
                     .stream()
                     .filter(voteDecision -> voteDecision.getDecision().equals(Decision.ACCEPT))

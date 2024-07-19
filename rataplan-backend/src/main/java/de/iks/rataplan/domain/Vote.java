@@ -46,7 +46,8 @@ public class Vote implements Serializable {
     private String participationToken;
     private String editToken;
     
-    private VoteConfig voteConfig = new VoteConfig();
+    private DecisionType decisionType = DecisionType.DEFAULT;
+    private Integer yesAnswerLimit;
     
     private List<String> consigneeList = new ArrayList<>();
     private List<Integer> userConsignees = new ArrayList<>();
@@ -55,13 +56,15 @@ public class Vote implements Serializable {
     private List<BackendUserAccess> accessList = new ArrayList<>();
     private String personalisedInvitation;
     
+    private boolean startTime;
+    private boolean endTime;
+    
     public Vote(
         EncryptedString title,
         EncryptedString description,
         Instant deadline,
         EncryptedString organizerName,
         VoteNotificationSettings notificationSettings,
-        VoteConfig voteConfig,
         List<VoteOption> options,
         List<VoteParticipant> participants,
         boolean isNotified
@@ -74,7 +77,6 @@ public class Vote implements Serializable {
         this.notificationSettings = notificationSettings;
         this.options = options;
         this.participants = participants;
-        this.voteConfig = voteConfig;
         this.isNotified = isNotified;
     }
     
@@ -83,8 +85,7 @@ public class Vote implements Serializable {
         EncryptedString description,
         Instant deadline,
         EncryptedString organizerName,
-        VoteNotificationSettings notificationSettings,
-        VoteConfig voteConfig
+        VoteNotificationSettings notificationSettings
     )
     {
         this.title = title;
@@ -92,9 +93,23 @@ public class Vote implements Serializable {
         this.deadline = deadline;
         this.organizerName = organizerName;
         this.notificationSettings = notificationSettings;
-        this.voteConfig = voteConfig;
+    }
+    @Column(name = "isStartTime")
+    public boolean isStartTime() {
+        return startTime;
     }
     
+    public void setStartTime(boolean startTime) {
+        this.startTime = startTime;
+    }
+    @Column(name = "isEndTime")
+    public boolean isEndTime() {
+        return endTime;
+    }
+    
+    public void setEndTime(boolean endTime) {
+        this.endTime = endTime;
+    }
     @CreationTimestamp
     @Column(updatable = false)
     public Timestamp getCreationTime() {
@@ -104,6 +119,15 @@ public class Vote implements Serializable {
     @UpdateTimestamp
     public Timestamp getLastUpdated() {
         return lastUpdated;
+    }
+    
+    @Column(name = "decisionType")
+    public DecisionType getDecisionType() {
+        return decisionType;
+    }
+    @Column(name = "yesanswerlimit")
+    public Integer getYesAnswerLimit() {
+        return yesAnswerLimit;
     }
     
     @Version
@@ -159,11 +183,6 @@ public class Vote implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vote", orphanRemoval = true, cascade = CascadeType.ALL)
     public List<VoteParticipant> getParticipants() {
         return participants;
-    }
-    
-    @Embedded
-    public VoteConfig getVoteConfig() {
-        return voteConfig;
     }
     
     @Column(name = "isNotified")
@@ -244,7 +263,7 @@ public class Vote implements Serializable {
      * checks if the given VoteDecision fits the DecisionType in this Vote
      */
     private void decisionTypeVerification(VoteDecision decision) {
-        switch(this.voteConfig.getDecisionType()) {
+        switch(this.getDecisionType()) {
             case EXTENDED:
                 if(decision.getParticipants() != null) {
                     throw new MalformedException("Decision does not fit to DecisionType");
