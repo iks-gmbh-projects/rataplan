@@ -8,7 +8,7 @@
         formControlName="startDateInput"
         [mtxDatetimepicker]="picker"
         matInput
-        [required]="voteConfig.startDate || voteConfig.startTime ?? false"
+        [readonly]="true"
       >
       <mtx-datetimepicker-toggle [for]="picker" matSuffix></mtx-datetimepicker-toggle>
       <mtx-datetimepicker [type]="startType" #picker></mtx-datetimepicker>
@@ -16,15 +16,16 @@
     </mat-form-field>
   </div>
   <div *ngIf="voteConfig.endDate || voteConfig.endTime">
-    <mat-form-field class="vote-option-form-field" appearance="fill">
+    <mat-form-field class="vote-option-form-field" appearance="fill" disabled="true">
       <mat-label [textContent]="endLabel"></mat-label>
       <input
         type="text"
         formControlName="endDateInput"
+        [disabled]="!(!!vote.get('startDateInput')?.valid && vote.get('startDateInput')?.value != null)"
         [mtxDatetimepicker]="picker"
         [min]="vote.value.startDateInput ?? null"
         matInput
-        [required]="voteConfig.endDate || voteConfig.endTime ?? false"
+        [readonly]="true"
       >
       <mtx-datetimepicker-toggle [for]="picker" matSuffix></mtx-datetimepicker-toggle>
       <mtx-datetimepicker [type]="endType" [startAt]="vote.value.startDateInput ?? null" #picker></mtx-datetimepicker>
@@ -42,7 +43,6 @@
         formControlName="descriptionInput"
         autocomplete="off"
         matInput
-        [required]="voteConfig.description"
       >
       <mat-error>{{ errorMessageService.genericFormError(vote.get('descriptionInput')) }}</mat-error>
     </mat-form-field>
@@ -58,7 +58,6 @@
         formControlName="linkInput"
         autocomplete="off"
         matInput
-        [required]="voteConfig.url"
       >
       <mat-error>{{ errorMessageService.genericFormError(vote.get('linkInput')) }}</mat-error>
     </mat-form-field>
@@ -92,7 +91,9 @@
     <button
       mat-raised-button
       color="primary"
-      [disabled]="vote.invalid "
+      [disabled]="
+      vote.invalid
+"
       (click)="addVoteOption()"
     >
       {{ vote.value.voteIndex === null ? 'Hinzufügen' : 'Ändern' }}

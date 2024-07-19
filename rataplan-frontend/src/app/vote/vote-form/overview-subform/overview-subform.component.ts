@@ -7,6 +7,7 @@ import { filter, Observable, of, Subscription } from 'rxjs';
 
 import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
+import { ExtraValidators } from '../../../validator/validators';
 import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../../vote.actions';
 import { voteFeature } from '../../vote.feature';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
@@ -63,66 +64,72 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     descriptionInput: new FormControl<string | null>(null),
     linkInput: new FormControl<string | null>(null),
     participantLimitActive: this.participantLimitActive,
-    participantLimit: this.participantLimit
-  });
-
+    participantLimit: this.participantLimit,
+  },ExtraValidators.oneValid());
+  
   private storeSub?: Subscription;
-
+  
   constructor(
     private store: Store,
     public errorMessageService: FormErrorMessageService,
-    private dialog: MatDialog
-  ) {
+    private dialog: MatDialog,
+  )
+  {
   }
-
+  
   ngOnInit(): void {
     this.storeSub = this.store.select(voteFeature.selectVote).pipe(
       filter(vote => !!vote),
     ).subscribe(request => {
-      this.voteConfig = request!.voteConfig.voteOptionConfig;
+      this.voteConfig = request!.voteOptionConfig || {};
       this.voteOptions = request!.options;
-      if (this.originalParticipationLimit.size === 0) {
+      if(this.originalParticipationLimit.size === 0) {
         this.voteOptions.forEach(vo => {
-          if (vo.id && vo.participantLimitActive && vo.participantLimit != null) this.originalParticipationLimit.set(vo.id, vo.participantLimit!);
-          else if (vo.id != undefined) {
-            const participantCount = request!.participants
-              .map(p => p.decisions).flatMap(s1 => s1)
-              .filter(d => d.optionId == vo.id)
-              .filter(d => d.decision == VoteOptionDecisionType.ACCEPT)
-              .length;
-            this.originalParticipationLimit.set(vo.id!, participantCount);
-            if (participantCount != 0) this.originalParticipationLimit.set(vo.id,participantCount);
-          }
-        }
+            if(vo.id && vo.participantLimitActive && vo.participantLimit !=
+              null) this.originalParticipationLimit.set(vo.id, vo.participantLimit!);
+            else if(vo.id != undefined) {
+              const participantCount = request!.participants
+                .map(p => p.decisions).flatMap(s1 => s1)
+                .filter(d => d.optionId == vo.id)
+                .filter(d => d.decision == VoteOptionDecisionType.ACCEPT)
+                .length;
+              this.originalParticipationLimit.set(vo.id!, participantCount);
+              if(participantCount != 0) this.originalParticipationLimit.set(vo.id, participantCount);
+            }
+          },
         );
       }
     });
   }
-
+  
   ngOnDestroy(): void {
     this.storeSub?.unsubscribe();
   }
-
+  
   clearContent() {
     this.vote.reset();
   }
-
+  
   sanitiseParticipationLimit(checked: boolean) {
-    if (!checked) {
+    if(!checked) {
       this.participantLimit.setValue(null);
       this.participantLimit.markAsPristine();
       this.participantLimit.setErrors(null);
     }
   }
+  
   addVoteOption() {
-    if (!this.isInputInForm()) {
+    if(!this.isInputInForm()) {
       return;
     }
     const input = this.vote.value;
     let proceed: Observable<boolean> = of(true);
-    if (input.voteIndex != null && input.participantLimitActive) {
-      if (input.participantLimit! < this.originalParticipationLimit.get(this.voteOptions[input.voteIndex].id!)!) {
-        proceed = this.dialog.open(ConfirmChoiceComponent, { data: { option: CONFIRM_CHOICE_OPTIONS.PARTICIPANT_LIMIT }}).afterClosed();
+    if(input.voteIndex != null && input.participantLimitActive) {
+      if(input.participantLimit! < this.originalParticipationLimit.get(this.voteOptions[input.voteIndex].id!)!) {
+        proceed = this.dialog.open(
+          ConfirmChoiceComponent,
+          {data: {option: CONFIRM_CHOICE_OPTIONS.PARTICIPANT_LIMIT}},
+        ).afterClosed();
       }
     }
     proceed.subscribe(proceed => {
@@ -134,7 +141,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
         voteOption.url = input.linkInput ?? undefined;
         voteOption.participantLimitActive = input.participantLimitActive ?? false;
         voteOption.participantLimit = input.participantLimitActive ? input.participantLimit : null;
-        if (input.voteIndex !== null) {
+        if(input.voteIndex !== null) {
           this.store.dispatch(new EditVoteOptionAction(input.voteIndex!, voteOption));
         } else {
           this.store.dispatch(new AddVoteOptionsAction(voteOption));
@@ -143,21 +150,21 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       this.clearContent();
     });
   }
-
+  
   isInputInForm() {
     let isInputInForm = false;
     Object.values(this.vote.value).forEach(value => {
-      if (value) {
+      if(value) {
         isInputInForm = true;
       }
     });
     return isInputInForm;
   }
-
+  
   deleteVoteOption(index: number) {
     this.store.dispatch(new RemoveVoteOptionAction(index));
   }
-
+  
   editVoteOption(index: number) {
     const voteOption = this.voteOptions[index];
     this.vote.setValue({
