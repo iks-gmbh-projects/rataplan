@@ -132,6 +132,20 @@ public class VoteServiceImpl implements VoteService {
             }
         }
         
+        if(!Objects.equals(dbVote.getYesAnswerLimit(), newVote.getYesAnswerLimit())) {
+            if(newVote.getYesAnswerLimit() != null) {
+                List<VoteParticipant> validParticipants = dbVote.getParticipants()
+                    .stream()
+                    .filter(vp -> vp.getVoteDecisions()
+                                      .stream()
+                                      .map(VoteDecision::getDecision)
+                                      .filter(Decision.ACCEPT::equals)
+                                      .count() > newVote.getYesAnswerLimit())
+                    .collect(Collectors.toList());
+                newVote.setParticipants(validParticipants);
+            }
+            dbVote.setYesAnswerLimit(newVote.getYesAnswerLimit());
+        }
         if(dbVote.isStartTime() != newVote.isStartTime()) dbVote.setStartTime(newVote.isStartTime());
         if(dbVote.isEndTime() != newVote.isEndTime()) dbVote.setEndTime(newVote.isEndTime());
         
@@ -167,8 +181,7 @@ public class VoteServiceImpl implements VoteService {
             if(dbVoteOption.isEmpty()) voteOption.setId(null);
             else if(!Objects.equals(dbVote.getId(), dbVoteOption.get().getVote().getId()))
                 throw new RuntimeException("bad");
-            else if(!dbVoteOption.get().assertConfigEqual(voteOption))
-                voteOption.getVoteDecisions().clear();
+            else if(!dbVoteOption.get().assertConfigEqual(voteOption)) voteOption.getVoteDecisions().clear();
         }
         dbVote.setOrganizerName(newVote.getOrganizerName());
         dbVote.setNotificationSettings(newVote.getNotificationSettings());
@@ -205,11 +218,7 @@ public class VoteServiceImpl implements VoteService {
     
     private void addOptions(Vote oldRequest, List<VoteOption> newVoteOptions) {
         for(VoteOption voteOption : newVoteOptions) {
-            if(voteOption.assertInvalid()) {
-                throw new MalformedException("Option Invalid");
-                //                        if(!voteOption.validateVoteOptionConfig(oldRequest.getVoteConfig()
-                //                        .getVoteOptionConfig())) {
-            }
+            if(voteOption.assertInvalid()) throw new MalformedException("Option Invalid");
             
             if(voteOption.getId() == null || !voteOptionRepository.existsById(voteOption.getId())) {
                 voteOption.setVote(oldRequest);
