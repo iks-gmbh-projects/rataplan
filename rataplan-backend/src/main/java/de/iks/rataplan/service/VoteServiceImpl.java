@@ -132,20 +132,6 @@ public class VoteServiceImpl implements VoteService {
             }
         }
         
-        if(!Objects.equals(dbVote.getYesAnswerLimit(), newVote.getYesAnswerLimit())) {
-            if(newVote.getYesAnswerLimit() != null) {
-                List<VoteParticipant> validParticipants = dbVote.getParticipants()
-                    .stream()
-                    .filter(vp -> vp.getVoteDecisions()
-                                      .stream()
-                                      .map(VoteDecision::getDecision)
-                                      .filter(Decision.ACCEPT::equals)
-                                      .count() > newVote.getYesAnswerLimit())
-                    .collect(Collectors.toList());
-                newVote.setParticipants(validParticipants);
-            }
-            dbVote.setYesAnswerLimit(newVote.getYesAnswerLimit());
-        }
         if(dbVote.isStartTime() != newVote.isStartTime()) dbVote.setStartTime(newVote.isStartTime());
         if(dbVote.isEndTime() != newVote.isEndTime()) dbVote.setEndTime(newVote.isEndTime());
         
@@ -169,20 +155,17 @@ public class VoteServiceImpl implements VoteService {
             }
         }
         if(!Objects.equals(newVote.getYesAnswerLimit(), dbVote.getYesAnswerLimit())) {
-            dbVote.getParticipants()
-                .removeIf(voteParticipant -> voteParticipant.getVoteDecisions()
-                                                 .stream()
-                                                 .filter(voteDecision -> voteDecision.getDecision() == Decision.ACCEPT)
-                                                 .count() > newVote.getYesAnswerLimit());
+            if(newVote.getYesAnswerLimit() != null) {
+                dbVote.getParticipants()
+                    .removeIf(voteParticipant -> voteParticipant.getVoteDecisions()
+                                                     .stream()
+                                                     .filter(voteDecision -> voteDecision.getDecision() ==
+                                                                             Decision.ACCEPT)
+                                                     .count() > newVote.getYesAnswerLimit());
+            }
+            dbVote.setYesAnswerLimit(newVote.getYesAnswerLimit());
         }
-        if(newVote.getOptions() != null) for(VoteOption voteOption : newVote.getOptions()) {
-            if(Objects.equals(null, voteOption.getId())) continue;
-            Optional<VoteOption> dbVoteOption = this.voteOptionRepository.findById(voteOption.getId());
-            if(dbVoteOption.isEmpty()) voteOption.setId(null);
-            else if(!Objects.equals(dbVote.getId(), dbVoteOption.get().getVote().getId()))
-                throw new RuntimeException("bad");
-            else if(!dbVoteOption.get().assertConfigEqual(voteOption)) voteOption.getVoteDecisions().clear();
-        }
+        
         dbVote.setOrganizerName(newVote.getOrganizerName());
         dbVote.setNotificationSettings(newVote.getNotificationSettings());
         transferParticipationLimitSetting(dbVote, newVote);
