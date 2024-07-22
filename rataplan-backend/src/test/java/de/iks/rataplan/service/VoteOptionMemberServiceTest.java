@@ -69,8 +69,7 @@ public class VoteOptionMemberServiceTest {
     public void addParticipantShouldFailMoreYesChoicesThanPermitted() {
         Vote vote = voteRepository.findById(1).orElseThrow();
         
-        vote.getVoteConfig().setYesLimitActive(true);
-        vote.getVoteConfig().setYesAnswerLimit(1);
+        vote.setYesAnswerLimit(1);
         
         VoteParticipant participant = new VoteParticipant();
         participant.setName(new EncryptedString("Max", false));
@@ -97,7 +96,7 @@ public class VoteOptionMemberServiceTest {
             new Date(2050, 10, 10).toInstant(),
             new EncryptedString("iks@iks-gmbh.com", false),
             null,
-            new VoteConfig(new VoteOptionConfig(), DecisionType.EXTENDED)
+             DecisionType.EXTENDED
         );
         
         VoteOption voteOption1 = new VoteOption(new EncryptedString("at home", false), vote);
@@ -105,8 +104,7 @@ public class VoteOptionMemberServiceTest {
         voteOption2.setId(2);
         voteOption1.setId(1);
         
-        vote.getVoteConfig().setYesLimitActive(true);
-        vote.getVoteConfig().setYesAnswerLimit(1);
+        vote.setYesAnswerLimit(1);
         
         vote.setOptions(Arrays.asList(voteOption1, voteOption2));
         
