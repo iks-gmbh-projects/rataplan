@@ -64,7 +64,6 @@ public class CreatorVoteDTOTest {
                 .sendLinkMail(true)
                 .notifyExpiration(true)
                 .build(),
-            new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false), DecisionType.DEFAULT),
             "message"
         );
         
@@ -112,7 +111,6 @@ public class CreatorVoteDTOTest {
                 .sendLinkMail(true)
                 .notifyExpiration(true)
                 .build(),
-            new VoteConfig(config, DecisionType.EXTENDED),
             "message"
         );
         dtoVote.setId(1);
@@ -139,9 +137,7 @@ public class CreatorVoteDTOTest {
             new EncryptedString("Description", false),
             new Date(123456789L).toInstant(),
             new EncryptedString(IKS_NAME, false),
-            new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),
-            new VoteConfig(new VoteOptionConfig(true, false, true, false, false, false), DecisionType.EXTENDED)
-        );
+            new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),DecisionType.EXTENDED);
         VoteOption voteOption1 = new VoteOption(new Timestamp(123123123L),
             new EncryptedString("iks Hilden", false),
             vote
@@ -190,7 +186,7 @@ public class CreatorVoteDTOTest {
             new Date(123456789L).toInstant(),
             IKS_NAME,
             new VoteNotificationSettingsDTO(IKS_MAIL, true, false, true),
-            new VoteConfig(new VoteOptionConfig(true, false, true, true, false, false), DecisionType.NUMBER),
+            DecisionType.NUMBER,
             "message"
         );
         dtoVote.setId(1);

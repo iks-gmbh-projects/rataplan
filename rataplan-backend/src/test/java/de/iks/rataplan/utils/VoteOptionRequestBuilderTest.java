@@ -132,8 +132,6 @@ public class VoteOptionRequestBuilderTest {
             new EncryptedString("Fun with code", false),
             new Date(DATE_2050_10_10).toInstant(),
             new EncryptedString(IKS_NAME, false),
-            new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),
-            new VoteConfig(new VoteOptionConfig(true, true, true, true, true, true), DecisionType.EXTENDED)
-        );
+            new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),DecisionType.EXTENDED);
     }
 }

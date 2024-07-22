@@ -59,6 +59,19 @@ public class Vote implements Serializable {
     private boolean startTime;
     private boolean endTime;
     
+    public Vote(EncryptedString title,
+        EncryptedString description,
+        Instant deadline,
+        EncryptedString organizerName,
+        VoteNotificationSettings notificationSettings,
+        List<VoteOption> options,
+        List<VoteParticipant> participants,
+        boolean isNotified,
+        DecisionType decisionType){
+        this(title, description, deadline, organizerName, notificationSettings, options, participants, isNotified);
+        this.decisionType = decisionType;
+    }
+    
     public Vote(
         EncryptedString title,
         EncryptedString description,
@@ -85,7 +98,8 @@ public class Vote implements Serializable {
         EncryptedString description,
         Instant deadline,
         EncryptedString organizerName,
-        VoteNotificationSettings notificationSettings
+        VoteNotificationSettings notificationSettings,
+        DecisionType decisionType
     )
     {
         this.title = title;
@@ -93,6 +107,7 @@ public class Vote implements Serializable {
         this.deadline = deadline;
         this.organizerName = organizerName;
         this.notificationSettings = notificationSettings;
+        this.decisionType = decisionType;
     }
     @Column(name = "isStartTime")
     public boolean isStartTime() {

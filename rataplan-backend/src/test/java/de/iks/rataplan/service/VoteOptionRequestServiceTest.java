@@ -21,6 +21,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -87,7 +88,9 @@ public class VoteOptionRequestServiceTest {
     
     @Test
     @DatabaseSetup(FILE_EMPTY_DB)
-    @ExpectedDatabase(value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    @ExpectedDatabase(
+        value = FILE_PATH + CREATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
+    )
     public void createVote() {
         Vote vote = createSimpleVote();
         
@@ -98,40 +101,34 @@ public class VoteOptionRequestServiceTest {
             anyString(),
             anyString()
         );
-        verify(authService, atLeast(0)).sendNotification(
-            anyString(),
+        verify(authService, atLeast(0)).sendNotification(anyString(),
             any(NotificationType.class),
             anyString(),
             anyString()
         );
-        verify(authService, atLeast(0)).sendNotification(
-            anyString(),
-            any(NotificationType.class),
-            anyString(),
-            anyString(),
-            anyString()
-        );
-        verify(authService, atLeast(0)).sendMailNotifications(
-            anyCollection(),
-            any(NotificationType.class),
-            anyString(),
-            anyString()
-        );
-        verify(authService, atLeast(0)).sendMailNotifications(
-            anyCollection(),
+        verify(authService, atLeast(0)).sendNotification(anyString(),
             any(NotificationType.class),
             anyString(),
             anyString(),
             anyString()
         );
-        verify(authService, atLeast(0)).sendUserNotifications(
-            anyCollection(),
+        verify(authService, atLeast(0)).sendMailNotifications(anyCollection(),
             any(NotificationType.class),
             anyString(),
             anyString()
         );
-        verify(authService, atLeast(0)).sendUserNotifications(
-            anyCollection(),
+        verify(authService, atLeast(0)).sendMailNotifications(anyCollection(),
+            any(NotificationType.class),
+            anyString(),
+            anyString(),
+            anyString()
+        );
+        verify(authService, atLeast(0)).sendUserNotifications(anyCollection(),
+            any(NotificationType.class),
+            anyString(),
+            anyString()
+        );
+        verify(authService, atLeast(0)).sendUserNotifications(anyCollection(),
             any(NotificationType.class),
             anyString(),
             anyString(),
@@ -161,20 +158,6 @@ public class VoteOptionRequestServiceTest {
         voteParticipants.add(voteParticipant);
         
         vote.setParticipants(voteParticipants);
-        
-        assertThrows(MalformedException.class, () -> voteService.createVote(vote));
-        verifyNoInteractions(authService);
-    }
-    
-    @Test
-    @DatabaseSetup(FILE_EMPTY_DB)
-    public void createVoteShouldFailWrongVoteOptionConfig() {
-        Vote vote = createSimpleVote();
-        
-        VoteOption voteOption = new VoteOption(new EncryptedString("iks Hilden", false), vote);
-        voteOption.setUrl(new EncryptedString("thiswontwork.com", false));
-        
-        vote.setOptions(voteOptionList(voteOption, new VoteOption(new EncryptedString("homeoffice", false), vote)));
         
         assertThrows(MalformedException.class, () -> voteService.createVote(vote));
         verifyNoInteractions(authService);
@@ -231,28 +214,23 @@ public class VoteOptionRequestServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
-    @ExpectedDatabase(value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
+    @ExpectedDatabase(
+        value = FILE_PATH + UPDATE + FILE_EXPECTED, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED
+    )
     public void updateVote() {
         
         Vote oldVote = voteService.getVoteById(1);
-        
-        VoteConfig voteConfig = new VoteConfig(
-            new VoteOptionConfig(true, false, false, false, false, false),
-            DecisionType.DEFAULT
-        );
         
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setNotificationSettings(new VoteNotificationSettings(
-            IKS_MAIL.getBytes(StandardCharsets.UTF_8),
+        vote.setNotificationSettings(new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8),
             true,
             false,
             true
         ));
-        vote.setVoteConfig(voteConfig);
         
         VoteParticipant voteParticipant = new VoteParticipant();
         voteParticipant.setId(1);
@@ -264,13 +242,13 @@ public class VoteOptionRequestServiceTest {
         
         vote.setParticipants(voteParticipants);
         
-        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote, false, null);
+        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote, null);
         voteOption1.setVote(vote);
         
-        VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote, false, null);
+        VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote, null);
         voteOption2.setVote(vote);
         
-        VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), vote, false, null);
+        VoteOption voteOption3 = new VoteOption(new EncryptedString("spaceship", false), vote, null);
         voteOption3.setVote(vote);
         
         vote.setOptions(voteOptionList(voteOption1, voteOption2, voteOption3));
@@ -310,75 +288,15 @@ public class VoteOptionRequestServiceTest {
     }
     
     @Test
-    public void createVoteShouldFailMisconfiguredParticipantLimitActiveFalseParticipantLimitNotNull() {
-        VoteConfig voteConfig = new VoteConfig(
-            new VoteOptionConfig(true, false, false, false, false, false),
-            DecisionType.DEFAULT
-        );
-        
-        Vote vote = new Vote();
-        vote.setId(1);
-        vote.setTitle(new EncryptedString("IKS-Thementag", false));
-        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
-        vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setVoteConfig(voteConfig);
-        
-        VoteOption voteOption = new VoteOption(new EncryptedString("universe", false), vote);
-        
-        voteOption.setVote(vote);
-        
-        vote.setOptions(voteOptionList(voteOption));
-        
-        voteOption.setVote(vote);
-        voteOption.setParticipantLimit(10);
-        voteOption.setParticipantLimitActive(false);
-        assertThrows(MalformedException.class, () -> voteService.createVote(vote));
-        verifyNoInteractions(authService);
-    }
-    
-    @Test
-    public void createVoteShouldFailParticipantLimitActiveFalseParticipationLimitNull() {
-        VoteConfig voteConfig = new VoteConfig(
-            new VoteOptionConfig(true, false, false, false, false, false),
-            DecisionType.DEFAULT
-        );
-        
-        Vote vote = new Vote();
-        vote.setId(1);
-        vote.setTitle(new EncryptedString("IKS-Thementag", false));
-        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
-        vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setVoteConfig(voteConfig);
-        
-        VoteOption voteOption = new VoteOption(new EncryptedString("universe", false), vote);
-        
-        voteOption.setParticipantLimitActive(true);
-        voteOption.setParticipantLimit(null);
-        voteOption.setVote(vote);
-        
-        vote.setOptions(voteOptionList(voteOption));
-        
-        voteOption.setVote(vote);
-        assertThrows(MalformedException.class, () -> voteService.createVote(vote));
-        verifyNoInteractions(authService);
-    }
-    
-    @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
-    public void updateVoteShouldFailMisconfiguredParticipantLimitActiveFalseParticipantLimitNotNull() {
+    public void updateVoteShouldFailMisconfiguredParticipantLimitNegative() {
         Vote oldVote = voteService.getVoteById(1);
         
-        VoteConfig voteConfig = new VoteConfig(
-            new VoteOptionConfig(true, false, false, false, false, false),
-            DecisionType.DEFAULT
-        );
-        
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setVoteConfig(voteConfig);
         
         VoteParticipant voteParticipant = new VoteParticipant();
         voteParticipant.setId(1);
@@ -393,7 +311,7 @@ public class VoteOptionRequestServiceTest {
         VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote);
         voteOption1.setVote(vote);
         
-        VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote, false, 5);
+        VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote, -1);
         voteOption2.setVote(vote);
         
         vote.setOptions(voteOptionList(voteOption1, voteOption2));
@@ -403,20 +321,14 @@ public class VoteOptionRequestServiceTest {
     
     @Test
     @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
-    public void updateVoteShouldFailParticipantLimitNullParticipationLimitActive() {
+    public void updateVoteShouldFailParticipationLimitZero() {
         Vote oldVote = voteService.getVoteById(1);
-        
-        VoteConfig voteConfig = new VoteConfig(
-            new VoteOptionConfig(true, false, false, false, false, false),
-            DecisionType.DEFAULT
-        );
         
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setVoteConfig(voteConfig);
         
         VoteParticipant voteParticipant = new VoteParticipant();
         voteParticipant.setId(1);
@@ -428,7 +340,7 @@ public class VoteOptionRequestServiceTest {
         
         vote.setParticipants(voteParticipants);
         
-        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote, true, null);
+        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote, 0);
         voteOption1.setVote(vote);
         
         VoteOption voteOption2 = new VoteOption(new EncryptedString("earth", false), vote);
@@ -446,17 +358,11 @@ public class VoteOptionRequestServiceTest {
         
         Vote oldVote = voteService.getVoteById(1);
         
-        VoteConfig voteConfig = new VoteConfig(
-            new VoteOptionConfig(true, false, false, false, false, false),
-            DecisionType.DEFAULT
-        );
-        
         Vote vote = new Vote();
         vote.setId(1);
         vote.setTitle(new EncryptedString("IKS-Thementag", false));
         vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
         vote.setDescription(new EncryptedString("Fun with code", false));
-        vote.setVoteConfig(voteConfig);
         
         VoteParticipant voteParticipant = new VoteParticipant();
         voteParticipant.setId(1);
@@ -468,7 +374,7 @@ public class VoteOptionRequestServiceTest {
         
         vote.setParticipants(voteParticipants);
         
-        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote, true, 1);
+        VoteOption voteOption1 = new VoteOption(new EncryptedString("universe", false), vote, 1);
         voteOption1.setVote(vote);
         
         vote.setOptions(voteOptionList(voteOption1));
@@ -480,5 +386,91 @@ public class VoteOptionRequestServiceTest {
             .filter(d -> d.getDecision().getValue() == 1)
             .noneMatch(d -> d.getVoteOption().getId() == 1));
         verifyNoInteractions(authService);
+    }
+    
+    @Test
+    @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
+    public void errorOnUpdateEndDateWithoutStartDate() {
+        Vote oldVote = voteService.getVoteById(1);
+        
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        
+        List<VoteParticipant> voteParticipants = new ArrayList<>();
+        vote.setParticipants(voteParticipants);
+        
+        VoteOption voteOption1 = new VoteOption();
+        voteOption1.setVote(vote);
+        voteOption1.setEndDate(new Timestamp(1));
+        
+        vote.setOptions(voteOptionList(voteOption1));
+        
+        assertThrows(MalformedException.class, () -> voteService.updateVote(oldVote, vote));
+    }
+    
+    @Test
+    @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
+    public void errorOnCreateEndDateWithoutStartDate() {
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        
+        List<VoteParticipant> voteParticipants = new ArrayList<>();
+        vote.setParticipants(voteParticipants);
+        
+        VoteOption voteOption1 = new VoteOption();
+        voteOption1.setVote(vote);
+        voteOption1.setEndDate(new Timestamp(1));
+        
+        vote.setOptions(voteOptionList(voteOption1));
+        
+        assertThrows(MalformedException.class, () -> voteService.createVote(vote));
+    }
+    
+    @Test
+    public void errorOnCreateVoteOptionWithNoConfig(){
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        
+        List<VoteParticipant> voteParticipants = new ArrayList<>();
+        vote.setParticipants(voteParticipants);
+        
+        VoteOption voteOption1 = new VoteOption();
+        voteOption1.setVote(vote);
+        
+        vote.setOptions(voteOptionList(voteOption1));
+        
+        assertThrows(MalformedException.class, () -> voteService.createVote(vote));
+    }
+    
+    @Test
+    @DatabaseSetup(FILE_PATH + UPDATE + FILE_INITIAL)
+    public void errorOnUpdateWithNoVoteOptionConfig() {
+        Vote oldVote = voteService.getVoteById(1);
+        
+        Vote vote = new Vote();
+        vote.setId(1);
+        vote.setTitle(new EncryptedString("IKS-Thementag", false));
+        vote.setDeadline(new Date(DATE_2050_10_10).toInstant());
+        vote.setDescription(new EncryptedString("Fun with code", false));
+        
+        List<VoteParticipant> voteParticipants = new ArrayList<>();
+        vote.setParticipants(voteParticipants);
+        
+        VoteOption voteOption1 = new VoteOption();
+        voteOption1.setVote(vote);
+        voteOption1.setEndDate(new Timestamp(1));
+        
+        vote.setOptions(voteOptionList(voteOption1));
+        
+        assertThrows(MalformedException.class, () -> voteService.updateVote(oldVote, vote));
     }
 }

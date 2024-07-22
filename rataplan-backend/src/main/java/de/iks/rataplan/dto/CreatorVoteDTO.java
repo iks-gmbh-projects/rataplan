@@ -1,5 +1,6 @@
 package de.iks.rataplan.dto;
 
+import de.iks.rataplan.domain.DecisionType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -65,6 +66,20 @@ public class CreatorVoteDTO extends VoteDTO implements Serializable {
     {
         super(title, description, deadline, organizerName, personalisedInvitation);
         this.notificationSettings = notificationSettings;
+    }
+    public CreatorVoteDTO(
+        String title,
+        String description,
+        Instant instant,
+        String iksName,
+        VoteNotificationSettingsDTO voteNotificationSettingsDTO,
+        DecisionType decisionType,
+        String message
+    )
+    {
+        
+        this(title, description, instant, iksName, voteNotificationSettingsDTO, message);
+        this.setDecisionType(decisionType);
     }
     
     @Override
