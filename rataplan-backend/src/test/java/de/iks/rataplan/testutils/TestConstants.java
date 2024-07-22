@@ -70,15 +70,11 @@ public final class TestConstants {
             new Date(DATE_2050_10_10).toInstant(),
             new EncryptedString(IKS_NAME, false),
             new VoteNotificationSettings(IKS_MAIL.getBytes(StandardCharsets.UTF_8), true, false, true),
-            new VoteConfig(new VoteOptionConfig(true, false, false, false, false, false),
-                DecisionType.DEFAULT,
-                false,
-                null
-            )
+            DecisionType.DEFAULT
         );
         
         vote.setOptions(voteOptionList(new VoteOption(new EncryptedString("iks Hilden", false), vote),
-            new VoteOption(new EncryptedString("homeoffice", false), vote, false, null)
+            new VoteOption(new EncryptedString("homeoffice", false), vote,  null)
         ));
         return vote;
     }
