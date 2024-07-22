@@ -1,8 +1,8 @@
 <dataset>
-    <vote id="1" title="Coding Dojo" description="Fun with code" recipientEmail="aWtzQGlrcy1nbWJoLmNvbQ==" notifyParticipation="false" notifyExpiration="true" deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" yesLimitActive="false" version="1"/>
+    <vote id="1" title="Coding Dojo" description="Fun with code" recipientEmail="aWtzQGlrcy1nbWJoLmNvbQ==" notifyParticipation="false" notifyExpiration="true" deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0"   isStartTime="0"  isEndTime="0"   version="1"/>
 
-    <voteOption id="1" voteId="1" description="iks Hilden" version="1" participantLimitActive="false" />
-    <voteOption id="2" voteId="1" description="homeoffice" version="1" participantLimitActive="false" />
+    <voteOption id="1" voteId="1" description="iks Hilden" version="1"  />
+    <voteOption id="2" voteId="1" description="homeoffice" version="1"  />
 
     <voteParticipant />
 
