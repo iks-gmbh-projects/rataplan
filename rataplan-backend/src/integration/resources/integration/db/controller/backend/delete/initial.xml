@@ -1,14 +1,14 @@
 <dataset>
-    <vote id="1" userId="1" title="Coding Dojo" description="Fun with code" deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" version="1" yeslimitactive="false"/>
-    <vote id="2" userId="2" title="Coding Dojo" description="Fun with code" deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" version="1" yeslimitactive="false"/>
-    <vote id="3" userId="2" title="Coding Dojo" description="Fun with code" deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0" isDescription="1" isStartDate="0" isStartTime="0" isEndDate="0" isEndTime="0" isUrl="0" version="1" yeslimitactive="false"/>
+    <vote id="1" userId="1" title="Coding Dojo" description="Fun with code" deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0"   isStartTime="0"  isEndTime="0"  version="1" />
+    <vote id="2" userId="2" title="Coding Dojo" description="Fun with code" deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0"   isStartTime="0"  isEndTime="0"  version="1" />
+    <vote id="3" userId="2" title="Coding Dojo" description="Fun with code" deadline="2050-10-10 12:30:52.0" isNotified="false" decisionType="0"   isStartTime="0"  isEndTime="0"  version="1" />
 
-    <voteOption id="1" voteId="1" description="iks Hilden" version="1" participantlimitactive="false"/>
-    <voteOption id="2" voteId="1" description="homeoffice" version="1" participantlimitactive="false"/>
-    <voteOption id="3" voteId="2" description="iks Hilden" version="1" participantlimitactive="false"/>
-    <voteOption id="4" voteId="2" description="homeoffice" version="1" participantlimitactive="false"/>
-    <voteOption id="5" voteId="2" description="iks Hilden" version="1" participantlimitactive="false"/>
-    <voteOption id="6" voteId="2" description="homeoffice" version="1" participantlimitactive="false"/>
+    <voteOption id="1" voteId="1" description="iks Hilden" version="1" />
+    <voteOption id="2" voteId="1" description="homeoffice" version="1" />
+    <voteOption id="3" voteId="2" description="iks Hilden" version="1" />
+    <voteOption id="4" voteId="2" description="homeoffice" version="1" />
+    <voteOption id="5" voteId="2" description="iks Hilden" version="1" />
+    <voteOption id="6" voteId="2" description="homeoffice" version="1" />
 
     <voteParticipant id="1" voteId="1" name="IKS_1" userId="1" version="1" />
     <voteParticipant id="2" voteId="2" name="IKS_1" userId="1" version="1" />
