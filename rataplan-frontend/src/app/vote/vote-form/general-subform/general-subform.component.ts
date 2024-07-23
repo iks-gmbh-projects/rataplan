@@ -121,7 +121,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
       yesLimitActive: this.generalSubform.value.yesLimitActive,
       yesAnswerLimit: this.generalSubform.value.yesAnswerLimit,
     }));
-    this.router.navigate(['..', 'configurationOptions'], {relativeTo: this.activeRoute});
+    this.router.navigate(['..', 'configuration'], {relativeTo: this.activeRoute});
   }
   
   static yesAnswerLimitMoreThanZeroOrNull(currentLimit: number | null): ValidatorFn {
