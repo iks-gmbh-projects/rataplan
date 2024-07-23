@@ -11,12 +11,12 @@ import { ConfigSubformComponent } from '../config-subform/config-subform.compone
 import { ExtraValidators } from '../../../validator/validators';
 import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../../vote.actions';
 import { voteFeature } from '../../vote.feature';
+import { ConfigSubformComponent } from '../config-subform/config-subform.component';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
 
 import { voteFormAction } from '../state/vote-form.action';
 import { voteFormFeature } from '../state/vote-form.feature';
-
 @Component({
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',

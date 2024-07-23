@@ -1,4 +1,7 @@
-<h3>Abstimmungsoptionen</h3>
+<div style="display: flex;justify-content: space-between;min-width: 100%">
+  <h3>Abstimmungsoptionen</h3>
+  <mat-icon style="align-self: center; cursor: pointer" (click)="configureVote()">settings</mat-icon>
+</div>
 <div class="left-bound" [formGroup]="vote">
   <div *ngIf="voteConfig.startDate || voteConfig.startTime">
     <mat-form-field appearance="fill">
@@ -141,7 +144,7 @@
   <div class="navigate-submit-multiple-button-space">
     <button
       mat-icon-button
-      routerLink="../configurationOptions"
+      routerLink="../general"
     >
       <mat-icon>navigate_before</mat-icon>
     </button>

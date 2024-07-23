@@ -33,12 +33,11 @@ const routes: Routes = [
   },
   {path: 'links', component: LinkSubformComponent},
   {path: 'own', component: VoteListComponent, canActivate: [ensureLoggedIn]},
-  {
-    path: 'edit/:id', component: VoteFormComponent,
-    children: [
-      {path: 'general', component: GeneralSubformComponent},
-      {path: 'datepicker', component: DatepickerSubformComponent},
-      {path: 'configurationOptions', component: ConfigSubformComponent},
+    {
+        path: 'edit/:id', component: VoteFormComponent,
+        children: [
+            {path: 'general', component: GeneralSubformComponent},
+            {path: 'datepicker', component: DatepickerSubformComponent},
       {path: 'configuration', component: OverviewSubformComponent},
       {path: 'email', component: EmailSubformComponent},
       {

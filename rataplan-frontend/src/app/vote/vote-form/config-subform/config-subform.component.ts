@@ -1,5 +1,6 @@
 import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { combineLatest, startWith, Subscription } from 'rxjs';
@@ -35,7 +36,8 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
     private formBuilder: UntypedFormBuilder,
     private router: Router,
     private activeRoute: ActivatedRoute,
-    private store: Store
+    private store: Store,
+    private ref:MatDialogRef<any>
   ) {
     this.configForm.setValidators(ExtraValidators.filterCountMin(1));
   }
@@ -83,8 +85,10 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
     this.storeSub?.unsubscribe();
     this.formSub1?.unsubscribe();
   }
+  
+  close(){this.ref.close();}
 
-  nextPage() {
+  save() {
     const config: VoteOptionConfig = {
       startDate: this.configForm.get('isDateChecked')?.value || false,
       startTime: this.configForm.get('isTimeChecked')?.value || false,
@@ -94,6 +98,6 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
       url: this.configForm.get('isUrlChecked')?.value || false,
     };
     this.store.dispatch(voteFormAction.setOptionConfig({config}));
-    this.router.navigate(['..', 'configuration'], { relativeTo: this.activeRoute });
+    this.ref.close();
   }
 }
