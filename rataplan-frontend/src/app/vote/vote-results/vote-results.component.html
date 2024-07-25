@@ -1,24 +1,26 @@
 <div class="wrapper">
   <div style="margin-bottom: 20px">
-    <mat-card appearance="outlined">
-      <mat-card-title>{{ vote?.title }}</mat-card-title>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ vote?.title }}</mat-card-title>
+        <mat-card-subtitle>
+          Abstimmung aktiv bis: {{ vote?.deadline! | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
+        </mat-card-subtitle>
+        <mat-card-subtitle *ngIf="hasDeadlinePassed()">
+          <span class="mat-error">Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
+        </mat-card-subtitle>
+      </mat-card-header>
       <mat-card-content>
-        <p>{{ vote?.description }}</p>
+        <p [textContent]="vote.description ?? ''"></p>
       </mat-card-content>
-      <mat-card-subtitle>
-        Abstimmung aktiv bis: {{ vote?.deadline! | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
-      </mat-card-subtitle>
-      <mat-card-subtitle *ngIf="hasDeadlinePassed()">
-        <span class="mat-error">Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
-      </mat-card-subtitle>
-      <div *ngIf="vote?.organizerName">
-        <span>Erstellt von {{ vote!.organizerName }}</span>
-      </div>
+      <mat-card-footer>
+        <div *ngIf="vote?.organizerName">
+          <span>Erstellt von {{ vote!.organizerName }}</span>
+        </div>
+      </mat-card-footer>
     </mat-card>
   </div>
-  <mat-card appearance="outlined" class="result-container">
-    <mat-card-title>
-    </mat-card-title>
+  <mat-card class="result-container">
     <mat-card-content>
       <div style="margin-bottom: 1rem">
         <div>

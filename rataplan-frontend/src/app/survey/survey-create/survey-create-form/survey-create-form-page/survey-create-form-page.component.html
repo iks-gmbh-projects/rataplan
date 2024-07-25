@@ -8,7 +8,6 @@
   </div>
   <div formArrayName="questions">
     <mat-card
-      appearance="outlined"
       class="bottomspace" *ngFor="let question of getQuestions().controls; index as j"
       [formGroupName]="j"
     >

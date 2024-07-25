@@ -1,13 +1,17 @@
 <div class="center">
   <mat-card appearance="outlined" *ngIf="survey">
-    <mat-card-title>{{survey.name}}</mat-card-title>
+    <mat-card-header>
+      <mat-card-title [textContent]="survey.name"></mat-card-title>
+      <mat-card-subtitle>
+        <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
+      </mat-card-subtitle>
+    </mat-card-header>
     <mat-card-content>
-      <p>{{survey.description}}</p>
-      <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
+      <p [textContent]="survey.description"></p>
       <p>
         Teilnahme
-        {{survey.openAccess ? "für Jeden" : "mit Einladung"}}
-        {{survey.anonymousParticipation ? "anonym" : ""}}
+        {{ survey.openAccess ? "für Jeden" : "mit Einladung" }}
+        {{ survey.anonymousParticipation ? "anonym" : "" }}
       </p>
     </mat-card-content>
     <mat-card-actions>
@@ -16,7 +20,10 @@
       </a>
       <!--ugly workaround for missing angular feature-->
       <a style="display:none" [routerLink]="['/survey','participate', survey.participationId]" #participationLink></a>
-      <button mat-icon-button (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')">
+      <button
+        mat-icon-button
+        (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')"
+      >
         <mat-icon>content_copy</mat-icon>
       </button>
       <a mat-icon-button color="primary" routerLink="edit" *ngIf="!expired">

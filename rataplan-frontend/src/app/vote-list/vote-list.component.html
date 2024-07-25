@@ -1,75 +1,88 @@
 <div class="center">
-<mat-tab-group dynamicHeight [selectedIndex]='consignedNonExpiredVoteCount ? 1 : null' >
-  <mat-tab>
-    <div>
-    <ng-template mat-tab-label>
-      <span class='centered'>Erstellt</span>
-    </ng-template>
-    <div class='left-bound'>
-      <mat-card appearance="outlined" class='width'
-                *ngFor='let vote of createdVotes'>
-        <mat-card-title>{{vote.title}}</mat-card-title>
-        <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
-        <mat-card-content>{{vote.description}}</mat-card-content>
-        <mat-card-actions>
-          <a mat-raised-button
-             color="primary"
-             [routerLink]="['/vote', vote.participationToken || vote.id]">
-            Anzeigen
-          </a>
-          <a *ngIf='!vote.expired && vote.editToken'
-             mat-raised-button
-             color='primary'
-             [routerLink]="['/vote', 'edit', vote.editToken]">
-            Editieren
-          </a>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-    </div>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class='centered' [matBadge]='consignedNonExpiredVoteCount' matBadgeOverlap='false'
-            [matBadgeHidden]='consignedNonExpiredVoteCount == 0'
-            matBadgeColor='warn'>Einladungen</span>
-    </ng-template>
-    <div class='left-bound'>
-      <mat-card appearance="outlined" class='width'
-                *ngFor='let vote of consignedVotes'>
-        <mat-card-title>{{vote.title}}</mat-card-title>
-        <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
-        <mat-card-content>{{vote.description}}</mat-card-content>
-        <mat-card-actions>
-          <a mat-raised-button
-             color='primary'
-             [routerLink]="['/vote', vote.participationToken || vote.id]">
-            Anzeigen
-          </a>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span class='centered'>Teilnahmen</span>
-    </ng-template>
-    <div class='left-bound'>
-      <mat-card appearance="outlined" class='width'
-                *ngFor='let vote of participatedVotes'>
-        <mat-card-title>{{vote.title}}</mat-card-title>
-        <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
-        <mat-card-content>{{vote.description}}</mat-card-content>
-        <mat-card-actions>
-          <a mat-raised-button
-             color='primary'
-             [routerLink]="['/vote', vote.participationToken || vote.id]">
-            Anzeigen
-          </a>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-  </mat-tab>
-</mat-tab-group>
-<mat-spinner class='centered' *ngIf='delayedBusy$ | async'></mat-spinner>
+  <mat-tab-group dynamicHeight [selectedIndex]="consignedNonExpiredVoteCount ? 1 : null">
+    <mat-tab>
+      <div>
+        <ng-template mat-tab-label>
+          <span class="centered">Erstellt</span>
+        </ng-template>
+        <div class="left-bound">
+          <mat-card appearance="outlined" class="width" *ngFor="let vote of createdVotes">
+            <mat-card-header>
+              <mat-card-title [textContent]="vote.title"></mat-card-title>
+              <mat-card-subtitle>Deadline {{ vote.deadline | date:'dd.LL.yyyy' }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content [textContent]="vote.description ?? ''"></mat-card-content>
+            <mat-card-actions>
+              <a
+                mat-raised-button
+                color="primary"
+                [routerLink]="['/vote', vote.participationToken || vote.id]"
+              >
+                Anzeigen
+              </a>
+              <a
+                *ngIf="!vote.expired && vote.editToken"
+                mat-raised-button
+                color="primary"
+                [routerLink]="['/vote', 'edit', vote.editToken]"
+              >
+                Editieren
+              </a>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+      <span
+        class="centered" [matBadge]="consignedNonExpiredVoteCount" matBadgeOverlap="false"
+        [matBadgeHidden]="consignedNonExpiredVoteCount == 0"
+        matBadgeColor="warn"
+      >Einladungen</span>
+      </ng-template>
+      <div class="left-bound">
+        <mat-card appearance="outlined" class="width" *ngFor="let vote of consignedVotes">
+          <mat-card-header>
+            <mat-card-title [textContent]="vote.title"></mat-card-title>
+            <mat-card-subtitle>Deadline {{ vote.deadline | date:'dd.LL.yyyy' }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content [textContent]="vote.description ?? ''"></mat-card-content>
+          <mat-card-actions>
+            <a
+              mat-raised-button
+              color="primary"
+              [routerLink]="['/vote', vote.participationToken || vote.id]"
+            >
+              Anzeigen
+            </a>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="centered">Teilnahmen</span>
+      </ng-template>
+      <div class="left-bound">
+        <mat-card appearance="outlined" class="width" *ngFor="let vote of participatedVotes">
+          <mat-card-header>
+            <mat-card-title [textContent]="vote.title"></mat-card-title>
+            <mat-card-subtitle>Deadline {{ vote.deadline | date:'dd.LL.yyyy' }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content [textContent]="vote.description ?? ''"></mat-card-content>
+          <mat-card-actions>
+            <a
+              mat-raised-button
+              color="primary"
+              [routerLink]="['/vote', vote.participationToken || vote.id]"
+            >
+              Anzeigen
+            </a>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <mat-spinner class="centered" *ngIf="delayedBusy$ | async"></mat-spinner>
 </div>
