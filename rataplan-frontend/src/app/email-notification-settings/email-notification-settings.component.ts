@@ -24,13 +24,13 @@ export class EmailNotificationSettingsComponent implements OnInit, OnDestroy {
   });
   readonly busy$: Observable<boolean>;
   readonly delayedBusy$: Observable<boolean>;
-  readonly notificationCategoryTranslations: Record<string, string> = {
+  readonly notificationCategoryTranslations: Record<string, string | undefined> = {
     account: 'Profil',
     misc: 'Sonstiges',
     survey: 'Umfragen',
     vote: 'Abstimmungen',
   } as const;
-  readonly notificationTypeTranslations: Record<string, string> = {
+  readonly notificationTypeTranslations: Record<string, string | undefined> = {
     'vote/create': 'Abstimmung erstellt',
     'vote/invite': 'Einladung erhalten',
     'vote/expire': 'Abstimmung beendet',

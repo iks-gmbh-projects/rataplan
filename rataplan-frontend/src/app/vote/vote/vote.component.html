@@ -1,25 +1,25 @@
 <div class="center">
   <h2 *ngIf="isPreview">Vorschau</h2>
   <div class="left-bound">
-    <h2 class="mat-card-title" style="align-self: center" [textContent]="vote?.title"></h2>
-    <p [textContent]="vote?.description"></p>
+    <h2 class="mat-card-title" style="align-self: center" [textContent]="vote.title"></h2>
+    <p [textContent]="vote.description ?? ''"></p>
     <p class="mat-card-subtitle">
-      Abstimmung aktiv bis: {{ vote?.deadline! | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
+      Abstimmung aktiv bis: {{ vote.deadline! | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
     </p>
     <p class="mat-card-subtitle" *ngIf="hasDeadlinePassed()">
       <span class="mat-error">Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
     </p>
-    <p class="mat-card-subtitle" *ngIf="vote?.organizerName">
-      Erstellt von {{ vote!.organizerName }}
+    <p class="mat-card-subtitle" *ngIf="vote.organizerName">
+      Erstellt von {{ vote.organizerName }}
     </p>
   </div>
   <mat-expansion-panel class="participant-list">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Teilnehmer : {{ vote?.participants?.length }}
+        Teilnehmer : {{ vote.participants.length }}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <mat-list *ngFor="let participant of (this.vote?.participants || [])">
+    <mat-list *ngFor="let participant of (this.vote.participants ?? [])">
       <span class="participant-list-item">
         <div class="participant-name">
           <mat-icon *ngIf="participant.userId" class="user-icon">person</mat-icon>
@@ -101,7 +101,7 @@
             required
             integer
             matInput
-            [ngModel]="voteParticipant!.decisions[voteIndex]?.participants"
+            [ngModel]="voteParticipant.decisions[voteIndex].participants"
             (ngModelChange)="setParticipantNumber(option, $event)"
             (focusout)="checkEnteredValue(voteIndex,participant)"
             [disabled]="isPreview"

@@ -51,8 +51,8 @@ export class VoteResultsComponent implements OnInit {
   filterSortOption: string = GeneralFilterSortOption.ASCENDING;
   showVoteOptionsInFilter: boolean = false;
   tableView: boolean = true;
-  rawResults!: Record<string | number, number[]>
-  pieChartResults!: Record<string | number, ChartData>;
+  rawResults!: Record<string | number, number[] | undefined>
+  pieChartResults!: Record<string | number, ChartData | undefined>;
   
   constructor(
     private route: ActivatedRoute,
