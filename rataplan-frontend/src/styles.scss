@@ -92,13 +92,13 @@ $my-corrected-theme: map.set(map.set($my-theme, foreground, text, rgba(colors.$i
 //  you can delete this line and instead use:
 //    `@include mat.legacy-typography-hierarchy($my-corrected-theme);`
 /* TODO(mdc-migration): Remove all-legacy-component-typographies once all legacy components are migrated */
-@include mat.all-legacy-component-typographies($my-corrected-theme);
+@include mat.all-component-typographies($my-corrected-theme);
 @include mat.all-component-typographies($my-corrected-theme);
 /* TODO(mdc-migration): Remove legacy-core once all legacy components are migrated */
-@include mat.legacy-core();
+@include mat.core();
 @include mat.core();
 /* TODO(mdc-migration): Remove all-legacy-component-colors once all legacy components are migrated */
-@include mat.all-legacy-component-colors($my-corrected-theme);
+@include mat.all-component-colors($my-corrected-theme);
 @include mat.all-component-colors($my-corrected-theme);
 
 @include mtx.all-component-themes($my-corrected-theme);
@@ -170,7 +170,7 @@ body {
   margin-bottom: 1rem;
 }
 
-.verticalCenter, .mat-icon-button.verticalCenter {
+.verticalCenter, .mat-mdc-icon-button.verticalCenter {
   margin-top: auto;
   margin-bottom: auto;
 }
@@ -180,6 +180,7 @@ body {
 
 /*Survey */
 
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
 mat-card {
   max-width: 80vw;
 }

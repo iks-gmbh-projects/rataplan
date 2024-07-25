@@ -6,7 +6,7 @@
       <span class='centered'>Erstellt</span>
     </ng-template>
     <div class='left-bound'>
-      <mat-card class='width'
+      <mat-card appearance="outlined" class='width'
                 *ngFor='let vote of createdVotes'>
         <mat-card-title>{{vote.title}}</mat-card-title>
         <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
@@ -35,7 +35,7 @@
             matBadgeColor='warn'>Einladungen</span>
     </ng-template>
     <div class='left-bound'>
-      <mat-card class='width'
+      <mat-card appearance="outlined" class='width'
                 *ngFor='let vote of consignedVotes'>
         <mat-card-title>{{vote.title}}</mat-card-title>
         <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
@@ -55,7 +55,7 @@
       <span class='centered'>Teilnahmen</span>
     </ng-template>
     <div class='left-bound'>
-      <mat-card class='width'
+      <mat-card appearance="outlined" class='width'
                 *ngFor='let vote of participatedVotes'>
         <mat-card-title>{{vote.title}}</mat-card-title>
         <mat-card-subtitle>Deadline {{vote.deadline | date:'dd.LL.yyyy'}}</mat-card-subtitle>
