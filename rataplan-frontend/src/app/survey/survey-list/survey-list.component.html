@@ -1,40 +1,44 @@
 <div class="center">
-  <div>
-    <a class="button" mat-raised-button color="primary" routerLink="../create">Erstellen</a>
+  <div class="buttons">
+    <a mat-raised-button color="primary" routerLink="../create">Erstellen</a>
     <button
-      mat-raised-button
+      mat-icon-button
       aria-label="Neu Laden"
       [loading]="delayedBusy$ | async"
       [disabled]="(busy$ | async) ?? false"
       type="button"
       (click)="updateList()"
     >
-      <mat-icon>{{error ? 'sync_problem' : 'sync'}}</mat-icon>
+      <mat-icon>{{ error ? 'sync_problem' : 'sync' }}</mat-icon>
     </button>
   </div>
   <div>
-    <h2>{{isOwn ? 'Eigene' : 'Öffentliche'}} Umfragen</h2>
+    <h2>{{ isOwn ? 'Eigene' : 'Öffentliche' }} Umfragen</h2>
   </div>
   <ng-template [ngIf]="busy$ | async" [ngIfElse]="done">
     <mat-spinner *ngIf="delayedBusy$ | async"></mat-spinner>
   </ng-template>
-  <ng-template #done >
+  <ng-template #done>
     <div *ngIf="error; else success">
-      Fehler beim laden der Umfragen</div>
+      Fehler beim laden der Umfragen
+    </div>
     <ng-template #success>
-      <div >
+      <div>
         <mat-card class="bottomSpace" *ngFor="let survey of surveys">
-          <mat-card-title>{{survey.name}}</mat-card-title>
-          <mat-card-subtitle>Teilnahme: {{survey.startDate | date:'dd.LL.yyyy'}}
-            - {{survey.endDate | date:'dd.LL.yyyy'}}</mat-card-subtitle>
-          <mat-card-content>{{survey.description}}</mat-card-content>
+          <mat-card-header>
+            <mat-card-title>{{ survey.name }}</mat-card-title>
+            <mat-card-subtitle>Teilnahme: {{ survey.startDate | date:'dd.LL.yyyy' }}
+              - {{ survey.endDate | date:'dd.LL.yyyy' }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>{{ survey.description }}</mat-card-content>
           <mat-card-actions>
             <a
               *ngIf="!isOwn; else ownerActions" mat-raised-button color="primary"
               [routerLink]="['..','participate',survey.participationId]"
             >Teilnehmen</a>
             <ng-template #ownerActions>
-              <a mat-raised-button [routerLink]="['/survey','participate', survey.participationId]">
+              <a mat-icon-button [routerLink]="['/survey','participate', survey.participationId]">
                 <mat-icon>open_in_new</mat-icon>
               </a>
               <!--ugly workaround for missing angular feature-->
@@ -43,20 +47,20 @@
                 #participationLink
               ></a>
               <button
-                mat-raised-button
+                mat-icon-button
                 (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')"
               >
                 <mat-icon>content_copy</mat-icon>
               </button>
               <a
-                mat-raised-button
+                mat-icon-button
                 color="primary"
                 [routerLink]="['/survey','access',survey.accessId,'edit']"
                 *ngIf="!expired(survey)"
               >
                 <mat-icon>edit</mat-icon>
               </a>
-              <a mat-raised-button color="primary" [routerLink]="['/survey','access',survey.accessId,'results']">
+              <a mat-icon-button color="primary" [routerLink]="['/survey','access',survey.accessId,'results']">
                 <mat-icon>analytics</mat-icon>
               </a>
             </ng-template>

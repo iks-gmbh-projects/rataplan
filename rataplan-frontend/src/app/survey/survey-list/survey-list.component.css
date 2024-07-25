@@ -7,6 +7,22 @@
   flex-direction: column;
 }
 
+.buttons {
+    margin-top: 1rem;
+    height: max-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttons>*+* {
+    margin-left: 1rem;
+}
+
+.buttons>* {
+    max-height: 100%;
+}
+
 .button {
   width: 105px;
   margin-top: 1rem;

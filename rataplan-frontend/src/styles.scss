@@ -83,22 +83,8 @@ $my-corrected-theme: map.set(map.set($my-theme, foreground, text, rgba(colors.$i
 
 @use "@ng-matero/extensions" as mtx;
 
-// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
-//  The following line adds:
-//    1. Default typography styles for all components
-//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
-//  If you specify typography styles for the components you use elsewhere, you should delete this line.
-//  If you don't need the default component typographies but still want the hierarchy styles,
-//  you can delete this line and instead use:
-//    `@include mat.legacy-typography-hierarchy($my-corrected-theme);`
-/* TODO(mdc-migration): Remove all-legacy-component-typographies once all legacy components are migrated */
 @include mat.all-component-typographies($my-corrected-theme);
-@include mat.all-component-typographies($my-corrected-theme);
-/* TODO(mdc-migration): Remove legacy-core once all legacy components are migrated */
 @include mat.core();
-@include mat.core();
-/* TODO(mdc-migration): Remove all-legacy-component-colors once all legacy components are migrated */
-@include mat.all-component-colors($my-corrected-theme);
 @include mat.all-component-colors($my-corrected-theme);
 
 @include mtx.all-component-themes($my-corrected-theme);
@@ -180,8 +166,7 @@ body {
 
 /*Survey */
 
-/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-mat-card {
+mdc-card {
   max-width: 80vw;
 }
 
