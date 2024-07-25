@@ -125,13 +125,13 @@
             mat-icon-button
             (click)="editVoteOption(index)"
           >
-            <mat-icon mat-list-icon>edit_square</mat-icon>
+            <mat-icon>edit_square</mat-icon>
           </button>
           <button
             mat-icon-button color="warn"
             (click)="deleteVoteOption(index)"
           >
-            <mat-icon mat-list-icon>delete</mat-icon>
+            <mat-icon>delete</mat-icon>
           </button>
         </div>
       </div>
@@ -139,7 +139,7 @@
   </mat-expansion-panel>
   <div class="navigate-submit-multiple-button-space">
     <button
-      mat-raised-button
+      mat-icon-button
       routerLink="../configurationOptions"
     >
       <mat-icon>navigate_before</mat-icon>
@@ -148,7 +148,7 @@
       [disabled]="this.voteOptions.length == 0"
       type="submit"
       color="primary"
-      mat-raised-button
+      mat-icon-button
       routerLink="../email"
     >
       <mat-icon>navigate_next</mat-icon>

@@ -34,7 +34,7 @@
             [disabled]="isPreview"
             (click)="isPreview || editMember(participant)"
           >
-            <mat-icon mat-list-icon>edit_square</mat-icon>
+            <mat-icon>edit_square</mat-icon>
           </button>
           <button
             mat-icon-button
@@ -42,7 +42,7 @@
             [disabled]="isPreview"
             (click)="isPreview || deleteMember(participant)"
           >
-            <mat-icon mat-list-icon>delete</mat-icon>
+            <mat-icon>delete</mat-icon>
           </button>
         </div>
       </span>
@@ -104,7 +104,6 @@
             [ngModel]="voteParticipant!.decisions[voteIndex]?.participants"
             (ngModelChange)="setParticipantNumber(option, $event)"
             (focusout)="checkEnteredValue(voteIndex,participant)"
-            mat-line
             [disabled]="isPreview"
             #participant
             #participantField="ngModel"
@@ -147,7 +146,7 @@
     <ng-template #previewButtons class="fill-width">
       <div class="navigate-submit-multiple-button-space">
         <a
-          mat-raised-button
+          mat-icon-button
           routerLink="../email"
         >
           <mat-icon>navigate_before</mat-icon>

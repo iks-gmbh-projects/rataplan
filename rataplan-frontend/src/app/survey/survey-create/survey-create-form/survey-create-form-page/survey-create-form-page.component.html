@@ -100,12 +100,12 @@
     </div>
   </div>
   <div style="display: flex; margin-bottom: 1ex;">
-    <button type="button" mat-raised-button (click)="revert.emit()">
+    <button type="button" mat-icon-button (click)="revert.emit()">
       <mat-icon>navigate_before</mat-icon>
     </button>
     <div style="flex: 2;"></div>
     <button
-      type="submit" mat-raised-button color="primary"
+      type="submit" mat-icon-button color="primary"
       [disabled]="lastPage || questionGroup!.invalid"
     >
       <mat-icon>navigate_next</mat-icon>
@@ -113,14 +113,14 @@
   </div>
   <div style="display: flex;">
     <button
-      mat-raised-button color="warn" type="button" [disabled]="onlyPage"
+      mat-icon-button color="warn" type="button" [disabled]="onlyPage"
       (click)="remove.emit()"
     >
       <mat-icon>delete</mat-icon>
     </button>
     <div style="flex: 2;"></div>
     <button
-      mat-raised-button color="primary" type="button"
+      mat-icon-button color="primary" type="button"
       (click)="onSubmit.emit(true)"
       [disabled]="questionGroup!.invalid"
     >
