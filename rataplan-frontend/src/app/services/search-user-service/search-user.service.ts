@@ -1,8 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, startWith, switchMap } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { catchError, first, Observable, of, startWith, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BackendUrlService } from '../backend-url-service/backend-url.service';
+import { configFeature } from '../../config/config.feature';
+import { nonUndefined } from '../../operators/non-empty';
 
 export type searchStatus = {
   busy: true,
@@ -24,11 +26,13 @@ export type searchStatus = {
 export class SearchUserService {
   constructor(
     private readonly http: HttpClient,
-    private readonly urlService: BackendUrlService,
+    private readonly store: Store,
   ) {}
   
   search(str: string): Observable<searchStatus> {
-    return this.urlService.authBackendURL('users', 'search').pipe(
+    return this.store.select(configFeature.selectAuthBackendUrl('users', 'search')).pipe(
+      nonUndefined,
+      first(),
       switchMap(url => this.http.get<(string|number)[]>(url, {
         withCredentials: true,
         params: new HttpParams().set('q', str),

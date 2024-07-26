@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { exhaustMap } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { exhaustMap, first } from 'rxjs';
+import { configFeature } from '../../config/config.feature';
 
 import { ContactData } from '../../legals/contact/contact.component';
-import { BackendUrlService } from '../backend-url-service/backend-url.service';
+import { nonUndefined } from '../../operators/non-empty';
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +14,15 @@ export class ContactService {
   
   constructor(
     private readonly http: HttpClient,
-    private readonly urlService: BackendUrlService,
+    private readonly store: Store,
   )
   {
   }
   
   public contact(contact: ContactData) {
-    return this.urlService.voteBackendURL('contacts').pipe(
+    return this.store.select(configFeature.selectVoteBackendUrl('contacts')).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(url => this.http.post<any>(url, contact)),
     );
   }

@@ -1,11 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { exhaustMap, map, Observable } from 'rxjs';
+import { exhaustMap, first, map, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { configFeature } from '../../../config/config.feature';
 import { deserializeVoteOptionDecisionModel } from '../../../models/vote-decision.model';
 import { VoteParticipantModel } from '../../../models/vote-participant.model';
 
 import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
-import { BackendUrlService } from '../../../services/backend-url-service/backend-url.service';
+import { nonUndefined } from '../../../operators/non-empty';
 import { DecisionType, VoteOptionDecisionType } from '../../vote-form/decision-type.enum';
 
 @Injectable({
@@ -15,23 +17,16 @@ export class VoteService {
   
   constructor(
     private readonly http: HttpClient,
-    private readonly urlService: BackendUrlService,
+    private readonly store: Store,
   )
   {
   }
   
   getVoteByParticipationToken(participationToken: string): Observable<VoteModel> {
-    return this.urlService.voteBackendURL('votes', participationToken).pipe(
-      exhaustMap(url => {
-        return this.http.get<VoteModel<true>>(
-          url,
-          {
-            headers: new HttpHeaders({
-              'Content-Type': 'application/json;charset=utf-8',
-            }),
-          },
-        );
-      }),
+    return this.store.select(configFeature.selectVoteBackendUrl('votes', participationToken)).pipe(
+      nonUndefined,
+      first(),
+      exhaustMap(url => this.http.get<VoteModel<true>>(url)),
       map(deserializeVoteModel),
     );
   }
@@ -40,7 +35,9 @@ export class VoteService {
     const token = this.getParticipationToken(vote)!;
     const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
     
-    return this.urlService.voteBackendURL('votes', token, 'participants').pipe(
+    return this.store.select(configFeature.selectVoteBackendUrl('votes', token, 'participants')).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(url => {
         return this.http.post<VoteParticipantModel<true>>(
           url, voteParticipant, httpOptions);
@@ -57,7 +54,14 @@ export class VoteService {
   updateVoteParticipant(vote: VoteModel, voteParticipant: VoteParticipantModel): Observable<VoteParticipantModel> {
     const token = this.getParticipationToken(vote)!;
     
-    return this.urlService.voteBackendURL('votes', token, 'participants', voteParticipant.id!).pipe(
+    return this.store.select(configFeature.selectVoteBackendUrl(
+      'votes',
+      token,
+      'participants',
+      voteParticipant.id!,
+    )).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(url => {
         return this.http.put<VoteParticipantModel<true>>(
           url,
@@ -82,16 +86,20 @@ export class VoteService {
   deleteVoteParticipant(vote: VoteModel, voteParticipant: VoteParticipantModel): Observable<string> {
     const token = this.getParticipationToken(vote)!;
     
-    return this.urlService.voteBackendURL('votes', token, 'participants', voteParticipant.id!).pipe(
+    return this.store.select(configFeature.selectVoteBackendUrl(
+      'votes',
+      token,
+      'participants',
+      voteParticipant.id!,
+    )).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(url => {
         return this.http.delete(
           url,
           {
             withCredentials: true,
             responseType: 'text',
-            headers: new HttpHeaders({
-              'Content-Type': 'application/json;charset=utf-8',
-            }),
           },
         );
       }),
@@ -155,19 +163,24 @@ export class VoteService {
   }
   
   createPieChart(results: Partial<Record<VoteOptionDecisionType, number>>) {
-    const remapArr = [VoteOptionDecisionType.ACCEPT, VoteOptionDecisionType.ACCEPT_IF_NECESSARY, VoteOptionDecisionType.DECLINE, VoteOptionDecisionType.NO_ANSWER]
+    const remapArr = [
+      VoteOptionDecisionType.ACCEPT,
+      VoteOptionDecisionType.ACCEPT_IF_NECESSARY,
+      VoteOptionDecisionType.DECLINE,
+      VoteOptionDecisionType.NO_ANSWER,
+    ]
       .filter(v => results[v]);
     const labels = {
       [VoteOptionDecisionType.ACCEPT]: 'Ja',
       [VoteOptionDecisionType.ACCEPT_IF_NECESSARY]: 'Vielleicht',
       [VoteOptionDecisionType.DECLINE]: 'Nein',
-      [VoteOptionDecisionType.NO_ANSWER]: 'Keine Antwort'
+      [VoteOptionDecisionType.NO_ANSWER]: 'Keine Antwort',
     };
     const backgroundColor = {
       [VoteOptionDecisionType.ACCEPT]: 'rgb(14,72,35)',
       [VoteOptionDecisionType.ACCEPT_IF_NECESSARY]: 'rgb(244, 196, 46)',
       [VoteOptionDecisionType.DECLINE]: 'rgb(135, 28, 55)',
-      [VoteOptionDecisionType.NO_ANSWER]: 'lightgray'
+      [VoteOptionDecisionType.NO_ANSWER]: 'lightgray',
     };
     
     return {

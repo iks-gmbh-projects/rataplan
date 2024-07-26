@@ -1,21 +1,28 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { exhaustMap, Observable, switchMap, timer } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { exhaustMap, first, Observable, switchMap, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { BackendUrlService } from '../backend-url-service/backend-url.service';
+import { configFeature } from '../../config/config.feature';
+import { nonUndefined } from '../../operators/non-empty';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsernameEmailValidatorsService {
   
-  constructor(private http: HttpClient, private urlService: BackendUrlService) {
+  constructor(
+    private readonly http: HttpClient,
+    private readonly store: Store,
+  )
+  {
   }
   
   public checkIfMailExists(mail: string): Observable<boolean> {
-    return this.urlService.authBackendURL('users', 'mailExists').pipe(
+    return this.store.select(configFeature.selectAuthBackendUrl('users', 'mailExists')).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(url => this.http.post<boolean>(
           url,
           mail,
@@ -40,11 +47,12 @@ export class UsernameEmailValidatorsService {
   }
   
   public checkIfUsernameExists(username: string): Observable<boolean> {
-    return this.urlService.authBackendURL('users', 'usernameExists').pipe(
+    return this.store.select(configFeature.selectAuthBackendUrl('users', 'usernameExists')).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(url => this.http.post<boolean>(
           url,
           username,
-          {headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})},
         ),
       ),
     );

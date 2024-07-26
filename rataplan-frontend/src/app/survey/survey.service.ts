@@ -1,8 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { exhaustMap, map, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { exhaustMap, first, map, Observable } from 'rxjs';
+import { configFeature } from '../config/config.feature';
+import { nonUndefined } from '../operators/non-empty';
 import { Survey, SurveyHead, SurveyResponse } from './survey.model';
-import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 
 function ensureDate<T extends SurveyHead>(head: T): T {
   head.startDate = new Date(head.startDate);
@@ -18,10 +20,13 @@ export class SurveyService {
   
   constructor(
     private readonly http: HttpClient,
-    private readonly urlService: BackendUrlService,
+    private readonly store: Store,
   )
   {
-    this.surveyURL = urlService.surveyBackendURL('surveys');
+    this.surveyURL = this.store.select(configFeature.selectSurveyBackendUrl('surveys')).pipe(
+      nonUndefined,
+      first(),
+    );
   }
   
   public getOpenSurveys(): Observable<SurveyHead[]> {
@@ -35,7 +40,9 @@ export class SurveyService {
   }
   
   public getOwnSurveys(): Observable<SurveyHead[]> {
-    return this.urlService.surveyBackendURL('surveys', 'own').pipe(
+    return this.store.select(configFeature.selectSurveyBackendUrl('surveys', 'own')).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(surveyURL => {
         return this.http.get<SurveyHead[]>(surveyURL, {
           withCredentials: true,
@@ -92,7 +99,9 @@ export class SurveyService {
   }
   
   public answerSurvey(response: SurveyResponse): Observable<SurveyResponse> {
-    return this.urlService.surveyBackendURL('responses').pipe(
+    return this.store.select(configFeature.selectSurveyBackendUrl('responses')).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(answerURL => {
         return this.http.post<SurveyResponse>(answerURL, response, {
           withCredentials: true,
@@ -102,7 +111,9 @@ export class SurveyService {
   }
   
   public fetchAnswers(survey: Survey): Observable<SurveyResponse[]> {
-    return this.urlService.surveyBackendURL('responses', 'survey', survey.accessId!).pipe(
+    return this.store.select(configFeature.selectSurveyBackendUrl('responses', 'survey', survey.accessId!)).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(answerURL => {
         return this.http.get<SurveyResponse[]>(answerURL, {
           withCredentials: true,

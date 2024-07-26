@@ -1,22 +1,29 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BackendUrlService } from '../backend-url-service/backend-url.service';
-import { exhaustMap } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { exhaustMap, first } from 'rxjs';
+import { configFeature } from '../../config/config.feature';
+import { nonUndefined } from '../../operators/non-empty';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ForgotPasswordService {
   
-  constructor(private httpClient: HttpClient, private urlService: BackendUrlService) {
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly store: Store,
+  )
+  {
   }
   
   forgotPassword(mail: String) {
-    return this.urlService.authBackendURL('users', 'forgotPassword').pipe(
+    return this.store.select(configFeature.selectAuthBackendUrl('users', 'forgotPassword')).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(url => this.httpClient.post<String>(
           url,
           mail,
-          {headers: new HttpHeaders({'Content-Type': 'application/json;charset=utf-8'})},
         ),
       ),
     );

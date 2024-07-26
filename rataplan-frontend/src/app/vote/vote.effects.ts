@@ -2,25 +2,20 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Actions, createEffect, ofType } from '@ngrx/effects';import { concatLatestFrom } from '@ngrx/operators';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { concatLatestFrom } from '@ngrx/operators';
 
 import { Store } from '@ngrx/store';
-import { catchError, delayWhen, from, of, switchMap, take } from 'rxjs';
+import { catchError, delayWhen, first, from, of, switchMap, take } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
+import { authFeature } from '../authentication/auth.feature';
+import { configFeature } from '../config/config.feature';
 import { FeedbackDialogComponent } from '../dialogs/feedback-dialog/feedback-dialog.component';
 import { deserializeVoteModel, VoteModel } from '../models/vote.model';
-import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
-import {
-  InitVoteAction,
-  InitVoteErrorAction,
-  InitVoteSuccessAction,
-  PostVoteErrorAction,
-  PostVoteSuccessAction,
-  VoteActions,
-} from './vote.actions';
+import { nonUndefined } from '../operators/non-empty';
 import { DecisionType } from './vote-form/decision-type.enum';
+import { InitVoteAction, InitVoteErrorAction, InitVoteSuccessAction, PostVoteErrorAction, PostVoteSuccessAction, VoteActions } from './vote.actions';
 import { voteFeature } from './vote.feature';
-import { authFeature } from '../authentication/auth.feature';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +27,6 @@ export class VoteEffects {
     private readonly http: HttpClient,
     private readonly router: Router,
     private readonly activeRoute: ActivatedRoute,
-    private readonly urlService: BackendUrlService,
     private readonly dialog: MatDialog,
   )
   {
@@ -61,7 +55,9 @@ export class VoteEffects {
           consigneeList: [],
           userConsignees: [],
         }));
-        else return this.urlService.voteBackendURL('votes', 'edit', action.id).pipe(
+        else return this.store.select(configFeature.selectVoteBackendUrl('votes', 'edit', action.id)).pipe(
+          nonUndefined,
+          first(),
           switchMap(url => this.http.get<VoteModel<true>>(url, {withCredentials: true})),
           map(deserializeVoteModel),
           map(request => new InitVoteSuccessAction(request)),
@@ -87,15 +83,21 @@ export class VoteEffects {
       )),
       concatLatestFrom(request => {
         if(request.request.id) {
-          return this.urlService.voteBackendURL(
+          return this.store.select(configFeature.selectVoteBackendUrl(
             'votes',
             'edit',
             (
               request.request.editToken ?? request.request.id!
             ),
+          )).pipe(
+            nonUndefined,
+            first(),
           );
         } else {
-          return this.urlService.voteBackendURL('votes');
+          return this.store.select(configFeature.selectVoteBackendUrl('votes')).pipe(
+            nonUndefined,
+            first(),
+          );
         }
       }),
       map(([request, url]) => {

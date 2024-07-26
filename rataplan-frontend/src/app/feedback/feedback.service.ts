@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, exhaustMap, Observable, of } from 'rxjs';
-import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
+import { Store } from '@ngrx/store';
+import { catchError, exhaustMap, first, Observable, of } from 'rxjs';
+import { configFeature } from '../config/config.feature';
+import { nonUndefined } from '../operators/non-empty';
 
 export enum FeedbackCategory {
   GENERAL,
@@ -22,13 +24,15 @@ export type Feedback = {
 export class FeedbackService {
   constructor(
     private readonly http: HttpClient,
-    private readonly urlService: BackendUrlService,
+    private readonly store: Store,
   )
   {
   }
   
   submitFeedback(feedback: Feedback): Observable<boolean> {
-    return this.urlService.authBackendURL('feedback').pipe(
+    return this.store.select(configFeature.selectAuthBackendUrl('feedback')).pipe(
+      nonUndefined,
+      first(),
       exhaustMap(url => this.http.post<boolean>(url, feedback)),
       catchError(() => of(false)),
     );

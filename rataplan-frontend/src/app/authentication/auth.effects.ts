@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
@@ -8,13 +7,13 @@ import { concatLatestFrom } from '@ngrx/operators';
 import { Store } from '@ngrx/store';
 import { combineLatestWith, first, from, of, timer } from 'rxjs';
 import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
+import { configFeature } from '../config/config.feature';
 import { cookieActions } from '../cookie-banner/cookie.actions';
 import { cookieFeature } from '../cookie-banner/cookie.feature';
 
 import { FrontendUser } from '../models/user.model';
-import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
+import { nonUndefined } from '../operators/non-empty';
 import { authActions } from './auth.actions';
-import { authFeature } from './auth.feature';
 
 @Injectable({
   providedIn: 'root',
@@ -25,8 +24,6 @@ export class AuthEffects {
     private readonly store: Store,
     private readonly httpClient: HttpClient,
     private readonly router: Router,
-    private readonly urlService: BackendUrlService,
-    private readonly snackBar: MatSnackBar,
   )
   {
   }
@@ -34,7 +31,9 @@ export class AuthEffects {
   registerUser = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.register),
-      concatLatestFrom(() => this.urlService.authBackendURL('users', 'register')),
+      concatLatestFrom(() => this.store.select(configFeature.selectAuthBackendUrl('users', 'register')).pipe(
+        nonUndefined,
+      )),
       switchMap(([action, url]) => {
         return this.httpClient.post<FrontendUser>(url, action.user, {withCredentials: true})
           .pipe(
@@ -57,7 +56,7 @@ export class AuthEffects {
   autoLogin = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.autoLogin),
-      switchMap(() => this.urlService.loginURL),
+      switchMap(() => this.store.select(configFeature.selectLoginUrl).pipe(nonUndefined, first())),
       switchMap(url => {
         return this.httpClient.get(url, {
           withCredentials: true,
@@ -88,7 +87,10 @@ export class AuthEffects {
   manualLogin = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.login),
-      combineLatestWith(this.urlService.loginURL, this.store.select(cookieFeature.selectCookieState)),
+      combineLatestWith(
+        this.store.select(configFeature.selectLoginUrl).pipe(nonUndefined, first()),
+        this.store.select(cookieFeature.selectCookieState),
+      ),
       switchMap(([action, url, acceptCookies]) => {
         const body = new FormData();
         body.append('username', action.user.username);
@@ -110,7 +112,9 @@ export class AuthEffects {
   resetPassword = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.resetPassword),
-      concatLatestFrom(() => this.urlService.authBackendURL('users', 'resetPassword')),
+      concatLatestFrom(() => this.store.select(configFeature.selectAuthBackendUrl('users', 'resetPassword')).pipe(
+        nonUndefined,
+      )),
       switchMap(([action, url]) => {
         return this.httpClient.post<boolean>(url, action.password, {
           headers: {
@@ -135,7 +139,11 @@ export class AuthEffects {
   changeProfileDetails = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.changeProfileDetails),
-      concatLatestFrom(() => this.urlService.authBackendURL('users', 'profile', 'updateProfileDetails')),
+      concatLatestFrom(() => this.store.select(configFeature.selectAuthBackendUrl(
+        'users',
+        'profile',
+        'updateProfileDetails',
+      )).pipe(nonUndefined)),
       switchMap(([action, url]) => {
         const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
         return this.httpClient.post<boolean>(url, action.user, httpOptions)
@@ -151,7 +159,10 @@ export class AuthEffects {
   updateUserData = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.updateUserData),
-      switchMap(() => this.urlService.authBackendURL('users', 'profile')),
+      switchMap(() => this.store.select(configFeature.selectAuthBackendUrl('users', 'profile')).pipe(
+        nonUndefined,
+        first(),
+      )),
       concatMap(url => {
         const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
         
@@ -166,7 +177,7 @@ export class AuthEffects {
   logoutUser = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.logout),
-      switchMap(() => this.urlService.logoutURL),
+      switchMap(() => this.store.select(configFeature.selectLogoutUrl).pipe(nonUndefined, first())),
       switchMap(url => this.httpClient.get(url, {
         responseType: 'text',
         withCredentials: true,
@@ -184,7 +195,10 @@ export class AuthEffects {
   deleteUser = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.deleteUser),
-      concatLatestFrom(() => this.urlService.authBackendURL('users', 'profile')),
+      concatLatestFrom(() => this.store.select(configFeature.selectAuthBackendUrl(
+        'users',
+        'profile',
+      )).pipe(nonUndefined)),
       switchMap(([action, url]) => {
         return this.httpClient.delete(url, {
           body: action.choices,

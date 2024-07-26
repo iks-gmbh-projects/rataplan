@@ -2,9 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { catchError, Observable, of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { catchError, first, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
+import { configFeature } from '../config/config.feature';
+import { nonUndefined } from '../operators/non-empty';
 
 export enum ConfirmationStatus {
   ACCOUNT_CONFIRMATION_SUCCESSFUL,
@@ -16,16 +18,18 @@ export enum ConfirmationStatus {
 export class ConfirmAccountService {
   
   constructor(
-    private matSnackBar: MatSnackBar,
-    private router: Router,
-    private urlService: BackendUrlService,
+    private readonly matSnackBar: MatSnackBar,
+    private readonly router: Router,
+    private readonly store: Store,
     private http: HttpClient,
   )
   {
   }
   
   resendConfirmationEmail(email: string) {
-    this.urlService.authBackendURL('resend-confirmation-email').pipe(
+    this.store.select(configFeature.selectAuthBackendUrl('resend-confirmation-email')).pipe(
+      nonUndefined,
+      first(),
       switchMap(link => this.http.post(link, email)),
       catchError(() => of(false)),
     ).subscribe(successful => {
@@ -43,7 +47,9 @@ export class ConfirmAccountService {
   }
   
   confirmAccount(token: string): Observable<number> {
-    return this.urlService.authBackendURL('confirm-account').pipe(
+    return this.store.select(configFeature.selectAuthBackendUrl('confirm-account')).pipe(
+      nonUndefined,
+      first(),
       switchMap(link => {
         const snackBarConfig: MatSnackBarConfig = new MatSnackBarConfig();
         snackBarConfig.duration = (
