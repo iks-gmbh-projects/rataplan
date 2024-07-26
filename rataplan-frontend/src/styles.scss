@@ -72,11 +72,11 @@ $md-warn: (
 
 @use '@angular/material' as mat;
 
-$primary-palette: mat.define-palette($md-primary);
-$accent-palette: mat.define-palette(mat.$pink-palette);
-$warn-palette: mat.define-palette($md-warn);
+$primary-palette: mat.m2-define-palette($md-primary);
+$accent-palette: mat.m2-define-palette(mat.$m2-pink-palette);
+$warn-palette: mat.m2-define-palette($md-warn);
 
-$my-theme: mat.define-light-theme($primary-palette, $accent-palette, $warn-palette);
+$my-theme: mat.m2-define-light-theme($primary-palette, $accent-palette, $warn-palette);
 
 @use "sass:map";
 $my-corrected-theme: map.set(map.set($my-theme, foreground, text, rgba(colors.$iks-blue, 0.87)), foreground, secondary-text, rgba(colors.$iks-blue, 0.54));
