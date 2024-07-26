@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SurveyService } from '../survey.service';
 
 import { SurveyFormComponent } from './survey-form.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('SurveyFormComponent', () => {
   let component: SurveyFormComponent;
@@ -16,10 +17,10 @@ describe('SurveyFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SurveyFormComponent ],
-      imports: [ HttpClientTestingModule, RouterTestingModule, MatSnackBarModule, MatDialogModule, MatButtonModule, MatCardModule, MatDividerModule ],
-      providers: [ SurveyService ],
-    })
+    declarations: [SurveyFormComponent],
+    imports: [RouterTestingModule, MatSnackBarModule, MatDialogModule, MatButtonModule, MatCardModule, MatDividerModule],
+    providers: [SurveyService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+})
     .compileComponents();
   });
 
