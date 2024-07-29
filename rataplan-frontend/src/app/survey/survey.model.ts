@@ -48,5 +48,9 @@ export type SurveyResponse = {
   id?: string|number,
   surveyId: string|number,
   userId?: string|number,
-  answers: {[questionId: string|number]: Answer},
+  answers: {
+    [questionGroupId: string|number]: {
+      [questionRank: string|number]: Answer,
+    },
+  },
 }

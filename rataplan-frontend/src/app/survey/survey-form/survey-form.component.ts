@@ -22,7 +22,7 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
   readonly delayedBusy$: Observable<boolean> = this.busy$.pipe(
     switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
   );
-  private answers: {[key: string | number]: Answer} = {};
+  private answers: {[groupId: string | number]: {[rank: string | number]: Answer}} = {};
   private sub?: Subscription;
   private readonly pagesSubject = new ReplaySubject<QueryList<PageComponent>>(1);
   readonly isResponseValid: Observable<boolean> = this.pagesSubject.pipe(
@@ -69,10 +69,13 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
   
-  public pageSubmit(answers?: {[key: string | number]: Answer}) {
+  public pageSubmit(answers?: {[rank: string | number]: Answer}) {
     if(!this.survey) return;
     if(answers) {
-      this.answers = {...this.answers, ...answers};
+      this.answers = {
+        ...this.answers,
+        [this.survey.questionGroups[this.page].id!]: answers,
+      };
       this.page++;
     } else {
       this.page--;

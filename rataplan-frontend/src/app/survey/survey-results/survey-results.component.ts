@@ -47,9 +47,9 @@ function* inf<T>(it: Iterable<T>): Generator<T> {
 export class SurveyResultsComponent implements OnInit, OnDestroy {
   public survey?: Survey;
   private sub?: Subscription;
-  public columns: {[questionId: string | number]: string[]} = {};
-  public columnNames: {[questionId: string | number]: string[]} = {};
-  public data: {[questionId: string | number]: ChartData<'pie'>} = {};
+  public columns: {[groupId: string | number]: {[questionId: string | number]: string[]}} = {};
+  public columnNames: {[groupId: string | number]: {[questionId: string | number]: string[]}} = {};
+  public data: {[groupId: string | number]: {[questionId: string | number]: ChartData<'pie'>}} = {};
   public answers: SurveyResponse[] = [];
   readonly busy$ = new BehaviorSubject<boolean>(false);
   readonly delayedBusy$: Observable<boolean> = this.busy$.pipe(
@@ -76,28 +76,30 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
     this.columnNames = {};
     this.data = {};
     for(let questionGroup of survey.questionGroups) {
+      this.columns[questionGroup.id!] ??= {};
+      this.columnNames[questionGroup.id!] ??= {};
       for(let question of questionGroup.questions) {
         if(question.rank !== undefined) {
-          this.columns[question.rank] = ['user'];
-          this.columnNames[question.rank] = ['Nutzer'];
+          this.columns[questionGroup.id!][question.rank] = ['user'];
+          this.columnNames[questionGroup.id!][question.rank] = ['Nutzer'];
           switch(question.type) {
           case 'CHOICE':
             let txt = false;
             for(let checkbox of question.choices!) {
               if(checkbox.id) {
-                this.columns[question.rank].push('checkbox' + checkbox.id);
-                this.columnNames[question.rank].push(this.safeEscape(checkbox.text));
+                this.columns[questionGroup.id!][question.rank].push('checkbox' + checkbox.id);
+                this.columnNames[questionGroup.id!][question.rank].push(this.safeEscape(checkbox.text));
               }
               if(checkbox.hasTextField) txt = true;
             }
             if(txt) {
-              this.columns[question.rank].push('answer');
-              this.columnNames[question.rank].push('Antwort');
+              this.columns[questionGroup.id!][question.rank].push('answer');
+              this.columnNames[questionGroup.id!][question.rank].push('Antwort');
             }
             break;
           case 'OPEN':
-            this.columns[question.rank].push('answer');
-            this.columnNames[question.rank].push('Antwort');
+            this.columns[questionGroup.id!][question.rank].push('answer');
+            this.columnNames[questionGroup.id!][question.rank].push('Antwort');
             break;
           }
         }
@@ -108,7 +110,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
     this.surveys.fetchAnswers(survey).subscribe({
       next: answers => {
         this.answers = answers;
-        for(const question of survey.questionGroups.flatMap(qg => qg.questions)) {
+        for(const {gId, question} of survey.questionGroups.flatMap(qg => qg.questions.map(q => ({gId: qg.id!, question: q})))) {
           if(question.rank === undefined || !question.choices) continue;
           const dataset: number[] = [];
           const datalabels: string[] = [];
@@ -120,7 +122,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
             if(!checkbox.id) continue;
             let count = 0;
             for(let response of this.answers) {
-              let answer = response.answers[question.rank];
+              let answer = response.answers[gId][question.rank];
               if(answer && answer.checkboxes![checkbox.id]) count++;
             }
             dataset.push(count);
@@ -130,7 +132,8 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
             else datacolors.push(other.next().value);
           }
           if(dataset.reduce((a, v) => a + v, 0) === 0) continue;
-          this.data[question.rank] = {
+          this.data[gId] ??= {};
+          this.data[gId][question.rank] = {
             datasets: [{
               data: dataset,
               backgroundColor: datacolors,
@@ -163,11 +166,11 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
     return checked ? 'check_box' : 'check_box_outline_blank';
   }
   
-  public checkboxPercentage(questionId: string | number, checkboxId: string | number): number | string {
+  public checkboxPercentage(groupId: string | number, questionRank: string | number, checkboxId: string | number): number | string {
     let count = 0;
     let total = 0;
     for(let response of this.answers) {
-      let answer = response.answers[questionId];
+      let answer = response.answers[groupId][questionRank];
       if(answer) {
         total++;
         if(answer.checkboxes![checkboxId]) count++;
@@ -187,19 +190,20 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
     return this.safeEscape(str);
   }
   
-  private compileResults(question: Question): string[] | null {
+  private compileResults(groupId: string | number, question: Question): string[] | null {
     if(question.rank === undefined) return null;
     const questionId = question.rank;
     return [
-      this.columnNames[questionId].join(', '),
-      ...this.answers.map(answer => {
+      this.columnNames[groupId][questionId].join(', '),
+      ...this.answers.map(response => {
+        const answer =  response.answers[groupId][questionId];
         const ret = [
-          answer.userId || 'Anonym',
-          ...this.columns[questionId].filter(col => col.startsWith('checkbox')).map(col => answer.answers[questionId].checkboxes![col.substring(
+          response.userId || 'Anonym',
+          ...this.columns[groupId][questionId].filter(col => col.startsWith('checkbox')).map(col => answer.checkboxes![col.substring(
             8)]),
           ...(
-            this.columns[questionId][this.columns[questionId].length - 1] === 'answer' ?
-              [this.escape(answer.answers[questionId].text)] :
+            this.columns[groupId][questionId][this.columns[groupId][questionId].length - 1] === 'answer' ?
+              [this.escape(answer.text)] :
               []
           ),
         ];
@@ -212,12 +216,14 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
     if(!this.survey) return;
     let lines = ['', ...this.answers.map(() => '')];
     for(let group of this.survey?.questionGroups) {
-      for(let question of group.questions) {
-        if(question.rank !== undefined) {
-          const compiledResults = this.compileResults(question);
-          if(compiledResults) lines = lines.map((s, i) => (
-            s ? s + ', ' : ''
-          ) + compiledResults[i]);
+      if(group.id !== undefined) {
+        for(let question of group.questions) {
+          if(question.rank !== undefined) {
+            const compiledResults = this.compileResults(group.id, question);
+            if(compiledResults) lines = lines.map((s, i) => (
+              s ? s + ', ' : ''
+            ) + compiledResults[i]);
+          }
         }
       }
     }
