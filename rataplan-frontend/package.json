@@ -23,7 +23,9 @@
     "@angular/platform-browser-dynamic": "^18.1.2",
     "@angular/router": "^18.1.2",
     "@ng-matero/extensions": "^18.1.1",
+    "@ngrx/component": "^18.0.1",
     "@ngrx/effects": "^18.0.1",
+    "@ngrx/operators": "^18.0.0",
     "@ngrx/store": "^18.0.1",
     "chart.js": "^3.6.0",
     "exceljs": "^4.4.0",
@@ -31,8 +33,7 @@
     "path": "^0.12.7",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.8",
-    "@ngrx/operators": "^18.0.0"
+    "zone.js": "~0.14.8"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.1.2",
