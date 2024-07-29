@@ -26,21 +26,28 @@ public class SurveyResponseToDTOConverter implements Converter<SurveyResponse, S
         dest.setId(source.getId());
         dest.setUserId(source.getUserId());
         dest.setSurveyId(source.getSurvey().getId());
-        Map<Integer, AnswerDTO> answers = new HashMap<>();
+        Map<Long, Map<Integer, AnswerDTO>> answers = new HashMap<>();
         answers.putAll(source.getOpenAnswers()
             .stream()
-            .collect(Collectors.toUnmodifiableMap(
-                a -> a.getQuestion().getRank(),
-                a -> mappingEngine.map(context.create(a, AnswerDTO.class))
+            .collect(Collectors.groupingBy(
+                a -> a.getQuestion().getQuestionGroup().getId(),
+                Collectors.toMap(
+                    a -> a.getQuestion().getRank(),
+                    a -> mappingEngine.map(context.create(a, AnswerDTO.class))
+                )
             )));
         answers.putAll(source.getChoiceAnswerTexts()
             .stream()
-            .collect(Collectors.toUnmodifiableMap(
-                a -> a.getQuestion().getRank(),
-                a -> mappingEngine.map(context.create(a, AnswerDTO.class))
+            .collect(Collectors.groupingBy(
+                a -> a.getQuestion().getQuestionGroup().getId(),
+                Collectors.toMap(
+                    a -> a.getQuestion().getRank(),
+                    a -> mappingEngine.map(context.create(a, AnswerDTO.class))
+                )
             )));
         for(ChoiceQuestionChoice choice : source.getChoiceAnswers()) {
-            AnswerDTO answer = answers.computeIfAbsent(choice.getQuestion().getRank(), i -> new AnswerDTO());
+            AnswerDTO answer = answers.computeIfAbsent(choice.getQuestion().getQuestionGroup().getId(), i -> new HashMap<>())
+                .computeIfAbsent(choice.getQuestion().getRank(), i -> new AnswerDTO());
             Map<Long, Boolean> checkboxes = answer.getCheckboxes();
             if(checkboxes == null) {
                 checkboxes = new HashMap<>();

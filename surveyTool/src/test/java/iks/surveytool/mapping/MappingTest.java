@@ -185,8 +185,10 @@ public class MappingTest {
         SurveyResponseDTO surveyResponseDTO = new SurveyResponseDTO();
         surveyResponseDTO.setSurveyId(survey.getId());
         surveyResponseDTO.setAnswers(Map.of(
-            firstQuestion.getRank(), firstAnswerDTO,
-            secondQuestion.getRank(), secondAnswerDTO
+            questionGroup.getId(), Map.of(
+                firstQuestion.getRank(), firstAnswerDTO,
+                secondQuestion.getRank(), secondAnswerDTO
+            )
         ));
         
         when(surveyRepository.findById(survey.getId())).thenReturn(Optional.of(survey));

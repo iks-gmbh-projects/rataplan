@@ -14,6 +14,7 @@ import iks.surveytool.entities.question.ChoiceQuestion;
 import iks.surveytool.entities.question.ChoiceQuestionChoice;
 import iks.surveytool.entities.question.OpenQuestion;
 import iks.surveytool.repositories.SurveyRepository;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.Converter;
@@ -21,7 +22,10 @@ import org.modelmapper.spi.MappingContext;
 import org.modelmapper.spi.MappingEngine;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,6 +33,12 @@ import java.util.stream.Stream;
 @Component
 @RequiredArgsConstructor
 public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseDTO, SurveyResponse> {
+    @Data
+    @RequiredArgsConstructor
+    private static class QuestionIdentifier {
+        private final long group;
+        private final int rank;
+    }
     private final SurveyRepository surveyRepository;
     @Override
     public SurveyResponse convert(MappingContext<SurveyResponseDTO, SurveyResponse> context) {
@@ -40,23 +50,34 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
         dest.setUserId(source.getUserId());
         Survey survey = surveyRepository.findById(source.getSurveyId()).orElseThrow();
         dest.setSurvey(survey);
-        Map<Integer, ? extends AbstractQuestion> questions = survey.getQuestionGroups()
+        Map<QuestionIdentifier, ? extends AbstractQuestion> questions = survey.getQuestionGroups()
             .stream()
             .flatMap(g -> Stream.of(
-                g.getOpenQuestions(),
-                g.getChoiceQuestions()
+                Map.entry(g.getId(), g.getOpenQuestions()),
+                Map.entry(g.getId(), g.getChoiceQuestions())
             ))
-            .flatMap(List::stream)
+            .flatMap(e -> e.getValue()
+                .stream()
+                .map(q -> Map.entry(e.getKey(), q))
+            )
             .collect(Collectors.toUnmodifiableMap(
-                AbstractQuestion::getRank,
-                Function.identity()
+                e -> new QuestionIdentifier(e.getKey(), e.getValue().getRank()),
+                Map.Entry::getValue
             ));
-        Map<Integer, QuestionType> types = questions.entrySet()
+        Map<QuestionIdentifier, QuestionType> types = questions.entrySet()
             .stream()
-            .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().getType()));
-        Map<QuestionType, List<Map.Entry<Integer, AnswerDTO>>> answers = source.getAnswers()
+            .collect(Collectors.toUnmodifiableMap(
+                Map.Entry::getKey,
+                e -> e.getValue().getType()
+            ));
+        Map<QuestionType, List<Map.Entry<QuestionIdentifier, AnswerDTO>>> answers = source.getAnswers()
             .entrySet()
             .stream()
+            .flatMap(e -> e.getValue()
+                .entrySet()
+                .stream()
+                .map(e2 -> Map.entry(new QuestionIdentifier(e.getKey(), e2.getKey()), e2.getValue()))
+            )
             .collect(Collectors.groupingBy(
                 e -> types.get(e.getKey())
             ));
