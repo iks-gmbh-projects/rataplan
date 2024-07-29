@@ -39,6 +39,7 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
         private final long group;
         private final int rank;
     }
+    
     private final SurveyRepository surveyRepository;
     @Override
     public SurveyResponse convert(MappingContext<SurveyResponseDTO, SurveyResponse> context) {
@@ -52,56 +53,40 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
         dest.setSurvey(survey);
         Map<QuestionIdentifier, ? extends AbstractQuestion> questions = survey.getQuestionGroups()
             .stream()
-            .flatMap(g -> Stream.of(
-                Map.entry(g.getId(), g.getOpenQuestions()),
+            .flatMap(g -> Stream.of(Map.entry(g.getId(), g.getOpenQuestions()),
                 Map.entry(g.getId(), g.getChoiceQuestions())
             ))
-            .flatMap(e -> e.getValue()
-                .stream()
-                .map(q -> Map.entry(e.getKey(), q))
-            )
-            .collect(Collectors.toUnmodifiableMap(
-                e -> new QuestionIdentifier(e.getKey(), e.getValue().getRank()),
+            .flatMap(e -> e.getValue().stream().map(q -> Map.entry(e.getKey(), q)))
+            .collect(Collectors.toUnmodifiableMap(e -> new QuestionIdentifier(e.getKey(), e.getValue().getRank()),
                 Map.Entry::getValue
             ));
         Map<QuestionIdentifier, QuestionType> types = questions.entrySet()
             .stream()
-            .collect(Collectors.toUnmodifiableMap(
-                Map.Entry::getKey,
-                e -> e.getValue().getType()
-            ));
+            .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().getType()));
         Map<QuestionType, List<Map.Entry<QuestionIdentifier, AnswerDTO>>> answers = source.getAnswers()
             .entrySet()
             .stream()
             .flatMap(e -> e.getValue()
                 .entrySet()
                 .stream()
-                .map(e2 -> Map.entry(new QuestionIdentifier(e.getKey(), e2.getKey()), e2.getValue()))
-            )
-            .collect(Collectors.groupingBy(
-                e -> types.get(e.getKey())
-            ));
-        dest.setOpenAnswers(answers.getOrDefault(QuestionType.OPEN, List.of())
-            .stream()
-            .map(e -> {
-                OpenAnswer a = mappingEngine.map(context.create(e.getValue(), OpenAnswer.class));
-                a.setQuestion((OpenQuestion) questions.get(e.getKey()));
-                a.setResponse(dest);
-                return a;
-            })
-            .collect(Collectors.toList())
-        );
-        dest.setChoiceAnswerTexts(answers.getOrDefault(QuestionType.CHOICE, List.of())
-            .stream()
-            .map(e -> {
-                ChoiceAnswerText a = mappingEngine.map(context.create(e.getValue(), ChoiceAnswerText.class));
-                a.setQuestion((ChoiceQuestion) questions.get(e.getKey()));
-                a.setResponse(dest);
-                return a;
-            })
+                .map(e2 -> Map.entry(new QuestionIdentifier(e.getKey(), e2.getKey()), e2.getValue())))
+            .collect(Collectors.groupingBy(e -> types.get(e.getKey())));
+        dest.setOpenAnswers(answers.getOrDefault(QuestionType.OPEN, List.of()).stream().map(e -> {
+            OpenAnswer a = mappingEngine.map(context.create(e.getValue(), OpenAnswer.class));
+            a.setQuestion((OpenQuestion) questions.get(e.getKey()));
+            a.setResponse(dest);
+            return a;
+        })
             .filter(a -> a.getText() != null && a.getText().length != 0)
-            .collect(Collectors.toList())
-        );
+            .collect(Collectors.toList()));
+        dest.setChoiceAnswerTexts(answers.getOrDefault(QuestionType.CHOICE, List.of()).stream().map(e -> {
+            ChoiceAnswerText a = mappingEngine.map(context.create(e.getValue(), ChoiceAnswerText.class));
+            a.setQuestion((ChoiceQuestion) questions.get(e.getKey()));
+            a.setResponse(dest);
+            return a;
+        })
+            .filter(a -> a.getText() != null && a.getText().length != 0)
+            .collect(Collectors.toList()));
         Map<Long, ChoiceQuestionChoice> choices = survey.getQuestionGroups()
             .stream()
             .map(QuestionGroup::getChoiceQuestions)
@@ -119,8 +104,7 @@ public class SurveyResponseFromDTOConverter implements Converter<SurveyResponseD
             .filter(e -> e.getValue() != null && e.getValue())
             .map(Map.Entry::getKey)
             .map(choices::get)
-            .collect(Collectors.toList())
-        );
+            .collect(Collectors.toList()));
         return dest;
     }
 }
