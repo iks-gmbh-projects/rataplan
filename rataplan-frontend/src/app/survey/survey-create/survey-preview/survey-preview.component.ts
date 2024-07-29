@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { delay, NEVER, Observable, of, switchMap } from 'rxjs';
-import { QuestionGroup, Survey } from '../../survey.model';
+import { defined } from '../../../operators/non-empty';
+import { surveyFormFeature } from '../../survey-form/state/survey-form.feature';
+import { Survey } from '../../survey.model';
 
 @Component({
   selector: 'app-survey-preview',
@@ -8,8 +11,8 @@ import { QuestionGroup, Survey } from '../../survey.model';
   styleUrls: ['./survey-preview.component.css']
 })
 export class SurveyPreviewComponent {
-  @Input() public survey?:Survey;
-  public page = 0;
+  public readonly survey$: Observable<Survey>;
+  public readonly page$: Observable<number>;
   @Output() public readonly onSubmit = new EventEmitter<Survey>();
   private _busy: Observable<boolean> = NEVER;
   private _delayedBusy: Observable<boolean> = NEVER;
@@ -26,29 +29,10 @@ export class SurveyPreviewComponent {
     );
   }
 
-  constructor() { }
-
-  public changePage(answer?: any): void {
-    if(!this.survey) return;
-    if(answer) {
-      if(this.page >= this.survey.questionGroups.length-1) this.onSubmit.emit(this.survey);
-      else this.page++;
-    } else if(this.page) this.page--;
-  }
-
-  public previewify(questionGroup: QuestionGroup): QuestionGroup {
-    if(!questionGroup.id) {
-      let idCounter: number = 1;
-      questionGroup.id = idCounter++;
-      questionGroup.questions.forEach((question, i) => {
-        question.rank = i;
-        if (question.choices) {
-          for (let checkbox of question.choices) {
-            checkbox.id = idCounter++;
-          }
-        }
-      });
-    }
-    return questionGroup;
+  constructor(
+    private readonly store: Store,
+  ) {
+    this.survey$ = this.store.select(surveyFormFeature.selectSurvey).pipe(defined);
+    this.page$ = this.store.select(surveyFormFeature.selectPage);
   }
 }

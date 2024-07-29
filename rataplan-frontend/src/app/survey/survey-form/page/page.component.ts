@@ -1,7 +1,13 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { AbstractControl, NgForm } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { defined } from '../../../operators/non-empty';
+import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { Answer, Checkbox, Question, QuestionGroup } from '../../survey.model';
-import { FormErrorMessageService } from "../../../services/form-error-message-service/form-error-message.service";
+import { surveyFormActions } from '../state/survey-form.action';
+import { surveyFormFeature } from '../state/survey-form.feature';
 
 @Component({
   selector: 'app-survey-form-page',
@@ -10,14 +16,24 @@ import { FormErrorMessageService } from "../../../services/form-error-message-se
   exportAs: 'appSurveyFormPage'
 })
 export class PageComponent implements AfterViewInit{
-  @Input() public questionGroup?: QuestionGroup;
-  @Input() public preview: boolean = false;
-  @Input() public isFirst: boolean = false;
-  @Output() public readonly onSubmit = new EventEmitter<{ [key: string | number]: Answer }>();
+  public questionGroup$: Observable<QuestionGroup>;
+  public preview$: Observable<boolean>;
+  public first$: Observable<boolean>;
   @Output() public readonly formAfterViewInit = new EventEmitter<AbstractControl>();
   @ViewChild('form') public form?: NgForm;
 
-  constructor(public readonly errorMessageService: FormErrorMessageService) {
+  constructor(
+    private readonly store: Store,
+    public readonly errorMessageService: FormErrorMessageService,
+  ) {
+    this.questionGroup$ = store.select(surveyFormFeature.selectSurveyFormState).pipe(
+      map(({survey, page}) => survey?.questionGroups?.[page]),
+      defined,
+    );
+    this.preview$ = store.select(surveyFormFeature.selectPreview);
+    this.first$ = store.select(surveyFormFeature.selectPage).pipe(
+      map(page => page == 0),
+    );
   }
 
   ngAfterViewInit(): void {
@@ -25,7 +41,7 @@ export class PageComponent implements AfterViewInit{
   }
 
   public submit(form: NgForm) {
-    if (this.preview || form.valid) {
+    if (form.valid) {
       let answers: {[key: string|number]: Answer&{checkboxId?: string|number}} = form.value;
       for(let key in answers) {
         if(answers[key].checkboxId !== undefined && answers[key].checkboxId !== null) {
@@ -36,7 +52,7 @@ export class PageComponent implements AfterViewInit{
           delete answers[key].checkboxId;
         }
       }
-      this.onSubmit.emit(answers);
+      this.store.dispatch(surveyFormActions.nextPage({answers}))
     }
   }
 
@@ -61,7 +77,17 @@ export class PageComponent implements AfterViewInit{
     return true;
   }
 
-  public revert() {
-    this.onSubmit.emit();
+  public revert(form: NgForm) {
+    let answers: {[key: string|number]: Answer&{checkboxId?: string|number}} = form.value;
+    for(let key in answers) {
+      if(answers[key].checkboxId !== undefined && answers[key].checkboxId !== null) {
+        answers[key].checkboxes = {
+          ...answers[key].checkboxes,
+          [answers[key].checkboxId!]: true
+        };
+        delete answers[key].checkboxId;
+      }
+    }
+    this.store.dispatch(surveyFormActions.nextPage({answers}))
   }
 }

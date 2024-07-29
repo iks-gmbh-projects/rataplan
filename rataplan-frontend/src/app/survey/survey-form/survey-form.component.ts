@@ -3,10 +3,15 @@ import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, delay, map, Observable, of, ReplaySubject, startWith, Subscription, switchMap } from 'rxjs';
-import { Answer, Survey } from '../survey.model';
-import { SurveyService } from '../survey.service';
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { combineLatest, delay, map, Observable, of, ReplaySubject, startWith, Subscription, switchMap } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { defined, nonUndefined } from '../../operators/non-empty';
+import { Survey } from '../survey.model';
 import { PageComponent } from './page/page.component';
+import { surveyFormActions } from './state/survey-form.action';
+import { surveyFormFeature } from './state/survey-form.feature';
 import { SurveyAnswerComponent } from './survey-answer/survey-answer.component';
 
 @Component({
@@ -16,14 +21,11 @@ import { SurveyAnswerComponent } from './survey-answer/survey-answer.component';
 })
 
 export class SurveyFormComponent implements OnInit, OnDestroy {
-  public survey?: Survey;
-  public page = 0;
-  readonly busy$ = new BehaviorSubject<boolean>(false);
-  readonly delayedBusy$: Observable<boolean> = this.busy$.pipe(
-    switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
-  );
-  private answers: {[groupId: string | number]: {[rank: string | number]: Answer}} = {};
-  private sub?: Subscription;
+  public survey$: Observable<Survey>;
+  public page$: Observable<number>;
+  readonly busy$: Observable<boolean>;
+  readonly delayedBusy$: Observable<boolean>;
+  private subs: Subscription[] = [];
   private readonly pagesSubject = new ReplaySubject<QueryList<PageComponent>>(1);
   readonly isResponseValid: Observable<boolean> = this.pagesSubject.pipe(
     switchMap(pages => pages.changes.pipe(
@@ -47,69 +49,62 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
   }
   
   constructor(
-    private route: ActivatedRoute,
-    private surveys: SurveyService,
-    private snackBars: MatSnackBar,
-    private dialogs: MatDialog,
+    private readonly route: ActivatedRoute,
+    private readonly store: Store,
+    private readonly actions$: Actions,
+    private readonly snackBars: MatSnackBar,
+    private readonly dialogs: MatDialog,
   )
   {
+    this.survey$ = this.store.select(surveyFormFeature.selectSurvey).pipe(defined);
+    this.page$ = this.store.select(surveyFormFeature.selectPage);
+    this.busy$ = this.store.select(surveyFormFeature.selectBusy);
+    this.delayedBusy$ = this.busy$.pipe(
+      switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+    );
   }
   
   public ngOnInit(): void {
-    this.survey = this.route.snapshot.data['survey'];
-    this.sub = this.route.data.subscribe(data => {
-      if(this.survey !== data['survey']) {
-        this.survey = data['survey'];
-        this.answers = {};
-      }
-    });
+    this.subs.forEach(s => s.unsubscribe());
+    this.subs = [
+      this.route.data.pipe(
+        map(({survey}) => survey as Survey | undefined),
+        distinctUntilChanged(),
+        nonUndefined,
+      ).subscribe(survey => this.store.dispatch(surveyFormActions.init({survey}))),
+      this.actions$.pipe(
+        ofType(surveyFormActions.postAnswersSuccess),
+      ).subscribe(() => this.dialogs.open(SurveyAnswerComponent)),
+      this.actions$.pipe(
+        ofType(surveyFormActions.postAnswersError),
+      ).subscribe(({error}: {error: HttpErrorResponse}) => {
+        switch(error.status) {
+        case 409:
+          this.snackBars.open('Sie haben bereits teilgenommen.', 'OK');
+          break;
+        case 422:
+          this.snackBars.open('Hochladen nicht erfolgreich, Antwort oder Umfrage war ungültig.', 'OK');
+          break;
+        default:
+          this.snackBars.open('Fehler beim Hochladen der Antwort: ' + error.status, 'OK');
+          break;
+        }
+      }),
+    ];
   }
   
   public ngOnDestroy(): void {
-    this.sub?.unsubscribe();
-  }
-  
-  public pageSubmit(answers?: {[rank: string | number]: Answer}) {
-    if(!this.survey) return;
-    if(answers) {
-      this.answers = {
-        ...this.answers,
-        [this.survey.questionGroups[this.page].id!]: answers,
-      };
-      this.page++;
-    } else {
-      this.page--;
-    }
+    this.subs.forEach(s => s.unsubscribe());
+    this.subs = [];
   }
   
   public submit(): void {
-    if(!this.survey) return;
-    if(this.page >= this.survey.questionGroups.length) {
-      this.busy$.next(true)
-      this.surveys.answerSurvey({
-        surveyId: this.survey.id!,
-        answers: this.answers,
-      }).subscribe({
-        next: () => {
-          this.busy$.next(false);
-          this.dialogs.open(SurveyAnswerComponent);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.busy$.next(false);
-          this.page--;
-          switch(err.status) {
-          case 409:
-            this.snackBars.open('Sie haben bereits teilgenommen.', 'OK');
-            break;
-          case 422:
-            this.snackBars.open('Hochladen nicht erfolgreich, Antwort oder Umfrage war ungültig.', 'OK');
-            break;
-          default:
-            this.snackBars.open('Fehler beim Hochladen der Antwort: ' + err.status, 'OK');
-            break;
-          }
-        },
-      });
-    }
+    this.store.dispatch(surveyFormActions.postAnswers());
   }
+  
+  public prevPage(): void {
+    this.store.dispatch(surveyFormActions.previousPage({answers: {}}));
+  }
+  
+  protected readonly Infinity = Infinity;
 }

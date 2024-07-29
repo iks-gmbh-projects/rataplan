@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { surveyFormActions } from '../survey-form/state/survey-form.action';
 import { Survey } from '../survey.model';
 import { SurveyService } from '../survey.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-survey-create',
@@ -19,6 +21,7 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
   private sub?: Subscription;
 
   constructor(
+    private readonly store: Store,
     private snackBar: MatSnackBar,
     private surveys: SurveyService,
     private router: Router,
@@ -41,10 +44,29 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
 
   public toPreview({survey, preview}: {survey: Survey, preview: boolean}): void {
     this.survey = survey;
-    if(preview) this.preview = true;
+    if(preview) {
+      this.preview = true;
+      this.store.dispatch(surveyFormActions.initPreview({
+        survey: {
+          ...survey,
+          questionGroups: survey.questionGroups.map((qg, i) => ({
+            ...qg,
+            id: i,
+            questions: qg.questions.map((q, j) => ({
+              ...q,
+              rank: j,
+              choices: q.choices?.map((c, k) => ({
+                ...c,
+                id: k,
+              }))
+            }))
+          })),
+        },
+      }))
+    }
     else this.submit(survey);
   }
-
+  
   public submit(survey?: Survey): void {
     if (!survey) return this.edit();
     survey = JSON.parse(JSON.stringify(survey)); // create copy of the input that we can modify freely

@@ -1,4 +1,4 @@
-<div *ngIf="survey" class="center">
+<div *ngrxLet="survey$ as survey" class="center">
   <div>
     <mat-card class="bottomspace">
       <mat-card-header>
@@ -20,11 +20,9 @@
     </mat-card>
     <mat-divider class="bottomspace"></mat-divider>
   </div>
-  <div class="size-div">
+  <div *ngrxLet="page$ as page" class="size-div">
     <app-survey-form-page
       *ngIf="page < survey.questionGroups.length; else finished"
-      [questionGroup]="survey.questionGroups[page]" [isFirst]="page==0"
-      (onSubmit)="pageSubmit($event)"
       #surveyPage
     ></app-survey-form-page>
     <ng-template class="center" #finished>
@@ -33,7 +31,7 @@
         <div class="left">
           <button
             class="left" mat-icon-button
-            (click)="page = page-1"
+            (click)="prevPage()"
           >
             <mat-icon>navigate_before</mat-icon>
           </button>

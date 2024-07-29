@@ -1,12 +1,7 @@
 <div class="center margin-top">
-  <mat-card class="width" *ngIf="survey">
+  <mat-card class="width" *ngrxLet="survey$ as survey">
     <mat-card-content>
-      <app-survey-form-page
-        [preview]="true"
-        [questionGroup]="previewify(survey.questionGroups[page])"
-        [isFirst]="page==0"
-        (onSubmit)="changePage($event)"
-      ></app-survey-form-page>
+      <app-survey-form-page/>
     </mat-card-content>
     <div>
       <button class="left" mat-raised-button color="primary" (click)="onSubmit.emit()">
