@@ -122,7 +122,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
             if(!checkbox.id) continue;
             let count = 0;
             for(let response of this.answers) {
-              let answer = response.answers[gId][question.rank];
+              let answer = response.answers[gId]?.[question.rank];
               if(answer && answer.checkboxes![checkbox.id]) count++;
             }
             dataset.push(count);
@@ -170,7 +170,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
     let count = 0;
     let total = 0;
     for(let response of this.answers) {
-      let answer = response.answers[groupId][questionRank];
+      let answer = response.answers[groupId]?.[questionRank];
       if(answer) {
         total++;
         if(answer.checkboxes![checkboxId]) count++;
@@ -196,14 +196,14 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
     return [
       this.columnNames[groupId][questionId].join(', '),
       ...this.answers.map(response => {
-        const answer =  response.answers[groupId][questionId];
+        const answer =  response.answers[groupId]?.[questionId];
         const ret = [
           response.userId || 'Anonym',
-          ...this.columns[groupId][questionId].filter(col => col.startsWith('checkbox')).map(col => answer.checkboxes![col.substring(
+          ...this.columns[groupId][questionId].filter(col => col.startsWith('checkbox')).map(col => answer?.checkboxes?.[col.substring(
             8)]),
           ...(
             this.columns[groupId][questionId][this.columns[groupId][questionId].length - 1] === 'answer' ?
-              [this.escape(answer.text)] :
+              [this.escape(answer?.text)] :
               []
           ),
         ];

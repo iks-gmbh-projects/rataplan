@@ -8,6 +8,8 @@ import { AppCommonModule } from '../app-common.module';
 import { DateRangeComponent } from './date-range/date-range.component';
 import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
+import { SurveyCreateEffects } from './survey-create/state/survey-create.effects';
+import { surveyCreateFeature } from './survey-create/state/survey-create.feature';
 import { SurveyCreateFormHeadComponent } from './survey-create/survey-create-form/survey-create-form-head/survey-create-form-head.component';
 import { SurveyCreateFormPageComponent } from './survey-create/survey-create-form/survey-create-form-page/survey-create-form-page.component';
 import { SurveyCreateFormComponent } from './survey-create/survey-create-form/survey-create-form.component';
@@ -53,7 +55,8 @@ import { SurveyService } from './survey.service';
     LetDirective,
     PushPipe,
     StoreModule.forFeature(surveyFormFeature),
-    EffectsModule.forFeature([SurveyFormEffects]),
+    StoreModule.forFeature(surveyCreateFeature),
+    EffectsModule.forFeature([SurveyFormEffects, SurveyCreateEffects]),
   ],
   providers: [
     SurveyService,

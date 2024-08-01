@@ -1,16 +1,6 @@
-<app-survey-create-form-head
-  *ngIf="page < 0; else qg" [form]="$any(formGroup)"
-  (submit)="page = page+1"
-></app-survey-create-form-head>
+<app-survey-create-form-head *ngIf="headPage$ | async; else qg" #headForm/>
 <ng-template #qg>
-  <app-survey-create-form-page
-    [questionGroup]="formGroup!.controls.questionGroups.at(page)"
-    [lastPage]="page+1 == formGroup!.controls.questionGroups.length"
-    [onlyPage]="formGroup!.controls.questionGroups.length <= 1"
-    (onSubmit)="advanceForm($event)"
-    (remove)="removeGroup()"
-    (revert)="page = page-1"
-  ></app-survey-create-form-page>
+  <app-survey-create-form-page #pageForm/>
 </ng-template>
 
 <div class="bottomSpace">
@@ -19,10 +9,10 @@
   </div>
   <div class="middle"></div>
   <div class="right">
-    <button mat-raised-button color="primary" type="button" (click)="submit(true)" [disabled]="!!formGroup?.invalid">
+    <button mat-raised-button color="primary" type="button" (click)="submit(true)" [disabled]="!(valid$ | ngrxPush)">
       Vorschau
     </button>
-    <button mat-raised-button color="primary" type="button" (click)="submit()" [disabled]="!!formGroup?.invalid">
+    <button mat-raised-button color="primary" type="button" (click)="submit()" [disabled]="!(valid$ | ngrxPush)">
       Fertig
     </button>
   </div>

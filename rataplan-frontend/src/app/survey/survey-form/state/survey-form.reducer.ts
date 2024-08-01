@@ -6,7 +6,8 @@ export const surveyFormReducer = createReducer<{
   survey: Survey | undefined,
   preview: boolean,
   page: number,
-  answers: {[groupId: string | number]: {[rank: string | number]: Answer}},
+  answers: Record<string | number, Record<string | number, Answer | undefined> | undefined>,
+  valid: Record<string | number, Record<string | number, boolean> | undefined> | undefined,
   busy: boolean,
   error: any,
 }>(
@@ -15,6 +16,7 @@ export const surveyFormReducer = createReducer<{
     preview: false,
     page: 0,
     answers: {},
+    valid: {},
     busy: false,
     error: undefined,
   },
@@ -26,6 +28,7 @@ export const surveyFormReducer = createReducer<{
         preview: false,
         page: 0,
         answers: {},
+        valid: undefined,
         busy: false,
         error: undefined,
       }
@@ -33,14 +36,14 @@ export const surveyFormReducer = createReducer<{
   ),
   on(surveyFormActions.previousPage, (state, {answers}) => {
     const group = state.survey?.questionGroups?.[state.page]?.id;
-    if(group === undefined) return state;
     return {
       ...state,
       page: Math.max(0, state.page - 1),
-      answers: {
+      answers: group === undefined ? state.answers :{
         ...state.answers,
         [group]: answers,
       },
+      valid: undefined,
     };
   }),
   on(
@@ -55,8 +58,16 @@ export const surveyFormReducer = createReducer<{
           ...state.answers,
           [group]: answers,
         },
+        valid: undefined,
       };
     },
+  ),
+  on(
+    surveyFormActions.setValidity,
+    (state, {valid}) => ({
+      ...state,
+      valid,
+    })
   ),
   on(
     surveyFormActions.postAnswers,
@@ -75,6 +86,7 @@ export const surveyFormReducer = createReducer<{
         preview: false,
         page: 0,
         answers: {},
+        valid: undefined,
         busy: false,
         error: undefined,
       }

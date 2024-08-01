@@ -1,15 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { combineLatest, delay, map, Observable, of, ReplaySubject, startWith, Subscription, switchMap } from 'rxjs';
+import { delay, map, Observable, of, Subscription, switchMap } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { defined, nonUndefined } from '../../operators/non-empty';
 import { Survey } from '../survey.model';
-import { PageComponent } from './page/page.component';
 import { surveyFormActions } from './state/survey-form.action';
 import { surveyFormFeature } from './state/survey-form.feature';
 import { SurveyAnswerComponent } from './survey-answer/survey-answer.component';
@@ -26,27 +26,8 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
   readonly busy$: Observable<boolean>;
   readonly delayedBusy$: Observable<boolean>;
   private subs: Subscription[] = [];
-  private readonly pagesSubject = new ReplaySubject<QueryList<PageComponent>>(1);
-  readonly isResponseValid: Observable<boolean> = this.pagesSubject.pipe(
-    switchMap(pages => pages.changes.pipe(
-      map(() => pages),
-      startWith(pages),
-      switchMap(pages => combineLatest(
-        pages.map(
-          page => page.form!.statusChanges!.pipe(
-            map(() => page.form!.invalid),
-            startWith(page.form!.invalid),
-          ),
-        ),
-      )),
-      map(values => values.some(v => v)),
-    )),
-    startWith(false),
-  );
-  
-  @ViewChildren('surveyPage') set pages(pages: QueryList<PageComponent>) {
-    this.pagesSubject.next(pages);
-  }
+  protected pageForm?: AbstractControl;
+  readonly isResponseValid$: Observable<boolean>;
   
   constructor(
     private readonly route: ActivatedRoute,
@@ -61,6 +42,11 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
     this.busy$ = this.store.select(surveyFormFeature.selectBusy);
     this.delayedBusy$ = this.busy$.pipe(
       switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+    );
+    this.isResponseValid$ = this.store.select(surveyFormFeature.selectValid).pipe(
+      map(valid => Object.values(valid ?? {x: undefined})
+        .every(q => Object.values(q ?? {y: false}).every(b => b))
+      )
     );
   }
   

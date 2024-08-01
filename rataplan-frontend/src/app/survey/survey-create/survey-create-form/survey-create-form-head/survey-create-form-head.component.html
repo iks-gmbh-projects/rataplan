@@ -1,6 +1,6 @@
 <div>
   <div class="margin-top">
-    <form *ngIf="formGroup" [formGroup]="formGroup">
+    <form *ngrxLet="formGroup$ as formGroup" [formGroup]="formGroup">
       <div class="inputFieldWrapper">
         <mat-form-field class="mat-form-field-flex" appearance="fill">
           <mat-label>Umfragename</mat-label>
@@ -54,8 +54,8 @@
       <div class="nextContainer">
         <button
           type="button" mat-icon-button color="primary"
-          (click)="submit.emit()"
-          [disabled]="!headerComplete()"
+          (click)="formGroup.valid && doSubmit(formGroup)"
+          [disabled]="formGroup.invalid"
         >
           <mat-icon>navigate_next</mat-icon>
         </button>

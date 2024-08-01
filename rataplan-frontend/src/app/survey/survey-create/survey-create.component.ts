@@ -1,105 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { surveyFormActions } from '../survey-form/state/survey-form.action';
-import { Survey } from '../survey.model';
-import { SurveyService } from '../survey.service';
+import { Observable } from 'rxjs';
+import { surveyCreateFeature } from './state/survey-create.feature';
 
 @Component({
   selector: 'app-survey-create',
   templateUrl: './survey-create.component.html',
   styleUrls: ['./survey-create.component.css']
 })
-export class SurveyCreateComponent implements OnInit, OnDestroy {
-  public survey?: Survey;
-  public preview: boolean = false;
-  private isEdit: boolean = false;
-  public busy$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-  private sub?: Subscription;
+export class SurveyCreateComponent {
+  public preview$: Observable<boolean>;
 
   constructor(
     private readonly store: Store,
-    private snackBar: MatSnackBar,
-    private surveys: SurveyService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) { }
-
-  public ngOnInit(): void {
-    this.survey = this.route.snapshot.data['survey'];
-    this.isEdit = !!this.survey;
-    this.sub = this.route.data.subscribe(data => {
-      this.survey = data['survey'];
-      this.isEdit = !!this.survey;
-      this.preview = false;
-    });
-  }
-
-  public ngOnDestroy(): void {
-    this.sub?.unsubscribe();
-  }
-
-  public toPreview({survey, preview}: {survey: Survey, preview: boolean}): void {
-    this.survey = survey;
-    if(preview) {
-      this.preview = true;
-      this.store.dispatch(surveyFormActions.initPreview({
-        survey: {
-          ...survey,
-          questionGroups: survey.questionGroups.map((qg, i) => ({
-            ...qg,
-            id: i,
-            questions: qg.questions.map((q, j) => ({
-              ...q,
-              rank: j,
-              choices: q.choices?.map((c, k) => ({
-                ...c,
-                id: k,
-              }))
-            }))
-          })),
-        },
-      }))
-    }
-    else this.submit(survey);
-  }
-  
-  public submit(survey?: Survey): void {
-    if (!survey) return this.edit();
-    survey = JSON.parse(JSON.stringify(survey)); // create copy of the input that we can modify freely
-    for (let qg of survey!.questionGroups) {
-      if(Number(qg.id ?? 0) < 0) delete qg.id;
-      for (let question of qg.questions) {
-        if(Number(question.id ?? 0) < 0) delete question.id;
-        if (question.choices) {
-          for (let checkbox of question.choices) {
-            if(Number(checkbox.id ?? 0) < 0) delete checkbox.id;
-          }
-        }
-      }
-    }
-    this.busy$.next(true);
-    (
-      this.isEdit ?
-        this.surveys.editSurvey(survey!) :
-        this.surveys.createSurvey(survey!)
-    ).subscribe({
-      next: surv => {
-        this.busy$.next(false);
-        this.router.navigate(["/survey", "access", surv.accessId], { relativeTo: this.route });
-      },
-      error: err => {
-        this.busy$.next(false);
-        this.survey!.questionGroups = survey!.questionGroups;
-        this.snackBar.open("Unbekannter Fehler beim Erstellen der Umfrage", "OK");
-      }
-    });
-  }
-
-  public edit(): void {
-    this.preview = false;
+  ) {
+    this.preview$ = this.store.select(surveyCreateFeature.selectShowPreview);
   }
 }

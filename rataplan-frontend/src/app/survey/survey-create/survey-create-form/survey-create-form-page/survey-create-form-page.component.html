@@ -1,4 +1,4 @@
-<form *ngIf="questionGroup" [formGroup]="questionGroup" (ngSubmit)="onSubmit.emit(false)">
+<form *ngrxLet="form$ as questionGroup" [formGroup]="questionGroup" (ngSubmit)="doSubmit(questionGroup, surveyCreateActions.nextGroup)">
   <div class="inputFieldWrapper">
     <mat-form-field class="unlimited" style="margin-top: 1em;" appearance="fill">
       <mat-label>Frageblocküberschrift</mat-label>
@@ -6,9 +6,9 @@
       <mat-error>{{ errorMessageService.genericFormError(questionGroup.get('title')) }}</mat-error>
     </mat-form-field>
   </div>
-  <div formArrayName="questions">
+  <div formArrayName="questions" *ngrxLet="questionGroup.controls.questions as questions">
     <mat-card
-      class="bottomspace" *ngFor="let question of getQuestions().controls; index as j"
+      class="bottomspace" *ngFor="let question of questions.controls; index as j"
       [formGroupName]="j"
     >
       <mat-card-content>
@@ -43,7 +43,7 @@
               <div formArrayName="choices">
                 <div
                   class="bottomspace answerGrid"
-                  *ngFor="let checkbox of getCheckboxes(question).controls; index as k" [formGroupName]="k"
+                  *ngFor="let checkbox of question.controls.choices.controls; index as k" [formGroupName]="k"
                 >
                   <mat-form-field class=" inline-unlimited answerField">
                     <mat-label>Antwortmöglichkeit {{ k + 1 }}</mat-label>
@@ -55,7 +55,7 @@
                     color="warn"
                     class="answerDelete"
                     type="button"
-                    (click)="getCheckboxes(question).removeAt(k);;
+                    (click)="question.controls.choices.removeAt(k);;
                       question.get(['minSelect'])?.updateValueAndValidity();
                       question.get(['maxSelect'])?.updateValueAndValidity()"
                   >
@@ -71,15 +71,15 @@
       </mat-card-content>
       <mat-card-actions>
         <button
-          mat-icon-button color="warn" type="button" [disabled]="getQuestions().length <= 1"
-          (click)="getQuestions().removeAt(j)"
+          mat-icon-button color="warn" type="button" [disabled]="questions.length <= 1"
+          (click)="questions.removeAt(j)"
         >
           <mat-icon>delete</mat-icon>
         </button>
         <button
           *ngIf="question.controls.type.value != 'OPEN'"
           mat-icon-button color="primary" type="button"
-          (click)="getCheckboxes(question).push(createCheckbox());
+            (click)="question.controls.choices.push(createCheckbox());
             question.get(['checkboxGroup', 'minSelect'])?.updateValueAndValidity();
             question.get(['checkboxGroup', 'maxSelect'])?.updateValueAndValidity()"
         >
@@ -91,7 +91,7 @@
       <div style="flex: 2;"></div>
       <button
         mat-mini-fab color="primary" type="button"
-        (click)="getQuestions().push(createQuestion())"
+        (click)="questions.push(createQuestion())"
       >
         <mat-icon>add</mat-icon>
       </button>
@@ -99,28 +99,28 @@
     </div>
   </div>
   <div style="display: flex; margin-bottom: 1ex;">
-    <button type="button" mat-icon-button (click)="revert.emit()">
+    <button type="button" mat-icon-button (click)="doSubmit(questionGroup, surveyCreateActions.previousGroup)">
       <mat-icon>navigate_before</mat-icon>
     </button>
     <div style="flex: 2;"></div>
     <button
       type="submit" mat-icon-button color="primary"
-      [disabled]="lastPage || questionGroup!.invalid"
+      [disabled]="(lastPage$ | ngrxPush) || questionGroup!.invalid"
     >
       <mat-icon>navigate_next</mat-icon>
     </button>
   </div>
   <div style="display: flex;">
     <button
-      mat-icon-button color="warn" type="button" [disabled]="onlyPage"
-      (click)="remove.emit()"
+      mat-icon-button color="warn" type="button" [disabled]="onlyPage$ | ngrxPush"
+      (click)="remove()"
     >
       <mat-icon>delete</mat-icon>
     </button>
     <div style="flex: 2;"></div>
     <button
       mat-icon-button color="primary" type="button"
-      (click)="onSubmit.emit(true)"
+      (click)="doSubmit(questionGroup, surveyCreateActions.insertGroup)"
       [disabled]="questionGroup!.invalid"
     >
       <mat-icon>add</mat-icon>

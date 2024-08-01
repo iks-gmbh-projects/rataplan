@@ -21,15 +21,28 @@ export type QuestionGroup = {
   questions: Question[]
 };
 
-export type Question = {
-  type: 'OPEN'|'CHOICE',
+export type Question = OpenQuestion | ChoiceQuestion;
+
+export type OpenQuestion = {
+  type: 'OPEN',
+  id?: string|number,
+  rank: string|number,
+  text: string,
+  required: boolean,
+  minSelect?: number,
+  maxSelect?: number,
+  choices?: Checkbox[],
+};
+
+export type ChoiceQuestion = {
+  type: 'CHOICE',
   id?: string|number,
   rank: string|number,
   text: string,
   required?: boolean,
-  minSelect?: number,
-  maxSelect?: number,
-  choices?: Checkbox[],
+  minSelect: number,
+  maxSelect: number,
+  choices: Checkbox[],
 };
 
 export type Checkbox = {
@@ -50,7 +63,7 @@ export type SurveyResponse = {
   userId?: string|number,
   answers: {
     [questionGroupId: string|number]: {
-      [questionRank: string|number]: Answer,
-    },
+      [questionRank: string|number]: Answer | undefined,
+    } | undefined,
   },
 }

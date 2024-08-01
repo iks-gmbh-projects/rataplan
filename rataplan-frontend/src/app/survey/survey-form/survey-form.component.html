@@ -23,7 +23,7 @@
   <div *ngrxLet="page$ as page" class="size-div">
     <app-survey-form-page
       *ngIf="page < survey.questionGroups.length; else finished"
-      #surveyPage
+      (formAfterViewInit)="pageForm = $event"
     ></app-survey-form-page>
     <ng-template class="center" #finished>
       <h3 style="text-align: center">Fertig</h3>
@@ -40,8 +40,8 @@
         <div class="right">
           <button
             class="right" mat-raised-button color="primary"
-            [loading]="delayedBusy$ | async"
-            [disabled]="(isResponseValid | async) || (busy$ | async) ?? false"
+            [loading]="delayedBusy$ | ngrxPush"
+            [disabled]="!(isResponseValid$ | ngrxPush) || (busy$ | ngrxPush)"
             (click)="submit()"
           >Einreichen
           </button>

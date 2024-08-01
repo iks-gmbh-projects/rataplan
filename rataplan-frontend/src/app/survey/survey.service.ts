@@ -75,41 +75,6 @@ export class SurveyService {
     );
   }
   
-  public createSurvey(survey: Survey): Observable<SurveyHead> {
-    return this.surveyURL.pipe(
-      exhaustMap(surveyURL => {
-        return this.http.post<SurveyHead>(surveyURL, survey, {
-          withCredentials: true,
-        });
-      }),
-      ensureDateOperator,
-    );
-  }
-  
-  public editSurvey(survey: Survey): Observable<SurveyHead> {
-    return this.surveyURL.pipe(
-      exhaustMap(surveyURL => {
-        return this.http.put<SurveyHead>(surveyURL, survey, {
-          params: new HttpParams().append('accessId', survey.accessId!),
-          withCredentials: true,
-        });
-      }),
-      ensureDateOperator,
-    );
-  }
-  
-  public answerSurvey(response: SurveyResponse): Observable<SurveyResponse> {
-    return this.store.select(configFeature.selectSurveyBackendUrl('responses')).pipe(
-      nonUndefined,
-      first(),
-      exhaustMap(answerURL => {
-        return this.http.post<SurveyResponse>(answerURL, response, {
-          withCredentials: true,
-        });
-      }),
-    );
-  }
-  
   public fetchAnswers(survey: Survey): Observable<SurveyResponse[]> {
     return this.store.select(configFeature.selectSurveyBackendUrl('responses', 'survey', survey.accessId!)).pipe(
       nonUndefined,

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { AbstractControl, NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -15,29 +15,25 @@ import { surveyFormFeature } from '../state/survey-form.feature';
   styleUrls: ['./page.component.css'],
   exportAs: 'appSurveyFormPage'
 })
-export class PageComponent implements AfterViewInit{
-  public questionGroup$: Observable<QuestionGroup>;
-  public preview$: Observable<boolean>;
-  public first$: Observable<boolean>;
+export class PageComponent {
+  public readonly questionGroup$: Observable<QuestionGroup>;
+  public readonly answers$: Observable<Record<string | number, Answer | undefined>>;
+  public readonly preview$: Observable<boolean>;
+  public readonly first$: Observable<boolean>;
   @Output() public readonly formAfterViewInit = new EventEmitter<AbstractControl>();
-  @ViewChild('form') public form?: NgForm;
 
   constructor(
     private readonly store: Store,
     public readonly errorMessageService: FormErrorMessageService,
   ) {
-    this.questionGroup$ = store.select(surveyFormFeature.selectSurveyFormState).pipe(
-      map(({survey, page}) => survey?.questionGroups?.[page]),
+    this.questionGroup$ = store.select(surveyFormFeature.selectCurrentQuestionGroup).pipe(
       defined,
     );
+    this.answers$ = store.select(surveyFormFeature.selectCurrentAnswers)
     this.preview$ = store.select(surveyFormFeature.selectPreview);
     this.first$ = store.select(surveyFormFeature.selectPage).pipe(
       map(page => page == 0),
     );
-  }
-
-  ngAfterViewInit(): void {
-    this.formAfterViewInit.emit(this.form!.form);
   }
 
   public submit(form: NgForm) {
@@ -90,4 +86,6 @@ export class PageComponent implements AfterViewInit{
     }
     this.store.dispatch(surveyFormActions.nextPage({answers}))
   }
+  
+  protected readonly Object = Object;
 }
