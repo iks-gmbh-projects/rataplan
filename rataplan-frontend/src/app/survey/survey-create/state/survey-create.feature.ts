@@ -6,11 +6,17 @@ export const surveyCreateFeature = createFeature({
   reducer: surveyCreateReducer,
   extraSelectors: ({
     selectCurrentGroupIndex,
+    selectGroups,
     selectValid,
   }) => ({
+    selectCurrentGroup: createSelector(
+      selectCurrentGroupIndex,
+      selectGroups,
+      (idx, groups) => groups[idx],
+    ),
     selectAllValid: createSelector(
       selectValid,
-      ({head, groups}): boolean => head! && (groups ?? []).length > 0 && (groups ?? []).every(g => g)
+      (v): boolean => !!v && v.head && (v.groups ?? []).length > 0 && (v.groups ?? []).every(g => g)
     ),
     selectHeadPage: createSelector(
       selectCurrentGroupIndex,

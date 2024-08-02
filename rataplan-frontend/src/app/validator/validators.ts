@@ -1,4 +1,6 @@
-import { AbstractControl, FormArray, UntypedFormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, UntypedFormArray, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 export class ExtraValidators {
   static valueMatching(control: AbstractControl): ValidatorFn {
@@ -63,7 +65,25 @@ export class ExtraValidators {
     };
   }
 
-
+  static toggledValidator(validator: ValidatorFn, predicate: () => boolean): ValidatorFn {
+    return (ctrl) => predicate() ? validator(ctrl) : null;
+  }
+  
+  static asyncToggledValidator(validator: AsyncValidatorFn, predicate: () => boolean): AsyncValidatorFn {
+    return (ctrl) => predicate() ? validator(ctrl) : of(null);
+  }
+  
+  static observableToggledValidator(validator: ValidatorFn, predicate: () => Observable<boolean>): AsyncValidatorFn {
+    return (ctrl) => predicate().pipe(
+      map(prd => prd ? validator(ctrl) : null),
+    );
+  }
+  
+  static observableAsyncToggledValidator(validator: AsyncValidatorFn, predicate: () => Observable<boolean>): AsyncValidatorFn {
+    return (ctrl) => predicate().pipe(
+      switchMap(prd => prd ? validator(ctrl) : of(null)),
+    );
+  }
 
   static participantLimitMoreThanZeroOrNull():ValidatorFn {
     return (c) => {

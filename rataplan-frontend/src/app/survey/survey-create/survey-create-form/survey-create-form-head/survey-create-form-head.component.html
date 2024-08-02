@@ -23,7 +23,7 @@
         <input
           type="text"
           [mtxDatetimepicker]="startDate"
-          [min]="minDate"
+          [min]="minStartDate$ | ngrxPush"
           matInput
           formControlName="startDate"
           required
@@ -37,7 +37,7 @@
         <mat-label>Bis</mat-label>
         <input
           type="text"
-          [min]="formGroup.controls.startDate.value ?? minDate"
+          [min]="formGroup.controls.startDate.value ?? minStartDate$ | ngrxPush"
           [mtxDatetimepicker]="endDate"
           matInput
           formControlName="endDate"
@@ -54,8 +54,8 @@
       <div class="nextContainer">
         <button
           type="button" mat-icon-button color="primary"
-          (click)="formGroup.valid && doSubmit(formGroup)"
-          [disabled]="formGroup.invalid"
+          (click)="formGroup.valid && doSubmit(formGroup.value, surveyCreateActions.nextGroup())"
+          [disabled]="!formGroup.valid"
         >
           <mat-icon>navigate_next</mat-icon>
         </button>

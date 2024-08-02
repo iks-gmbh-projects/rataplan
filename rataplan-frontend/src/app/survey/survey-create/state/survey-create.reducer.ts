@@ -1,18 +1,17 @@
 import { createReducer, on } from '@ngrx/store';
 import { QuestionGroup, SurveyHead } from '../../survey.model';
-import { surveyCreateActions } from './survey-create.action';
+import { DeepPartial, surveyCreateActions } from './survey-create.action';
 
 export const surveyCreateReducer = createReducer<{
   editing: boolean,
   originalStartDate: Date | undefined,
-  head: SurveyHead | undefined,
-  groups: (QuestionGroup | undefined)[],
+  head: DeepPartial<SurveyHead> | undefined,
+  groups: DeepPartial<QuestionGroup[]>,
   currentGroupIndex: number,
-  currentGroup: QuestionGroup | undefined,
   valid: {
-    head?: boolean,
-    groups?: boolean[],
-  },
+    head: boolean,
+    groups: boolean[],
+  } | undefined,
   showPreview: boolean,
   busy: boolean,
   error: any,
@@ -21,10 +20,9 @@ export const surveyCreateReducer = createReducer<{
     editing: false,
     originalStartDate: undefined,
     head: undefined,
-    groups: [],
+    groups: [undefined],
     currentGroupIndex: -1,
-    currentGroup: undefined,
-    valid: {},
+    valid: undefined,
     showPreview: false,
     busy: false,
     error: undefined,
@@ -37,9 +35,8 @@ export const surveyCreateReducer = createReducer<{
         originalStartDate: undefined,
         head: undefined,
         groups: [],
-        currentGroupIndex: 0,
-        currentGroup: undefined,
-        valid: {},
+        currentGroupIndex: -1,
+        valid: undefined,
         showPreview: false,
         busy: false,
         error: undefined,
@@ -52,8 +49,7 @@ export const surveyCreateReducer = createReducer<{
     head: undefined,
     groups: [],
     currentGroupIndex: -1,
-    currentGroup: undefined,
-    valid: {},
+    valid: undefined,
     showPreview: false,
     busy: true,
     error: undefined,
@@ -64,8 +60,7 @@ export const surveyCreateReducer = createReducer<{
     head: survey,
     groups: survey.questionGroups,
     currentGroupIndex: -1,
-    currentGroup: survey.questionGroups[0] ?? {},
-    valid: {},
+    valid: undefined,
     showPreview: false,
     busy: false,
     error: undefined,
@@ -81,40 +76,30 @@ export const surveyCreateReducer = createReducer<{
       {
         ...state,
         head,
-        headPage: false,
-        valid: {
-          ...state.valid,
-          head: undefined,
-        }
+        valid: undefined,
       }
     ),
   ),
-  on(surveyCreateActions.previousGroup, (state, {replacement}) => {
+  on(surveyCreateActions.setGroup, (state, {replacement}) => ({
+    ...state,
+    groups: state.currentGroupIndex >= state.groups.length ? [...state.groups, replacement] :
+      state.currentGroupIndex < 0 ? [replacement, ...state.groups] : state.groups.map((g, i) => i === state.currentGroupIndex ? replacement : g),
+    currentGroupIndex: state.currentGroupIndex >= state.groups.length ? state.groups.length :
+      state.currentGroupIndex < 0 ? 0 : state.currentGroupIndex,
+    valid: undefined,
+  })),
+  on(surveyCreateActions.previousGroup, (state) => {
     const nidx = Math.max(-1, state.currentGroupIndex - 1);
-    const groups = replacement === undefined ? state.groups : state.groups.map((g, i) => i === state.currentGroupIndex ? replacement : g);
     return {
       ...state,
       currentGroupIndex: nidx,
-      currentGroup: groups[nidx],
-      valid: replacement === undefined ? state.valid : {
-        ...state.valid,
-        groups: undefined,
-      },
-      groups,
     };
   }),
-  on(surveyCreateActions.nextGroup, (state, {replacement}) => {
-    const nidx = Math.min(state.groups.length-1, state.currentGroupIndex + 1);
-    const groups = replacement === undefined ? state.groups : state.groups.map((g, i) => i === state.currentGroupIndex ? replacement : g);
+  on(surveyCreateActions.nextGroup, (state) => {
+    const nidx = Math.max(0, Math.min(state.groups.length-1, state.currentGroupIndex + 1));
     return {
       ...state,
       currentGroupIndex: nidx,
-      currentGroup: groups[nidx],
-      valid: replacement === undefined ? state.valid : {
-        ...state.valid,
-        groups: undefined,
-      },
-      groups,
     };
   }),
   on(surveyCreateActions.removeGroup, (state) => {
@@ -123,27 +108,26 @@ export const surveyCreateReducer = createReducer<{
     ...state,
       groups: state.groups.filter((_, i) => i !== state.currentGroupIndex),
       currentGroupIndex: nidx,
-      currentGroup: state.groups[nidx],
-      valid: {
-        ...state.valid,
-        groups: undefined,
-      },
+      valid: undefined,
     };
   }),
-  on(surveyCreateActions.insertGroup, (state, {replacement}) => {
+  on(surveyCreateActions.insertGroup, (state) => {
     const nidx = Math.min(state.groups.length, state.currentGroupIndex + 1);
-    const groups = state.groups ? state.groups.flatMap((g, i) => i === state.currentGroupIndex ? [replacement ?? g, undefined] : [g]) : [undefined];
+    const groups = state.groups.flatMap((g, i) => i === nidx ? [undefined, g] : [g]);
     return {
       ...state,
       currentGroupIndex: nidx,
-      currentGroup: undefined,
-      valid: replacement === undefined ? state.valid : {
-        ...state.valid,
-        groups: undefined,
-      },
+      valid: undefined,
       groups,
     };
   }),
+  on(surveyCreateActions.setValidity, (state, {headValid, groupsValid}) => ({
+    ...state,
+    valid: {
+      head: headValid,
+      groups: groupsValid,
+    },
+  })),
   on(surveyCreateActions.preview, (state) => ({
     ...state,
     showPreview: true,

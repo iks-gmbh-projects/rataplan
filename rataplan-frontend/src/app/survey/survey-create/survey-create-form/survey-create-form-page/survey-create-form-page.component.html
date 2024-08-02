@@ -1,4 +1,4 @@
-<form *ngrxLet="form$ as questionGroup" [formGroup]="questionGroup" (ngSubmit)="doSubmit(questionGroup, surveyCreateActions.nextGroup)">
+<form *ngrxLet="form$ as questionGroup" [formGroup]="questionGroup" (ngSubmit)="doSubmit(questionGroup.value, surveyCreateActions.nextGroup())">
   <div class="inputFieldWrapper">
     <mat-form-field class="unlimited" style="margin-top: 1em;" appearance="fill">
       <mat-label>Frageblocküberschrift</mat-label>
@@ -79,7 +79,7 @@
         <button
           *ngIf="question.controls.type.value != 'OPEN'"
           mat-icon-button color="primary" type="button"
-            (click)="question.controls.choices.push(createCheckbox());
+            (click)="question.controls.choices.push(createCheckbox(question.controls.type));
             question.get(['checkboxGroup', 'minSelect'])?.updateValueAndValidity();
             question.get(['checkboxGroup', 'maxSelect'])?.updateValueAndValidity()"
         >
@@ -99,7 +99,9 @@
     </div>
   </div>
   <div style="display: flex; margin-bottom: 1ex;">
-    <button type="button" mat-icon-button (click)="doSubmit(questionGroup, surveyCreateActions.previousGroup)">
+    <button
+      type="button" mat-icon-button
+      (click)="questionGroup.invalid || doSubmit(questionGroup.value, surveyCreateActions.previousGroup())">
       <mat-icon>navigate_before</mat-icon>
     </button>
     <div style="flex: 2;"></div>
@@ -120,7 +122,7 @@
     <div style="flex: 2;"></div>
     <button
       mat-icon-button color="primary" type="button"
-      (click)="doSubmit(questionGroup, surveyCreateActions.insertGroup)"
+      (click)="questionGroup.invalid || doSubmit(questionGroup.value, surveyCreateActions.insertGroup())"
       [disabled]="questionGroup!.invalid"
     >
       <mat-icon>add</mat-icon>

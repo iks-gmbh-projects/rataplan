@@ -1,4 +1,4 @@
-<app-survey-create-form-head *ngIf="headPage$ | async; else qg" #headForm/>
+<app-survey-create-form-head *ngIf="(headPage$ | ngrxPush); else qg" #headForm/>
 <ng-template #qg>
   <app-survey-create-form-page #pageForm/>
 </ng-template>

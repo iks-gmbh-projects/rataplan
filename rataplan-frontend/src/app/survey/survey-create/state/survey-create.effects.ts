@@ -10,7 +10,7 @@ import { configFeature } from '../../../config/config.feature';
 import { defined } from '../../../operators/non-empty';
 import { surveyFormActions } from '../../survey-form/state/survey-form.action';
 import { Checkbox, Question, QuestionGroup, Survey, SurveyHead } from '../../survey.model';
-import { surveyCreateActions } from './survey-create.action';
+import { DeepPartial, surveyCreateActions } from './survey-create.action';
 import { surveyCreateFeature } from './survey-create.feature';
 
 function ensureDate<T extends SurveyHead>(head: T): T {
@@ -19,14 +19,14 @@ function ensureDate<T extends SurveyHead>(head: T): T {
   return head;
 }
 
-function validateQuestionGroup(group?: QuestionGroup): boolean {
+function validateQuestionGroup(group?: DeepPartial<QuestionGroup>): boolean {
   if(!group) return false;
-  return !!group.title && group.title.length < 256 && group.questions.length > 0 &&
+  return !!group.title && !!group.questions && group.title.length < 256 && group.questions.length > 0 &&
     group.questions.every(validateQuestion);
 }
 
-function validateQuestion(question: Question): boolean {
-  if(!question.text || question.text.length >= 256) return false;
+function validateQuestion(question?: DeepPartial<Question>): boolean {
+  if(!question || !question.text || question.text.length >= 256) return false;
   switch(question.type) {
   case 'OPEN':
     return true;
@@ -36,6 +36,7 @@ function validateQuestion(question: Question): boolean {
       question.maxSelect !== undefined &&
       question.maxSelect >= question.minSelect &&
       question.choices !== undefined &&
+      question.choices.length > 0 &&
       question.maxSelect <= question.choices.length &&
       question.choices.every(validateChoices);
   default:
@@ -43,8 +44,8 @@ function validateQuestion(question: Question): boolean {
   }
 }
 
-function validateChoices(choice: Checkbox): boolean {
-  return !!choice.text && choice.text.length < 256;
+function validateChoices(choice?: DeepPartial<Checkbox>): boolean {
+  return !!choice && !!choice.text && choice.text.length < 256;
 }
 
 @Injectable({providedIn: 'root'})
@@ -74,15 +75,7 @@ export class SurveyCreateEffects {
   
   validateSurvey = createEffect(() => this.store.select(surveyCreateFeature.selectSurveyCreationState).pipe(
     distinctUntilChanged((a, b) => {
-      return a.head === b.head &&
-        a.groups === b.groups &&
-        a.valid.head === b.valid.head &&
-        (
-          a.valid.groups !== undefined && b.valid.groups !== undefined ?
-            a.valid.groups.length === b.valid.groups.length &&
-            a.valid.groups.every((v, i) => v === b.valid.groups![i]) :
-            a.valid.groups === b.valid.groups
-        );
+      return a.head === b.head && a.groups === b.groups && (b.valid !== undefined);
     }),
     map(state => surveyCreateActions.setValidity({
       headValid: true,
@@ -92,28 +85,29 @@ export class SurveyCreateEffects {
   
   previewSurvey = createEffect(() => this.actions$.pipe(
     ofType(surveyCreateActions.preview),
-    switchMap(() => this.store.select(surveyCreateFeature.selectSurveyCreationState).pipe(first())),
+    switchMap(() => this.store.select(surveyCreateFeature.selectSurveyCreationState).pipe(first(({valid}) => !!valid))),
+    filter(({valid}) => valid!.head && valid!.groups.length > 0 && valid!.groups.every(b => b)),
     map(({head, groups}): Survey => (
       {
-        ...head!,
-        questionGroups: groups.map((g, i) => (
+        ...(head as SurveyHead),
+        questionGroups: groups!.map((g, i): QuestionGroup => (
           {
-            ...g!,
+            ...(g as QuestionGroup),
             id: i,
-            questions: g!.questions.map((q, j) => {
-              switch(q.type) {
+            questions: g!.questions!.map((q, j): Question => {
+              switch(q!.type!) {
               case 'OPEN':
                 return {
-                  ...q,
+                  ...(q as Question),
                   rank: j,
                 };
               case 'CHOICE':
                 return {
-                  ...q,
+                  ...(q as Question),
                   rank: j,
-                  choices: q.choices.map((c, k) => (
+                  choices: q!.choices!.map((c, k): Checkbox => (
                     {
-                      ...c,
+                      ...(c as Checkbox),
                       id: k,
                     }
                   )),
@@ -131,13 +125,13 @@ export class SurveyCreateEffects {
     ofType(surveyCreateActions.postSurvey),
     switchMap(() => combineLatest({
       state: this.store.select(surveyCreateFeature.selectSurveyCreationState).pipe(
-        first(),
-        filter(({head}) => head !== undefined),
+        first(({valid}) => !!valid),
+        filter(({valid}) => valid!.head && valid!.groups.length > 0 && valid!.groups.every(b => b)),
         map(({editing, head, groups}): {editing: boolean, survey: Survey} => (
           {
             editing,
             survey: {
-              ...head!,
+              ...(head as SurveyHead),
               questionGroups: groups as QuestionGroup[],
             },
           }
