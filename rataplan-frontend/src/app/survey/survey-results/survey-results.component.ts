@@ -177,7 +177,7 @@ export class SurveyResultsComponent implements OnInit, OnDestroy {
       }
     }
     if(total > 0) return count*100/total;
-    else return '?';
+    else return NaN;
   }
   
   private safeEscape(str: string): string {

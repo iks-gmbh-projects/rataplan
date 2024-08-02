@@ -25,7 +25,7 @@
       *ngIf="page < survey.questionGroups.length; else finished"
       (formAfterViewInit)="pageForm = $event"
     ></app-survey-form-page>
-    <ng-template class="center" #finished>
+    <ng-template #finished>
       <h3 style="text-align: center">Fertig</h3>
       <div class="bottomSpace">
         <div class="left">
