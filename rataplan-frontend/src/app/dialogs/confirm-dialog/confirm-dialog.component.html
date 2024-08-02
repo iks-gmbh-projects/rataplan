@@ -1,3 +1,5 @@
-<p [textContent]="data"></p>
-<button mat-raised-button color="primary" (click)="dialogRef.close(true)">Ja</button>
-<button mat-raised-button (click)="dialogRef.close(false)">Nein</button>
+<mat-dialog-content [textContent]="data"/>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true">Ja</button>
+  <button mat-raised-button [mat-dialog-close]="false">Nein</button>
+</mat-dialog-actions>

@@ -1,23 +1,27 @@
-<div>
-  <mat-form-field>
-    <mat-label>Name/Email</mat-label>
-    <input type="text" matInput [formControl]="search" (change)="onEnter.next()">
-  </mat-form-field>
-  <button class="right" mat-icon-button (click)="dialog.close()"><mat-icon>close</mat-icon></button>
-</div>
-<mat-spinner *ngIf="searchBusy; else results"></mat-spinner>
-<ng-template #results>
-  <div class="fullwidth" *ngFor="let result of searchResults">
-    <span class="middle vcenter" [textContent]="result.uid | displayName | async"></span>
-    <button
-      class="right"
-      mat-icon-button
-      [disabled]="result.alreadyAdded"
-      (click)="result.alreadyAdded || addContact(result.uid)"
-      matTooltip="Bereits hinzugefügt"
-      [matTooltipDisabled]="!result.alreadyAdded"
-    >
-      <mat-icon>person_add</mat-icon>
+<mat-dialog-content>
+  <div>
+    <mat-form-field>
+      <mat-label>Name/Email</mat-label>
+      <input type="text" matInput [formControl]="search" (change)="onEnter.next()">
+    </mat-form-field>
+    <button class="right" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
     </button>
   </div>
-</ng-template>
+  <mat-spinner *ngIf="searchBusy; else results"></mat-spinner>
+  <ng-template #results>
+    <div class="fullwidth" *ngFor="let result of searchResults">
+      <span class="middle vcenter" [textContent]="result.uid | displayName | async"></span>
+      <button
+        class="right"
+        mat-icon-button
+        [disabled]="result.alreadyAdded"
+        (click)="result.alreadyAdded || addContact(result.uid)"
+        matTooltip="Bereits hinzugefügt"
+        [matTooltipDisabled]="!result.alreadyAdded"
+      >
+        <mat-icon>person_add</mat-icon>
+      </button>
+    </div>
+  </ng-template>
+</mat-dialog-content>
