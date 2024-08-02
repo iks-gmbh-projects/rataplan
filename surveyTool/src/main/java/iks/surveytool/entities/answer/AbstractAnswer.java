@@ -3,6 +3,7 @@ package iks.surveytool.entities.answer;
 import iks.surveytool.entities.AbstractEntity;
 import iks.surveytool.entities.InvalidEntityException;
 import iks.surveytool.entities.SurveyResponse;
+import iks.surveytool.entities.question.AbstractQuestion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,10 +17,14 @@ import javax.persistence.MappedSuperclass;
 @Setter
 @MappedSuperclass
 @NoArgsConstructor
-public abstract class AbstractAnswer extends AbstractEntity {
+public abstract class AbstractAnswer<T extends AbstractQuestion> extends AbstractEntity {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "responseId", nullable = false)
     private SurveyResponse response;
+    
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "questionId", nullable = false)
+    private T question;
     
     public abstract void validate() throws InvalidEntityException;
 }
