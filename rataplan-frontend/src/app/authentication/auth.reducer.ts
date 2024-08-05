@@ -2,12 +2,19 @@ import { createReducer, on } from '@ngrx/store';
 import { FrontendUser } from '../models/user.model';
 import { authActions } from './auth.actions';
 
-export const authReducer = createReducer(
+export const authReducer = createReducer<{
+  user: FrontendUser | undefined,
+  token: string | undefined,
+  tokenBusy: boolean,
+  busy: boolean,
+  error: any,
+}>(
   {
-    user: undefined as FrontendUser | undefined,
-    token: undefined as string | undefined,
-    busy: false as boolean,
-    error: undefined as any
+    user: undefined,
+    token: undefined,
+    tokenBusy: true,
+    busy: true,
+    error: undefined,
   },
   on(
     authActions.updateUserDataSuccess,
@@ -36,7 +43,8 @@ export const authReducer = createReducer(
     authActions.loginSuccess,
     (state, action) => ({
       ...state,
-      busy: false,
+      tokenBusy: false,
+      busy: true,
       token: action.jwt
     })
   ),
@@ -44,6 +52,7 @@ export const authReducer = createReducer(
     authActions.error,
     (state, action) => ({
       ...state,
+      tokenBusy: false,
       busy: false,
       error: action.error,
     })
@@ -55,6 +64,7 @@ export const authReducer = createReducer(
       ...state,
       user: undefined,
       token: undefined,
+      tokenBusy: false,
       busy: false,
       error: undefined,
     })
@@ -65,7 +75,18 @@ export const authReducer = createReducer(
       ...state,
       user: undefined,
       token: undefined,
+      tokenBusy: false,
       busy: false,
+      error: undefined,
+    })
+  ),
+  on(
+    authActions.deleteUser,
+    authActions.changeProfileDetails,
+    authActions.updateUserData,
+    state => ({
+      ...state,
+      busy: true,
       error: undefined,
     })
   ),
@@ -73,11 +94,9 @@ export const authReducer = createReducer(
     authActions.register,
     authActions.login,
     authActions.autoLogin,
-    authActions.deleteUser,
-    authActions.changeProfileDetails,
-    authActions.updateUserData,
     state => ({
       ...state,
+      tokenBusy: true,
       busy: true,
       error: undefined,
     })

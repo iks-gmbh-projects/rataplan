@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (!b) this.bottomSheets.open(CookieBannerComponent, { disableClose: true });
         }
       })
-    ).subscribe(cookieAllowed => this.cookieAllowed = cookieAllowed);
+    ).subscribe(({accepted}) => this.cookieAllowed = accepted);
 
     this.errorSub = this.actions$.pipe(
       ofType(authActions.error),

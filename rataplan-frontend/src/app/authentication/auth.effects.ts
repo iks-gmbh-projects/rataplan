@@ -5,15 +5,21 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 
 import { Store } from '@ngrx/store';
-import { combineLatestWith, first, from, of, timer } from 'rxjs';
-import { catchError, concatMap, filter, map, switchMap, tap } from 'rxjs/operators';
+import { combineLatestWith, EMPTY, first, from, of, timer } from 'rxjs';
+import { catchError, concatMap, map, switchMap, tap } from 'rxjs/operators';
 import { configFeature } from '../config/config.feature';
-import { cookieActions } from '../cookie-banner/cookie.actions';
 import { cookieFeature } from '../cookie-banner/cookie.feature';
 
 import { FrontendUser } from '../models/user.model';
 import { nonUndefined } from '../operators/non-empty';
 import { authActions } from './auth.actions';
+
+export class AuthorizedHttpHeaders extends HttpHeaders {
+  constructor(token?: string) {
+    super();
+    if(token) this.set('Authorization', `Bearer ${token}`);
+  }
+}
 
 @Injectable({
   providedIn: 'root',
@@ -46,10 +52,9 @@ export class AuthEffects {
   });
   
   autoLoginStart = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(cookieActions.accept),
-      filter(a => a.onLoad),
-      map(authActions.autoLogin),
+    return this.store.select(cookieFeature.selectCookieState).pipe(
+      first(({busy}) => !busy),
+      switchMap(cookie => cookie ? of(authActions.autoLogin()) : EMPTY),
     );
   });
   
@@ -60,6 +65,7 @@ export class AuthEffects {
       switchMap(url => {
         return this.httpClient.get(url, {
           withCredentials: true,
+          headers: new AuthorizedHttpHeaders(),
           responseType: 'text',
         }).pipe(
           map(jwt => authActions.loginSuccess({jwt})),

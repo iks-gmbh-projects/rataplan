@@ -25,7 +25,7 @@ export class CookieEffects {
       ofType(cookieActions.load),
       map(() => localStorage.getItem(localStorageKey) || "false"),
       filter(v => v == "true"),
-      map(() => cookieActions.accept({onLoad: true}))
+      map(() => cookieActions.accept())
     );
   });
 

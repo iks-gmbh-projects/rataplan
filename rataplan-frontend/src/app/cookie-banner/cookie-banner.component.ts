@@ -16,11 +16,12 @@ export class CookieBannerComponent {
   ) { }
 
   accept(): void {
-    this.store.next(cookieActions.accept({onLoad: false}));
+    this.store.dispatch(cookieActions.accept());
     this.ref.dismiss();
   }
 
   reject(): void {
+    this.store.dispatch(cookieActions.reject());
     this.ref.dismiss();
   }
 }
