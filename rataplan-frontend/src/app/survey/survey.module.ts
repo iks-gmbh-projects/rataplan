@@ -6,7 +6,6 @@ import { NgChartsModule } from 'ng2-charts';
 
 import { AppCommonModule } from '../app-common.module';
 import { DateRangeComponent } from './date-range/date-range.component';
-import { AccessIDSurveyResolver, ParticipationIDSurveyResolver } from './resolver/survey.resolver';
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
 import { SurveyCreateEffects } from './survey-create/state/survey-create.effects';
 import { surveyCreateFeature } from './survey-create/state/survey-create.feature';
@@ -60,8 +59,6 @@ import { SurveyService } from './survey.service';
   ],
   providers: [
     SurveyService,
-    AccessIDSurveyResolver,
-    ParticipationIDSurveyResolver,
   ],
 })
 export class SurveyModule {}
