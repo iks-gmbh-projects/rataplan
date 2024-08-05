@@ -3,12 +3,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { delay, map, Observable, of, Subscription, switchMap } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { defined, nonUndefined } from '../../operators/non-empty';
+import { defined } from '../../operators/non-empty';
 import { Survey } from '../survey.model';
 import { surveyFormActions } from './state/survey-form.action';
 import { surveyFormFeature } from './state/survey-form.feature';
@@ -30,7 +29,7 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
   readonly isResponseValid$: Observable<boolean>;
   
   constructor(
-    private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly store: Store,
     private readonly actions$: Actions,
     private readonly snackBars: MatSnackBar,
@@ -53,11 +52,26 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.subs.forEach(s => s.unsubscribe());
     this.subs = [
-      this.route.data.pipe(
-        map(({survey}) => survey as Survey | undefined),
-        distinctUntilChanged(),
-        nonUndefined,
-      ).subscribe(survey => this.store.dispatch(surveyFormActions.init({survey}))),
+      this.actions$.pipe(
+        ofType(surveyFormActions.loadError)
+      ).subscribe(({error}) => {
+        switch(error.status) {
+        case 401:
+          this.router.navigate(['/login'], {
+            queryParams: {
+              redirect: this.router.routerState.snapshot.url,
+            },
+          });
+          break;
+        case 403:
+          this.router.navigate(['/survey', 'closed']);
+          break;
+        case 404:
+          this.router.navigate(['/survey', 'missing']);
+          break;
+        }
+        this.router.navigate(['/survey', 'unknown']);
+      }),
       this.actions$.pipe(
         ofType(surveyFormActions.postAnswersSuccess),
       ).subscribe(() => this.dialogs.open(SurveyAnswerComponent)),

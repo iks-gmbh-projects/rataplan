@@ -48,7 +48,7 @@ function validateChoices(choice?: DeepPartial<Checkbox>): boolean {
   return !!choice && !!choice.text && choice.text.length < 256;
 }
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class SurveyCreateEffects {
   constructor(
     private readonly store: Store,

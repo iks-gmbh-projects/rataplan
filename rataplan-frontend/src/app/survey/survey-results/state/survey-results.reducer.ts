@@ -1,0 +1,53 @@
+import { createReducer, on } from '@ngrx/store';
+import { ChartData } from 'chart.js';
+import { Survey, SurveyResponse } from '../../survey.model';
+import { surveyResultsAction } from './survey-results.action';
+
+export const surveyResultsReducer = createReducer<{
+  busy: boolean,
+  survey: Survey | undefined,
+  results: SurveyResponse[] | undefined,
+  error: any,
+  tableColumns: Record<string | number, Record<string | number, string[] | undefined> | undefined> | undefined,
+  exportTableColumns: Record<string | number, Record<string | number, string[] | undefined> | undefined> | undefined,
+  charts: Record<string | number, Record<string | number, ChartData<'pie'> | undefined> | undefined> | undefined,
+}>(
+  {
+    busy: false,
+    survey: undefined,
+    results: undefined,
+    error: undefined,
+    tableColumns: undefined,
+    exportTableColumns: undefined,
+    charts: undefined,
+  },
+  on(surveyResultsAction.loadResults, (state, {survey}) => ({
+    busy: true,
+    survey,
+    results: undefined,
+    error: undefined,
+    tableColumns: undefined,
+    exportTableColumns: undefined,
+    charts: undefined,
+  })),
+  on(surveyResultsAction.loadResultsSuccess, (state, {responses}) => ({
+    ...state,
+    results: responses,
+    busy: false,
+    charts: undefined,
+  })),
+  on(surveyResultsAction.loadResultsError, (state, {error}) => ({
+    ...state,
+    busy: false,
+    error,
+  })),
+  on(surveyResultsAction.computeTableData, (state, {tableColumns, exportTableColumns}) => ({
+    ...state,
+    tableColumns,
+    exportTableColumns,
+  })),
+  on(surveyResultsAction.computeChartData, (state, {charts}) => ({
+    ...state,
+    charts,
+  }))
+);

@@ -1,18 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { exhaustMap, first, map, Observable } from 'rxjs';
+import { exhaustMap, first, Observable } from 'rxjs';
 import { configFeature } from '../config/config.feature';
 import { nonUndefined } from '../operators/non-empty';
-import { Survey, SurveyHead, SurveyResponse } from './survey.model';
-
-function ensureDate<T extends SurveyHead>(head: T): T {
-  head.startDate = new Date(head.startDate);
-  head.endDate = new Date(head.endDate);
-  return head;
-}
-
-const ensureDateOperator = map(ensureDate);
+import { SurveyHead } from './survey.model';
 
 @Injectable()
 export class SurveyService {
@@ -45,42 +37,6 @@ export class SurveyService {
       first(),
       exhaustMap(surveyURL => {
         return this.http.get<SurveyHead[]>(surveyURL, {
-          withCredentials: true,
-        });
-      }),
-    );
-  }
-  
-  public getSurveyForParticipation(participationId: string): Observable<Survey> {
-    return this.surveyURL.pipe(
-      exhaustMap(surveyURL => {
-        return this.http.get<Survey>(surveyURL, {
-          params: new HttpParams().append('participationId', participationId),
-          withCredentials: true,
-        });
-      }),
-      ensureDateOperator,
-    );
-  }
-  
-  public getSurveyForCreator(accessId: string): Observable<Survey> {
-    return this.surveyURL.pipe(
-      exhaustMap(surveyURL => {
-        return this.http.get<Survey>(surveyURL, {
-          params: new HttpParams().append('accessId', accessId),
-          withCredentials: true,
-        });
-      }),
-      ensureDateOperator,
-    );
-  }
-  
-  public fetchAnswers(survey: Survey): Observable<SurveyResponse[]> {
-    return this.store.select(configFeature.selectSurveyBackendUrl('responses', 'survey', survey.accessId!)).pipe(
-      nonUndefined,
-      first(),
-      exhaustMap(answerURL => {
-        return this.http.get<SurveyResponse[]>(answerURL, {
           withCredentials: true,
         });
       }),

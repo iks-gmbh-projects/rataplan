@@ -1,16 +1,20 @@
 .bottomspace {
-  margin-bottom: 1ex;
+    margin-bottom: 1ex;
 }
 
-.middle{
-  display: flex;
-  justify-content: center;
+.middle {
+    display: flex;
+    justify-content: center;
+}
+
+canvas {
+    max-height: min(50vh, 400px);
 }
 
 .mat-mdc-table {
-  overflow-x: scroll;
-}
-.mat-mdc-table>table {
-  width: 100%;
+    overflow-x: scroll;
 }
 
+.mat-mdc-table > table {
+    width: 100%;
+}

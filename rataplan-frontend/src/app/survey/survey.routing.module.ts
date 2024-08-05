@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ensureLoggedIn } from '../authentication/auth.guard';
-import { resolveSurveyByAccessID, resolveSurveyByParticipationID } from './resolver/survey.resolver';
 
 import { SurveyClosedComponent } from './survey-closed/survey-closed.component';
 import { SurveyCreateComponent } from './survey-create/survey-create.component';
@@ -18,7 +17,7 @@ const surveyRoutes: Routes = [{
     {
       path: 'access', children: [
         {
-          path: ':accessID', resolve: { survey: resolveSurveyByAccessID }, children: [
+          path: ':accessID', children: [
             { path: '', pathMatch: 'full', component: SurveyOwnerViewComponent },
             { path: 'results', component: SurveyResultsComponent },
             { path: 'edit', component: SurveyCreateComponent },
@@ -31,7 +30,6 @@ const surveyRoutes: Routes = [{
     { path: 'own', data: { own: true }, component: SurveyListComponent, canActivate: [ensureLoggedIn] },
     {
       path: 'participate/:participationID',
-      resolve: { survey: resolveSurveyByParticipationID },
       component: SurveyFormComponent,
     },
     { path: 'missing', component: SurveyMissingComponent },

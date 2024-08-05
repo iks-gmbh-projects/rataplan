@@ -2,8 +2,10 @@ import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Answer, Survey } from '../../survey.model';
 
 export const surveyFormActions = createActionGroup({
-  source: 'survey form',
+  source: 'Survey Form',
   events: {
+    'Load': props<{participationId: string | number, accessId?: string | number} | {accessId: string | number, participationId?: string | number}>(),
+    'Load Error': props<{error: any}>(),
     'Init': props<{survey: Survey}>(),
     'Init Preview': props<{survey: Survey}>(),
     'Previous Page': props<{answers: Record<string | number, Answer | undefined>}>(),

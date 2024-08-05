@@ -1,5 +1,5 @@
 <div class="center">
-  <mat-card appearance="outlined" *ngIf="survey">
+  <mat-card appearance="outlined" *ngrxLet="survey$ as survey">
     <mat-card-header>
       <mat-card-title [textContent]="survey.name"></mat-card-title>
       <mat-card-subtitle>
@@ -26,7 +26,7 @@
       >
         <mat-icon>content_copy</mat-icon>
       </button>
-      <a mat-icon-button color="primary" routerLink="edit" *ngIf="!expired">
+      <a mat-icon-button color="primary" routerLink="edit" *ngIf="!(expired$ | ngrxPush)">
         <mat-icon>edit</mat-icon>
       </a>
       <a mat-icon-button color="primary" routerLink="results" target="_blank">

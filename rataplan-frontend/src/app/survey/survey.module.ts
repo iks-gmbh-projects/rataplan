@@ -23,6 +23,8 @@ import { SurveyFormComponent } from './survey-form/survey-form.component';
 import { SurveyListComponent } from './survey-list/survey-list.component';
 import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
+import { SurveyResultsEffects } from './survey-results/state/survey-results.effects';
+import { surveyResultsFeature } from './survey-results/state/survey-results.feature';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unknown-error.component';
 import { SurveyRoutingModule } from './survey.routing.module';
@@ -55,7 +57,8 @@ import { SurveyService } from './survey.service';
     PushPipe,
     StoreModule.forFeature(surveyFormFeature),
     StoreModule.forFeature(surveyCreateFeature),
-    EffectsModule.forFeature([SurveyFormEffects, SurveyCreateEffects]),
+    StoreModule.forFeature(surveyResultsFeature),
+    EffectsModule.forFeature([SurveyFormEffects, SurveyCreateEffects, SurveyResultsEffects]),
   ],
   providers: [
     SurveyService,

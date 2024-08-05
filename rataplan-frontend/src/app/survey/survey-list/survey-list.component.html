@@ -15,8 +15,8 @@
   <div>
     <h2>{{ isOwn ? 'Eigene' : 'Öffentliche' }} Umfragen</h2>
   </div>
-  <ng-template [ngIf]="busy$ | async" [ngIfElse]="done">
-    <mat-spinner *ngIf="delayedBusy$ | async"></mat-spinner>
+  <ng-template [ngIf]="busy$ | ngrxPush" [ngIfElse]="done">
+    <mat-spinner *ngIf="delayedBusy$ | ngrxPush"></mat-spinner>
   </ng-template>
   <ng-template #done>
     <div *ngIf="error; else success">

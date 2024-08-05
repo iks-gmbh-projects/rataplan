@@ -1,8 +1,11 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Observable, of, startWith, timer } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { defined } from '../../operators/non-empty';
+import { surveyFormFeature } from '../survey-form/state/survey-form.feature';
 import { Survey } from '../survey.model';
 
 @Component({
@@ -10,27 +13,27 @@ import { Survey } from '../survey.model';
   templateUrl: './survey-owner-view.component.html',
   styleUrls: ['./survey-owner-view.component.css']
 })
-export class SurveyOwnerViewComponent implements OnInit, OnDestroy {
-  public survey?: Survey;
-  public expired: boolean = false;
+export class SurveyOwnerViewComponent {
+  public readonly survey$: Observable<Survey>;
+  public readonly expired$: Observable<boolean>;
 
-  private sub?: Subscription;
-  private timeout?: any;
-
-  constructor(private route: ActivatedRoute, public clipboard: Clipboard, public snackBars: MatSnackBar) { }
-
-  public ngOnInit(): void {
-    this.survey = this.route.snapshot.data['survey'];
-    this.expired = this.survey!.endDate < new Date();
-    this.sub = this.route.data.subscribe(d => {
-      this.survey = d['survey'];
-      this.expired = this.survey!.endDate < new Date();
-    });
-    this.timeout = setInterval(() => this.expired = this.survey!.endDate < new Date(), 1000);
-  }
-
-  public ngOnDestroy(): void {
-    this.sub?.unsubscribe();
-    clearInterval(this.timeout);
+  constructor(
+    private readonly store: Store,
+    protected readonly clipboard: Clipboard,
+    protected readonly snackBars: MatSnackBar
+  ) {
+    this.survey$ = store.select(surveyFormFeature.selectSurvey).pipe(defined);
+    this.expired$ = this.survey$.pipe(
+      switchMap(survey => {
+        if(survey.endDate >= new Date()) {
+          return timer(survey.endDate).pipe(
+            map(() => true),
+            startWith(false),
+          )
+        } else {
+          return of(true);
+        }
+      }),
+    );
   }
 }

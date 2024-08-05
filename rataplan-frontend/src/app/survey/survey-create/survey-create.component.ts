@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Survey } from '../survey.model';
 import { surveyCreateActions } from './state/survey-create.action';
 import { surveyCreateFeature } from './state/survey-create.feature';
 
@@ -25,9 +24,9 @@ export class SurveyCreateComponent implements OnInit, OnDestroy {
   
   public ngOnInit(): void {
     this.sub?.unsubscribe();
-    this.sub = this.route.data.pipe(
-      map(data => data['survey'] as Survey | undefined),
-    ).subscribe(survey => this.store.dispatch(survey ? surveyCreateActions.editSurveyLoaded({survey}) : surveyCreateActions.newSurvey()));
+    this.sub = this.route.params.pipe(
+      map(params => params['accessID']),
+    ).subscribe(accessId => this.store.dispatch(accessId ? surveyCreateActions.editSurvey({accessId}) : surveyCreateActions.newSurvey()));
   }
   
   public ngOnDestroy(): void {

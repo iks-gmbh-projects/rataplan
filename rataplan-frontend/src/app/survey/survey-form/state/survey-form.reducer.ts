@@ -20,6 +20,23 @@ export const surveyFormReducer = createReducer<{
     busy: false,
     error: undefined,
   },
+  on(surveyFormActions.load,
+    (state) => (
+      {
+        ...state,
+        busy: true,
+      }
+    ),
+  ),
+  on(surveyFormActions.loadError,
+    (state, {error}) => (
+      {
+        ...state,
+        busy: false,
+        error,
+      }
+    ),
+  ),
   on(
     surveyFormActions.init,
     (state, {survey}) => (
@@ -39,7 +56,7 @@ export const surveyFormReducer = createReducer<{
     return {
       ...state,
       page: Math.max(0, state.page - 1),
-      answers: group === undefined ? state.answers :{
+      answers: group === undefined ? state.answers : {
         ...state.answers,
         [group]: answers,
       },
@@ -64,10 +81,12 @@ export const surveyFormReducer = createReducer<{
   ),
   on(
     surveyFormActions.setValidity,
-    (state, {valid}) => ({
-      ...state,
-      valid,
-    })
+    (state, {valid}) => (
+      {
+        ...state,
+        valid,
+      }
+    ),
   ),
   on(
     surveyFormActions.postAnswers,
