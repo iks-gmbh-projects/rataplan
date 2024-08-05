@@ -26,6 +26,7 @@
     "@ngrx/component": "^18.0.1",
     "@ngrx/effects": "^18.0.1",
     "@ngrx/operators": "^18.0.0",
+    "@ngrx/router-store": "^18.0.1",
     "@ngrx/store": "^18.0.1",
     "chart.js": "^3.6.0",
     "exceljs": "^4.4.0",

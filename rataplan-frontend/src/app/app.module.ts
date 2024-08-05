@@ -56,6 +56,7 @@ import { ChangeNoteComponent } from './version/change-note/change-note.component
 import { VersionComponent } from './version/version.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
+import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 
 registerLocaleData(localeDE);
 
@@ -95,17 +96,20 @@ registerLocaleData(localeDE);
     ValidateProfileUpdateComponent,
   ],
   bootstrap: [AppComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatSidenavModule,
-        MatNativeDateModule,
-        MatSnackBarModule,
-        MatBottomSheetModule,
-        MatDialogModule,
-        StoreModule.forRoot({}),
-        StoreModule.forFeature(configFeature),
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatNativeDateModule,
+    MatSnackBarModule,
+    MatBottomSheetModule,
+    MatDialogModule,
+    StoreModule.forRoot({
+      router: routerReducer,
+    }),
+    StoreModule.forFeature(configFeature),
     StoreModule.forFeature(authFeature),
     StoreModule.forFeature(contactsFeature),
     StoreModule.forFeature(cookieFeature),
@@ -114,10 +118,13 @@ registerLocaleData(localeDE);
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,
     AppCommonModule,
-    MtxNativeDatetimeModule], providers: [
-        { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
-        { provide: DateAdapter, useClass: EUDateAdapter },
-        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+    MtxNativeDatetimeModule,
+    StoreRouterConnectingModule.forRoot(),
+  ], providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'de-DE'},
+    {provide: DateAdapter, useClass: EUDateAdapter},
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
 export class AppModule {}
