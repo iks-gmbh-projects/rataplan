@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.FrontendConfig;
 import de.iks.rataplan.domain.Contact;
 import de.iks.rataplan.dto.AllContactsDTO;
 import de.iks.rataplan.dto.ContactGroupDTO;
@@ -40,7 +41,9 @@ import static org.mockito.Mockito.*;
     UserServiceImpl.class,
     DataSourceAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class,
-    FlywayAutoConfiguration.class
+    FlywayAutoConfiguration.class,
+    LogMailServiceImpl.class,
+    FrontendConfig.class
 })
 @EntityScan(basePackageClasses = Contact.class)
 @EnableJpaRepositories(basePackageClasses = ContactRepository.class)

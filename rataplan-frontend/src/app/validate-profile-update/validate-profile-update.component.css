@@ -12,3 +12,19 @@
     min-height: 40vh;
     min-width: 100%
 }
+
+.form-field {
+    max-width: max-content;
+    align-self: center
+}
+
+.instruction {
+    font-weight: bold;
+    min-height: 5vh;
+    margin-bottom: 1rem
+}
+
+.profile-data{
+    min-height: 5vh;
+
+}

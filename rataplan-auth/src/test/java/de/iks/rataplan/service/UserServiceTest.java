@@ -1,5 +1,6 @@
 package de.iks.rataplan.service;
 
+import de.iks.rataplan.config.FrontendConfig;
 import de.iks.rataplan.config.IDKeyConfig;
 import de.iks.rataplan.config.JwtConfig;
 import de.iks.rataplan.domain.User;
@@ -37,6 +38,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.test.context.TestExecutionListeners;
 
+import javax.security.auth.login.CredentialNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -54,7 +56,9 @@ import static org.mockito.Mockito.*;
         FlywayAutoConfiguration.class,
         JwtConfig.class,
         IDKeyConfig.class,
-        BCryptPasswordEncoder.class
+        BCryptPasswordEncoder.class,
+        LogMailServiceImpl.class,
+        FrontendConfig.class
     }
 )
 @EntityScan(basePackageClasses = User.class)
@@ -90,25 +94,20 @@ public class UserServiceTest {
         when(cryptoService.encryptDBRaw(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class)
             .getBytes(StandardCharsets.UTF_8));
         when(cryptoService.encryptDB(anyString())).thenCallRealMethod();
-        when(cryptoService.decryptDBRaw(any())).thenAnswer(invocation -> new String(invocation.getArgument(
-            0,
+        when(cryptoService.decryptDBRaw(any())).thenAnswer(invocation -> new String(invocation.getArgument(0,
             byte[].class
         ), StandardCharsets.UTF_8));
         when(cryptoService.decryptDB(any())).thenCallRealMethod();
         
-        
         DefaultJWTProcessor<SecurityContext> processor = new DefaultJWTProcessor<>();
-        processor.setJWSKeySelector(new JWSVerificationKeySelector<>(
-            jwkSet.getKeys()
-                .stream()
-                .map(JWK::getAlgorithm)
-                .filter(Objects::nonNull)
-                .map(Algorithm::toString)
-                .map(JWSAlgorithm::parse)
-                .collect(Collectors.toUnmodifiableSet()),
-            new ImmutableJWKSet<>(jwkSet)
-        ));
-       jwtDecoder = new NimbusJwtDecoder(processor);
+        processor.setJWSKeySelector(new JWSVerificationKeySelector<>(jwkSet.getKeys()
+            .stream()
+            .map(JWK::getAlgorithm)
+            .filter(Objects::nonNull)
+            .map(Algorithm::toString)
+            .map(JWSAlgorithm::parse)
+            .collect(Collectors.toUnmodifiableSet()), new ImmutableJWKSet<>(jwkSet)));
+        jwtDecoder = new NimbusJwtDecoder(processor);
     }
     
     @Test
@@ -242,12 +241,12 @@ public class UserServiceTest {
     
     @Test
     @DatabaseSetup(USER_FILE_INITIAL)
-    public void updateUserProfileTest() {
+    public void updateUserProfileTest() throws CredentialNotFoundException {
         assertTrue(userService.updateProfileDetails(new UserDTO(1,
             "peter",
             "GeänderterPeter",
             "peter@sch.mitz",
-            null
+            "geheim"
         )));
         
         UserDTO changed = userService.getUserDTOFromUsername("peter");
