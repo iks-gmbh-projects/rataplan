@@ -11,7 +11,7 @@ import { configFeature } from '../config/config.feature';
 import { cookieFeature } from '../cookie-banner/cookie.feature';
 
 import { FrontendUser } from '../models/user.model';
-import { nonUndefined } from '../operators/non-empty';
+import { defined, nonUndefined } from '../operators/non-empty';
 import { authActions } from './auth.actions';
 
 export class AuthorizedHttpHeaders extends HttpHeaders {
@@ -94,8 +94,11 @@ export class AuthEffects {
     return this.actions$.pipe(
       ofType(authActions.login),
       combineLatestWith(
-        this.store.select(configFeature.selectLoginUrl).pipe(nonUndefined, first()),
-        this.store.select(cookieFeature.selectCookieState),
+        this.store.select(configFeature.selectLoginUrl).pipe(defined, first()),
+        this.store.select(cookieFeature.selectCookieState).pipe(
+          first(({busy}) => !busy),
+          map(({accepted}) => accepted),
+        ),
       ),
       switchMap(([action, url, acceptCookies]) => {
         const body = new FormData();
@@ -104,6 +107,7 @@ export class AuthEffects {
         body.append('remember-me', `${acceptCookies ?? false}`);
         return this.httpClient.post(url, body, {
           responseType: 'text',
+          headers: new AuthorizedHttpHeaders(),
           withCredentials: true,
         })
           .pipe(
