@@ -1,52 +1,57 @@
-<div class="center">
+<div class="center" *ngrxLet="{listType: listType$, data: data$, busy: busy$, delayedBusy: delayedBusy$, error: error$} as state">
   <div class="buttons">
     <a mat-raised-button color="primary" routerLink="../create">Erstellen</a>
     <button
       mat-icon-button
       aria-label="Neu Laden"
-      [loading]="delayedBusy$ | async"
-      [disabled]="(busy$ | async) ?? false"
+      [loading]="state.delayedBusy"
+      [disabled]="state.busy"
       type="button"
-      (click)="updateList()"
+      (click)="state.busy || updateList()"
     >
-      <mat-icon>{{ error ? 'sync_problem' : 'sync' }}</mat-icon>
+      <mat-icon [textContent]="state.error ? 'sync_problem' : 'sync'"/>
     </button>
   </div>
   <div>
-    <h2>{{ isOwn ? 'Eigene' : 'Öffentliche' }} Umfragen</h2>
+    <h2>{{ state.listType ? 'Eigene' : 'Öffentliche' }} Umfragen</h2>
   </div>
-  <ng-template [ngIf]="busy$ | ngrxPush" [ngIfElse]="done">
-    <mat-spinner *ngIf="delayedBusy$ | ngrxPush"></mat-spinner>
+  <ng-template [ngIf]="state.busy" [ngIfElse]="done">
+    <mat-spinner *ngIf="state.delayedBusy"/>
   </ng-template>
   <ng-template #done>
-    <div *ngIf="error; else success">
+    <div *ngIf="state.error; else success">
       Fehler beim laden der Umfragen
     </div>
     <ng-template #success>
       <div>
-        <mat-card class="bottomSpace" *ngFor="let survey of surveys">
+        <mat-card class="bottomSpace" *ngFor="let datum of state.data">
           <mat-card-header>
-            <mat-card-title>{{ survey.name }}</mat-card-title>
-            <mat-card-subtitle>Teilnahme: {{ survey.startDate | date:'dd.LL.yyyy' }}
-              - {{ survey.endDate | date:'dd.LL.yyyy' }}
+            <mat-card-title>{{ datum.survey.name }}</mat-card-title>
+            <mat-card-subtitle>Teilnahme: {{ datum.survey.startDate | date:'dd.LL.yyyy' }}
+              - {{ datum.survey.endDate | date:'dd.LL.yyyy' }}
             </mat-card-subtitle>
           </mat-card-header>
-          <mat-card-content>{{ survey.description }}</mat-card-content>
-          <mat-card-actions>
-            <a
-              *ngIf="!isOwn; else ownerActions" mat-raised-button color="primary"
-              [routerLink]="['..','participate',survey.participationId]"
-            >Teilnehmen</a>
-            <ng-template #ownerActions>
-              <a mat-icon-button [routerLink]="['/survey','participate', survey.participationId]">
+          <mat-card-content>{{ datum.survey.description }}</mat-card-content>
+          <mat-card-actions [ngSwitch]="state.listType">
+            <ng-template [ngSwitchCase]="SurveyListType.PUBLIC">
+            <a mat-raised-button color="primary" [routerLink]="['/survey','participate',datum.survey.participationId]">
+              Teilnehmen
+            </a>
+            </ng-template>
+            <ng-template [ngSwitchCase]="SurveyListType.OWN">
+              <a [disabled]="!datum.started || datum.expired"
+                 mat-icon-button
+                 [routerLink]="['/survey','participate', datum.survey.participationId]"
+              >
                 <mat-icon>open_in_new</mat-icon>
               </a>
               <!--ugly workaround for missing angular feature-->
               <a
-                style="display:none" [routerLink]="['/survey','participate', survey.participationId]"
+                style="display:none" [routerLink]="['/survey','participate', datum.survey.participationId]"
                 #participationLink
               ></a>
               <button
+                [disabled]="datum.expired"
                 mat-icon-button
                 (click)="clipboard.copy(participationLink.href); snackBars.open('Teilnahmelink Kopiert', 'OK')"
               >
@@ -55,12 +60,11 @@
               <a
                 mat-icon-button
                 color="primary"
-                [routerLink]="['/survey','access',survey.accessId,'edit']"
-                *ngIf="!expired(survey)"
+                [routerLink]="['/survey','access',datum.survey.accessId,'edit']"
               >
                 <mat-icon>edit</mat-icon>
               </a>
-              <a mat-icon-button color="primary" [routerLink]="['/survey','access',survey.accessId,'results']">
+              <a mat-icon-button color="primary" [routerLink]="['/survey','access',datum.survey.accessId,'results']">
                 <mat-icon>analytics</mat-icon>
               </a>
             </ng-template>

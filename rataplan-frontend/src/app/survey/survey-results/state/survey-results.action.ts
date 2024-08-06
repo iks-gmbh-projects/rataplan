@@ -5,6 +5,7 @@ import { Survey, SurveyResponse } from '../../survey.model';
 export const surveyResultsAction = createActionGroup({
   source: 'Survey Results',
   events: {
+    'Load Survey': props<{accessId: string}>(),
     'Load Results': props<{survey: Survey & {accessId: string}}>(),
     'Load Results Success': props<{responses: SurveyResponse[]}>(),
     'Load Results Error': props<{error: any}>(),

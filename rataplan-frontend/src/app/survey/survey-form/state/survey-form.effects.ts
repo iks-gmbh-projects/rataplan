@@ -2,12 +2,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
-import { getRouterSelectors } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
-import { combineLatest, combineLatestWith, filter, first, of } from 'rxjs';
+import { combineLatest, debounceTime, filter, first, of } from 'rxjs';
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { configFeature } from '../../../config/config.feature';
 import { defined } from '../../../operators/non-empty';
+import { routerSelectors } from '../../../router.selectors';
 import { Answer, Question, Survey, SurveyHead, SurveyResponse } from '../../survey.model';
 import { surveyFormActions } from './survey-form.action';
 import { surveyFormFeature } from './survey-form.feature';
@@ -39,7 +39,6 @@ function validateAnswer(q: Question, a: Answer | undefined): boolean {
 
 @Injectable()
 export class SurveyFormEffects {
-  private readonly routerSelectors = getRouterSelectors();
   constructor(
     private readonly store: Store,
     private readonly actions$: Actions,
@@ -47,10 +46,22 @@ export class SurveyFormEffects {
   )
   {}
   
-  load = createEffect(() => this.store.select(this.routerSelectors.selectRouteParam('accessID')).pipe(
-    combineLatestWith(this.store.select(this.routerSelectors.selectRouteParam('participationID'))),
-    filter(([accessId, participationId]) => !!(accessId || participationId)),
-    map(([accessId, participationId]) => new HttpParams().appendAll(accessId ? {accessId} : {participationId: participationId!})),
+  autoLoad = createEffect(() => this.store.select(routerSelectors.selectRouteData).pipe(
+    map(d => d?.['loadSurveyForm'] as boolean),
+    filter(d => d),
+    switchMap(() => combineLatest({
+      accessId: this.store.select(routerSelectors.selectRouteParam('accessID')),
+      participationId: this.store.select(routerSelectors.selectRouteParam('participationID')),
+    }).pipe(
+      debounceTime(1),
+      first(),
+    )),
+    filter(({accessId, participationId}) => !!(
+      accessId || participationId
+    )),
+    map(params => new HttpParams().appendAll(Object.fromEntries(
+      Object.entries(params).filter(([, v]) => !!v) as [string, string][],
+    ))),
     concatLatestFrom(() => this.store.select(configFeature.selectSurveyBackendUrl('surveys')).pipe(defined)),
     switchMap(([params, url]) => {
       return this.http.get<Survey>(url, {
@@ -62,7 +73,6 @@ export class SurveyFormEffects {
         catchError(error => of(surveyFormActions.loadError({error}))),
       );
     }),
-    
   ));
   
   validate = createEffect(() => this.store.select(surveyFormFeature.selectSurveyFormState).pipe(

@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 import { Store } from '@ngrx/store';
-import { combineLatest, filter, first, of } from 'rxjs';
+import { combineLatest, debounceTime, filter, first, of } from 'rxjs';
 import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { configFeature } from '../../../config/config.feature';
 import { defined } from '../../../operators/non-empty';
+import { routerSelectors } from '../../../router.selectors';
 import { surveyFormActions } from '../../survey-form/state/survey-form.action';
 import { Checkbox, Question, QuestionGroup, Survey, SurveyHead } from '../../survey.model';
 import { DeepPartial, surveyCreateActions } from './survey-create.action';
@@ -57,6 +58,19 @@ export class SurveyCreateEffects {
     private readonly router: Router,
   )
   {}
+  
+  autoLoad = createEffect(() => this.store.select(routerSelectors.selectRouteData).pipe(
+    map(d => d?.['loadSurveyEdit'] as boolean),
+    filter(d => d),
+    switchMap(() => this.store.select(routerSelectors.selectRouteParam('accessID')).pipe(
+      debounceTime(1),
+      first(),
+    )),
+    map(accessId => accessId ?
+      surveyCreateActions.editSurvey({accessId}) :
+      surveyCreateActions.newSurvey()
+    )
+  ));
   
   loadSurvey = createEffect(() => this.actions$.pipe(
     ofType(surveyCreateActions.editSurvey),

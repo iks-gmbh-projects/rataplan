@@ -5,14 +5,14 @@
         <mat-form-field class="mat-form-field-flex" appearance="fill">
           <mat-label>Umfragename</mat-label>
           <input type="text" matInput formControlName="name">
-          <mat-error>{{ errorMessageService.genericFormError(formGroup!.get('name')) }}</mat-error>
+          <mat-error [textContent]="errorMessageService.genericFormError(formGroup.get('name'))"/>
         </mat-form-field>
       </div>
       <div>
         <mat-form-field class="mat-form-field-flex" appearance="fill">
           <mat-label>Beschreibung</mat-label>
           <textarea matInput formControlName="description"></textarea>
-          <mat-error>{{ errorMessageService.genericFormError(formGroup.get('description')) }}</mat-error>
+          <mat-error [textContent]="errorMessageService.genericFormError(formGroup.get('description'))"/>
         </mat-form-field>
       </div>
       <mat-checkbox formControlName="anonymousParticipation"><span class="newLine">Erlaube anonyme Antworten</span>
@@ -30,7 +30,7 @@
         >
         <mtx-datetimepicker-toggle [for]="startDate" matSuffix></mtx-datetimepicker-toggle>
         <mtx-datetimepicker #startDate></mtx-datetimepicker>
-        <mat-error>{{ errorMessageService.genericFormError(formGroup.get('startDate')) }}</mat-error>
+        <mat-error [textContent]="errorMessageService.genericFormError(formGroup.get('startDate'))"/>
       </mat-form-field>
       <br>
       <mat-form-field class="mat-form-field-flex" appearance="fill">
@@ -45,7 +45,7 @@
         >
         <mtx-datetimepicker-toggle [for]="endDate" matSuffix></mtx-datetimepicker-toggle>
         <mtx-datetimepicker #endDate></mtx-datetimepicker>
-        <mat-error>{{ errorMessageService.genericFormError(formGroup.get('endDate')) }}</mat-error>
+        <mat-error [textContent]="errorMessageService.genericFormError(formGroup.get('endDate'))"/>
       </mat-form-field>
       <br>
       <mat-checkbox formControlName="openAccess"><span class="newLine">Öffentliche Umfrage</span>

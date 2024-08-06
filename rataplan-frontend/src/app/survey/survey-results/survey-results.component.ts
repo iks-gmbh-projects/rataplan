@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ChartData } from 'chart.js';
-import { Observable, share } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of, share, timer } from 'rxjs';
+import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { defined } from '../../operators/non-empty';
 import { Question, Survey, SurveyResponse } from '../survey.model';
 import { surveyResultsAction } from './state/survey-results.action';
@@ -18,6 +18,8 @@ export class SurveyResultsComponent {
   public readonly tableColumns$: Observable<Record<string | number, Record<string | number, string[] | undefined> | undefined>>
   public readonly charts$: Observable<Record<string | number, Record<string | number, ChartData<'pie'> | undefined> | undefined>>;
   public readonly answers$: Observable<SurveyResponse[]>;
+  public readonly busy$: Observable<boolean>;
+  public readonly delayedBusy$: Observable<boolean>;
   constructor(
     private readonly store: Store,
   ) {
@@ -35,6 +37,11 @@ export class SurveyResultsComponent {
       share(),
     );
     this.answers$ = store.select(surveyResultsFeature.selectResults).pipe(defined);
+    this.busy$ = store.select(surveyResultsFeature.selectBusy);
+    this.delayedBusy$ = this.busy$.pipe(
+      distinctUntilChanged(),
+      switchMap(b => b ? timer(1000).pipe(map(() => b)) : of(b)),
+    );
   }
   
   protected hasTextfield(question: Question): boolean {

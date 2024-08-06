@@ -1,8 +1,14 @@
 <div class="center">
-  <div class="content">
+  <div
+    class="content"
+    *ngrxLet="{survey: survey$, answers: answers$, columns: tableColumns$, charts: charts$, busy: busy$, delayedBusy: delayedBusy$} as state"
+  >
+    <ng-template #loading>
+      <mat-spinner *ngIf="state.delayedBusy"/>
+    </ng-template>
     <div
       class="width"
-      *ngrxLet="{survey: survey$, answers: answers$, columns: tableColumns$, charts: charts$} as state"
+      *ngIf="!state.busy; else loading"
     >
       <h2 [textContent]="state.survey.name"></h2>
       <div class="bottomspace" *ngFor="let group of state.survey.questionGroups">

@@ -1,13 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { concatLatestFrom } from '@ngrx/operators';
 import { Store } from '@ngrx/store';
 import { ChartData, Color } from 'chart.js';
 import { distinctUntilKeyChanged, filter, first, of } from 'rxjs';
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { configFeature } from '../../../config/config.feature';
 import { defined } from '../../../operators/non-empty';
-import { surveyFormActions } from '../../survey-form/state/survey-form.action';
+import { routerSelectors } from '../../../router.selectors';
 import { Survey, SurveyResponse } from '../../survey.model';
 import { surveyResultsAction } from './survey-results.action';
 import { surveyResultsFeature } from './survey-results.feature';
@@ -25,7 +26,7 @@ function escape(str?: string): string | undefined | null {
 const reds: Color[] = [
   '#800000',
   '#e6194B',
-]
+];
 
 const greens: Color[] = [
   '#3cb44b',
@@ -66,10 +67,31 @@ export class SurveyResultsEffects {
   
   }
   
-  autoLoad = createEffect(() => this.actions$.pipe(
-    ofType(surveyFormActions.init),
-    filter(({survey}) => !!survey.accessId),
-    map(({survey}) => surveyResultsAction.loadResults({survey: survey as Survey & {accessId: string}})),
+  autoLoad = createEffect(() => this.store.select(routerSelectors.selectRouteData).pipe(
+    map(d => d?.['loadSurveyResults'] as boolean),
+    filter(b => b),
+    switchMap(() => this.store.select(routerSelectors.selectRouteParam('accessID'))),
+    defined,
+    distinctUntilChanged(),
+    map(accessId => surveyResultsAction.loadSurvey({accessId})),
+  ));
+  
+  loadSurvey = createEffect(() => this.actions$.pipe(
+    ofType(surveyResultsAction.loadSurvey),
+    concatLatestFrom(() => this.store.select(configFeature.selectSurveyBackendUrl('surveys')).pipe(defined)),
+    switchMap(([{accessId}, url]) => this.http.get<Survey>(url, {
+        withCredentials: true,
+        params: new HttpParams().append('accessId', accessId),
+      }).pipe(
+        map(s => (
+          {
+            accessId,
+            ...s,
+          }
+        )),
+      ),
+    ),
+    map(survey => surveyResultsAction.loadResults({survey: survey as Survey & {accessId: string}})),
   ));
   
   loadResponses = createEffect(() => this.actions$.pipe(
@@ -94,8 +116,12 @@ export class SurveyResultsEffects {
       const ids: Record<string | number, Record<string | number, string[] | undefined> | undefined> = {};
       const exported: Record<string | number, Record<string | number, string[] | undefined> | undefined> = {};
       for(let questionGroup of survey!.questionGroups) {
-        const gr = (ids[questionGroup.id!] ??= {});
-        const egr = (exported[questionGroup.id!] ??= {});
+        const gr = (
+          ids[questionGroup.id!] ??= {}
+        );
+        const egr = (
+          exported[questionGroup.id!] ??= {}
+        );
         for(let question of questionGroup.questions) {
           if(question.rank !== undefined) {
             const qr = ['user'];
@@ -127,15 +153,21 @@ export class SurveyResultsEffects {
       }
       return {tableColumns: ids, exportTableColumns: exported};
     }),
-    map(columns => surveyResultsAction.computeTableData(columns))
+    map(columns => surveyResultsAction.computeTableData(columns)),
   ));
   
   computeCharts = createEffect(() => this.store.select(surveyResultsFeature.selectSurveyResultsState).pipe(
     distinctUntilKeyChanged('results'),
-    filter(({survey, results}) => !!(survey && results)),
+    filter(({survey, results}) => !!(
+      survey && results
+    )),
     map(({survey, results}) => {
       const data: Record<string | number, Record<string | number, ChartData<'pie'> | undefined> | undefined> = {};
-      for(const {gId, question} of survey!.questionGroups.flatMap(qg => qg.questions.map(q => ({gId: qg.id!, question: q})))) {
+      for(const {gId, question} of
+        survey!.questionGroups.flatMap(qg => qg.questions.map(q => (
+          {gId: qg.id!, question: q}
+        ))))
+      {
         if(question.rank === undefined || !question.choices) continue;
         const dataset: number[] = [];
         const datalabels: string[] = [];
@@ -157,11 +189,15 @@ export class SurveyResultsEffects {
           else datacolors.push(other.next().value);
         }
         if(dataset.reduce((a, v) => a + v, 0) === 0) continue;
-        (data[gId] ??= {})[question.rank] = {
-          datasets: [{
-            data: dataset,
-            backgroundColor: datacolors,
-          }],
+        (
+          data[gId] ??= {}
+        )[question.rank] = {
+          datasets: [
+            {
+              data: dataset,
+              backgroundColor: datacolors,
+            },
+          ],
           labels: datalabels,
         };
       }
@@ -183,23 +219,23 @@ export class SurveyResultsEffects {
             if(question.rank !== undefined) {
               const columns = tableColumns[groupId]?.[question.rank];
               if(columns === undefined) continue;
-                const compiledResults = [
-                  tableColumns[groupId]?.[question.rank]?.join(', '),
-                  ...results.map(response => {
-                    const answer =  response.answers[groupId]?.[question.rank];
-                    const ret = [
-                      response.userId || 'Anonym',
-                      ...columns.filter(col => col.startsWith('checkbox')).map(col => answer?.checkboxes?.[col.substring(
-                        8)]),
-                      ...(
-                        columns[columns.length - 1] === 'answer' ?
-                          [escape(answer?.text)] :
-                          []
-                      ),
-                    ];
-                    return ret.join(', ');
-                  }),
-                ];
+              const compiledResults = [
+                tableColumns[groupId]?.[question.rank]?.join(', '),
+                ...results.map(response => {
+                  const answer = response.answers[groupId]?.[question.rank];
+                  const ret = [
+                    response.userId || 'Anonym',
+                    ...columns.filter(col => col.startsWith('checkbox')).map(col => answer?.checkboxes?.[col.substring(
+                      8)]),
+                    ...(
+                      columns[columns.length - 1] === 'answer' ?
+                        [escape(answer?.text)] :
+                        []
+                    ),
+                  ];
+                  return ret.join(', ');
+                }),
+              ];
               if(compiledResults) lines = lines.map((s, i) => (
                 s ? s + ', ' : ''
               ) + compiledResults[i]);
@@ -218,7 +254,7 @@ export class SurveyResultsEffects {
       element.click();
       element.remove();
       URL.revokeObjectURL(url);
-    })
+    }),
   ), {
     dispatch: false,
   });

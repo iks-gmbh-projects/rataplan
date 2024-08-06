@@ -20,6 +20,8 @@ import { SurveyFormEffects } from './survey-form/state/survey-form.effects';
 import { surveyFormFeature } from './survey-form/state/survey-form.feature';
 import { SurveyAnswerComponent } from './survey-form/survey-answer/survey-answer.component';
 import { SurveyFormComponent } from './survey-form/survey-form.component';
+import { SurveyListEffects } from './survey-list/state/survey-list.effects';
+import { surveyListFeature } from './survey-list/state/survey-list.feature';
 import { SurveyListComponent } from './survey-list/survey-list.component';
 import { SurveyMissingComponent } from './survey-missing/survey-missing.component';
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
@@ -28,7 +30,6 @@ import { surveyResultsFeature } from './survey-results/state/survey-results.feat
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unknown-error.component';
 import { SurveyRoutingModule } from './survey.routing.module';
-import { SurveyService } from './survey.service';
 
 @NgModule({
   declarations: [
@@ -55,13 +56,11 @@ import { SurveyService } from './survey.service';
     NgChartsModule,
     LetDirective,
     PushPipe,
+    StoreModule.forFeature(surveyListFeature),
     StoreModule.forFeature(surveyFormFeature),
     StoreModule.forFeature(surveyCreateFeature),
     StoreModule.forFeature(surveyResultsFeature),
-    EffectsModule.forFeature([SurveyFormEffects, SurveyCreateEffects, SurveyResultsEffects]),
-  ],
-  providers: [
-    SurveyService,
+    EffectsModule.forFeature([SurveyListEffects, SurveyFormEffects, SurveyCreateEffects, SurveyResultsEffects]),
   ],
 })
 export class SurveyModule {}

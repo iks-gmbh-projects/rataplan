@@ -21,6 +21,15 @@ export const surveyResultsReducer = createReducer<{
     exportTableColumns: undefined,
     charts: undefined,
   },
+  on(surveyResultsAction.loadSurvey, () => ({
+    busy: true,
+    survey: undefined,
+    results: undefined,
+    error: undefined,
+    tableColumns: undefined,
+    exportTableColumns: undefined,
+    charts: undefined,
+  })),
   on(surveyResultsAction.loadResults, (state, {survey}) => ({
     busy: true,
     survey,
