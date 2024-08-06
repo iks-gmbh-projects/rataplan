@@ -4,8 +4,8 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of, switchMap } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
-import { authActions, } from '../authentication/auth.actions';
-import { VoteListService } from '../services/dashboard-service/vote-list.service';
+import { authActions } from '../authentication/auth.actions';
+import { voteListFeature } from '../vote-list/state/vote-list.feature';
 import { voteNotificationtypes } from '../vote/vote.notificationtypes';
 import { notificationActions } from './notification.actions';
 
@@ -17,7 +17,6 @@ export class NotificationEffects {
     private $actions: Actions,
     private store: Store,
     private snackBars: MatSnackBar,
-    private voteListService: VoteListService,
   )
   {
   }
@@ -38,13 +37,7 @@ export class NotificationEffects {
   });
   
   loadVoteNotifications = createEffect(() => {
-    return this.$actions.pipe(
-      ofType(authActions.loginSuccess),
-      switchMap(() => this.voteListService.getConsignedVotes()),
-      map(v => v.map(vote => Date.parse(vote.deadline))),
-      map(v => ({v, n: Date.now()})),
-      map(({v, n}) => v.filter(d => d > n)),
-      map(v => v.length),
+    return this.store.select(voteListFeature.selectNonExpiredConsignedCount).pipe(
       switchMap(n => of(
         notificationActions.clear(voteNotificationtypes.consigns),
         notificationActions.notify(voteNotificationtypes.consigns, n),

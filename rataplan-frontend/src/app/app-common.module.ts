@@ -28,6 +28,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MtxButtonModule } from '@ng-matero/extensions/button';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
+import { LetDirective, PushPipe } from '@ngrx/component';
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
 import { DisplayNamePipe } from './pipes/display-name.pipe';
 import { CheckboxCountMaxDirective } from './validator/checkbox-count-max.directive';
@@ -50,6 +51,8 @@ const imports = [
   CommonModule,
   FormsModule,
   ReactiveFormsModule,
+  LetDirective,
+  PushPipe,
   ClipboardModule,
   A11yModule,
   MatMenuModule,

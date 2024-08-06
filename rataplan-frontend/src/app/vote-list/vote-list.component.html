@@ -1,12 +1,12 @@
-<div class="center">
-  <mat-tab-group dynamicHeight [selectedIndex]="consignedNonExpiredVoteCount ? 1 : null">
+<div class="center" *ngrxLet="{busy: busy$, delayedBusy: delayedBusy$, created: created$, consigned: consigned$, consignedNonExpired: consignedNonExpired$, participated: participated$} as state">
+  <mat-tab-group dynamicHeight [selectedIndex]="state.consignedNonExpired ? 1 : null">
     <mat-tab>
       <div>
         <ng-template mat-tab-label>
           <span class="centered">Erstellt</span>
         </ng-template>
         <div class="left-bound">
-          <mat-card appearance="outlined" class="width" *ngFor="let vote of createdVotes">
+          <mat-card appearance="outlined" class="width" *ngFor="let vote of state.created">
             <mat-card-header>
               <mat-card-title [textContent]="vote.title"></mat-card-title>
               <mat-card-subtitle>Deadline {{ vote.deadline | date:'dd.LL.yyyy' }}</mat-card-subtitle>
@@ -36,13 +36,13 @@
     <mat-tab>
       <ng-template mat-tab-label>
       <span
-        class="centered" [matBadge]="consignedNonExpiredVoteCount" matBadgeOverlap="false"
-        [matBadgeHidden]="consignedNonExpiredVoteCount == 0"
+        class="centered" [matBadge]="state.consignedNonExpired" matBadgeOverlap="false"
+        [matBadgeHidden]="state.consignedNonExpired == 0"
         matBadgeColor="warn"
       >Einladungen</span>
       </ng-template>
       <div class="left-bound">
-        <mat-card appearance="outlined" class="width" *ngFor="let vote of consignedVotes">
+        <mat-card appearance="outlined" class="width" *ngFor="let vote of state.consigned">
           <mat-card-header>
             <mat-card-title [textContent]="vote.title"></mat-card-title>
             <mat-card-subtitle>Deadline {{ vote.deadline | date:'dd.LL.yyyy' }}</mat-card-subtitle>
@@ -65,7 +65,7 @@
         <span class="centered">Teilnahmen</span>
       </ng-template>
       <div class="left-bound">
-        <mat-card appearance="outlined" class="width" *ngFor="let vote of participatedVotes">
+        <mat-card appearance="outlined" class="width" *ngFor="let vote of state.participated">
           <mat-card-header>
             <mat-card-title [textContent]="vote.title"></mat-card-title>
             <mat-card-subtitle>Deadline {{ vote.deadline | date:'dd.LL.yyyy' }}</mat-card-subtitle>

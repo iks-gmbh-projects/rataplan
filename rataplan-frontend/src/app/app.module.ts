@@ -55,6 +55,7 @@ import { ValidateProfileUpdateComponent } from './validate-profile-update/valida
 import { ChangeNoteComponent } from './version/change-note/change-note.component';
 import { VersionComponent } from './version/version.component';
 import { ViewProfileComponent } from './view-profile/view-profile.component';
+import { voteListFeature } from './vote-list/state/vote-list.feature';
 import { ConfirmChoiceComponent } from './vote/vote-form/confirm-choice/confirm-choice.component';
 import { routerReducer, StoreRouterConnectingModule } from '@ngrx/router-store';
 
@@ -114,6 +115,7 @@ registerLocaleData(localeDE);
     StoreModule.forFeature(contactsFeature),
     StoreModule.forFeature(cookieFeature),
     StoreModule.forFeature(emailNotificationSettingsFeature),
+    StoreModule.forFeature(voteListFeature),
     StoreModule.forFeature(notificationFeature),
     EffectsModule.forRoot(appEffects),
     ...environment.devModules,

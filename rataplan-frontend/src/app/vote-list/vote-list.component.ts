@@ -1,57 +1,35 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatestAll, delay, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { delay, Observable, of, switchMap } from 'rxjs';
 
 import { VoteModel } from '../models/vote.model';
-import { VoteListService } from '../services/dashboard-service/vote-list.service';
+import { voteListFeature } from './state/vote-list.feature';
 
 @Component({
   selector: 'app-vote-list',
   templateUrl: './vote-list.component.html',
   styleUrls: ['./vote-list.component.css']
 })
-export class VoteListComponent implements OnInit, OnDestroy {
-  destroySubject: Subject<boolean> = new Subject<boolean>();
-  readonly busies$: readonly BehaviorSubject<boolean>[] = Array.from({length: 3}, () => new BehaviorSubject<boolean>(true));
-  readonly busy$: Observable<boolean> = of(...this.busies$).pipe(
-    combineLatestAll((...args) => args.some(v => v)),
-  );
-  readonly delayedBusy$: Observable<boolean> = this.busy$.pipe(
-    switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
-  );
-  createdVotes: VoteModel[] = [];
-  consignedVotes: VoteModel[] = [];
-  consignedNonExpiredVoteCount: number = 0;
-  participatedVotes: VoteModel[] = [];
+export class VoteListComponent {
+  protected readonly busy$: Observable<boolean>
+  protected readonly delayedBusy$: Observable<boolean>;
+  protected readonly created$: Observable<VoteModel[]>;
+  protected readonly consigned$: Observable<VoteModel[]>;
+  protected readonly consignedNonExpired$: Observable<number>;
+  protected readonly participated$: Observable<VoteModel[]>;
 
-  constructor(readonly voteListService: VoteListService) { }
-
-  public ngOnInit(): void {
-    this.voteListService.getCreatedVotes()
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(res => {
-        this.createdVotes = res;
-        this.busies$[0].next(false);
-      });
-    this.voteListService.getConsignedVotes()
-      .pipe(
-        takeUntil(this.destroySubject),
-      )
-      .subscribe(res => {
-        this.consignedVotes = res;
-        const n = Date.now();
-        this.consignedNonExpiredVoteCount = res.map(v => Date.parse(v.deadline)).filter(d => d > n).length;
-        this.busies$[1].next(false);
-      })
-    this.voteListService.getParticipatedVotes()
-      .pipe(takeUntil(this.destroySubject))
-      .subscribe(res => {
-        this.participatedVotes = res;
-        this.busies$[2].next(false);
-      });
+  constructor(
+    private readonly store: Store,
+  ) {
+    this.busy$ = store.select(voteListFeature.selectBusy);
+    this.delayedBusy$ = this.busy$.pipe(
+      switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
+    );
+    this.created$ = store.select(voteListFeature.selectCreated);
+    this.consigned$ = store.select(voteListFeature.selectConsigned);
+    this.consignedNonExpired$ = store.select(voteListFeature.selectNonExpiredConsignedCount);
+    this.participated$ = store.select(voteListFeature.selectParticipated);
   }
-
-  public ngOnDestroy(): void {
-    this.destroySubject.next(true);
-    this.destroySubject.complete();
-  }
+  
+  protected readonly delay = delay;
 }

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { LetDirective, PushPipe } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { NgChartsModule } from 'ng2-charts';
@@ -54,8 +53,6 @@ import { SurveyRoutingModule } from './survey.routing.module';
     AppCommonModule,
     SurveyRoutingModule,
     NgChartsModule,
-    LetDirective,
-    PushPipe,
     StoreModule.forFeature(surveyListFeature),
     StoreModule.forFeature(surveyFormFeature),
     StoreModule.forFeature(surveyCreateFeature),
