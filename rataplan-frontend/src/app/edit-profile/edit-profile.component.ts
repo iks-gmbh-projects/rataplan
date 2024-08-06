@@ -1,21 +1,19 @@
-import { Component, Inject, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormControl, ValidationErrors, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { delay, NEVER, Observable, of, Subscription, switchMap } from 'rxjs';
 
-import { AuthActions, ChangeProfileDetailsAction } from '../authentication/auth.actions';
+import { AuthActions } from '../authentication/auth.actions';
+import { authFeature } from '../authentication/auth.feature';
 import { FrontendUser } from '../models/user.model';
 import { FormErrorMessageService } from '../services/form-error-message-service/form-error-message.service';
-import {
-  UsernameEmailValidatorsService,
-} from '../services/username-email-validators-service/username-email-validators.service';
+import { UsernameEmailValidatorsService } from '../services/username-email-validators-service/username-email-validators.service';
 import { ValidateProfileUpdateComponent } from '../validate-profile-update/validate-profile-update.component';
 import { ExtraValidators } from '../validator/validators';
-import { authFeature } from '../authentication/auth.feature';
 
 @Component({
   selector: 'app-profile',
@@ -77,8 +75,8 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     this.successSub = this.actions$.pipe(
       ofType(AuthActions.CHANGE_PROFILE_DETAILS_SUCCESS_ACTION),
     ).subscribe(() => {
-      this.snackbar.open('Profil erfolgreich akutalisiert', 'OK');
       this.router.navigateByUrl('/view-profile');
+      this.snackbar.open(`Aktualisierung erfolgreich! Falls verändert, bitte bestätigen Sie Ihre neue Emailadresse.`, 'OK',)
       this.dialog.closeAll();
     });
     this.errorSub = this.actions$.pipe(

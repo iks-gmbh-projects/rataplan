@@ -24,7 +24,13 @@
     margin-bottom: 1rem
 }
 
-.profile-data{
+.profile-data {
     min-height: 5vh;
+}
 
+.confirmation-container {
+    min-height: 50vh;
+    text-align: center;
+    padding: 20px;
+    color: #005477;
 }

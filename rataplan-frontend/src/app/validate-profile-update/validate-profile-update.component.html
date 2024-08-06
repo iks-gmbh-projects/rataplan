@@ -1,9 +1,6 @@
-<div style="min-height: 50vh; text-align: center">
+<div class="confirmation-container">
   <h2>Profil Änderungen bestätigen</h2>
-  <div
-    *ngIf="enterPassword; else confirmChanges"
-    class="container"
-  >
+  <div *ngIf="enterPassword; else confirmChanges" class="container">
     <mat-form-field class="form-field">
       <mat-label>Passwort eingeben</mat-label>
       <input matInput type="password" [formControl]="password">

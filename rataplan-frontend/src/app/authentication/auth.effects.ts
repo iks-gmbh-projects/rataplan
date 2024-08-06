@@ -1,7 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { Actions, createEffect, ofType } from '@ngrx/effects';import { concatLatestFrom } from '@ngrx/operators';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { concatLatestFrom } from '@ngrx/operators';
 
 import { Store } from '@ngrx/store';
 import { combineLatestWith, EMPTY, first, from, of, timer } from 'rxjs';
@@ -12,6 +14,7 @@ import { cookieFeature } from '../cookie-banner/cookie.feature';
 import { FrontendUser } from '../models/user.model';
 import { BackendUrlService } from '../services/backend-url-service/backend-url.service';
 import { AuthActions, AutoLoginAction, ChangeProfileDetailsAction, ChangeProfileDetailsErrorAction, ChangeProfileDetailsSuccessAction, DeleteUserAction, DeleteUserErrorAction, DeleteUserSuccessAction, LoginAction, LoginErrorAction, LoginSuccessAction, LogoutAction, RegisterAction, RegisterErrorAction, RegisterSuccessAction, ResetPasswordAction, ResetPasswordErrorAction, ResetPasswordSuccessAction, UpdateUserdataAction, UpdateUserdataSuccessAction } from './auth.actions';
+import { authFeature } from './auth.feature';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +26,7 @@ export class AuthEffects {
     private readonly httpClient: HttpClient,
     private readonly router: Router,
     private readonly urlService: BackendUrlService,
+    private readonly snackBar: MatSnackBar,
   )
   {
   }
@@ -73,11 +77,13 @@ export class AuthEffects {
       map(atob),
       map(json => JSON.parse(json)['exp']),
       map(Number),
-      map(exp => new Date((exp-30) * 1000)),
+      map(exp => new Date((
+        exp - 30
+      )*1000)),
       switchMap(exp => timer(exp, 1000).pipe(first())),
       map(() => new AutoLoginAction()),
     );
-  })
+  });
   
   manualLogin = createEffect(() => {
     return this.actions$.pipe(
@@ -134,7 +140,7 @@ export class AuthEffects {
         const httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'}), withCredentials: true};
         return this.httpClient.post<FrontendUser>(url, displayNameAction.payload, httpOptions)
           .pipe(
-            map(success => success ?
+            map(success =>  success ?
               new ChangeProfileDetailsSuccessAction(displayNameAction.payload) :
               new ChangeProfileDetailsErrorAction(success)),
             catchError(err => of(new ChangeProfileDetailsErrorAction(err))),
@@ -164,7 +170,7 @@ export class AuthEffects {
       switchMap(url => this.httpClient.get(url, {
         responseType: 'text',
         withCredentials: true,
-      }))
+      })),
     );
   }, {dispatch: false});
   
