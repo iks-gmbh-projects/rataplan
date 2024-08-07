@@ -101,4 +101,13 @@ export const authReducer = createReducer<{
       error: undefined,
     })
   ),
+  on(authActions.resetPassword, authActions.changePassword, state => ({
+    ...state,
+    busy: true,
+    error: undefined,
+  })),
+  on(authActions.resetPasswordSuccess, authActions.changePasswordSuccess, state => ({
+    ...state,
+    busy: false,
+  })),
 );

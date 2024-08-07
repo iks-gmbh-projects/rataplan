@@ -19,6 +19,8 @@ export const authActions = createActionGroup({
     'reset password success': emptyProps(),
     'change profile details': userProps,
     'change profile details success': userProps,
+    'change password': props<{oldPassword: string, newPassword: string}>(),
+    'change password success': emptyProps(),
     'update user data': emptyProps(),
     'update user data success': userProps,
     'logout': emptyProps(),

@@ -166,6 +166,20 @@ export class AuthEffects {
       }),
     );
   }, {dispatch: true});
+  
+  changePassword = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(authActions.changePassword),
+      concatLatestFrom(() => this.store.select(configFeature.selectAuthBackendUrl('users', 'profile', 'changePassword')).pipe(defined, first())),
+      switchMap(([{oldPassword, newPassword}, url]) => {
+        return this.httpClient.post<any>(url, {oldPassword, newPassword}, {withCredentials: true}).pipe(
+          map(authActions.changePasswordSuccess),
+          catchError(error => of(authActions.error(error))),
+        )
+      }),
+    );
+  });
+  
   updateUserData = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.updateUserData),
