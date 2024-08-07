@@ -13,8 +13,8 @@ import { EmailSubformComponent } from './vote-form/email-subform/email-subform.c
 import { GeneralSubformComponent } from './vote-form/general-subform/general-subform.component';
 import { LinkSubformComponent } from './vote-form/link-subform/link-subform.component';
 import { OverviewSubformComponent } from './vote-form/overview-subform/overview-subform.component';
-import { VoteEffects } from './vote-form/state/vote.effects';
-import { voteFeature } from './vote-form/state/vote.feature';
+import { VoteFormEffects } from './vote-form/state/vote-form.effects';
+import { voteFormFeature } from './vote-form/state/vote-form.feature';
 import { VoteFormComponent } from './vote-form/vote-form.component';
 import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-dialog/vote-option-info-dialog.component';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
@@ -41,8 +41,8 @@ import { VoteComponent } from './vote/vote.component';
   imports: [
     AppCommonModule,
     VoteRoutingModule,
-    StoreModule.forFeature(voteFeature),
-    EffectsModule.forFeature([VoteEffects]),
+    StoreModule.forFeature(voteFormFeature),
+    EffectsModule.forFeature([VoteFormEffects]),
     MatSelectModule,
     MatMenuModule,
     NgChartsModule

@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@a
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { voteFeature } from '../vote-form/state/vote.feature';
+import { voteFormFeature } from '../vote-form/state/vote-form.feature';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class VoteAuthGuard  {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.store.select(voteFeature.selectVoteState).pipe(
+    return this.store.select(voteFormFeature.selectVoteState).pipe(
       filter(state => !state.busy),
       take(1),
       map(state => {

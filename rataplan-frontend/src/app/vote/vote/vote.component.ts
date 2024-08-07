@@ -15,8 +15,8 @@ import { VoteParticipantModel } from '../../models/vote-participant.model';
 import { VoteModel } from '../../models/vote.model';
 import { FormErrorMessageService } from '../../services/form-error-message-service/form-error-message.service';
 import { DecisionType, VoteOptionDecisionType } from '../vote-form/decision-type.enum';
-import { PostVoteAction } from '../vote-form/state/vote.actions';
-import { voteFeature } from '../vote-form/state/vote.feature';
+import { PostVoteAction } from '../vote-form/state/vote-form.action';
+import { voteFormFeature } from '../vote-form/state/vote-form.feature';
 import { VoteDecisionSubformComponent } from './member-decision-subform/vote-decision-subform.component';
 import { VoteService } from './vote-service/vote.service';
 
@@ -87,7 +87,7 @@ export class VoteComponent implements OnInit, OnDestroy {
       }
     });
     
-    this.store.select(voteFeature.selectBusy)
+    this.store.select(voteFormFeature.selectBusy)
       .pipe(
         takeUntil(this.destroySubject),
       ).subscribe(busy => this.busy = busy);

@@ -14,13 +14,13 @@ import { FeedbackDialogComponent } from '../../../dialogs/feedback-dialog/feedba
 import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
 import { defined } from '../../../operators/non-empty';
 import { DecisionType } from '../decision-type.enum';
-import { InitVoteAction, InitVoteErrorAction, InitVoteSuccessAction, PostVoteErrorAction, PostVoteSuccessAction, VoteActions } from './vote.actions';
-import { voteFeature } from './vote.feature';
+import { InitVoteAction, InitVoteErrorAction, InitVoteSuccessAction, PostVoteErrorAction, PostVoteSuccessAction, VoteFormAction } from './vote-form.action';
+import { voteFormFeature } from './vote-form.feature';
 
 @Injectable({
   providedIn: 'root',
 })
-export class VoteEffects {
+export class VoteFormEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly store: Store,
@@ -34,7 +34,7 @@ export class VoteEffects {
   
   initVote = createEffect(() => {
     return this.actions$.pipe(
-      ofType(VoteActions.INIT),
+      ofType(VoteFormAction.INIT),
       switchMap((action: InitVoteAction) => {
         if(!action.id) return of(new InitVoteSuccessAction({
           title: '',
@@ -69,8 +69,8 @@ export class VoteEffects {
   
   postVote = createEffect(() => {
     return this.actions$.pipe(
-      ofType(VoteActions.POST),
-      switchMap(() => this.store.select(voteFeature.selectVoteState).pipe(
+      ofType(VoteFormAction.POST),
+      switchMap(() => this.store.select(voteFormFeature.selectVoteState).pipe(
         filter(state => state.complete),
         take(1),
       )),
@@ -124,7 +124,7 @@ export class VoteEffects {
   
   successFullPost = createEffect(() => {
     return this.actions$.pipe(
-      ofType(VoteActions.POST_SUCCESS),
+      ofType(VoteFormAction.POST_SUCCESS),
       map((action: PostVoteSuccessAction) => this.router.navigate(['/vote/links'], {
         queryParams: {
           participationToken: action.created.participationToken || action.created.id,

@@ -4,8 +4,8 @@ import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { MatCalendar } from "@angular/material/datepicker";
-import { AddVoteOptionsAction, RemoveVoteOptionAction } from '../state/vote.actions';
-import { voteFeature } from '../state/vote.feature';
+import { AddVoteOptionsAction, RemoveVoteOptionAction } from '../state/vote-form.action';
+import { voteFormFeature } from '../state/vote-form.feature';
 
 @Component({
   selector: 'app-datepicker-subform',
@@ -28,7 +28,7 @@ export class DatepickerSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVote)
+    this.storeSub = this.store.select(voteFormFeature.selectVote)
       .pipe(
         filter(vote => !!vote),
         map(vote => vote!.options)

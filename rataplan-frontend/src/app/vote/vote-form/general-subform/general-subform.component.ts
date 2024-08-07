@@ -7,8 +7,8 @@ import { ExtraValidators } from '../../../validator/validators';
 import { Store } from '@ngrx/store';
 import { DecisionType } from '../decision-type.enum';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SetGeneralValuesVoteOptionAction } from '../state/vote.actions';
-import { voteFeature } from '../state/vote.feature';
+import { SetGeneralValuesVoteOptionAction } from '../state/vote-form.action';
+import { voteFormFeature } from '../state/vote-form.feature';
 
 @Component({
   selector: 'app-general-subform',
@@ -58,7 +58,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVote)
+    this.storeSub = this.store.select(voteFormFeature.selectVote)
       .subscribe({
         next: vote => {
           const title = vote?.title;

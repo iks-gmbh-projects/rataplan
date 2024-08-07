@@ -6,8 +6,8 @@ import { combineLatest, startWith, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { VoteOptionConfig } from '../../../models/vote-option.model';
 import { ExtraValidators } from '../../../validator/validators';
-import { SetVoteOptionConfigAction } from '../state/vote.actions';
-import { voteFeature } from '../state/vote.feature';
+import { SetVoteOptionConfigAction } from '../state/vote-form.action';
+import { voteFormFeature } from '../state/vote-form.feature';
 
 @Component({
   selector: 'app-config-subform',
@@ -41,7 +41,7 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVote)
+    this.storeSub = this.store.select(voteFormFeature.selectVote)
       .pipe(
         filter(vote => !!vote),
         map(vote => vote!.voteConfig.voteOptionConfig)

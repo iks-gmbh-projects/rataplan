@@ -9,8 +9,8 @@ import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.m
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
-import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../state/vote.actions';
-import { voteFeature } from '../state/vote.feature';
+import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../state/vote-form.action';
+import { voteFormFeature } from '../state/vote-form.feature';
 @Component({
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',
@@ -76,7 +76,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVote).pipe(
+    this.storeSub = this.store.select(voteFormFeature.selectVote).pipe(
       filter(vote => !!vote),
     ).subscribe(request => {
       this.voteConfig = request!.voteConfig.voteOptionConfig;

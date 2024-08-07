@@ -1,6 +1,6 @@
 import { isConfiguredEqual, matchConfiguration, matchesConfiguration, VoteOptionModel } from '../../../models/vote-option.model';
 import { VoteModel } from '../../../models/vote.model';
-import { ActionRequiresInit, VoteActions, VoteOptionAction } from './vote.actions';
+import { ActionRequiresInit, VoteFormAction, VoteOptionAction } from './vote-form.action';
 
 export type voteState = {
   busy: boolean,
@@ -32,7 +32,7 @@ function assembleRequestState(request: VoteModel, appointmentsChanged: boolean):
   };
 }
 
-export function voteReducer(
+export function voteFormReducer(
   state: voteState = {
     vote: undefined,
     complete: false,
@@ -64,7 +64,7 @@ export function voteReducer(
     };
   }
   switch(action.type) {
-  case VoteActions.INIT:
+  case VoteFormAction.INIT:
     return {
       vote: undefined,
       complete: false,
@@ -72,7 +72,7 @@ export function voteReducer(
       busy: true,
       error: undefined,
     };
-  case VoteActions.INIT_SUCCESS:
+  case VoteFormAction.INIT_SUCCESS:
     return {
       vote: action.request,
       complete: isComplete(action.request),
@@ -80,7 +80,7 @@ export function voteReducer(
       busy: false,
       error: undefined,
     };
-  case VoteActions.INIT_ERROR:
+  case VoteFormAction.INIT_ERROR:
     return {
       vote: undefined,
       complete: false,
@@ -88,7 +88,7 @@ export function voteReducer(
       busy: false,
       error: action.error,
     };
-  case VoteActions.SET_GENERAL_VALUES:
+  case VoteFormAction.SET_GENERAL_VALUES:
     return assembleRequestState(
       {
         ...state.vote!,
@@ -104,7 +104,7 @@ export function voteReducer(
       },
       state.appointmentsChanged!,
     );
-  case VoteActions.SET_VOTE_CONFIG:
+  case VoteFormAction.SET_VOTE_CONFIG:
     if(isConfiguredEqual(
       state.vote!.voteConfig.voteOptionConfig,
       action.config,
@@ -126,7 +126,7 @@ export function voteReducer(
       busy: false,
       error: undefined,
     };
-  case VoteActions.SET_VOTES:
+  case VoteFormAction.SET_VOTES:
     return assembleRequestState(
       {
         ...state.vote!,
@@ -134,7 +134,7 @@ export function voteReducer(
       },
       true,
     );
-  case VoteActions.ADD_VOTES:
+  case VoteFormAction.ADD_VOTES:
     return assembleRequestState(
       {
         ...state.vote!,
@@ -142,7 +142,7 @@ export function voteReducer(
       },
       true,
     );
-  case VoteActions.EDIT_VOTE:
+  case VoteFormAction.EDIT_VOTE:
     if(!matchesConfiguration(
       action.voteOption,
       state.vote!.voteConfig.voteOptionConfig,
@@ -164,7 +164,7 @@ export function voteReducer(
       },
       true,
     );
-  case VoteActions.REMOVE_VOTE:
+  case VoteFormAction.REMOVE_VOTE:
     return assembleRequestState(
       {
         ...state.vote!,
@@ -175,7 +175,7 @@ export function voteReducer(
       },
       true,
     );
-  case VoteActions.SET_ORGANIZER_INFO:
+  case VoteFormAction.SET_ORGANIZER_INFO:
     return {
       vote: {
         ...state.vote!,
@@ -190,12 +190,12 @@ export function voteReducer(
       busy: false,
       error: undefined,
     };
-  case VoteActions.POST:
+  case VoteFormAction.POST:
     return {
       ...state,
       busy: true,
     };
-  case VoteActions.POST_SUCCESS:
+  case VoteFormAction.POST_SUCCESS:
     return {
       vote: undefined,
       complete: false,
@@ -203,7 +203,7 @@ export function voteReducer(
       busy: false,
       error: undefined,
     };
-  case VoteActions.POST_ERROR:
+  case VoteFormAction.POST_ERROR:
     return {
       ...state,
       busy: false,

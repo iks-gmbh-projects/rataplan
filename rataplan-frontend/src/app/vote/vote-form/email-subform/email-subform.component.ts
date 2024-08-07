@@ -12,8 +12,8 @@ import { contactsFeature } from '../../../contact-list/contacts.feature';
 import { ContactGroup } from '../../../models/contact.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
-import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../state/vote.actions';
-import { voteFeature } from '../state/vote.feature';
+import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../state/vote-form.action';
+import { voteFormFeature } from '../state/vote-form.feature';
 
 type Nullable<T> = { [K in keyof T]: T[K] | null };
 
@@ -81,7 +81,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   private lastError?: any;
   
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFeature.selectVoteState)
+    this.storeSub = this.store.select(voteFormFeature.selectVoteState)
       .pipe(
         filter(state => !!state.vote),
       ).subscribe(state => {

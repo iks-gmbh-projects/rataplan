@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { delay, Observable, of, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { InitVoteAction } from './state/vote.actions';
-import { voteFeature } from './state/vote.feature';
+import { InitVoteAction } from './state/vote-form.action';
+import { voteFormFeature } from './state/vote-form.feature';
 
 @Component({
   selector: 'app-vote-form',
@@ -31,7 +31,7 @@ export class VoteFormComponent implements OnInit, OnDestroy {
         {redirect: url}
       )),
     );
-    this.busy$ = this.store.select(voteFeature.selectBusy);
+    this.busy$ = this.store.select(voteFormFeature.selectBusy);
     this.delayedBusy$ = this.busy$.pipe(
       switchMap(v => v ? of(v).pipe(delay(1000)) : of(v)),
     );
@@ -44,7 +44,7 @@ export class VoteFormComponent implements OnInit, OnDestroy {
       this.editing = !!id;
       this.store.dispatch(new InitVoteAction(id));
     });
-    this.storeSub = this.store.select(voteFeature.selectVoteState)
+    this.storeSub = this.store.select(voteFormFeature.selectVoteState)
       .subscribe(state => {
         if(state.vote) delete this.error;
         else this.error = state.error;

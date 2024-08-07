@@ -3,7 +3,7 @@ import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.m
 import { VoteModel, VoteNotificationSettings } from '../../../models/vote.model';
 import { DecisionType } from '../decision-type.enum';
 
-export const VoteActions = {
+export const VoteFormAction = {
   INIT: '[Vote] init',
   INIT_SUCCESS: '[Vote] init success',
   INIT_ERROR: '[Vote] init error',
@@ -24,19 +24,19 @@ export const VoteActions = {
  * This is used to unify the code to handle the potential error of no VoteModel being in the store.
  */
 export const ActionRequiresInit = {
-  [VoteActions.INIT]: false,
-  [VoteActions.INIT_SUCCESS]: false,
-  [VoteActions.INIT_ERROR]: false,
-  [VoteActions.SET_GENERAL_VALUES]: true,
-  [VoteActions.SET_VOTE_CONFIG]: true,
-  [VoteActions.SET_VOTES]: true,
-  [VoteActions.ADD_VOTES]: true,
-  [VoteActions.EDIT_VOTE]: true,
-  [VoteActions.REMOVE_VOTE]: true,
-  [VoteActions.SET_ORGANIZER_INFO]: true,
-  [VoteActions.POST]: true,
-  [VoteActions.POST_SUCCESS]: false,
-  [VoteActions.POST_ERROR]: false,
+  [VoteFormAction.INIT]: false,
+  [VoteFormAction.INIT_SUCCESS]: false,
+  [VoteFormAction.INIT_ERROR]: false,
+  [VoteFormAction.SET_GENERAL_VALUES]: true,
+  [VoteFormAction.SET_VOTE_CONFIG]: true,
+  [VoteFormAction.SET_VOTES]: true,
+  [VoteFormAction.ADD_VOTES]: true,
+  [VoteFormAction.EDIT_VOTE]: true,
+  [VoteFormAction.REMOVE_VOTE]: true,
+  [VoteFormAction.SET_ORGANIZER_INFO]: true,
+  [VoteFormAction.POST]: true,
+  [VoteFormAction.POST_SUCCESS]: false,
+  [VoteFormAction.POST_ERROR]: false,
 } as const;
 
 /**
@@ -45,11 +45,11 @@ export const ActionRequiresInit = {
  * E.g. typescript will still know that ActionRequiresInit[VoteOptionActions.INIT] is false at compile time.
  */
 const ActionRequiresInitTypeAssertion: {
-  readonly [type in typeof VoteActions[keyof typeof VoteActions]]: boolean
+  readonly [type in typeof VoteFormAction[keyof typeof VoteFormAction]]: boolean
 } = ActionRequiresInit;
 
 export class InitVoteAction implements Action {
-  readonly type = VoteActions.INIT;
+  readonly type = VoteFormAction.INIT;
 
   constructor(
     readonly id?: string | number
@@ -58,7 +58,7 @@ export class InitVoteAction implements Action {
 }
 
 export class InitVoteSuccessAction implements Action {
-  readonly type = VoteActions.INIT_SUCCESS;
+  readonly type = VoteFormAction.INIT_SUCCESS;
 
   constructor(
     readonly request: VoteModel
@@ -67,7 +67,7 @@ export class InitVoteSuccessAction implements Action {
 }
 
 export class InitVoteErrorAction implements Action {
-  readonly type = VoteActions.INIT_ERROR;
+  readonly type = VoteFormAction.INIT_ERROR;
 
   constructor(
     readonly error: any
@@ -76,7 +76,7 @@ export class InitVoteErrorAction implements Action {
 }
 
 export class SetGeneralValuesVoteOptionAction implements Action {
-  readonly type = VoteActions.SET_GENERAL_VALUES;
+  readonly type = VoteFormAction.SET_GENERAL_VALUES;
 
   constructor(
     readonly payload: {
@@ -92,7 +92,7 @@ export class SetGeneralValuesVoteOptionAction implements Action {
 }
 
 export class SetVoteOptionConfigAction implements Action {
-  readonly type = VoteActions.SET_VOTE_CONFIG;
+  readonly type = VoteFormAction.SET_VOTE_CONFIG;
 
   constructor(
     readonly config: VoteOptionConfig
@@ -101,7 +101,7 @@ export class SetVoteOptionConfigAction implements Action {
 }
 
 export class SetVoteOptionsAction implements Action {
-  readonly type = VoteActions.SET_VOTES;
+  readonly type = VoteFormAction.SET_VOTES;
 
   constructor(
     readonly votes: VoteOptionModel[]
@@ -110,7 +110,7 @@ export class SetVoteOptionsAction implements Action {
 }
 
 export class AddVoteOptionsAction implements Action {
-  readonly type = VoteActions.ADD_VOTES;
+  readonly type = VoteFormAction.ADD_VOTES;
   readonly votes: VoteOptionModel[];
 
   constructor(
@@ -121,7 +121,7 @@ export class AddVoteOptionsAction implements Action {
 }
 
 export class EditVoteOptionAction implements Action {
-  readonly type = VoteActions.EDIT_VOTE;
+  readonly type = VoteFormAction.EDIT_VOTE;
 
   constructor(
     readonly index: number,
@@ -131,7 +131,7 @@ export class EditVoteOptionAction implements Action {
 }
 
 export class RemoveVoteOptionAction implements Action {
-  readonly type = VoteActions.REMOVE_VOTE;
+  readonly type = VoteFormAction.REMOVE_VOTE;
 
   constructor(
     readonly index: number
@@ -140,7 +140,7 @@ export class RemoveVoteOptionAction implements Action {
 }
 
 export class SetOrganizerInfoVoteOptionAction implements Action {
-  readonly type = VoteActions.SET_ORGANIZER_INFO;
+  readonly type = VoteFormAction.SET_ORGANIZER_INFO;
 
   constructor(
     readonly payload: {
@@ -155,11 +155,11 @@ export class SetOrganizerInfoVoteOptionAction implements Action {
 }
 
 export class PostVoteAction implements Action {
-  readonly type = VoteActions.POST;
+  readonly type = VoteFormAction.POST;
 }
 
 export class PostVoteSuccessAction implements Action {
-  readonly type = VoteActions.POST_SUCCESS;
+  readonly type = VoteFormAction.POST_SUCCESS;
 
   constructor(
     readonly created: VoteModel,
@@ -169,7 +169,7 @@ export class PostVoteSuccessAction implements Action {
 }
 
 export class PostVoteErrorAction implements Action {
-  readonly type = VoteActions.POST_ERROR;
+  readonly type = VoteFormAction.POST_ERROR;
 
   constructor(
     readonly error: any

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { catchError, EMPTY, filter, map, Observable, take, timeout } from 'rxjs';
 
 import { VoteModel } from '../../../models/vote.model';
-import { voteFeature } from '../../vote-form/state/vote.feature';
+import { voteFormFeature } from '../../vote-form/state/vote-form.feature';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class VotePreviewResolver  {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<VoteModel> {
-    return this.store.select(voteFeature.selectVoteState)
+    return this.store.select(voteFormFeature.selectVoteState)
       .pipe(
         filter(state => state.complete!),
         map(state => state.vote!),
