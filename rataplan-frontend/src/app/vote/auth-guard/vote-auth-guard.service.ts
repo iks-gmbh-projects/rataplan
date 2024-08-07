@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@a
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { voteFeature } from '../vote.feature';
+import { voteFeature } from '../vote-form/state/vote.feature';
 
 @Injectable({
   providedIn: 'root',

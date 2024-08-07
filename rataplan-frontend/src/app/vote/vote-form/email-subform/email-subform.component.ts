@@ -12,8 +12,8 @@ import { contactsFeature } from '../../../contact-list/contacts.feature';
 import { ContactGroup } from '../../../models/contact.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
-import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../../vote.actions';
-import { voteFeature } from '../../vote.feature';
+import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../state/vote.actions';
+import { voteFeature } from '../state/vote.feature';
 
 type Nullable<T> = { [K in keyof T]: T[K] | null };
 

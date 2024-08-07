@@ -6,8 +6,8 @@ import { combineLatest, startWith, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { VoteOptionConfig } from '../../../models/vote-option.model';
 import { ExtraValidators } from '../../../validator/validators';
-import { SetVoteOptionConfigAction } from '../../vote.actions';
-import { voteFeature } from '../../vote.feature';
+import { SetVoteOptionConfigAction } from '../state/vote.actions';
+import { voteFeature } from '../state/vote.feature';
 
 @Component({
   selector: 'app-config-subform',

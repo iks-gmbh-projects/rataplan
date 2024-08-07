@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { catchError, EMPTY, filter, map, Observable, take, timeout } from 'rxjs';
 
 import { VoteModel } from '../../../models/vote.model';
-import { voteFeature } from '../../vote.feature';
+import { voteFeature } from '../../vote-form/state/vote.feature';
 
 @Injectable({
   providedIn: 'root',

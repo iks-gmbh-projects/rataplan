@@ -1,5 +1,5 @@
-import { VoteModel } from '../models/vote.model';
-import { isConfiguredEqual, matchConfiguration, matchesConfiguration, VoteOptionModel } from '../models/vote-option.model';
+import { isConfiguredEqual, matchConfiguration, matchesConfiguration, VoteOptionModel } from '../../../models/vote-option.model';
+import { VoteModel } from '../../../models/vote.model';
 import { ActionRequiresInit, VoteActions, VoteOptionAction } from './vote.actions';
 
 export type voteState = {

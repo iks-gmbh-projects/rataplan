@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { delay, Observable, of, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { InitVoteAction } from '../vote.actions';
-import { voteFeature } from '../vote.feature';
+import { InitVoteAction } from './state/vote.actions';
+import { voteFeature } from './state/vote.feature';
 
 @Component({
   selector: 'app-vote-form',

@@ -1,8 +1,7 @@
 import { Action } from '@ngrx/store';
-
-import { VoteModel, VoteNotificationSettings } from '../models/vote.model';
-import { VoteOptionConfig, VoteOptionModel } from '../models/vote-option.model';
-import { DecisionType } from './vote-form/decision-type.enum';
+import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.model';
+import { VoteModel, VoteNotificationSettings } from '../../../models/vote.model';
+import { DecisionType } from '../decision-type.enum';
 
 export const VoteActions = {
   INIT: '[Vote] init',

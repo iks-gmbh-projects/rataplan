@@ -3,9 +3,9 @@ import { VoteOptionModel } from "../../../models/vote-option.model";
 import { Store } from "@ngrx/store";
 import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
-import { AddVoteOptionsAction, RemoveVoteOptionAction } from "../../vote.actions";
 import { MatCalendar } from "@angular/material/datepicker";
-import { voteFeature } from '../../vote.feature';
+import { AddVoteOptionsAction, RemoveVoteOptionAction } from '../state/vote.actions';
+import { voteFeature } from '../state/vote.feature';
 
 @Component({
   selector: 'app-datepicker-subform',

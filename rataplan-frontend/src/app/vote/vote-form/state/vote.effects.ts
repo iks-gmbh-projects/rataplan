@@ -8,12 +8,12 @@ import { concatLatestFrom } from '@ngrx/operators';
 import { Store } from '@ngrx/store';
 import { catchError, delayWhen, first, from, of, switchMap, take } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
-import { authFeature } from '../authentication/auth.feature';
-import { configFeature } from '../config/config.feature';
-import { FeedbackDialogComponent } from '../dialogs/feedback-dialog/feedback-dialog.component';
-import { deserializeVoteModel, VoteModel } from '../models/vote.model';
-import { nonUndefined } from '../operators/non-empty';
-import { DecisionType } from './vote-form/decision-type.enum';
+import { authFeature } from '../../../authentication/auth.feature';
+import { configFeature } from '../../../config/config.feature';
+import { FeedbackDialogComponent } from '../../../dialogs/feedback-dialog/feedback-dialog.component';
+import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
+import { defined } from '../../../operators/non-empty';
+import { DecisionType } from '../decision-type.enum';
 import { InitVoteAction, InitVoteErrorAction, InitVoteSuccessAction, PostVoteErrorAction, PostVoteSuccessAction, VoteActions } from './vote.actions';
 import { voteFeature } from './vote.feature';
 
@@ -56,7 +56,7 @@ export class VoteEffects {
           userConsignees: [],
         }));
         else return this.store.select(configFeature.selectVoteBackendUrl('votes', 'edit', action.id)).pipe(
-          nonUndefined,
+          defined,
           first(),
           switchMap(url => this.http.get<VoteModel<true>>(url, {withCredentials: true})),
           map(deserializeVoteModel),
@@ -90,12 +90,12 @@ export class VoteEffects {
               request.request.editToken ?? request.request.id!
             ),
           )).pipe(
-            nonUndefined,
+            defined,
             first(),
           );
         } else {
           return this.store.select(configFeature.selectVoteBackendUrl('votes')).pipe(
-            nonUndefined,
+            defined,
             first(),
           );
         }

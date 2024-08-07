@@ -7,10 +7,10 @@ import { filter, Observable, of, Subscription } from 'rxjs';
 
 import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
-import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../../vote.actions';
-import { voteFeature } from '../../vote.feature';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
+import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../state/vote.actions';
+import { voteFeature } from '../state/vote.feature';
 @Component({
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',

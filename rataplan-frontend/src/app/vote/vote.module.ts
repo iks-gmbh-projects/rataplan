@@ -13,12 +13,12 @@ import { EmailSubformComponent } from './vote-form/email-subform/email-subform.c
 import { GeneralSubformComponent } from './vote-form/general-subform/general-subform.component';
 import { LinkSubformComponent } from './vote-form/link-subform/link-subform.component';
 import { OverviewSubformComponent } from './vote-form/overview-subform/overview-subform.component';
+import { VoteEffects } from './vote-form/state/vote.effects';
+import { voteFeature } from './vote-form/state/vote.feature';
 import { VoteFormComponent } from './vote-form/vote-form.component';
 import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-dialog/vote-option-info-dialog.component';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VoteRoutingModule } from './vote-routing.module';
-import { VoteEffects } from './vote.effects';
-import { voteFeature } from './vote.feature';
 import { VoteDecisionSubformComponent } from './vote/member-decision-subform/vote-decision-subform.component';
 import { VoteComponent } from './vote/vote.component';
 

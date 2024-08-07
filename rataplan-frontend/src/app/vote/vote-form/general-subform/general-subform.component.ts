@@ -5,10 +5,10 @@ import { Subscription } from 'rxjs';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
 import { Store } from '@ngrx/store';
-import { SetGeneralValuesVoteOptionAction } from '../../vote.actions';
 import { DecisionType } from '../decision-type.enum';
-import { voteFeature } from '../../vote.feature';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SetGeneralValuesVoteOptionAction } from '../state/vote.actions';
+import { voteFeature } from '../state/vote.feature';
 
 @Component({
   selector: 'app-general-subform',
