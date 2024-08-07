@@ -1,4 +1,4 @@
-FROM maven:3-eclipse-temurin-11-alpine as build-setup
+FROM maven:3-eclipse-temurin-11-alpine AS build-setup
 WORKDIR /build
 ADD pom.xml ./
 ADD rataplan-auth/pom.xml rataplan-auth/
