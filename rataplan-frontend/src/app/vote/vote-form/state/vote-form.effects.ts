@@ -14,7 +14,7 @@ import { FeedbackDialogComponent } from '../../../dialogs/feedback-dialog/feedba
 import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
 import { defined } from '../../../operators/non-empty';
 import { DecisionType } from '../decision-type.enum';
-import { InitVoteAction, InitVoteErrorAction, InitVoteSuccessAction, PostVoteErrorAction, PostVoteSuccessAction, VoteFormAction } from './vote-form.action';
+import { voteFormAction } from './vote-form.action';
 import { voteFormFeature } from './vote-form.feature';
 
 @Injectable({
@@ -34,9 +34,9 @@ export class VoteFormEffects {
   
   initVote = createEffect(() => {
     return this.actions$.pipe(
-      ofType(VoteFormAction.INIT),
-      switchMap((action: InitVoteAction) => {
-        if(!action.id) return of(new InitVoteSuccessAction({
+      ofType(voteFormAction.init),
+      switchMap(({id}) => {
+        if(!id) return of(voteFormAction.initSuccess({vote: {
           title: '',
           deadline: '',
           voteConfig: {
@@ -54,14 +54,14 @@ export class VoteFormEffects {
           participants: [],
           consigneeList: [],
           userConsignees: [],
-        }));
-        else return this.store.select(configFeature.selectVoteBackendUrl('votes', 'edit', action.id)).pipe(
+        }}));
+        else return this.store.select(configFeature.selectVoteBackendUrl('votes', 'edit', id)).pipe(
           defined,
           first(),
           switchMap(url => this.http.get<VoteModel<true>>(url, {withCredentials: true})),
           map(deserializeVoteModel),
-          map(request => new InitVoteSuccessAction(request)),
-          catchError(err => of(new InitVoteErrorAction(err))),
+          map(vote => voteFormAction.initSuccess({vote})),
+          catchError(err => of(voteFormAction.initError(err))),
         );
       }),
     );
@@ -69,7 +69,7 @@ export class VoteFormEffects {
   
   postVote = createEffect(() => {
     return this.actions$.pipe(
-      ofType(VoteFormAction.POST),
+      ofType(voteFormAction.post),
       switchMap(() => this.store.select(voteFormFeature.selectVoteState).pipe(
         filter(state => state.complete),
         take(1),
@@ -116,19 +116,19 @@ export class VoteFormEffects {
       }),
       switchMap(({request, editToken}) => request.pipe(
         map(deserializeVoteModel),
-        map(created => new PostVoteSuccessAction(created, editToken)),
-        catchError(err => of(new PostVoteErrorAction(err))),
+        map(created => voteFormAction.postSuccess({created, editToken})),
+        catchError(err => of(voteFormAction.postError(err))),
       )),
     );
   });
   
   successFullPost = createEffect(() => {
     return this.actions$.pipe(
-      ofType(VoteFormAction.POST_SUCCESS),
-      map((action: PostVoteSuccessAction) => this.router.navigate(['/vote/links'], {
+      ofType(voteFormAction.postSuccess),
+      map(({created}) => this.router.navigate(['/vote/links'], {
         queryParams: {
-          participationToken: action.created.participationToken || action.created.id,
-          editToken: action.created.editToken || action.created.id,
+          participationToken: created.participationToken || created.id,
+          editToken: created.editToken || created.id,
         },
       })),
       switchMap(from),

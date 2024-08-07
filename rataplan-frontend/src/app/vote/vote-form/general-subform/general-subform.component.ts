@@ -7,7 +7,7 @@ import { ExtraValidators } from '../../../validator/validators';
 import { Store } from '@ngrx/store';
 import { DecisionType } from '../decision-type.enum';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SetGeneralValuesVoteOptionAction } from '../state/vote-form.action';
+import { voteFormAction } from '../state/vote-form.action';
 import { voteFormFeature } from '../state/vote-form.feature';
 
 @Component({
@@ -62,13 +62,13 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
       .subscribe({
         next: vote => {
           const title = vote?.title;
-          const deadline = vote?.deadline;
+          const deadline = vote?.deadline ? new Date(vote.deadline) : null;
           const decision = vote?.voteConfig?.decisionType;
           const yesLimitActive = vote?.voteConfig.yesLimitActive;
           const yesAnswerLimit = vote?.voteConfig.yesAnswerLimit;
           if(title || deadline) {
             this.generalSubform.get('title')?.setValue(title);
-            this.generalSubform.get('description')?.setValue(vote.description);
+            this.generalSubform.get('description')?.setValue(vote?.description);
             this.generalSubform.get('deadline')?.setValue(deadline);
             this.generalSubform.get('decision')?.setValue(decision);
             this.generalSubform.get('yesAnswerLimit')?.setValue(yesAnswerLimit);
@@ -80,7 +80,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
           
           this.minYesLimit = vote!.voteConfig!.yesAnswerLimit! || 0;
         },
-        error: err => {
+        error: () => {
           this.snackBar.open('Unbekannter Fehler beim Laden der Abstimmungsdaten', 'OK');
         },
       });
@@ -113,7 +113,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     {
       this.resetYesLimitActiveAndYesNumberLimit();
     }
-    this.store.dispatch(new SetGeneralValuesVoteOptionAction({
+    this.store.dispatch(voteFormAction.setGeneralValues({
       title: this.generalSubform.value.title,
       description: this.showDescription ? this.generalSubform.value.description : null,
       deadline: new Date(this.generalSubform.value.deadline),

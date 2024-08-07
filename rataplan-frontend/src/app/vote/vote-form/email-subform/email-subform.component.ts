@@ -12,7 +12,7 @@ import { contactsFeature } from '../../../contact-list/contacts.feature';
 import { ContactGroup } from '../../../models/contact.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
-import { PostVoteAction, SetOrganizerInfoVoteOptionAction } from '../state/vote-form.action';
+import { voteFormAction } from '../state/vote-form.action';
 import { voteFormFeature } from '../state/vote-form.feature';
 
 type Nullable<T> = { [K in keyof T]: T[K] | null };
@@ -124,7 +124,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   }
   
   setEmailForm() {
-    this.store.dispatch(new SetOrganizerInfoVoteOptionAction({
+    this.store.dispatch(voteFormAction.setOrganizerInfo({
       name: this.emailSubform.get('name')?.value || undefined,
       notificationSettings: this.validateNotificationSettings(this.emailSubform.get('notificationSettings')?.value),
       consigneeList: [
@@ -178,7 +178,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
     }
     if(!this.personaliseEmailActive) this.emailSubform.get('personalisedInvitation')?.setValue(null);
     this.setEmailForm();
-    this.store.dispatch(new PostVoteAction());
+    this.store.dispatch(voteFormAction.post());
   }
   
   personaliseEmail() {

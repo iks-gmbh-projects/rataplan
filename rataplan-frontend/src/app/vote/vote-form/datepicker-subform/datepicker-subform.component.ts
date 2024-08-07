@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { VoteOptionModel } from "../../../models/vote-option.model";
-import { Store } from "@ngrx/store";
-import { Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
-import { MatCalendar } from "@angular/material/datepicker";
-import { AddVoteOptionsAction, RemoveVoteOptionAction } from '../state/vote-form.action';
+import { MatCalendar } from '@angular/material/datepicker';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { VoteOptionModel } from '../../../models/vote-option.model';
+import { voteFormAction } from '../state/vote-form.action';
 import { voteFormFeature } from '../state/vote-form.feature';
 
 @Component({
@@ -52,7 +52,7 @@ export class DatepickerSubformComponent implements OnInit, OnDestroy {
     const index = this.daysSelected
       .findIndex(x => x.startDate == date.toISOString());
 
-    if (index === -1) this.store.dispatch(new AddVoteOptionsAction({startDate: date.toISOString()}));
-    else this.store.dispatch(new RemoveVoteOptionAction(index));
+    if (index === -1) this.store.dispatch(voteFormAction.addOptions({options: [{startDate: date.toISOString()}]}));
+    else this.store.dispatch(voteFormAction.removeOption({index}));
   }
 }

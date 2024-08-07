@@ -15,7 +15,7 @@ import { VoteParticipantModel } from '../../models/vote-participant.model';
 import { VoteModel } from '../../models/vote.model';
 import { FormErrorMessageService } from '../../services/form-error-message-service/form-error-message.service';
 import { DecisionType, VoteOptionDecisionType } from '../vote-form/decision-type.enum';
-import { PostVoteAction } from '../vote-form/state/vote-form.action';
+import { voteFormAction } from '../vote-form/state/vote-form.action';
 import { voteFormFeature } from '../vote-form/state/vote-form.feature';
 import { VoteDecisionSubformComponent } from './member-decision-subform/vote-decision-subform.component';
 import { VoteService } from './vote-service/vote.service';
@@ -318,7 +318,7 @@ export class VoteComponent implements OnInit, OnDestroy {
           this.resetVote();
           this.vote = updatedRequest;
         },
-        error: err => {
+        error: () => {
           this.snackBar.open('Unbekannter Fehler beim löschen der Stimme', 'OK');
         },
       });
@@ -361,7 +361,7 @@ export class VoteComponent implements OnInit, OnDestroy {
   
   acceptPreview() {
     this.busy = true;
-    this.store.dispatch(new PostVoteAction());
+    this.store.dispatch(voteFormAction.post());
   }
   
   isParticipantLimitMet(voteOption: VoteOptionModel) {

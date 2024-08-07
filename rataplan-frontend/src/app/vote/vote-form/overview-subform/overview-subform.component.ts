@@ -9,8 +9,9 @@ import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.m
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
-import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../state/vote-form.action';
+import { voteFormAction } from '../state/vote-form.action';
 import { voteFormFeature } from '../state/vote-form.feature';
+
 @Component({
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',
@@ -127,17 +128,17 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     }
     proceed.subscribe(proceed => {
       if(proceed) {
-        const voteOption: VoteOptionModel = {};
-        voteOption.startDate = input.startDateInput?.toISOString();
-        voteOption.endDate = input.endDateInput?.toISOString();
-        voteOption.description = input.descriptionInput ?? undefined;
-        voteOption.url = input.linkInput ?? undefined;
-        voteOption.participantLimitActive = input.participantLimitActive ?? false;
-        voteOption.participantLimit = input.participantLimitActive ? input.participantLimit : null;
+        const option: VoteOptionModel = {};
+        option.startDate = input.startDateInput?.toISOString();
+        option.endDate = input.endDateInput?.toISOString();
+        option.description = input.descriptionInput ?? undefined;
+        option.url = input.linkInput ?? undefined;
+        option.participantLimitActive = input.participantLimitActive ?? false;
+        option.participantLimit = input.participantLimitActive ? input.participantLimit : null;
         if (input.voteIndex !== null) {
-          this.store.dispatch(new EditVoteOptionAction(input.voteIndex!, voteOption));
+          this.store.dispatch(voteFormAction.editOption({index: input.voteIndex!, option}));
         } else {
-          this.store.dispatch(new AddVoteOptionsAction(voteOption));
+          this.store.dispatch(voteFormAction.addOptions({options: [option]}));
         }
       }
       this.clearContent();
@@ -155,7 +156,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
   }
 
   deleteVoteOption(index: number) {
-    this.store.dispatch(new RemoveVoteOptionAction(index));
+    this.store.dispatch(voteFormAction.removeOption({index}));
   }
 
   editVoteOption(index: number) {

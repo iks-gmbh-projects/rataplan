@@ -6,7 +6,7 @@ import { combineLatest, startWith, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { VoteOptionConfig } from '../../../models/vote-option.model';
 import { ExtraValidators } from '../../../validator/validators';
-import { SetVoteOptionConfigAction } from '../state/vote-form.action';
+import { voteFormAction } from '../state/vote-form.action';
 import { voteFormFeature } from '../state/vote-form.feature';
 
 @Component({
@@ -93,7 +93,7 @@ export class ConfigSubformComponent implements OnInit, OnDestroy {
       description: this.configForm.get('isDescriptionChecked')?.value || false,
       url: this.configForm.get('isUrlChecked')?.value || false,
     };
-    this.store.dispatch(new SetVoteOptionConfigAction(config));
+    this.store.dispatch(voteFormAction.setOptionConfig({config}));
     this.router.navigate(['..', 'configuration'], { relativeTo: this.activeRoute });
   }
 }

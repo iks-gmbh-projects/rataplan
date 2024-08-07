@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { delay, Observable, of, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { InitVoteAction } from './state/vote-form.action';
+import { voteFormAction } from './state/vote-form.action';
 import { voteFormFeature } from './state/vote-form.feature';
 
 @Component({
@@ -42,7 +42,7 @@ export class VoteFormComponent implements OnInit, OnDestroy {
       map(params => params['id']),
     ).subscribe(id => {
       this.editing = !!id;
-      this.store.dispatch(new InitVoteAction(id));
+      this.store.dispatch(voteFormAction.init({id}));
     });
     this.storeSub = this.store.select(voteFormFeature.selectVoteState)
       .subscribe(state => {
@@ -54,7 +54,7 @@ export class VoteFormComponent implements OnInit, OnDestroy {
   refetchData(): void {
     const id = this.activeRoute.snapshot.params['id'];
     this.editing = !!id;
-    this.store.dispatch(new InitVoteAction(id));
+    this.store.dispatch(voteFormAction.init({id}));
   }
   
   ngOnDestroy() {
