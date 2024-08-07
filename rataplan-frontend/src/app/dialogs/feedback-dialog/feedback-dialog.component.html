@@ -1,8 +1,9 @@
-<div><h2>Wie haben Sie Drumdibum bislang empfunden?</h2>
-  <span>
+<h2 mat-dialog-title>Wie haben Sie Drumdibum bislang empfunden?</h2>
+<mat-dialog-actions align="center" cdkTrapFocus>
   <button
     mat-icon-button
-    (click)="dialogRef.close()"
+    cdkFocusRegionStart
+    mat-dialog-close
     routerLink="/feedback"
     [queryParams]="{rating: 1, category, editToken, participationToken}"
   >
@@ -10,7 +11,7 @@
   </button>
   <button
     mat-icon-button
-    (click)="dialogRef.close()"
+    mat-dialog-close
     routerLink="/feedback"
     [queryParams]="{rating: 2, category,editToken,participationToken}"
   >
@@ -18,17 +19,16 @@
   </button>
   <button
     mat-icon-button
-    (click)="dialogRef.close()"
+    mat-dialog-close
     routerLink="/feedback"
     [queryParams]="{rating: 3, category,editToken,participationToken}"
   >
     <mat-icon>sentiment_neutral</mat-icon>
   </button>
-  <button mat-icon-button (click)="dialogRef.close()">
+  <button mat-icon-button mat-dialog-close>
     <mat-icon>sentiment_satisfied</mat-icon>
   </button>
-  <button mat-icon-button (click)="dialogRef.close()">
+  <button mat-icon-button cdkFocusInitial cdkFocusRegionEnd mat-dialog-close>
     <mat-icon>sentiment_very_satisfied</mat-icon>
   </button>
-</span>
-</div>
+</mat-dialog-actions>

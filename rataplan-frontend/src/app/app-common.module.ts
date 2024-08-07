@@ -1,3 +1,4 @@
+import { A11yModule } from '@angular/cdk/a11y';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -50,6 +51,7 @@ const imports = [
   FormsModule,
   ReactiveFormsModule,
   ClipboardModule,
+  A11yModule,
   MatMenuModule,
   MatSelectModule,
   MatTooltipModule,
