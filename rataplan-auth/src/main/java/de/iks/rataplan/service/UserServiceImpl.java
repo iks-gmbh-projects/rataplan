@@ -17,7 +17,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.auth.login.CredentialNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -204,12 +203,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
     
     @Override
-    public Boolean updateProfileDetails(UserDTO userDTO) throws CredentialNotFoundException {
+    public Boolean updateProfileDetails(UserDTO userDTO) {
         User user = getUserFromUsername(userDTO.getUsername());
-        if(!passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) throw new InvalidUserDataException();
-        boolean update = user != null && (
-            !checkIfMailExists(userDTO.getMail()) || user.getId().equals(getUserFromEmail(userDTO.getMail()).getId())
-        );
+        if(userDTO.getPassword() == null || user == null || !passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) throw new InvalidUserDataException();
+        boolean update = !checkIfMailExists(userDTO.getMail()) ||
+                         user.getId().equals(getUserFromEmail(userDTO.getMail()).getId());
         if(update) {
             if(!cryptoService.decryptDB(user.getMail()).equals(userDTO.getMail()))
                 this.sendUpdateEmailAdressEmail(userDTO, user);
@@ -255,12 +253,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void deleteUser(User user, DeleteUserRequest request) throws UserDeletionException {
         ResponseEntity<?> surveyToolResponse;
         switch(request.getSurveyToolChoice()) {
-            default:
-            case DELETE:
-                surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
-                break;
             case ANONYMIZE:
                 surveyToolResponse = surveyToolMessageService.anonymizeUserData(user.getId());
+                break;
+            case DELETE:
+            default:
+                surveyToolResponse = surveyToolMessageService.deleteUserData(user.getId());
                 break;
         }
         if(!surveyToolResponse.getStatusCode().is2xxSuccessful()) {
@@ -270,12 +268,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         ResponseEntity<?> backendResponse;
         switch(request.getBackendChoice()) {
-            default:
-            case DELETE:
-                backendResponse = backendMessageService.deleteUserData(user.getId());
-                break;
             case ANONYMIZE:
                 backendResponse = backendMessageService.anonymizeUserData(user.getId());
+                break;
+            case DELETE:
+            default:
+                backendResponse = backendMessageService.deleteUserData(user.getId());
                 break;
         }
         if(!backendResponse.getStatusCode().is2xxSuccessful()) {
