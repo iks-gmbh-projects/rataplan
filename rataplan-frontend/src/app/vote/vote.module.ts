@@ -16,6 +16,8 @@ import { OverviewSubformComponent } from './vote-form/overview-subform/overview-
 import { VoteFormEffects } from './vote-form/state/vote-form.effects';
 import { voteFormFeature } from './vote-form/state/vote-form.feature';
 import { VoteFormComponent } from './vote-form/vote-form.component';
+import { VoteResultsEffects } from './vote-results/state/vote-results.effects';
+import { voteResultsFeature } from './vote-results/state/vote-results.feature';
 import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-dialog/vote-option-info-dialog.component';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VoteRoutingModule } from './vote-routing.module';
@@ -42,7 +44,8 @@ import { VoteComponent } from './vote/vote.component';
     AppCommonModule,
     VoteRoutingModule,
     StoreModule.forFeature(voteFormFeature),
-    EffectsModule.forFeature([VoteFormEffects]),
+    StoreModule.forFeature(voteResultsFeature),
+    EffectsModule.forFeature([VoteFormEffects, VoteResultsEffects]),
     MatSelectModule,
     MatMenuModule,
     NgChartsModule

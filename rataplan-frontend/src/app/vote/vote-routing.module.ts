@@ -13,7 +13,6 @@ import { OverviewSubformComponent } from './vote-form/overview-subform/overview-
 import { VoteFormComponent } from './vote-form/vote-form.component';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VotePreviewResolver } from './vote/resolver/vote-preview.resolver';
-import { resolveVoteResults } from './vote/resolver/vote-results.resolver';
 import { VoteResolver } from './vote/resolver/vote.resolver';
 import { VoteComponent } from './vote/vote.component';
 
@@ -62,9 +61,7 @@ const routes: Routes = [
     resolve: {vote: VoteResolver},
     component: VoteComponent,
   }, {
-    path: ':id/results', component: VoteResultsComponent, resolve: {
-      voteResultData: resolveVoteResults,
-    },
+    path: ':id/results', data: {loadVoteResults: true}, component: VoteResultsComponent,
   },
 
 ];

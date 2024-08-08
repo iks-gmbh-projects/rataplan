@@ -1,16 +1,18 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { ChartData } from 'chart.js';
+import { Subscription } from 'rxjs';
 import { VoteOptionModel } from '../../models/vote-option.model';
 import { VoteModel } from '../../models/vote.model';
 import { ExcelService } from '../../services/excel-service/excel-service';
 import { DecisionType, VoteOptionDecisionType } from '../vote-form/decision-type.enum';
+import { voteResultsFeature } from './state/vote-results.feature';
 import { VoteOptionInfoDialogComponent } from './vote-option-info-dialog/vote-option-info-dialog.component';
 
 export type UserVoteResults = {
   username: string,
-  voteOptionAnswers: Map<number, number>,
+  decisions: Partial<Record<string, VoteOptionDecisionType>>,
   lastUpdated: Date
 }
 export enum FilterByOptions {
@@ -47,37 +49,26 @@ export class VoteResultsComponent implements OnInit {
   rawResults!: Partial<Record<string | number, Partial<Record<VoteOptionDecisionType, number>>>>
   pieChartResults!: Record<string | number, ChartData | undefined>;
   
+  private sub?: Subscription;
+  
   constructor(
-    private route: ActivatedRoute,
+    private readonly store: Store,
     private dialog: MatDialog,
     private excelService: ExcelService,
   )
   {}
   
   ngOnInit(): void {
-    const resolvedData: {
-      vote: VoteModel,
-      voteResults: UserVoteResults[],
-      pieCharts: {
-        raw: Partial<Record<string | number, Partial<Record<VoteOptionDecisionType, number>>>>,
-        pieChart: Partial<Record<string | number, ChartData>>,
-      };
-    } = this.route.snapshot.data['voteResultData'];
-    this.vote = resolvedData.vote;
-    this.allVoteResults = resolvedData.voteResults;
-    this.rawResults = resolvedData.pieCharts.raw;
-    this.pieChartResults = Object.fromEntries(resolvedData.vote.options.map(o => [
-      o.id!,
-      resolvedData.pieCharts.pieChart[o.id!] ?? {
-        labels: ['Keine Antwort'],
-        datasets: [
-          {
-            data: [0.000001],
-            backgroundColor: ['lightgray'],
-          },
-        ],
-      },
-    ]));
+    this.sub = this.store.select(voteResultsFeature.selectVoteResultsState).subscribe(({vote, results, charts}) => {
+      if(vote) {
+        this.allVoteResults = results;
+        this.vote = vote;
+        this.pieChartResults = Object.fromEntries(
+          Object.entries(charts)
+            .map(([k, v]) => [k, {...v!}])
+        );
+      }
+    });
   }
   
   updateFilterOptions(filterByOption: string) {
@@ -116,19 +107,19 @@ export class VoteResultsComponent implements OnInit {
   
   //ggf kann die Methode benutzt werden um Antworten zu gruppieren, wenn nach Abgabezeit gefiltert wird.
   sortBySubmissionTime(voteOption: number) {
-    let yesVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)! ===
+    let yesVotes = this.allVoteResults.filter(v => v.decisions[voteOption] ===
       VoteOptionDecisionType.ACCEPT).sort((
       a,
       b,
     ) => a.lastUpdated.getTime() -
       b.lastUpdated.getTime());
-    let maybeVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)! ===
+    let maybeVotes = this.allVoteResults.filter(v => v.decisions[voteOption] ===
       VoteOptionDecisionType.ACCEPT_IF_NECESSARY).sort((
       a,
       b,
     ) => a.lastUpdated.getTime() -
       b.lastUpdated.getTime());
-    let noVotes = this.allVoteResults.filter(v => v.voteOptionAnswers.get(voteOption)! ===
+    let noVotes = this.allVoteResults.filter(v => v.decisions[voteOption] ===
       VoteOptionDecisionType.DECLINE).sort((
       a,
       b,
@@ -138,8 +129,8 @@ export class VoteResultsComponent implements OnInit {
   }
   
   sortByVoteOption(a: UserVoteResults, b: UserVoteResults, voteOptionId: number) {
-    const answer1 = a.voteOptionAnswers.get(voteOptionId) || 999;
-    const answer2 = b.voteOptionAnswers.get(voteOptionId) || 999;
+    const answer1 = a.decisions[voteOptionId] ?? 999;
+    const answer2 = b.decisions[voteOptionId] ?? 999;
     if(answer1 === answer2) return a.username.trim().localeCompare(b.username.trim());
     return answer2 > answer1 ? 1 : -1;
   }

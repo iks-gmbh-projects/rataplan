@@ -1,8 +1,8 @@
-<div class="wrapper">
+<div class="wrapper" *ngIf="vote">
   <div style="margin-bottom: 20px">
     <mat-card>
       <mat-card-header>
-        <mat-card-title [textContent]="vote.title"></mat-card-title>
+        <mat-card-title [textContent]="vote.title"/>
         <mat-card-subtitle>
           Abstimmung aktiv bis: {{ vote.deadline | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
         </mat-card-subtitle>
@@ -104,7 +104,7 @@
         <tr *ngFor="let userResults of allVoteResults; let i = index">
           <td class="username-result-entries">{{ userResults.username }}</td>
           <ng-container
-            [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
+            [ngSwitch]="userResults.decisions[vo.id!]"
             *ngFor="let vo of vote.options"
           >
             <td *ngSwitchCase="0"><p>Keine Antwort</p></td>
@@ -125,11 +125,11 @@
           <tr *ngFor="let userResults of allVoteResults; let i = index">
             <td class="username-result-entries" [textContent]="userResults.username"></td>
             <ng-container
-              [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
+              [ngSwitch]="userResults.decisions[vo.id!]"
               *ngFor="let vo of vote.options"
             >
               <td *ngSwitchCase="0" class="rejected-option"><p>0</p></td>
-              <td *ngSwitchDefault class="accepted-option" [textContent]="userResults.voteOptionAnswers.get(vo.id!)"></td>
+              <td *ngSwitchDefault class="accepted-option" [textContent]="userResults.decisions[vo.id!]"></td>
             </ng-container>
           </tr>
           <tr>
@@ -162,12 +162,12 @@
                 type="pie"
                 [data]="pieChartResults[option.id!]"
               ></canvas>
-              <p>Ja: {{ (rawResults[option.id!] ?? [0, 0, 0, 0])[VoteOptionDecisionType.ACCEPT] }}</p>
-              <p *ngIf="(rawResults[option.id!] ?? [0, 0, 0, 0])[VoteOptionDecisionType.ACCEPT_IF_NECESSARY]">
-                Vielleicht: {{ (rawResults[option.id!] ?? [0, 0, 0, 0])[VoteOptionDecisionType.ACCEPT_IF_NECESSARY] }}</p>
-              <p>Nein: {{ (rawResults[option.id!] ?? [0, 0, 0, 0])[VoteOptionDecisionType.DECLINE] }}</p>
-              <p *ngIf="(rawResults[option.id!] ?? [0, 0, 0, 0])[VoteOptionDecisionType.NO_ANSWER]">
-                Keine Antwort: {{ (rawResults[option.id!] ?? [0, 0, 0, 0])[VoteOptionDecisionType.NO_ANSWER] }}</p>
+              <p>Ja: {{ rawResults?.[option.id!]?.[VoteOptionDecisionType.ACCEPT] ?? 0 }}</p>
+              <p *ngIf="rawResults?.[option.id!]?.[VoteOptionDecisionType.ACCEPT_IF_NECESSARY]">
+                Vielleicht: {{ rawResults?.[option.id!]?.[VoteOptionDecisionType.ACCEPT_IF_NECESSARY] }}</p>
+              <p>Nein: {{ rawResults?.[option.id!]?.[VoteOptionDecisionType.DECLINE] }}</p>
+              <p *ngIf="rawResults?.[option.id!]?.[VoteOptionDecisionType.NO_ANSWER]">
+                Keine Antwort: {{ rawResults?.[option.id!]?.[VoteOptionDecisionType.NO_ANSWER] }}</p>
               <b>Gesamt: {{ getVoteOptionSum(option.id!) }}</b>
             </div>
           </div>
