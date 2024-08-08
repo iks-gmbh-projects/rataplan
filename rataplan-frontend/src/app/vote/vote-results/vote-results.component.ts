@@ -13,13 +13,6 @@ export type UserVoteResults = {
   voteOptionAnswers: Map<number, number>,
   lastUpdated: Date
 }
-
-export type UserVoteResultResponse = {
-  username: string,
-  voteOptionAnswers: Map<number, number>,
-  lastUpdated: string
-}
-
 export enum FilterByOptions {
   VOTE_OPTION          = 'Teilnehmer Antwort',
   PARTICIPANT          = 'Teilnehmer',
@@ -51,7 +44,7 @@ export class VoteResultsComponent implements OnInit {
   filterSortOption: string = GeneralFilterSortOption.ASCENDING;
   showVoteOptionsInFilter: boolean = false;
   tableView: boolean = true;
-  rawResults!: Record<string | number, number[] | undefined>
+  rawResults!: Partial<Record<string | number, Partial<Record<VoteOptionDecisionType, number>>>>
   pieChartResults!: Record<string | number, ChartData | undefined>;
   
   constructor(
@@ -64,14 +57,14 @@ export class VoteResultsComponent implements OnInit {
   ngOnInit(): void {
     const resolvedData: {
       vote: VoteModel,
-      results: UserVoteResults[],
+      voteResults: UserVoteResults[],
       pieCharts: {
-        raw: Record<string | number, number[]>,
-        pieChart: Record<string | number, ChartData>,
+        raw: Partial<Record<string | number, Partial<Record<VoteOptionDecisionType, number>>>>,
+        pieChart: Partial<Record<string | number, ChartData>>,
       };
     } = this.route.snapshot.data['voteResultData'];
     this.vote = resolvedData.vote;
-    this.allVoteResults = resolvedData.results;
+    this.allVoteResults = resolvedData.voteResults;
     this.rawResults = resolvedData.pieCharts.raw;
     this.pieChartResults = Object.fromEntries(resolvedData.vote.options.map(o => [
       o.id!,
@@ -100,7 +93,7 @@ export class VoteResultsComponent implements OnInit {
   }
   
   getVoteOptionSum(voteOptionId: number) {
-    return (this.rawResults[voteOptionId] ?? [0, 0, 0, 0])[VoteOptionDecisionType.ACCEPT];
+    return this.rawResults?.[voteOptionId]?.[VoteOptionDecisionType.ACCEPT] ?? 0;
   }
   
   sort(descending = false, voteOption = -1) {

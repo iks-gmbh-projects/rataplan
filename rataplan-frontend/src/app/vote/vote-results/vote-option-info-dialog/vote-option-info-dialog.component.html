@@ -1,4 +1,8 @@
-<p *ngIf="data.voteOption.startDate">{{data.voteOption.endDate ? 'Start' : data.config.startTime ? 'Zeit' : 'Datum'}}: {{data.voteOption.startDate| date:'dd.MM.yyyy' + (data.config.startTime ? ' HH:mm' : ''): undefined: 'de'}}</p>
-<p *ngIf="data.voteOption.endDate">Ende: {{data.voteOption.endDate | date:'dd.MM.yyyy' + (data.config.endTime ? ' HH:mm' : ''): undefined: 'de'}}</p>
-<p *ngIf="data.voteOption.description">Beschreibung: {{data.voteOption.description}}</p>
-<p *ngIf="data.voteOption.url">url: <a [href]="data.voteOption.url" [textContent]="data.voteOption.url"></a></p>
+<mat-dialog-content>
+  <p *ngIf="data.voteOption.startDate">{{ data.voteOption.endDate ? 'Start' : data.config.startTime ? 'Zeit' : 'Datum' }}
+    : {{ data.voteOption.startDate| date:'dd.MM.yyyy' + (data.config.startTime ? ' HH:mm' : ''): undefined: 'de' }}</p>
+  <p *ngIf="data.voteOption.endDate">
+    Ende: {{ data.voteOption.endDate | date:'dd.MM.yyyy' + (data.config.endTime ? ' HH:mm' : ''): undefined: 'de' }}</p>
+  <p *ngIf="data.voteOption.description">Beschreibung: {{ data.voteOption.description }}</p>
+  <p *ngIf="data.voteOption.url">url: <a [href]="data.voteOption.url" [textContent]="data.voteOption.url"></a></p>
+</mat-dialog-content>

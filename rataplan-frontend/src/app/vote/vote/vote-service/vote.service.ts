@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { exhaustMap, iif, map, mergeMap, Observable, of, toArray } from 'rxjs';
+import { exhaustMap, map, Observable } from 'rxjs';
 import { deserializeVoteOptionDecisionModel } from '../../../models/vote-decision.model';
 import { VoteParticipantModel } from '../../../models/vote-participant.model';
 
@@ -106,63 +106,55 @@ export class VoteService {
     return '' + vote.id;
   }
   
-  getResults(vote: Observable<VoteModel>) {
+  getResults(vote: Observable<VoteModel>): Observable<{
+    vote: VoteModel,
+    voteResults?: {
+      username: string,
+      voteOptionAnswers: Map<number, number>,
+    }[],
+  }> {
     return vote.pipe(
-      mergeMap(v =>
-        iif(
-          () => v.participants.length === 0,
-          of(undefined),
-          of(v).pipe(
-            mergeMap(v => v.participants),
-            mergeMap(p => p.decisions),
-            toArray(),
-            map((arr) => {
-              return v.participants.map(p => {
-                const answerTime = arr.find(d => d.participantId! === p.id!)!.lastUpdated!
-               return ({
-                  username: p.name!,
-                  voteOptionAnswers: new Map<number, number>(arr.filter(d => d.participantId! ===
-                    p.id!).map(d => [Number(d.optionId), Number(d.decision)])),
-                  lastUpdated: answerTime,
-                });
-              });
-            }),
-          ),
-        ),
-      ),
+      map(vote => vote.participants.length ? {
+        vote,
+        voteResults: vote.participants.map(p => ({
+          username: p.name!,
+          voteOptionAnswers: new Map(p.decisions.map(d => [Number(d.optionId), Number(d.decision)])),
+        })),
+      } : {vote}),
     );
   }
   
-  createPieChartMap(vote: Observable<VoteModel>) {
-    return vote.pipe(
-      mergeMap(v =>
-        iif(
-          () => v.voteConfig.decisionType === DecisionType.NUMBER,
-          of(undefined),
-          of(v).pipe(
-            mergeMap(v => v.participants),
-            mergeMap(p => p.decisions),
-            toArray(),
-            map((arr) => {
-              const data = arr.reduce<Record<string, number[]>>((a, v) => ({
-                ...a,
-                [String(v.optionId)]: (a[v.optionId] ?? [0, 0, 0, 0]).map((o, i) => i == v.decision! ? 1+o : o),
-              }), {});
-              return {
-                raw: data,
-                pieChart: Object.fromEntries(
-                  Object.entries(data)
-                    .map(([k, v]) => [k, this.createPieChart(v)])
-                ),
-              };
-            }),
+  createPieChartMap<T extends {vote: VoteModel}>(v: Observable<T>) {
+    return v.pipe(
+      map((dat): T & {pieCharts?: Partial<Record<string, Partial<Record<VoteOptionDecisionType, number>>>>} => dat.vote.voteConfig.decisionType === DecisionType.NUMBER ? dat : {
+        ...dat,
+        pieCharts: dat.vote.participants.flatMap(p => p.decisions)
+          .reduce<Partial<Record<string, Partial<Record<VoteOptionDecisionType, number>>>>>((a, d) => ({
+            ...a,
+            [d.optionId]: {
+              ...a[d.optionId],
+              [d.decision!]: (a[d.optionId]?.[d.decision!] ?? 0) + 1,
+            },
+          }), {}),
+      }),
+      map((dat): T & {pieCharts?: {
+          raw: Partial<Record<string, Partial<Record<VoteOptionDecisionType, number>>>>,
+          pieChart: Partial<Record<string, ReturnType<VoteService['createPieChart']>>>,
+        }} => dat.pieCharts ? {
+        ...dat,
+        pieCharts: {
+          raw: dat.pieCharts,
+          pieChart: Object.fromEntries(
+            Object.entries(dat.pieCharts)
+              .filter(([, d]) => d)
+              .map(([k, d]) => [k, this.createPieChart(d!)])
           ),
-        ),
-      ),
+        },
+      } : (dat as T)),
     );
   }
   
-  createPieChart(results: number[]) {
+  createPieChart(results: Partial<Record<VoteOptionDecisionType, number>>) {
     const remapArr = [VoteOptionDecisionType.ACCEPT, VoteOptionDecisionType.ACCEPT_IF_NECESSARY, VoteOptionDecisionType.DECLINE, VoteOptionDecisionType.NO_ANSWER]
       .filter(v => results[v]);
     const labels = {

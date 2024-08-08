@@ -123,20 +123,18 @@
         <ng-template #teilnehmerVote>
           <tbody>
           <tr *ngFor="let userResults of allVoteResults; let i = index">
-            <td class="username-result-entries">{{ userResults.username }}</td>
+            <td class="username-result-entries" [textContent]="userResults.username"></td>
             <ng-container
               [ngSwitch]="userResults.voteOptionAnswers.get(vo.id!)"
               *ngFor="let vo of vote.options"
             >
               <td *ngSwitchCase="0" class="rejected-option"><p>0</p></td>
-              <td *ngSwitchDefault class="accepted-option">
-                <p>{{ userResults.voteOptionAnswers.get(vo.id!) }}</p></td>
+              <td *ngSwitchDefault class="accepted-option" [textContent]="userResults.voteOptionAnswers.get(vo.id!)"></td>
             </ng-container>
           </tr>
           <tr>
             <td class="username-result-entries">Ergebnis</td>
-            <td *ngFor="let voteOption of vote.options!">
-              <p>{{ getVoteOptionSum(voteOption.id!) }}</p>
+            <td *ngFor="let voteOption of vote.options!" [textContent]="getVoteOptionSum(voteOption.id!)">
             </td>
           </tr>
           </tbody>
