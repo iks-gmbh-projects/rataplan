@@ -2,3 +2,7 @@
     margin-top: auto;
     margin-bottom: auto;
 }
+
+button.right {
+    margin-left: 1rem;
+}

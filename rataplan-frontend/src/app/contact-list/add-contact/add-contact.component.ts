@@ -4,8 +4,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { combineLatestWith, debounceTime, mergeAll, Observable, of, sample, Subject, Subscription, switchMap } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { combineLatestWith, debounceTime, mergeAll, Observable, of, sample, share, Subject, Subscription, switchMap } from 'rxjs';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { searchStatus, SearchUserService } from '../../services/search-user-service/search-user.service';
 import { ContactListComponent } from '../contact-list.component';
 import { contactActions } from '../contacts.actions';
@@ -17,13 +17,14 @@ import { contactsFeature } from '../contacts.feature';
   styleUrls: ['./add-contact.component.css']
 })
 export class AddContactComponent implements OnInit, OnDestroy {
-  readonly search = new FormControl<string|null>(null);
-  readonly busy$: Observable<boolean>;
-  protected searchBusy: boolean = false;
-  protected searchResults: {uid: (string|number), alreadyAdded: boolean}[] = [];
+  protected readonly search = new FormControl<string|null>(null);
+  protected readonly busy$: Observable<boolean>;
+  protected readonly searchState$: Observable<{
+    busy: boolean,
+    results: {uid: string|number, alreadyAdded: boolean}[],
+  }>;
   protected readonly onEnter = new Subject<void>();
   private sub?: Subscription;
-  private sub2?: Subscription;
   constructor(
     readonly dialog: MatDialogRef<ContactListComponent>,
     private readonly store: Store,
@@ -32,10 +33,7 @@ export class AddContactComponent implements OnInit, OnDestroy {
     private readonly searchService: SearchUserService,
   ) {
     this.busy$ = this.store.select(contactsFeature.selectBusy);
-  }
-  
-  public ngOnInit(): void {
-    this.sub = of(
+    this.searchState$ = of(
       this.search.valueChanges.pipe(
         debounceTime(1000),
       ), this.search.valueChanges.pipe(
@@ -44,17 +42,25 @@ export class AddContactComponent implements OnInit, OnDestroy {
     ).pipe(
       mergeAll(),
       distinctUntilChanged(),
-      switchMap(src => src === null ? of({results: []} as searchStatus) : this.searchService.search(src)),
+      switchMap((src): Observable<searchStatus> => src ? this.searchService.search(src) : of({results: []})),
       combineLatestWith(this.store.select(contactsFeature.selectContactsState)),
-    ).subscribe(([state, contacts]) => {
-      this.searchBusy = state.busy ?? false;
-      this.searchResults = state.results?.map(uid => ({
-        uid,
-        alreadyAdded: contacts.groups.some(g => g.contacts.includes(uid)) || contacts.ungrouped.includes(uid),
-      })) ?? [];
-      if(state.error !== undefined) this.snackbar.open("Unbekannter Fehler");
-    });
-    this.sub2 = this.actions$.pipe(
+      tap(([{error}]) => {
+        if(error) this.snackbar.open("Unbekannter Fehler");
+      }),
+      map(([{busy, results}, contacts]) => ({
+        busy: busy ?? false,
+        results: results?.map(uid => ({
+          uid,
+          alreadyAdded: contacts.groups.some(g => g.contacts.includes(uid)) || contacts.ungrouped.includes(uid),
+        })) ?? [],
+      })),
+      share(),
+    )
+  }
+  
+  public ngOnInit(): void {
+    this.sub?.unsubscribe();
+    this.sub = this.actions$.pipe(
       ofType(contactActions.error)
     ).subscribe(() => {
       this.snackbar.open("Unbekannter Fehler");
@@ -63,7 +69,7 @@ export class AddContactComponent implements OnInit, OnDestroy {
   
   public ngOnDestroy(): void {
     this.sub?.unsubscribe();
-    this.sub2?.unsubscribe();
+    delete this.sub;
   }
   
   addContact(userId: string|number) {

@@ -3,14 +3,16 @@
     <mat-form-field>
       <mat-label>Name/Email</mat-label>
       <input type="text" matInput [formControl]="search" (change)="onEnter.next()">
+      <mat-icon matIconSuffix>search</mat-icon>
     </mat-form-field>
     <button class="right" mat-icon-button mat-dialog-close>
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <mat-spinner *ngIf="searchBusy; else results"></mat-spinner>
+  <ng-container *ngrxLet="searchState$ as searchState">
+  <mat-spinner *ngIf="searchState.busy; else results"></mat-spinner>
   <ng-template #results>
-    <div class="fullwidth" *ngFor="let result of searchResults">
+    <div class="fullwidth" *ngFor="let result of searchState.results">
       <span class="middle vcenter" [textContent]="result.uid | displayName | async"></span>
       <button
         class="right"
@@ -24,4 +26,5 @@
       </button>
     </div>
   </ng-template>
+  </ng-container>
 </mat-dialog-content>
