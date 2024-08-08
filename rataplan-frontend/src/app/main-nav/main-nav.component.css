@@ -7,25 +7,24 @@ mat-sidenav-content {
     overflow: unset;
 }
 
-mat-sidenav {
-    overflow-x: hidden;
-}
-
 .bottom-links {
     position: absolute;
-    margin-top: auto;
-    bottom: 0px;
-    line-break: anywhere;
+    bottom: 0.5em;
+    padding-left: 0.5em;
 }
 
 .bottom-links a {
     font-size: smaller;
     color: darkgrey;
-    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.bottom-links>div {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 
 .invertedPrimary ::ng-deep circle {
     stroke: white;
 }
-

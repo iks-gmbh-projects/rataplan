@@ -68,7 +68,7 @@
   <mat-sidenav
     #drawer class="sidenav" fixedInViewport
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'over'"
+    mode="over"
   >
     <mat-toolbar color="primary"></mat-toolbar>
     <mat-nav-list>
@@ -77,12 +77,13 @@
       <a mat-list-item routerLink="/feedback" (click)="drawer.close()">Feedback</a>
     </mat-nav-list>
     <div class="bottom-links">
-      <a routerLink="/changes" (click)="drawer.close()">v{{version}}</a>
-      <br>
-      <a routerLink="/terms-and-conditions" (click)="drawer.close()">AGB</a>
-      <a routerLink="/imprint" (click)="drawer.close()">Impressum</a>
-      <a routerLink="/privacy" (click)="drawer.close()">Datenschutz</a>
-      <a routerLink="/contact" (click)="drawer.close()">Kontakt</a>
+      <div><a routerLink="/changes" (click)="drawer.close()">v{{ version }}</a></div>
+      <div>
+        <a routerLink="/terms-and-conditions" (click)="drawer.close()">AGB</a>
+        <a routerLink="/imprint" (click)="drawer.close()">Impressum</a>
+        <a routerLink="/privacy" (click)="drawer.close()">Datenschutz</a>
+        <a routerLink="/contact" (click)="drawer.close()">Kontakt</a>
+      </div>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
