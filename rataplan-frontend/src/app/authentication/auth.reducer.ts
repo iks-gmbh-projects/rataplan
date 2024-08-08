@@ -23,7 +23,12 @@ export function authReducer(
   case AuthActions.CHANGE_PROFILE_DETAILS_SUCCESS_ACTION:
     return {
       ...state,
-      user: {...state.user!, displayname: action.payload.displayname, username: action.payload.username},
+      user: {
+        ...state.user!,
+        displayname: action.payload.displayname,
+        username: action.payload.username,
+        mail: action.payload.mail,
+      },
       busy: false,
       error: undefined,
     };
