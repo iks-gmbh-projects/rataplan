@@ -57,31 +57,12 @@ export class VoteComponent {
   
   saveVote() {
     this.store.dispatch(voteAction.submitParticipant());
-          // if(err.status == 401) this.snackBar.open(
-          //   'Authorisierungsfehler (wahrscheinlich existiert ein veraltetes Cookie)',
-          //   'OK',
-          // );
-          // else if(err.status == 403) this.snackBar.open('Sie sind nicht zum Abstimmen berechtigt.', 'OK');
-          // else this.snackBar.open('Unbekannter Fehler beim Abstimmen', 'OK');
-  }
-  
-  updateVote() {
-          // if(err.status == 401) this.snackBar.open(
-          //   'Authorisierungsfehler (wahrscheinlich existiert ein veraltetes Cookie)',
-          //   'OK',
-          // );
-          // else if(err.status == 403) this.snackBar.open('Sie sind nicht zum Ändern dieser Stimme berechtigt', 'OK');
-          // else this.snackBar.open('Unbekannter Fehler beim Ändern der Stimme', 'OK');
-  }
-  
-  resetVote() {
-    this.store.dispatch(voteAction.resetParticipant());
   }
   
   openDialog(voteOption: VoteOptionModel, vote: VoteModel) {
     this.dialog.open(VoteDecisionSubformComponent, {
       data: {
-        vote: vote,
+        vote: voteOption,
         voteParticipants: vote.participants,
         decisionType: vote.voteConfig.decisionType,
       },
