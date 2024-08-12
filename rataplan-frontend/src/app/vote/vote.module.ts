@@ -22,6 +22,8 @@ import { VoteOptionInfoDialogComponent } from './vote-results/vote-option-info-d
 import { VoteResultsComponent } from './vote-results/vote-results.component';
 import { VoteRoutingModule } from './vote-routing.module';
 import { VoteDecisionSubformComponent } from './vote/member-decision-subform/vote-decision-subform.component';
+import { VoteEffects } from './vote/state/vote.effects';
+import { voteFeature } from './vote/state/vote.feature';
 import { VoteComponent } from './vote/vote.component';
 
 @NgModule({
@@ -44,8 +46,9 @@ import { VoteComponent } from './vote/vote.component';
     AppCommonModule,
     VoteRoutingModule,
     StoreModule.forFeature(voteFormFeature),
+    StoreModule.forFeature(voteFeature),
     StoreModule.forFeature(voteResultsFeature),
-    EffectsModule.forFeature([VoteFormEffects, VoteResultsEffects]),
+    EffectsModule.forFeature([VoteFormEffects, VoteEffects, VoteResultsEffects]),
     MatSelectModule,
     MatMenuModule,
     NgChartsModule

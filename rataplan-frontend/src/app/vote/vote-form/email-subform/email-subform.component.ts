@@ -7,9 +7,9 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { authFeature } from '../../../authentication/auth.feature';
-import { VoteNotificationSettings } from '../../../models/vote.model';
 import { contactsFeature } from '../../../contact-list/contacts.feature';
 import { ContactGroup } from '../../../models/contact.model';
+import { VoteNotificationSettings } from '../../../models/vote.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../validator/validators';
 import { voteFormAction } from '../state/vote-form.action';
@@ -138,6 +138,10 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
       ],
       personalisedInvitation: this.emailSubform.get('personalisedInvitation')?.value ?? undefined,
     }));
+  }
+  
+  toPreview() {
+    this.store.dispatch(voteFormAction.preview());
   }
   
   removeGroup(group: ContactGroup): void {

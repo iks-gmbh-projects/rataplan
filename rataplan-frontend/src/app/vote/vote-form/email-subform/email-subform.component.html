@@ -134,7 +134,7 @@
         mat-raised-button
         [disabled]="!emailSubform.valid"
         routerLink="../preview"
-        (click)=setEmailForm()
+        (click)="setEmailForm(); toPreview()"
       >Vorschau
       </button>
       <button

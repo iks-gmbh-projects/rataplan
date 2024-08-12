@@ -1,46 +1,54 @@
-<div class="center">
-  <h2 *ngIf="isPreview">Vorschau</h2>
+<div class="center" *ngrxLet="{
+  currentUser: currentUser$,
+  vote: vote$,
+  preview: preview$,
+  editing: editing$,
+  participant: participant$,
+  busy: busy$,
+  delayedBusy: delayedBusy$,
+} as state">
+  <h2 *ngIf="state.preview">Vorschau</h2>
   <div class="left-bound">
-    <h2 class="mat-card-title" style="align-self: center" [textContent]="vote.title"></h2>
-    <p [textContent]="vote.description ?? ''"></p>
+    <h2 class="mat-card-title" style="align-self: center" [textContent]="state.vote.title"></h2>
+    <p [textContent]="state.vote.description ?? ''"></p>
     <p class="mat-card-subtitle">
-      Abstimmung aktiv bis: {{ vote.deadline! | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
+      Abstimmung aktiv bis: {{ state.vote.deadline! | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
     </p>
-    <p class="mat-card-subtitle" *ngIf="hasDeadlinePassed()">
+    <p class="mat-card-subtitle" *ngIf="hasDeadlinePassed(state.vote)">
       <span class="mat-error">Die Abstimmung ist abgelaufen. Eine Teilnahme ist nicht mehr möglich</span>
     </p>
-    <p class="mat-card-subtitle" *ngIf="vote.organizerName">
-      Erstellt von {{ vote.organizerName }}
+    <p class="mat-card-subtitle" *ngIf="state.vote.organizerName">
+      Erstellt von {{ state.vote.organizerName }}
     </p>
   </div>
   <mat-expansion-panel class="participant-list">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Teilnehmer : {{ vote.participants.length }}
+        Teilnehmer : {{ state.vote.participants.length }}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <mat-list *ngFor="let participant of (this.vote.participants ?? [])">
+    <mat-list *ngFor="let participant of (state.vote.participants ?? []); index as i">
       <span class="participant-list-item">
         <div class="participant-name">
           <mat-icon *ngIf="participant.userId" class="user-icon">person</mat-icon>
           <div style="align-self: end">{{ participant.name }}</div>
         </div>
         <div
-          *ngIf="!hasDeadlinePassed() && (participant.userId === currentUser?.id)"
+          *ngIf="!hasDeadlinePassed(state.vote) && (participant.userId === state.currentUser?.id)"
           class="member-button"
         >
           <button
             mat-icon-button
-            [disabled]="isPreview"
-            (click)="isPreview || editMember(participant)"
+            [disabled]="state.preview"
+            (click)="state.preview || editMember(i)"
           >
             <mat-icon>edit_square</mat-icon>
           </button>
           <button
             mat-icon-button
             color="warn"
-            [disabled]="isPreview"
-            (click)="isPreview || deleteMember(participant)"
+            [disabled]="state.preview"
+            (click)="state.preview || deleteMember(i)"
           >
             <mat-icon>delete</mat-icon>
           </button>
@@ -48,30 +56,30 @@
       </span>
     </mat-list>
   </mat-expansion-panel>
-  <mat-form-field *ngIf="!hasDeadlinePassed()" appearance="fill" style="align-self: center">
+  <mat-form-field *ngIf="!hasDeadlinePassed(state.vote)" appearance="fill" style="align-self: center">
     <mat-label>Name</mat-label>
     <input
-      [(ngModel)]="voteParticipant.name"
+      [(ngModel)]="state.participant.name"
       required
       maxlength="100"
       someNonWhitespace
       matInput
-      [disabled]="isPreview || !!currentUser"
+      [disabled]="state.preview || !!state.currentUser"
       autocomplete="off"
       #nameField="ngModel"
     >
-    <mat-error>{{ errorMessageService.genericFormError(nameField.control) }}</mat-error>
+    <mat-error [textContent]="errorMessageService.genericFormError(nameField.control)"/>
   </mat-form-field>
-  <div *ngIf="!hasDeadlinePassed()" class="left-bound" style="margin-bottom: 1rem">
-    <p *ngIf="vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
-      maximal {{ vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
-    <div *ngFor="let option of (vote?.options ?? []); let voteIndex=index" class="option-container" #scrollTo>
+  <div *ngIf="!hasDeadlinePassed(state.vote)" class="left-bound" style="margin-bottom: 1rem">
+    <p *ngIf="state.vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
+      maximal {{ state.vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
+    <div *ngFor="let option of (state.vote?.options ?? []); index as voteIndex" class="option-container" #scrollTo>
       <div style="min-width: 40%; max-width: 40%">
-        <span>{{ option.startDate | date:'dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
+        <span>{{ option.startDate | date:'dd.MM.yyyy' + (state.vote.voteConfig.voteOptionConfig.startTime ? ' HH:mm' : ''):undefined:'de' }}</span>
         <span *ngIf="option.endDate">
-          {{ option.endDate | date:'- dd.MM.yyyy' + (vote!.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
+          {{ option.endDate | date:'- dd.MM.yyyy' + (state.vote.voteConfig.voteOptionConfig.endTime ? ' HH:mm' : ''):undefined:'de' }}
         </span>
-        <div class="break-text">{{ option.description || '' }}</div>
+        <div class="break-text" [textContent]="option.description"></div>
         <span>
           <a
             *ngIf="option.url"
@@ -83,13 +91,13 @@
         <button
           mat-icon-button
           class="verticalCenter"
-          (click)="openDialog(option)"
+          (click)="openDialog(option, state.vote)"
         >
           <mat-icon>info</mat-icon>
         </button>
-        <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option)"></span>
+        <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option, state.vote)"></span>
         <mat-form-field
-          *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
+          *ngIf="state.vote.voteConfig.decisionType === DecisionType.NUMBER; else decisionComplex"
           appearance="fill"
           style="width: 8vw; min-width: 50px; max-width: 175px"
         >
@@ -101,22 +109,20 @@
             required
             integer
             matInput
-            [ngModel]="voteParticipant.decisions[voteIndex].participants"
+            [ngModel]="state.participant.decisions[voteIndex].participants"
             (ngModelChange)="setParticipantNumber(option, $event)"
-            (focusout)="checkEnteredValue(voteIndex,participant)"
-            [disabled]="isPreview"
-            #participant
+            [disabled]="state.preview"
             #participantField="ngModel"
           >
           <mat-error>{{ errorMessageService.genericFormError(participantField.control) }}</mat-error>
         </mat-form-field>
         <ng-template #decisionComplex>
           <mat-button-toggle
-            *ngIf="decisionDescription(option) as desc"
+            *ngIf="decisionDescription(option, state.participant) as desc"
             [class]="desc.class"
             [matTooltip]="desc.tooltip || ''"
             matTooltipPosition="above"
-            (click)="isPreview || hasDeadlinePassed() || cycleDecision(option); selectionButton.checked = false"
+            (click)="state.preview || hasDeadlinePassed(state.vote) || cycleDecision(option); selectionButton.checked = false"
             [disabled]="!!desc.disabled"
             #selectionButton
           >
@@ -125,19 +131,19 @@
         </ng-template>
       </div>
     </div>
-    <div class="fill-width" *ngIf="!isPreview; else previewButtons">
+    <div class="fill-width" *ngIf="!state.preview; else previewButtons">
       <div class="vote-button-container">
         <button
-          *ngIf="!hasDeadlinePassed()"
+          *ngIf="!hasDeadlinePassed(state.vote)"
           class="vote-button"
           type="submit"
           color="primary"
           mat-raised-button
-          [loading]="delayedSubmitBusy$ | async"
-          [disabled]="(submitBusy$ | async) ?? false"
+          [loading]="state.delayedBusy"
+          [disabled]="state.busy"
           (click)="saveVote()"
-        >{{ isEditMember ? 'Updaten' : 'Abstimmen' }}
-        </button>
+          [textContent]="state.editing ? 'Updaten' : 'Abstimmen'"
+        ></button>
         <button mat-raised-button [routerLink]="['./results']">
           Ergebnisse ansehen
         </button>
@@ -155,7 +161,7 @@
           type="submit"
           color="primary"
           mat-raised-button
-          [disabled]="busy"
+          [disabled]="state.busy"
           (click)="acceptPreview()"
         >
           Fertig

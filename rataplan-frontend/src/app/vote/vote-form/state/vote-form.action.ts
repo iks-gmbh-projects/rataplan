@@ -29,6 +29,7 @@ export const voteFormAction = createActionGroup({
         userConsignees: (string|number)[],
         personalisedInvitation?:string
       }>(),
+    'Preview': emptyProps(),
     'Post': emptyProps(),
     'Post Success': props<{created: VoteModel, editToken?: string}>(),
     'Post Error': props<{error: any}>(),
@@ -50,6 +51,7 @@ export const ActionRequiresInit = {
   [voteFormAction.editOption.type]: true,
   [voteFormAction.removeOption.type]: true,
   [voteFormAction.setOrganizerInfo.type]: true,
+  [voteFormAction.preview.type]: true,
   [voteFormAction.post.type]: true,
   [voteFormAction.postSuccess.type]: false,
   [voteFormAction.postError.type]: false,

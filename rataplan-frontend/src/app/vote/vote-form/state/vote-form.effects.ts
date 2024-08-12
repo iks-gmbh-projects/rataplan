@@ -6,13 +6,14 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 
 import { Store } from '@ngrx/store';
-import { catchError, delayWhen, first, from, of, switchMap, take } from 'rxjs';
+import { catchError, delayWhen, first, from, of, switchMap } from 'rxjs';
 import { filter, map, tap } from 'rxjs/operators';
 import { authFeature } from '../../../authentication/auth.feature';
 import { configFeature } from '../../../config/config.feature';
 import { FeedbackDialogComponent } from '../../../dialogs/feedback-dialog/feedback-dialog.component';
 import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
 import { defined } from '../../../operators/non-empty';
+import { voteAction } from '../../vote/state/vote.action';
 import { DecisionType } from '../decision-type.enum';
 import { voteFormAction } from './vote-form.action';
 import { voteFormFeature } from './vote-form.feature';
@@ -67,19 +68,27 @@ export class VoteFormEffects {
     );
   });
   
+  preview = createEffect(() => this.actions$.pipe(
+    ofType(voteFormAction.preview),
+    switchMap(() => this.store.select(voteFormFeature.selectVoteState).pipe(
+      first(),
+      filter(state => state.complete),
+    )),
+    map(({vote}) => voteAction.loadSuccess({vote: vote!, preview: true})),
+  ));
+  
   postVote = createEffect(() => {
     return this.actions$.pipe(
       ofType(voteFormAction.post),
       switchMap(() => this.store.select(voteFormFeature.selectVoteState).pipe(
+        first(),
         filter(state => state.complete),
-        take(1),
       )),
       map(state => (
         {request: state.vote!, appointmentsEdited: state.appointmentsChanged}
       )),
       delayWhen(() => this.store.select(authFeature.selectAuthState).pipe(
-        filter(authState => !authState.busy),
-        take(1),
+        first(authState => !authState.busy),
       )),
       concatLatestFrom(request => {
         if(request.request.id) {

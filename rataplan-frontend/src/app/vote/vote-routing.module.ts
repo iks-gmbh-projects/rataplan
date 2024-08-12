@@ -12,8 +12,6 @@ import { LinkSubformComponent } from './vote-form/link-subform/link-subform.comp
 import { OverviewSubformComponent } from './vote-form/overview-subform/overview-subform.component';
 import { VoteFormComponent } from './vote-form/vote-form.component';
 import { VoteResultsComponent } from './vote-results/vote-results.component';
-import { VotePreviewResolver } from './vote/resolver/vote-preview.resolver';
-import { VoteResolver } from './vote/resolver/vote.resolver';
 import { VoteComponent } from './vote/vote.component';
 
 const routes: Routes = [
@@ -28,8 +26,6 @@ const routes: Routes = [
       {path: 'email', component: EmailSubformComponent, canActivate: [VoteAuthGuard]},
       {
         path: 'preview',
-        data: {isPreview: true},
-        resolve: {vote: VotePreviewResolver},
         component: VoteComponent,
         canActivate: [VoteAuthGuard],
       },
@@ -48,8 +44,6 @@ const routes: Routes = [
       {path: 'email', component: EmailSubformComponent},
       {
         path: 'preview',
-        data: {isPreview: true},
-        resolve: {vote: VotePreviewResolver},
         component: VoteComponent,
       },
       {path: '**', redirectTo: 'general'},
@@ -57,11 +51,10 @@ const routes: Routes = [
   },
   {
     path: ':id',
-    data: {isPreview: false},
-    resolve: {vote: VoteResolver},
+    data: {isPreview: false, loadVote: true},
     component: VoteComponent,
   }, {
-    path: ':id/results', data: {loadVoteResults: true}, component: VoteResultsComponent,
+    path: ':id/results', data: {loadVote: true}, component: VoteResultsComponent,
   },
 
 ];
