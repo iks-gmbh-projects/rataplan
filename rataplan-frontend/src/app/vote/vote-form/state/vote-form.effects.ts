@@ -70,7 +70,7 @@ export class VoteFormEffects {
   
   preview = createEffect(() => this.actions$.pipe(
     ofType(voteFormAction.preview),
-    switchMap(() => this.store.select(voteFormFeature.selectVoteState).pipe(
+    switchMap(() => this.store.select(voteFormFeature.selectVoteFormState).pipe(
       first(),
       filter(state => state.complete),
     )),
@@ -80,7 +80,7 @@ export class VoteFormEffects {
   postVote = createEffect(() => {
     return this.actions$.pipe(
       ofType(voteFormAction.post),
-      switchMap(() => this.store.select(voteFormFeature.selectVoteState).pipe(
+      switchMap(() => this.store.select(voteFormFeature.selectVoteFormState).pipe(
         first(),
         filter(state => state.complete),
       )),

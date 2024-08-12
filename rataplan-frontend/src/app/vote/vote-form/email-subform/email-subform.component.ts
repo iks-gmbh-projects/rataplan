@@ -81,7 +81,7 @@ export class EmailSubformComponent implements OnInit, OnDestroy {
   private lastError?: any;
   
   ngOnInit(): void {
-    this.storeSub = this.store.select(voteFormFeature.selectVoteState)
+    this.storeSub = this.store.select(voteFormFeature.selectVoteFormState)
       .pipe(
         filter(state => !!state.vote),
       ).subscribe(state => {

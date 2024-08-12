@@ -220,7 +220,6 @@ export const voteReducer = createReducer<{
         ...state,
         busy: true,
         error: undefined,
-        participantIndex: -1,
       }
     ),
   ),
@@ -230,6 +229,7 @@ export const voteReducer = createReducer<{
       {
         ...state,
         busy: false,
+        participantIndex: -1,
         participantNameOverride: undefined,
         participantDecisionOverride: {},
         participantDecisionOverride2: {},

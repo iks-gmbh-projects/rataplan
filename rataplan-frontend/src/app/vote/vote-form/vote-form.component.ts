@@ -44,7 +44,7 @@ export class VoteFormComponent implements OnInit, OnDestroy {
       this.editing = !!id;
       this.store.dispatch(voteFormAction.init({id}));
     });
-    this.storeSub = this.store.select(voteFormFeature.selectVoteState)
+    this.storeSub = this.store.select(voteFormFeature.selectVoteFormState)
       .subscribe(state => {
         if(state.vote) delete this.error;
         else this.error = state.error;
