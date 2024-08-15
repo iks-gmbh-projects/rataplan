@@ -20,6 +20,7 @@ export class PageComponent {
   public readonly answers$: Observable<Record<string | number, Answer | undefined>>;
   public readonly preview$: Observable<boolean>;
   public readonly first$: Observable<boolean>;
+  public readonly last$: Observable<boolean>;
   @Output() public readonly formAfterViewInit = new EventEmitter<AbstractControl>();
 
   constructor(
@@ -33,6 +34,9 @@ export class PageComponent {
     this.preview$ = store.select(surveyFormFeature.selectPreview);
     this.first$ = store.select(surveyFormFeature.selectPage).pipe(
       map(page => page == 0),
+    );
+    this.last$ = store.select(surveyFormFeature.selectSurveyFormState).pipe(
+      map(({survey, page, preview}) => preview && page >= (survey?.questionGroups?.length ?? 0) - 1)
     );
   }
 
@@ -84,7 +88,7 @@ export class PageComponent {
         delete answers[key].checkboxId;
       }
     }
-    this.store.dispatch(surveyFormActions.nextPage({answers}))
+    this.store.dispatch(surveyFormActions.previousPage({answers}))
   }
   
   protected readonly Object = Object;

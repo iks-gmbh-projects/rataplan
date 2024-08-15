@@ -51,6 +51,20 @@ export const surveyFormReducer = createReducer<{
       }
     ),
   ),
+  on(
+    surveyFormActions.initPreview,
+    (state, {survey}) => (
+      {
+        survey,
+        preview: true,
+        page: 0,
+        answers: {},
+        valid: undefined,
+        busy: false,
+        error: undefined,
+      }
+    ),
+  ),
   on(surveyFormActions.previousPage, (state, {answers}) => {
     const group = state.survey?.questionGroups?.[state.page]?.id;
     return {

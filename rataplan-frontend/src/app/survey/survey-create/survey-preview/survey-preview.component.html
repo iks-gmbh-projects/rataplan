@@ -3,7 +3,7 @@
     <mat-card-content>
       <app-survey-form-page/>
     </mat-card-content>
-    <div>
+    <mat-card-actions>
       <button class="left" mat-raised-button color="primary" (click)="back()">
         Zurück
       </button>
@@ -14,10 +14,11 @@
           color="primary"
           [loading]="delayedBusy$ | async"
           [disabled]="(busy$ | async) ?? false"
+          (click)="submit()"
         >
           Fertig
         </button>
       </div>
-    </div>
+    </mat-card-actions>
   </mat-card>
 </div>

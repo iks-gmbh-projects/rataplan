@@ -31,4 +31,8 @@ export class SurveyPreviewComponent {
   back(): void {
     this.store.dispatch(surveyCreateActions.endPreview());
   }
+  
+  submit(): void {
+    this.store.dispatch(surveyCreateActions.postSurvey());
+  }
 }
