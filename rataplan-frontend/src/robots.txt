@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /*-profile
+Disallow: /*-account
+Disallow: /vote/
+Disallow: /appointmentrequest/
+Disallow: /survey/access/
+Disallow: /survey/own/
+Disallow: /survey/participate/
