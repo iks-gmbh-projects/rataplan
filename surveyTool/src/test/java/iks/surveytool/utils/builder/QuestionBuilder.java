@@ -3,6 +3,7 @@ package iks.surveytool.utils.builder;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.question.ChoiceQuestion;
 import iks.surveytool.entities.question.OpenQuestion;
+import iks.surveytool.entities.question.OrderQuestion;
 
 import java.nio.charset.StandardCharsets;
 
@@ -26,6 +27,27 @@ public class QuestionBuilder {
         OpenQuestion newQuestion = createQuestion(id, rank, text, required);
         newQuestion.setQuestionGroup(group);
         group.getOpenQuestions().add(newQuestion);
+        return newQuestion;
+    }
+    
+    public static OrderQuestion createQuestion(
+        Long id, int rank, String text
+    )
+    {
+        OrderQuestion newQuestion = new OrderQuestion();
+        newQuestion.setId(id);
+        newQuestion.setRank(rank);
+        newQuestion.setText(text == null ? null : text.getBytes(StandardCharsets.UTF_8));
+        return newQuestion;
+    }
+    
+    public static OrderQuestion createQuestionIn(
+        QuestionGroup group, Long id, int rank, String text
+    )
+    {
+        OrderQuestion newQuestion = createQuestion(id, rank, text);
+        newQuestion.setQuestionGroup(group);
+        group.getOrderQuestions().add(newQuestion);
         return newQuestion;
     }
     
