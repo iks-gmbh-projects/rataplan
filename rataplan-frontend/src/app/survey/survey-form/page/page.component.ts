@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { defined } from '../../../operators/non-empty';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
-import { Answer, Checkbox, Question, QuestionGroup } from '../../survey.model';
+import { Answer, Checkbox, ChoiceQuestion, QuestionGroup } from '../../survey.model';
 import { surveyFormActions } from '../state/survey-form.action';
 import { surveyFormFeature } from '../state/survey-form.feature';
 
@@ -60,7 +60,7 @@ export class PageComponent {
     return checkboxes.some(checkbox => checkbox.hasTextField);
   }
 
-  public disableTextField(question: Question, answerControl?: AbstractControl): boolean {
+  public disableTextField(question: ChoiceQuestion, answerControl?: AbstractControl): boolean {
     let answer: Answer&{checkboxId?: string|number} = answerControl?.value;
     if(!answer) return false;
     if(answer.checkboxId !== undefined && answer.checkboxId !== null) {

@@ -34,6 +34,17 @@ function validateAnswer(q: Question, a: Answer | undefined): boolean {
       (
         selectedOptions.some(i => idSet[i]) || !a.text
       );
+  case 'ORDER':
+    const questionContent = q.choices.reduce<Partial<Record<string|number, true>>>((a, v) => {
+      a[v.id!] = true;
+      return a;
+    }, {});
+    for(const c of a?.order ?? []) {
+      if(questionContent[c]) {
+        delete questionContent[c];
+      } else return false;
+    }
+    return !Object.values(questionContent).some(v => v);
   }
 }
 

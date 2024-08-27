@@ -9,22 +9,24 @@
       <h3 [textContent]="question.text"></h3>
       <div>
         <input type="hidden" name="questionId" [ngModel]="question.id">
-        <ng-container [ngSwitch]="question.type">
-          <mat-form-field *ngSwitchCase="'OPEN'" appearance="fill">
-            <mat-label>Antwort</mat-label>
-            <input
-              type="text"
-              [ngModel]="store.answers?.[i]?.text"
-              name="text"
-              [required]="question.required!"
-              someNonWhitespace
-              maxlength="1500"
-              matInput
-              #answerText="ngModel"
-            >
-            <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
-          </mat-form-field>
-          <ng-template [ngSwitchCase]="'CHOICE'">
+        @switch (question.type) {
+          @case ('OPEN') {
+            <mat-form-field appearance="fill">
+              <mat-label>Antwort</mat-label>
+              <input
+                type="text"
+                [ngModel]="store.answers?.[i]?.text"
+                name="text"
+                [required]="question.required!"
+                someNonWhitespace
+                maxlength="1500"
+                matInput
+                #answerText="ngModel"
+              >
+              <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
+            </mat-form-field>
+          }
+          @case ('CHOICE') {
             <div
               *ngIf="question.maxSelect! != 1 || question.minSelect != 1; else singleSelect"
               ngModelGroup="checkboxes"
@@ -65,14 +67,13 @@
                 maxlength="1500"
                 matInput
                 [disabled]="disableTextField(question, modelQuestionGroup.control)"
-                [required]="question.minSelect! > 0 && !disableTextField(question, modelQuestionGroup.control)"
+                [required]="question.type === 'CHOICE' && question.minSelect! > 0 && !disableTextField(question, modelQuestionGroup.control)"
                 #answerText="ngModel"
               >
               <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
             </mat-form-field>
-            <br>
-          </ng-template>
-        </ng-container>
+          }
+        }
       </div>
     </div>
     <div>

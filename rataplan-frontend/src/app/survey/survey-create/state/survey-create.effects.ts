@@ -10,7 +10,7 @@ import { configFeature } from '../../../config/config.feature';
 import { defined } from '../../../operators/non-empty';
 import { routerSelectors } from '../../../router.selectors';
 import { surveyFormActions } from '../../survey-form/state/survey-form.action';
-import { Checkbox, Question, QuestionGroup, Survey, SurveyHead } from '../../survey.model';
+import { Checkbox, ChoiceQuestion, OpenQuestion, OrderChoice, OrderQuestion, Question, QuestionGroup, Survey, SurveyHead } from '../../survey.model';
 import { DeepPartial, surveyCreateActions } from './survey-create.action';
 import { surveyCreateFeature } from './survey-create.feature';
 
@@ -20,13 +20,13 @@ function ensureDate<T extends SurveyHead>(head: T): T {
   return head;
 }
 
-function validateQuestionGroup(group?: DeepPartial<QuestionGroup>): boolean {
+function validateQuestionGroup(group?: DeepPartial<QuestionGroup>): group is QuestionGroup {
   if(!group) return false;
   return !!group.title && !!group.questions && group.title.length < 256 && group.questions.length > 0 &&
     group.questions.every(validateQuestion);
 }
 
-function validateQuestion(question?: DeepPartial<Question>): boolean {
+function validateQuestion(question?: DeepPartial<Question>): question is Question {
   if(!question || !question.text || question.text.length >= 256) return false;
   switch(question.type) {
   case 'OPEN':
@@ -39,13 +39,19 @@ function validateQuestion(question?: DeepPartial<Question>): boolean {
       question.choices !== undefined &&
       question.choices.length > 0 &&
       question.maxSelect <= question.choices.length &&
-      question.choices.every(validateChoices);
+      question.choices.every(validateChoiceChoices);
+  case 'ORDER':
+    return question.choices !== undefined && question.choices.length > 0 && question.choices?.every(validateOrderChoices);
   default:
     return false;
   }
 }
 
-function validateChoices(choice?: DeepPartial<Checkbox>): boolean {
+function validateChoiceChoices(choice?: DeepPartial<Checkbox>): choice is Checkbox {
+  return !!choice && !!choice.text && choice.text.length < 256;
+}
+
+function validateOrderChoices(choice?: DeepPartial<OrderChoice>): choice is OrderChoice {
   return !!choice && !!choice.text && choice.text.length < 256;
 }
 
@@ -112,12 +118,12 @@ export class SurveyCreateEffects {
               switch(q!.type!) {
               case 'OPEN':
                 return {
-                  ...(q as Question),
+                  ...(q as OpenQuestion),
                   rank: j,
                 };
               case 'CHOICE':
                 return {
-                  ...(q as Question),
+                  ...(q as ChoiceQuestion),
                   rank: j,
                   choices: q!.choices!.map((c, k): Checkbox => (
                     {
@@ -125,6 +131,17 @@ export class SurveyCreateEffects {
                       id: k,
                     }
                   )),
+                };
+              case 'ORDER':
+                return {
+                  ...(q as OrderQuestion),
+                  rank: j,
+                  choices: q!.choices!.map((c, k): OrderChoice => (
+                    {
+                      ...(c as OrderChoice),
+                      id: k,
+                    }
+                  ))
                 };
               }
             }),

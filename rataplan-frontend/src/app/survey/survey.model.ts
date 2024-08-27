@@ -21,25 +21,26 @@ export type QuestionGroup = {
   questions: Question[]
 };
 
-export type Question = OpenQuestion | ChoiceQuestion;
+export type Question = OpenQuestion | ChoiceQuestion | OrderQuestion;
 
-export type OpenQuestion = {
-  type: 'OPEN',
+type BaseQuestion = {
+  type: string,
   id?: string|number,
   rank: string|number,
   text: string,
-  required: boolean,
-  minSelect?: number,
-  maxSelect?: number,
-  choices?: Checkbox[],
 };
 
-export type ChoiceQuestion = {
+export type OpenQuestion = BaseQuestion & {
+  type: 'OPEN',
+  required: boolean,
+  minSelect?: undefined,
+  maxSelect?: undefined,
+  choices?: undefined,
+};
+
+export type ChoiceQuestion = BaseQuestion & {
   type: 'CHOICE',
-  id?: string|number,
-  rank: string|number,
-  text: string,
-  required?: boolean,
+  required?: undefined,
   minSelect: number,
   maxSelect: number,
   choices: Checkbox[],
@@ -48,22 +49,32 @@ export type ChoiceQuestion = {
 export type Checkbox = {
   id?: string|number,
   text: string,
-  hasTextField: boolean
+  hasTextField: boolean,
 };
+
+export type OrderQuestion = BaseQuestion & {
+  type: 'ORDER',
+  required?: undefined,
+  minSelect?: undefined,
+  maxSelect?: undefined,
+  choices: OrderChoice[],
+};
+
+export type OrderChoice = {
+  id?: string|number,
+  text: string,
+}
 
 export type Answer = {
   id?: string|number,
   text?: string,
   checkboxes?: {[checkboxId: string|number]: boolean},
+  order?: (string|number)[],
 };
 
 export type SurveyResponse = {
   id?: string|number,
   surveyId: string|number,
   userId?: string|number,
-  answers: {
-    [questionGroupId: string|number]: {
-      [questionRank: string|number]: Answer | undefined,
-    } | undefined,
-  },
+  answers: Partial<Record<string|number, Partial<Record<string|number, Answer>>>>,
 }

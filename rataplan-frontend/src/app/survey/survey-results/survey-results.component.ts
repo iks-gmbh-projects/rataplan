@@ -53,6 +53,8 @@ export class SurveyResultsComponent {
         if(checkbox.hasTextField) return true;
       }
       return false;
+    case 'ORDER':
+      return false;
     }
   }
   
