@@ -5,10 +5,7 @@ import iks.surveytool.dtos.*;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.Survey;
 import iks.surveytool.entities.SurveyResponse;
-import iks.surveytool.entities.question.ChoiceQuestion;
-import iks.surveytool.entities.question.ChoiceQuestionChoice;
-import iks.surveytool.entities.question.OpenQuestion;
-import iks.surveytool.entities.question.OrderQuestion;
+import iks.surveytool.entities.question.*;
 import iks.surveytool.mapping.crypto.FromRawEncryptedStringConverter;
 import iks.surveytool.mapping.crypto.ToRawEncryptedStringConverter;
 import iks.surveytool.repositories.SurveyRepository;
@@ -182,10 +179,10 @@ public class MappingTest {
     void mapAnswerListToAnswerDTOs() {
         Survey survey = SurveyBuilder.createDefaultSurvey();
         
-        QuestionGroup group = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Bla");
+        QuestionGroup questionGroup = QuestionGroupBuilder.createQuestionGroupIn(survey, 1L, "Bla");
         
-        OpenQuestion firstQuestion = QuestionBuilder.createQuestionIn(group, 1L, 0, "Test Question", false);
-        ChoiceQuestion secondQuestion = QuestionBuilder.createQuestionIn(group, 2L, 1, "Test Question", 0, 2);
+        OpenQuestion firstQuestion = QuestionBuilder.createQuestionIn(questionGroup, 1L, 0, "Test Question", false);
+        ChoiceQuestion secondQuestion = QuestionBuilder.createQuestionIn(questionGroup, 1L, 1, "Test Question", 0, 2);
         
         ChoiceQuestionChoice firstCheckbox = ChoiceBuilder.createChoiceIn(
             secondQuestion,
@@ -195,10 +192,19 @@ public class MappingTest {
         );
         ChoiceBuilder.createChoiceIn(secondQuestion, 2L, "Second Test Checkbox", true);
         
+        OrderQuestion thirdQuestion = QuestionBuilder.createQuestionIn(questionGroup, 1L, 2, "Test Question");
+        
+        OrderQuestionChoice firstOrder = ChoiceBuilder.createChoiceIn(thirdQuestion, 1L, "First");
+        OrderQuestionChoice secondOrder = ChoiceBuilder.createChoiceIn(thirdQuestion, 2L, "Second");
+        OrderQuestionChoice thirdOrder = ChoiceBuilder.createChoiceIn(thirdQuestion, 3L, "Third");
+        
         SurveyResponse response = SurveyResponseBuilder.createResponse(1L, survey, null);
         
         AnswerBuilder.createAnswerIn(response, 1L, "Test Answer", firstQuestion);
         response.getChoiceAnswers().add(firstCheckbox);
+        response.getOrderAnswers().add(secondOrder);
+        response.getOrderAnswers().add(thirdOrder);
+        response.getOrderAnswers().add(firstOrder);
         
         SurveyResponseDTO responseDTO = modelMapper.map(response, SurveyResponseDTO.class);
         
@@ -222,14 +228,25 @@ public class MappingTest {
         ChoiceBuilder.createChoiceIn(secondQuestion, 1L, "Option 1", false);
         ChoiceBuilder.createChoiceIn(secondQuestion, 2L, "Option 2", false);
         
+        OrderQuestion thirdQuestion = QuestionBuilder.createQuestionIn(questionGroup, 1L, 2, "Test Question");
+        
+        ChoiceBuilder.createChoiceIn(thirdQuestion, 1L, "First");
+        ChoiceBuilder.createChoiceIn(thirdQuestion, 2L, "Second");
+        ChoiceBuilder.createChoiceIn(thirdQuestion, 3L, "Third");
+        
         AnswerDTO firstAnswerDTO = new AnswerDTO("Text");
         AnswerDTO secondAnswerDTO = new AnswerDTO(Map.of(1L, true));
+        AnswerDTO thirdAnswerDTO = new AnswerDTO(List.of(2L, 3L, 1L));
         
         SurveyResponseDTO surveyResponseDTO = new SurveyResponseDTO();
         surveyResponseDTO.setSurveyId(survey.getId());
         surveyResponseDTO.setAnswers(Map.of(
             questionGroup.getId(),
-            Map.of(firstQuestion.getRank(), firstAnswerDTO, secondQuestion.getRank(), secondAnswerDTO)
+            Map.of(
+                firstQuestion.getRank(), firstAnswerDTO,
+                secondQuestion.getRank(), secondAnswerDTO,
+                thirdQuestion.getRank(), thirdAnswerDTO
+            )
         ));
         
         when(surveyRepository.findById(survey.getId())).thenReturn(Optional.of(survey));
