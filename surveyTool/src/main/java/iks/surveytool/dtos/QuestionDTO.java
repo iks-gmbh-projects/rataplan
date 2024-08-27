@@ -46,6 +46,21 @@ public class QuestionDTO extends AbstractDTO {
         this(id, text, minSelect, maxSelect, Arrays.asList(choices));
     }
     
+    public QuestionDTO(Long id, String text, Collection<? extends ChoiceDTO> choices) {
+        super(id);
+        type = QuestionType.ORDER;
+        this.text = text;
+        this.choices = new ArrayList<>(choices);
+    }
+    
+    public QuestionDTO(Long id, String text) {
+        this(id, text, List.of());
+    }
+    
+    public QuestionDTO(Long id, String text, ChoiceDTO ...choices) {
+        this(id, text, Arrays.asList(choices));
+    }
+    
     @Override
     public void resetId() {
         super.resetId();
@@ -69,6 +84,7 @@ public class QuestionDTO extends AbstractDTO {
             case CHOICE:
                 if(minSelect == null) throw new DTOValidationException("QuestionDTO.minSelect", "null");
                 if(maxSelect == null) throw new DTOValidationException("QuestionDTO.maxSelect", "null");
+            case ORDER:
                 if(choices == null) throw new DTOValidationException("QuestionDTO.choices", "null");
                 if(choices.isEmpty()) throw new DTOValidationException("QuestionDTO.choices", "empty");
                 for(ChoiceDTO choice : choices) choice.valid();

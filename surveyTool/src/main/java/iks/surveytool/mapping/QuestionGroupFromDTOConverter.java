@@ -1,12 +1,11 @@
 package iks.surveytool.mapping;
 
 import iks.surveytool.domain.QuestionType;
+import iks.surveytool.domain.QuestionTypeInfo;
 import iks.surveytool.dtos.QuestionDTO;
 import iks.surveytool.dtos.QuestionGroupDTO;
 import iks.surveytool.entities.QuestionGroup;
 import iks.surveytool.entities.question.AbstractQuestion;
-import iks.surveytool.entities.question.ChoiceQuestion;
-import iks.surveytool.entities.question.OpenQuestion;
 
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -40,24 +39,15 @@ public class QuestionGroupFromDTOConverter implements Converter<QuestionGroupDTO
                 questionMap.get(type),
                 List::of
             );
-            switch(type) {
-                case OPEN:
-                    transfer(context, dest, sourceQuestions, dest.getOpenQuestions(), OpenQuestion.class);
-                    break;
-                case CHOICE:
-                    transfer(context, dest, sourceQuestions, dest.getChoiceQuestions(), ChoiceQuestion.class);
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Unknown question type: "+type);
-            }
+            transfer(context, dest, sourceQuestions, type.info);
         }
         return dest;
     }
     
-    private <T extends AbstractQuestion> void transfer(MappingContext<?, ?> context, QuestionGroup dest, List<? extends QuestionDTO> sourceQuestions, List<T> destQuestions, Class<T> questionClass) {
+    private <T extends AbstractQuestion> void transfer(MappingContext<?, ?> context, QuestionGroup dest, List<? extends QuestionDTO> sourceQuestions, QuestionTypeInfo<T> typeInfo) {
         MappingEngine mappingEngine = context.getMappingEngine();
         Iterator<? extends QuestionDTO> sIt = sourceQuestions.iterator();
-        ListIterator<T> dIt = destQuestions.listIterator();
+        ListIterator<T> dIt = typeInfo.getter.apply(dest).listIterator();
         while(sIt.hasNext() && dIt.hasNext()) {
             QuestionDTO sourceQuestion = sIt.next();
             T destQuestion = dIt.next();
@@ -76,7 +66,7 @@ public class QuestionGroupFromDTOConverter implements Converter<QuestionGroupDTO
         while(sIt.hasNext()) {
             QuestionDTO sourceQuestion = sIt.next();
             sourceQuestion.setId(null);
-            T result = mappingEngine.map(context.create(sourceQuestion, questionClass));
+            T result = mappingEngine.map(context.create(sourceQuestion, typeInfo.questionClass));
             result.setQuestionGroup(dest);
             dIt.add(result);
         }

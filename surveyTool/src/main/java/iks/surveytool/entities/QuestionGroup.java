@@ -2,10 +2,8 @@ package iks.surveytool.entities;
 
 import iks.surveytool.entities.question.ChoiceQuestion;
 import iks.surveytool.entities.question.OpenQuestion;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import iks.surveytool.entities.question.OrderQuestion;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,11 +30,21 @@ public class QuestionGroup extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "questionGroup")
     @OrderBy("rank")
     private List<ChoiceQuestion> choiceQuestions = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "questionGroup")
+    @OrderBy("rank")
+    private List<OrderQuestion> orderQuestions = new ArrayList<>();
 
-    public QuestionGroup(byte[] title, List<OpenQuestion> openQuestions, List<ChoiceQuestion> choiceQuestions) {
+    @Builder
+    public QuestionGroup(
+        byte[] title,
+        List<OpenQuestion> openQuestions,
+        List<ChoiceQuestion> choiceQuestions,
+        List<OrderQuestion> orderQuestions
+    ) {
         this.title = title;
         this.openQuestions = openQuestions;
         this.choiceQuestions = choiceQuestions;
+        this.orderQuestions = orderQuestions;
     }
     
     
@@ -45,6 +53,7 @@ public class QuestionGroup extends AbstractEntity {
         super.resetId();
         openQuestions.forEach(AbstractEntity::resetId);
         choiceQuestions.forEach(AbstractEntity::resetId);
+        orderQuestions.forEach(AbstractEntity::resetId);
     }
     
     @Override
@@ -58,10 +67,17 @@ public class QuestionGroup extends AbstractEntity {
             if(cq.getQuestionGroup() == null) cq.setQuestionGroup(this);
             cq.bindChildren();
         }
+        for(OrderQuestion oq : orderQuestions) {
+            if(oq.getQuestionGroup() == null) oq.setQuestionGroup(this);
+            oq.bindChildren();
+        }
     }
     
     void checkIfComplete() throws InvalidEntityException {
-        if(this.openQuestions.isEmpty() && this.choiceQuestions.isEmpty()) throw new InvalidEntityException("Empty question group", this);
+        if(this.openQuestions.isEmpty() &&
+           this.choiceQuestions.isEmpty() &&
+           this.orderQuestions.isEmpty()
+        ) throw new InvalidEntityException("Empty question group", this);
         this.checkIfQuestionsComplete();
     }
 
@@ -70,6 +86,9 @@ public class QuestionGroup extends AbstractEntity {
             q.checkIfComplete();
         }
         for(ChoiceQuestion q:this.choiceQuestions) {
+            q.checkIfComplete();
+        }
+        for(OrderQuestion q:this.orderQuestions) {
             q.checkIfComplete();
         }
     }
@@ -88,6 +107,9 @@ public class QuestionGroup extends AbstractEntity {
             q.validate();
         }
         for(ChoiceQuestion q:this.choiceQuestions) {
+            q.validate();
+        }
+        for(OrderQuestion q:this.orderQuestions) {
             q.validate();
         }
     }
