@@ -4,6 +4,7 @@ import iks.surveytool.dtos.AnswerDTO;
 import iks.surveytool.dtos.SurveyResponseDTO;
 import iks.surveytool.entities.SurveyResponse;
 import iks.surveytool.entities.question.ChoiceQuestionChoice;
+import iks.surveytool.entities.question.OrderQuestionChoice;
 
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
@@ -49,6 +50,18 @@ public class SurveyResponseToDTOConverter implements Converter<SurveyResponse, S
             answer.getCheckboxes()
                 .put(choice.getId(), true);
         }
+        source.getOrderAnswers()
+            .stream()
+            .collect(Collectors.groupingBy(
+                OrderQuestionChoice::getQuestion,
+                Collectors.mapping(
+                    OrderQuestionChoice::getId,
+                    Collectors.toList()
+                )
+            ))
+            .forEach((q, o) -> answers.computeIfAbsent(q.getQuestionGroup().getId(), i -> new HashMap<>())
+                .put(q.getRank(), new AnswerDTO(o))
+            );
         dest.setAnswers(answers);
         return dest;
     }

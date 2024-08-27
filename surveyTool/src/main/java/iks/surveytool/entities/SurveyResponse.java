@@ -2,16 +2,11 @@ package iks.surveytool.entities;
 
 import iks.surveytool.entities.answer.ChoiceAnswerText;
 import iks.surveytool.entities.answer.OpenAnswer;
-import iks.surveytool.entities.question.ChoiceQuestion;
-import iks.surveytool.entities.question.ChoiceQuestionChoice;
-import iks.surveytool.entities.question.OpenQuestion;
+import iks.surveytool.entities.question.*;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -35,6 +30,14 @@ public class SurveyResponse extends AbstractEntity {
     private List<ChoiceQuestionChoice> choiceAnswers = new ArrayList<>();
     @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChoiceAnswerText> choiceAnswerTexts = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(
+        name = "orderAnswer",
+        joinColumns = @JoinColumn(name = "responseId"),
+        inverseJoinColumns = @JoinColumn(name = "choiceId")
+    )
+    @OrderColumn(name = "rank")
+    private List<OrderQuestionChoice> orderAnswers = new ArrayList<>();
     
     @Override
     public void resetId() {
@@ -110,6 +113,24 @@ public class SurveyResponse extends AbstractEntity {
                 .collect(Collectors.toUnmodifiableSet());
             if(!questionIds.containsAll(answeredQuestionIds)) invalid("external question answered");
             if(!textFieldQuestionIds.containsAll(answeredQuestionIds)) invalid("question without text field answered with text");
+        }
+        {
+            Map<Long, Long> selectionCount = orderAnswers.stream()
+                .map(OrderQuestionChoice::getQuestion)
+                .collect(Collectors.groupingBy(AbstractEntity::getId, Collectors.counting()));
+            List<OrderQuestion> questions = survey.getQuestionGroups()
+                .stream()
+                .map(QuestionGroup::getOrderQuestions)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+            Set<Long> questionIds = questions.stream().map(AbstractEntity::getId).collect(Collectors.toUnmodifiableSet());
+            if(!questionIds.containsAll(selectionCount.keySet())) {
+                invalid("external question answered");
+            }
+            for(OrderQuestion q : questions) {
+                long count = selectionCount.getOrDefault(q.getId(), 0L);
+                if(count != q.getChoices().size()) invalid("options missing or added");
+            }
         }
     }
 }
