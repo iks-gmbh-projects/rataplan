@@ -23,7 +23,7 @@
                 matInput
                 #answerText="ngModel"
               >
-              <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
+              <mat-error [textContent]="errorMessageService.genericFormError(answerText.control)"/>
             </mat-form-field>
           }
           @case ('CHOICE') {
@@ -70,8 +70,20 @@
                 [required]="question.type === 'CHOICE' && question.minSelect! > 0 && !disableTextField(question, modelQuestionGroup.control)"
                 #answerText="ngModel"
               >
-              <mat-error>{{errorMessageService.genericFormError(answerText.control)}}</mat-error>
+              <mat-error [textContent]="errorMessageService.genericFormError(answerText.control)"/>
             </mat-form-field>
+          }
+          @case ('ORDER') {
+            <mat-accordion class="dragList" cdkDropList (cdkDropListDropped)="reorder(question, $event)">
+              @for (choice of indexArray(question); track choice) {
+                <mat-expansion-panel disabled hideToggle cdkDrag>
+                  <mat-expansion-panel-header>
+                    <mat-icon>drag_handle</mat-icon>
+                    <span [textContent]="choiceText(question.choices, choice)"></span>
+                  </mat-expansion-panel-header>
+                </mat-expansion-panel>
+              }
+            </mat-accordion>
           }
         }
       </div>

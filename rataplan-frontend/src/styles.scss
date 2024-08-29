@@ -344,3 +344,7 @@ mat-spinner.button-spinner, mat-progress-spinner.button-spinner {
   max-width: 400px;
   width: 80vw;
 }
+
+.cdk-drag-handle, .cdk-drag:not(:has(.cdk-drag-handle)) {
+  cursor: move;
+}

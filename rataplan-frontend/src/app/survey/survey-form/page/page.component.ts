@@ -1,11 +1,12 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AbstractControl, NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, share } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { defined } from '../../../operators/non-empty';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
-import { Answer, Checkbox, ChoiceQuestion, QuestionGroup } from '../../survey.model';
+import { Answer, Checkbox, ChoiceQuestion, OrderChoice, OrderQuestion, QuestionGroup } from '../../survey.model';
 import { surveyFormActions } from '../state/survey-form.action';
 import { surveyFormFeature } from '../state/survey-form.feature';
 
@@ -29,8 +30,13 @@ export class PageComponent {
   ) {
     this.questionGroup$ = store.select(surveyFormFeature.selectCurrentQuestionGroup).pipe(
       defined,
+      tap(() => this.indexes = {}),
+      share(),
     );
-    this.answers$ = store.select(surveyFormFeature.selectCurrentAnswers)
+    this.answers$ = store.select(surveyFormFeature.selectCurrentAnswers).pipe(
+      tap(a => this.indexes = Object.fromEntries(Object.entries(a).map(([k, v]) => [k, v?.order]).filter(([,v]) => v))),
+      share(),
+    )
     this.preview$ = store.select(surveyFormFeature.selectPreview);
     this.first$ = store.select(surveyFormFeature.selectPage).pipe(
       map(page => page == 0),
@@ -42,7 +48,7 @@ export class PageComponent {
 
   public submit(form: NgForm) {
     if (form.valid) {
-      let answers: {[key: string|number]: Answer&{checkboxId?: string|number}} = form.value;
+      let answers: Record<string|number, Answer&{checkboxId?: string|number}> = form.value;
       for(let key in answers) {
         if(answers[key].checkboxId !== undefined && answers[key].checkboxId !== null) {
           answers[key].checkboxes = {
@@ -51,6 +57,11 @@ export class PageComponent {
           };
           delete answers[key].checkboxId;
         }
+      }
+      for(const [key, value] of Object.entries(this.indexes)) {
+        answers[key] = {
+          order: value,
+        };
       }
       this.store.dispatch(surveyFormActions.nextPage({answers}))
     }
@@ -89,6 +100,36 @@ export class PageComponent {
       }
     }
     this.store.dispatch(surveyFormActions.previousPage({answers}))
+  }
+  
+  private indexes: Partial<Record<string|number, (string|number)[]>> = {};
+  
+  protected indexArray(question: OrderQuestion): (string|number)[] {
+    this.indexes[question.rank!] ??= question.choices.map(v => v.id!);
+    return this.indexes[question.rank!]!;
+  }
+  
+  protected choiceText(arr: OrderChoice[], id: string|number): string {
+    return arr.find(o => o.id === id)!.text;
+  }
+  
+  protected reorder(question: OrderQuestion, event: CdkDragDrop<unknown>): void {
+    const old = this.indexArray(question);
+    if(event.previousIndex <= event.currentIndex) {
+      this.indexes[question.rank!] = [
+        ...old.slice(0, event.previousIndex),
+        ...old.slice(event.previousIndex+1, event.currentIndex),
+        old[event.previousIndex],
+        ...old.slice(event.currentIndex),
+      ];
+    } else {
+      this.indexes[question.rank!] = [
+        ...old.slice(0, event.currentIndex),
+        old[event.previousIndex],
+        ...old.slice(event.currentIndex, event.previousIndex),
+        ...old.slice(event.previousIndex+1),
+      ];
+    }
   }
   
   protected readonly Object = Object;

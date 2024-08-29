@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -52,6 +53,7 @@ import { SurveyRoutingModule } from './survey.routing.module';
   imports: [
     AppCommonModule,
     SurveyRoutingModule,
+    DragDropModule,
     NgChartsModule,
     StoreModule.forFeature(surveyListFeature),
     StoreModule.forFeature(surveyFormFeature),

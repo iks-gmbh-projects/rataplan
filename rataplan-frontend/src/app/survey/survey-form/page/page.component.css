@@ -5,3 +5,11 @@ mat-radio-group mat-radio-button{
 mat-form-field, form {
   width: 100%;
 }
+
+mat-expansion-panel.cdk-drag mat-expansion-panel-header {
+  color: var(--mat-expansion-header-text-color);
+}
+
+mat-expansion-panel-header span {
+  align-content: center;
+}
