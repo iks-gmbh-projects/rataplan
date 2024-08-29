@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { combineLatestAll, Observable, of } from 'rxjs';
-import { defined } from '../../../operators/non-empty';
+import { Observable } from 'rxjs';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { surveyCreateActions } from '../state/survey-create.action';
 import { surveyCreateFeature } from '../state/survey-create.feature';
@@ -30,14 +29,8 @@ export class SurveyCreateFormComponent {
   }
   
   public submit(preview: boolean = false): void {
-    of(
-      this.headForm?.submit(),
-      this.pageForm?.submit(),
-    ).pipe(
-      defined,
-      combineLatestAll(),
-    ).subscribe(() => {
-      this.store.dispatch(preview ? surveyCreateActions.preview() : surveyCreateActions.postSurvey());
-    });
+    this.headForm?.submit();
+    this.pageForm?.submit();
+    this.store.dispatch(preview ? surveyCreateActions.preview() : surveyCreateActions.postSurvey());
   }
 }

@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Action, Store } from '@ngrx/store';
-import { first, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../../validator/validators';
 import { SurveyHead } from '../../../survey.model';
@@ -17,8 +17,38 @@ import { surveyCreateFeature } from '../../state/survey-create.feature';
 export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   public readonly head$: Observable<DeepPartial<SurveyHead> | undefined>;
   public readonly minStartDate$: Observable<Date>;
-  public readonly formGroup$;
-  private sub?: Subscription;
+  public readonly formGroup = new FormGroup({
+    id: new FormControl<string | number | null>(null),
+    accessId: new FormControl<string | null>(null),
+    participationId: new FormControl<string | null>(null),
+    name: new FormControl<string>(
+      '',
+      {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.maxLength(255),
+          ExtraValidators.containsSomeWhitespace,
+        ],
+      }
+    ),
+    description: new FormControl<string>(
+      '',
+      {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.maxLength(3000),
+          ExtraValidators.containsSomeWhitespace,
+        ],
+      }
+    ),
+    startDate: new FormControl<Date>(new Date(), {nonNullable: true}),
+    endDate: new FormControl<Date | null>(null),
+    openAccess: new FormControl<boolean>(false, {nonNullable: true}),
+    anonymousParticipation: new FormControl<boolean>(false, {nonNullable: true}),
+  });
+  private subs: Subscription[] = [];
   
   constructor(
     private readonly store: Store,
@@ -33,60 +63,40 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
         return d;
       }),
     );
-    this.formGroup$ = this.head$.pipe(
-      distinctUntilChanged(),
-      map(SurveyCreateFormHeadComponent.createSurvey),
-      shareReplay(1),
-    );
-  }
-  
-  private static createSurvey(survey?: DeepPartial<SurveyHead>) {
-    const startDate = new FormControl<Date | null>(survey?.startDate as Date ?? null);
-    const endDate = new FormControl<Date | null>(survey?.endDate as Date ?? null);
-    return new FormGroup({
-      id: new FormControl(survey?.id ?? null),
-      accessId: new FormControl(survey?.accessId ?? null),
-      participationId: new FormControl(survey?.participationId ?? null),
-      name: new FormControl(survey?.name ?? null, [
-        Validators.required,
-        Validators.maxLength(255),
-        ExtraValidators.containsSomeWhitespace,
-      ]),
-      description: new FormControl(survey?.description ?? null, [
-        Validators.required,
-        Validators.maxLength(3000),
-        ExtraValidators.containsSomeWhitespace,
-      ]),
-      startDate: startDate,
-      endDate: endDate,
-      openAccess: new FormControl(survey?.openAccess ?? false, {updateOn: 'change'}),
-      anonymousParticipation: new FormControl(survey?.anonymousParticipation ?? false, {updateOn: 'change'}),
-    }, {
-      updateOn: 'blur',
-    });
   }
   
   public ngOnInit(): void {
-    this.sub?.unsubscribe();
-    this.sub = this.formGroup$.pipe(
-      switchMap(form => form.valueChanges),
-    ).subscribe(value => this.doSubmit(value));
+    for(const sub of this.subs) sub.unsubscribe();
+    this.subs = [];
+    this.subs.push(combineLatest({v: this.head$, min: this.minStartDate$}).subscribe(({v, min}) => {
+      this.formGroup.patchValue({
+        id: v?.id ?? null,
+        accessId: v?.accessId ?? null,
+        participationId: v?.participationId ?? null,
+        name: v?.name ?? '',
+        description: v?.description ?? '',
+        startDate: v?.startDate as Date ?? min,
+        endDate: v?.endDate as Date ?? null,
+        openAccess: v?.openAccess ?? false,
+        anonymousParticipation: v?.anonymousParticipation ?? false,
+      }, {
+        emitEvent: false,
+      })
+    }))
+    this.subs.push(this.formGroup.valueChanges.subscribe(value => this.doSubmit(value)));
   }
   
   public ngOnDestroy(): void {
-    this.sub?.unsubscribe();
-    delete this.sub;
+    for(const sub of this.subs) sub.unsubscribe();
+    this.subs = [];
   }
   
   
-  public submit(): Observable<unknown> {
-    return this.formGroup$.pipe(
-      first(),
-      tap(({value}) => this.doSubmit(value)),
-    );
+  public submit(): void {
+    this.doSubmit(this.formGroup.value);
   }
   
-  doSubmit(value: typeof this.formGroup$ extends Observable<infer T extends AbstractControl> ? T['value'] : never, next?: Action): void {
+  doSubmit(value: typeof this.formGroup.value, next?: Action): void {
     this.store.dispatch(surveyCreateActions.setHead({
       head: {
         id: value.id ?? undefined,

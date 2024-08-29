@@ -1,13 +1,27 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Action, Store } from '@ngrx/store';
-import { first, Observable, Subscription } from 'rxjs';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
 import { ExtraValidators } from '../../../../validator/validators';
 import { Checkbox, Question, QuestionGroup } from '../../../survey.model';
 import { DeepPartial, surveyCreateActions } from '../../state/survey-create.action';
 import { surveyCreateFeature } from '../../state/survey-create.feature';
+
+function mergeFormArray<T, F extends AbstractControl>(data: T[], form: FormArray<F>, onChange: (v: T, f: F) => void, onNew: (v: T) => F): void {
+  let i = 0;
+  for(;i<data.length && i<form.length;i++) {
+    onChange(data[i], form.controls[i] as F);
+  }
+  if(form.length > i) {
+    form.controls.splice(i);
+  }
+  form.controls.push(...(data.slice(i).map(onNew)));
+  form.updateValueAndValidity({
+    emitEvent: false,
+  });
+}
 
 @Component({
   selector: 'app-survey-create-form-page',
@@ -16,10 +30,29 @@ import { surveyCreateFeature } from '../../state/survey-create.feature';
 })
 export class SurveyCreateFormPageComponent implements OnInit, OnDestroy {
   public readonly questionGroup$: Observable<DeepPartial<QuestionGroup> | undefined>;
-  public readonly form$;
+  public readonly form = new FormGroup({
+    id: new FormControl<string | number | null>(null),
+    title: new FormControl<string>(
+      '',
+      {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.maxLength(255),
+          ExtraValidators.containsSomeWhitespace,
+        ],
+      }
+    ),
+    questions: new FormArray<ReturnType<typeof SurveyCreateFormPageComponent.createQuestion>>(
+      [SurveyCreateFormPageComponent.createQuestion()],
+      Validators.required
+    ),
+  }, {
+    updateOn: 'blur',
+  });
   public readonly lastPage$: Observable<boolean>;
   public readonly onlyPage$: Observable<boolean>;
-  private sub?: Subscription;
+  private subs: Subscription[] = [];
   
   constructor(
     private readonly store: Store,
@@ -27,10 +60,6 @@ export class SurveyCreateFormPageComponent implements OnInit, OnDestroy {
   )
   {
     this.questionGroup$ = store.select(surveyCreateFeature.selectCurrentGroup);
-    this.form$ = this.questionGroup$.pipe(
-      map(SurveyCreateFormPageComponent.createQuestionGroup),
-      shareReplay(1),
-    );
     this.lastPage$ = store.select(surveyCreateFeature.selectSurveyCreationState).pipe(
       map(({groups, currentGroupIndex}) => currentGroupIndex >= groups.length-1)
     );
@@ -40,22 +69,32 @@ export class SurveyCreateFormPageComponent implements OnInit, OnDestroy {
   }
   
   public ngOnInit(): void {
-    this.sub?.unsubscribe();
-    this.sub = this.form$.pipe(
-      switchMap(f => f.valueChanges),
-    ).subscribe(v => this.doSubmit(v))
+    for(const sub of this.subs) sub.unsubscribe();
+    this.subs = [];
+    this.subs.push(this.questionGroup$.subscribe(g => {
+      this.form.patchValue({
+        id: g?.id,
+        title: g?.title,
+      }, {
+        emitEvent: false,
+      });
+      mergeFormArray(
+        g?.questions ?? [undefined],
+        this.form.controls.questions,
+        SurveyCreateFormPageComponent.updateQuestion,
+        SurveyCreateFormPageComponent.createQuestion
+      )
+    }));
+    this.subs.push(this.form.valueChanges.subscribe(v => this.doSubmit(v)));
   }
   
   public ngOnDestroy(): void {
-    this.sub?.unsubscribe();
-    delete this.sub;
+    for(const sub of this.subs) sub.unsubscribe();
+    this.subs = [];
   }
   
-  public submit(): Observable<unknown> {
-    return this.form$.pipe(
-      first(),
-      tap(form => form.valid ? this.doSubmit(form.value) : false),
-    );
+  public submit(): void {
+    if(this.form.valid) this.doSubmit(this.form.value);
   }
   
   remove(): void {
@@ -72,19 +111,42 @@ export class SurveyCreateFormPageComponent implements OnInit, OnDestroy {
       ]),
       questions: new FormArray(questionGroup?.questions?.map(SurveyCreateFormPageComponent.createQuestion, this) ??
         [SurveyCreateFormPageComponent.createQuestion()], Validators.required),
-    }, {
-      updateOn: 'blur',
     });
+  }
+  
+  public static updateQuestion(question: DeepPartial<Question> | undefined, fg: ReturnType<typeof SurveyCreateFormPageComponent.createQuestion>): void {
+    fg.patchValue({
+      id: question?.id ?? null,
+      text: question?.text ?? null,
+      type: question?.type ?? 'OPEN',
+      required: question?.required ?? false,
+      minSelect: question?.minSelect ?? 0,
+      maxSelect: question?.maxSelect ?? 1,
+    }, {
+      emitEvent: false,
+    });
+    mergeFormArray(
+      question?.choices ?? [undefined],
+      fg.controls.choices,
+      SurveyCreateFormPageComponent.updateCheckbox,
+      v => SurveyCreateFormPageComponent.createCheckbox(fg.controls.type, v),
+    );
   }
   
   public static createQuestion(question?: DeepPartial<Question>) {
     const type = new FormControl<Question['type']>(question?.type ?? 'OPEN', {
-      updateOn: 'change',
+      nonNullable: true,
     });
-    const checkboxes = new FormArray<ReturnType<typeof SurveyCreateFormPageComponent.createCheckbox>>(question?.choices?.map(
-      c => SurveyCreateFormPageComponent.createCheckbox(type, c),
-      this,
-    ) ?? [SurveyCreateFormPageComponent.createCheckbox(type)]);
+    const checkboxes = new FormArray<ReturnType<typeof SurveyCreateFormPageComponent.createCheckbox>>(
+      question?.choices?.map(
+        c => SurveyCreateFormPageComponent.createCheckbox(type, c),
+        this,
+      ) ?? [SurveyCreateFormPageComponent.createCheckbox(type)],
+      [
+        ExtraValidators.toggledValidator(Validators.minLength(1), () => type.value === 'CHOICE'),
+        ExtraValidators.toggledValidator(Validators.minLength(2), () => type.value === 'ORDER'),
+      ]
+    );
     const minSelect = new FormControl(
       question?.minSelect ?? 0,
       [ExtraValidators.integer, Validators.min(0), ExtraValidators.indexValue(checkboxes, true)].map(
@@ -109,18 +171,26 @@ export class SurveyCreateFormPageComponent implements OnInit, OnDestroy {
         ExtraValidators.containsSomeWhitespace,
       ]),
       type: type,
-      required: new FormControl(question?.required ?? false, {
-        updateOn: 'change',
-      }),
+      required: new FormControl(question?.required ?? false, {nonNullable: true}),
       minSelect: minSelect,
       maxSelect: maxSelect,
       choices: checkboxes,
     });
   }
   
-  readonly createQuestion = SurveyCreateFormPageComponent.createQuestion;
+  protected readonly createQuestion = SurveyCreateFormPageComponent.createQuestion;
   
-  public static createCheckbox(type: AbstractControl<Question['type'] | null | undefined>, checkbox?: DeepPartial<Checkbox>) {
+  public static updateCheckbox(checkbox: DeepPartial<Checkbox> | undefined, fg: ReturnType<typeof SurveyCreateFormPageComponent.createCheckbox>): void {
+    fg.patchValue({
+      id: checkbox?.id ?? null,
+      text: checkbox?.text ?? null,
+      hasTextField: checkbox?.hasTextField ?? false,
+    }, {
+      emitEvent: false,
+    });
+  }
+  
+  public static createCheckbox(type: AbstractControl<Question['type']>, checkbox?: DeepPartial<Checkbox>) {
     return new FormGroup({
       id: new FormControl(checkbox?.id ?? null),
       text: new FormControl(checkbox?.text ?? null, [
@@ -128,9 +198,7 @@ export class SurveyCreateFormPageComponent implements OnInit, OnDestroy {
         Validators.maxLength(255),
         ExtraValidators.containsSomeWhitespace,
       ].map(v => ExtraValidators.toggledValidator(v, () => type.value === 'CHOICE'))),
-      hasTextField: new FormControl(checkbox?.hasTextField ?? false, {
-        updateOn: 'change',
-      }),
+      hasTextField: new FormControl(checkbox?.hasTextField ?? false, {nonNullable: true}),
       answers: new FormArray([]),
     });
   }
@@ -169,6 +237,19 @@ export class SurveyCreateFormPageComponent implements OnInit, OnDestroy {
                 id: c.id ?? undefined,
                 text: c.text ?? undefined,
                 hasTextField: c.hasTextField ?? false,
+              };
+            })
+          };
+        case 'ORDER':
+          return {
+            id: q.id ?? undefined,
+            type: q.type,
+            rank: i,
+            text: q.text ?? undefined,
+            choices: q.choices?.map((c: ReturnType<typeof SurveyCreateFormPageComponent.createCheckbox>['value']): DeepPartial<Checkbox> => {
+              return {
+                id: c.id ?? undefined,
+                text: c.text ?? undefined,
               };
             })
           };
