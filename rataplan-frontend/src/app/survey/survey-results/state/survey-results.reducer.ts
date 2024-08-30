@@ -8,9 +8,9 @@ export const surveyResultsReducer = createReducer<{
   survey: Survey | undefined,
   results: SurveyResponse[] | undefined,
   error: any,
-  tableColumns: Record<string | number, Record<string | number, string[] | undefined> | undefined> | undefined,
-  exportTableColumns: Record<string | number, Record<string | number, string[] | undefined> | undefined> | undefined,
-  charts: Record<string | number, Record<string | number, ChartData<'pie'> | undefined> | undefined> | undefined,
+  tableColumns: Partial<Record<string | number, Partial<Record<string | number, string[]>>>> | undefined,
+  exportTableColumns: Partial<Record<string | number, Partial<Record<string | number, string[]>>>> | undefined,
+  charts: Partial<Record<string | number, Partial<Record<string | number, ChartData<'pie'>>>>> | undefined,
 }>(
   {
     busy: false,

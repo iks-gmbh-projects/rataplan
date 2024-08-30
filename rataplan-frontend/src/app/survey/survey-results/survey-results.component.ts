@@ -15,8 +15,8 @@ import { surveyResultsFeature } from './state/survey-results.feature';
 })
 export class SurveyResultsComponent {
   public readonly survey$: Observable<Survey>;
-  public readonly tableColumns$: Observable<Record<string | number, Record<string | number, string[] | undefined> | undefined>>
-  public readonly charts$: Observable<Record<string | number, Record<string | number, ChartData<'pie'> | undefined> | undefined>>;
+  public readonly tableColumns$: Observable<Partial<Record<string | number, Partial<Record<string | number, string[]>>>>>;
+  public readonly charts$: Observable<Partial<Record<string | number, Partial<Record<string | number, ChartData<'pie'>>>>>>;
   public readonly answers$: Observable<SurveyResponse[]>;
   public readonly busy$: Observable<boolean>;
   public readonly delayedBusy$: Observable<boolean>;
@@ -74,6 +74,43 @@ export class SurveyResultsComponent {
     }
     if(total > 0) return count*100/total;
     else return NaN;
+  }
+  
+  /**
+   * Determines an overall ranking of the choices of an OrderQuestion using STV (Single Transferable Vote)
+   */
+  protected orderRanking(groupId: string | number, questionRank: string | number, answers: SurveyResponse[]): Partial<Record<string|number, number>> {
+    const ret: Partial<Record<string | number, number>> = {};
+    const votes: Partial<Record<string | number, Iterator<string | number>[]>> = {};
+    for(const result of answers) {
+      const order = result.answers[groupId]?.[questionRank]?.order;
+      if(order) {
+        const it = order[Symbol.iterator]();
+        const r = it.next();
+        if(!r.done) {
+          votes[r.value]??=[];
+          votes[r.value]!.push(it);
+        }
+      }
+    }
+    while(true) {
+      const [minId, minL, n] = Object.entries(votes).reduce<[keyof typeof votes, Iterator<string|number>[] | undefined, number]>(
+        ([ida, la, n], [idv, lv]) => lv !== undefined && (la === undefined || lv.length < la.length) ? [idv, lv, n+1] : [ida, la, n+1],
+        [-1, undefined, 0],
+      );
+      if(minL === undefined) break;
+      ret[minId] = n;
+      delete votes[minId];
+      for(const it of minL) {
+        for(let r = it.next(); !r.done; r = it.next()) {
+          if(r.value in votes) {
+            votes[r.value]?.push(it);
+            break;
+          }
+        }
+      }
+    }
+    return ret;
   }
   
   public downloadResults(): void {

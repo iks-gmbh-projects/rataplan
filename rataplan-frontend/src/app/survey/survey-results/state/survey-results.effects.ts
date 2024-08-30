@@ -129,6 +129,10 @@ export class SurveyResultsEffects {
             gr[question.rank] = qr;
             egr[question.rank] = eqr;
             switch(question.type) {
+            case 'OPEN':
+              qr.push('answer');
+              eqr.push('Antwort');
+              break;
             case 'CHOICE':
               let txt = false;
               for(let checkbox of question.choices!) {
@@ -143,9 +147,13 @@ export class SurveyResultsEffects {
                 eqr.push('Antwort');
               }
               break;
-            case 'OPEN':
-              qr.push('answer');
-              eqr.push('Antwort');
+            case 'ORDER':
+              for(let checkbox of question.choices!) {
+                if(checkbox.id) {
+                  qr.push('checkbox' + checkbox.id);
+                  eqr.push(safeEscape(checkbox.text));
+                }
+              }
               break;
             }
           }
@@ -168,7 +176,7 @@ export class SurveyResultsEffects {
           {gId: qg.id!, question: q}
         ))))
       {
-        if(question.rank === undefined || !question.choices) continue;
+        if(question.rank === undefined || question.type != 'CHOICE') continue;
         const dataset: number[] = [];
         const datalabels: string[] = [];
         const datacolors: Color[] = [];
@@ -223,16 +231,20 @@ export class SurveyResultsEffects {
                 tableColumns[groupId]?.[question.rank]?.join(', '),
                 ...results.map(response => {
                   const answer = response.answers[groupId]?.[question.rank];
-                  const ret = [
-                    response.userId || 'Anonym',
-                    ...columns.filter(col => col.startsWith('checkbox')).map(col => answer?.checkboxes?.[col.substring(
-                      8)]),
-                    ...(
-                      columns[columns.length - 1] === 'answer' ?
-                        [escape(answer?.text)] :
-                        []
-                    ),
-                  ];
+                  const ret: any[] = [response.userId || 'Anonym'];
+                  switch(question.type) {
+                  case 'CHOICE':
+                    ret.push(...columns.filter(col => col.startsWith('checkbox'))
+                      .map(col => answer?.checkboxes?.[col.substring(8)])
+                    );
+                    break;
+                  case 'ORDER':
+                    ret.push(...columns.filter(col => col.startsWith('checkbox'))
+                      .map(col => answer?.order?.findIndex(v => v == col.substring(8))!+1)
+                    );
+                    break;
+                  }
+                  if(columns[columns.length - 1] === 'answer') ret.push(escape(answer?.text));
                   return ret.join(', ');
                 }),
               ];
