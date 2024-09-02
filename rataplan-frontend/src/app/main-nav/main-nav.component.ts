@@ -83,7 +83,11 @@ export class MainNavComponent implements OnInit, OnDestroy {
   onClick() {
     if(!this.currentUser) {
       this.trigger?.closeMenu();
-      this.router.navigateByUrl('/login');
+      this.router.navigate(['/login'], {
+        queryParams: {
+          redirect: document.location.href,
+        },
+      });
     } else {
       this.trigger?.openMenu();
     }
