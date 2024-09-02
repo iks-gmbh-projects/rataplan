@@ -1,6 +1,6 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { ChartData } from 'chart.js';
 import { Survey, SurveyResponse } from '../../survey.model';
+import { AnswerCharts } from './survey-results.reducer';
 
 export const surveyResultsAction = createActionGroup({
   source: 'Survey Results',
@@ -13,7 +13,7 @@ export const surveyResultsAction = createActionGroup({
       tableColumns: Record<string | number, Record<string | number, string[] | undefined> | undefined>,
       exportTableColumns: Record<string | number, Record<string | number, string[] | undefined> | undefined>,
     }>(),
-    'Compute Chart Data': props<{charts: Record<string | number, Record<string | number, ChartData<'pie'> | undefined> | undefined>}>(),
+    'Compute Chart Data': props<{charts: Partial<Record<string | number, Partial<Record<string | number, AnswerCharts>>>>}>(),
     'Download Results': emptyProps(),
   }
 });

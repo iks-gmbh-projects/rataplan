@@ -1,0 +1,15 @@
+.chartHead {
+    display: grid;
+    width: 100%;
+    grid-template-columns: auto min-content auto;
+}
+
+.chartHead>* {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.chartHeadAll {
+    grid-column: 1 / span 3;
+}

@@ -1,0 +1,88 @@
+@switch (charts.type) {
+  @case ('CHOICE') {
+    <canvas
+      baseChart
+      type="pie"
+      [data]="charts.distribution"
+    ></canvas>
+  }
+  @case ('ORDER') {
+    <mat-tab-group>
+      <mat-tab label="Elemente pro Position">
+        <ng-template matTabContent>
+          <div class="chartHead">
+            <mat-form-field class="chartHeadAll">
+              <mat-label>Position</mat-label>
+              <mat-select [(value)]="positionSelect">
+                <mat-select-trigger [textContent]="positionSelect+1"/>
+                @for (d of charts.elementPerPosition; track $index) {
+                  <mat-option [value]="$index" [textContent]="$index+1"/>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <canvas
+            *ngIf="charts.elementPerPosition[positionSelect] as data"
+            baseChart
+            type="pie"
+            [data]="cpy(data)"
+          ></canvas>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Position pro Element">
+        <ng-template matTabContent>
+          <div class="chartHead">
+            <mat-form-field class="chartHeadAll">
+              <mat-label>Element</mat-label>
+              <mat-select [(value)]="elementSelect">
+                <mat-select-trigger [textContent]="getChoiceText(elementSelect)"/>
+                @for (c of question.choices!; track c.id) {
+                  <mat-option [value]="''+c.id" [textContent]="c.text"/>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <canvas
+            *ngIf="charts.positionPerElement[elementSelect] as data"
+            baseChart
+            type="pie"
+            [data]="cpy(data)"
+          ></canvas>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Rangvergleich">
+        <ng-template matTabContent>
+          <div class="chartHead">
+            <mat-form-field>
+              <mat-label>Element A</mat-label>
+              <mat-select [(value)]="element1Select">
+                <mat-select-trigger [textContent]="getChoiceText(element1Select)"/>
+                @for (c of question.choices!; track c.id) {
+                  <mat-option [disabled]="c.id == element2Select" [value]="''+c.id" [textContent]="c.text"/>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button type="button" mat-icon-button (click)="swapSelection()">
+              <mat-icon>swap_horiz</mat-icon>
+            </button>
+            <mat-form-field>
+              <mat-label>Element B</mat-label>
+              <mat-select [(value)]="element2Select">
+                <mat-select-trigger [textContent]="getChoiceText(element2Select)"/>
+                @for (c of question.choices!; track c.id) {
+                  <mat-option [disabled]="c.id == element1Select" [value]="''+c.id" [textContent]="c.text"/>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <canvas
+            *ngIf="charts.elementComparison[element1Select]?.[element2Select] as data"
+            baseChart
+            type="pie"
+            [data]="cpy(data)"
+          ></canvas>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  }
+}

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ChartData } from 'chart.js';
-import { Observable, of, share, timer } from 'rxjs';
+import { Observable, of, timer } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { defined } from '../../operators/non-empty';
 import { Question, Survey, SurveyResponse } from '../survey.model';
 import { surveyResultsAction } from './state/survey-results.action';
 import { surveyResultsFeature } from './state/survey-results.feature';
+import { AnswerCharts } from './state/survey-results.reducer';
 
 @Component({
   selector: 'app-survey-results',
@@ -16,7 +16,7 @@ import { surveyResultsFeature } from './state/survey-results.feature';
 export class SurveyResultsComponent {
   public readonly survey$: Observable<Survey>;
   public readonly tableColumns$: Observable<Partial<Record<string | number, Partial<Record<string | number, string[]>>>>>;
-  public readonly charts$: Observable<Partial<Record<string | number, Partial<Record<string | number, ChartData<'pie'>>>>>>;
+  public readonly charts$: Observable<Partial<Record<string | number, Partial<Record<string | number, AnswerCharts>>>>>;
   public readonly answers$: Observable<SurveyResponse[]>;
   public readonly busy$: Observable<boolean>;
   public readonly delayedBusy$: Observable<boolean>;
@@ -27,14 +27,6 @@ export class SurveyResultsComponent {
     this.tableColumns$ = store.select(surveyResultsFeature.selectTableColumns).pipe(defined);
     this.charts$ = store.select(surveyResultsFeature.selectCharts).pipe(
       defined,
-      map(data => Object.fromEntries(Object.entries(data).map(
-        ([gid, g]) => [gid, g ? Object.fromEntries(Object.entries(g).map(
-          ([qid, q]) => [qid, {
-            ...q!,
-          }]
-        )) : g]
-      ))),
-      share(),
     );
     this.answers$ = store.select(surveyResultsFeature.selectResults).pipe(defined);
     this.busy$ = store.select(surveyResultsFeature.selectBusy);
@@ -116,4 +108,6 @@ export class SurveyResultsComponent {
   public downloadResults(): void {
     this.store.dispatch(surveyResultsAction.downloadResults());
   }
+  
+  protected readonly Object = Object;
 }

@@ -27,6 +27,7 @@ import { SurveyMissingComponent } from './survey-missing/survey-missing.componen
 import { SurveyOwnerViewComponent } from './survey-owner-view/survey-owner-view.component';
 import { SurveyResultsEffects } from './survey-results/state/survey-results.effects';
 import { surveyResultsFeature } from './survey-results/state/survey-results.feature';
+import { SurveyResultChartsComponent } from './survey-results/survey-result-charts/survey-result-charts.component';
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unknown-error.component';
 import { SurveyRoutingModule } from './survey.routing.module';
@@ -49,6 +50,7 @@ import { SurveyRoutingModule } from './survey.routing.module';
     SurveyUnknownErrorComponent,
     SurveyCreateFormHeadComponent,
     SurveyCreateFormPageComponent,
+    SurveyResultChartsComponent,
   ],
   imports: [
     AppCommonModule,

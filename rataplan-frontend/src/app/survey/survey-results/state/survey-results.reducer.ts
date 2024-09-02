@@ -3,6 +3,17 @@ import { ChartData } from 'chart.js';
 import { Survey, SurveyResponse } from '../../survey.model';
 import { surveyResultsAction } from './survey-results.action';
 
+export type AnswerCharts = {
+  type: 'CHOICE',
+  distribution: ChartData<'pie'>,
+  individual: Partial<Record<string | number, ChartData<'pie'>>>,
+} | {
+  type: 'ORDER',
+  positionPerElement: Partial<Record<string | number, ChartData<'pie'>>>,
+  elementPerPosition: ChartData<'pie'>[],
+  elementComparison: Partial<Record<string | number, Partial<Record<string | number, ChartData<'pie'>>>>>,
+};
+
 export const surveyResultsReducer = createReducer<{
   busy: boolean,
   survey: Survey | undefined,
@@ -10,7 +21,7 @@ export const surveyResultsReducer = createReducer<{
   error: any,
   tableColumns: Partial<Record<string | number, Partial<Record<string | number, string[]>>>> | undefined,
   exportTableColumns: Partial<Record<string | number, Partial<Record<string | number, string[]>>>> | undefined,
-  charts: Partial<Record<string | number, Partial<Record<string | number, ChartData<'pie'>>>>> | undefined,
+  charts: Partial<Record<string | number, Partial<Record<string | number, AnswerCharts>>>> | undefined,
 }>(
   {
     busy: false,

@@ -12,6 +12,7 @@ import { routerSelectors } from '../../../router.selectors';
 import { Survey, SurveyResponse } from '../../survey.model';
 import { surveyResultsAction } from './survey-results.action';
 import { surveyResultsFeature } from './survey-results.feature';
+import { AnswerCharts } from './survey-results.reducer';
 
 function safeEscape(str: string): string {
   return '"' + str.replace(/"/, '""') + '"';
@@ -170,44 +171,110 @@ export class SurveyResultsEffects {
       survey && results
     )),
     map(({survey, results}) => {
-      const data: Record<string | number, Record<string | number, ChartData<'pie'> | undefined> | undefined> = {};
+      const data: Partial<Record<string | number, Partial<Record<string | number, AnswerCharts>>>> = {};
       for(const {gId, question} of
         survey!.questionGroups.flatMap(qg => qg.questions.map(q => (
           {gId: qg.id!, question: q}
         ))))
       {
-        if(question.rank === undefined || question.type != 'CHOICE') continue;
-        const dataset: number[] = [];
-        const datalabels: string[] = [];
-        const datacolors: Color[] = [];
-        const red = inf(reds);
-        const green = inf(greens);
-        const other = inf(colors);
-        for(const checkbox of question.choices) {
-          if(!checkbox.id) continue;
-          let count = 0;
-          for(let response of results!) {
-            let answer = response.answers[gId]?.[question.rank];
-            if(answer && answer.checkboxes![checkbox.id]) count++;
-          }
-          dataset.push(count);
-          datalabels.push(checkbox.text);
-          if(/ja|yes/i.test(checkbox.text)) datacolors.push(green.next().value);
-          else if(/nein|no/i.test(checkbox.text)) datacolors.push(red.next().value);
-          else datacolors.push(other.next().value);
-        }
-        if(dataset.reduce((a, v) => a + v, 0) === 0) continue;
-        (
-          data[gId] ??= {}
-        )[question.rank] = {
-          datasets: [
-            {
-              data: dataset,
-              backgroundColor: datacolors,
+        if(question.rank === undefined) continue;
+        switch(question.type) {
+        case 'CHOICE':
+          const choiceAnswers: AnswerCharts = {
+            type: 'CHOICE',
+            distribution: {
+              datasets: [{
+                data: [],
+                backgroundColor: [],
+              }],
+              labels: [],
             },
-          ],
-          labels: datalabels,
-        };
+            individual: {},
+          };
+          const red = inf(reds);
+          const green = inf(greens);
+          const other = inf(colors);
+          for(const checkbox of question.choices) {
+            if(!checkbox.id) continue;
+            const individual: ChartData<'pie'> = {
+              datasets: [{
+                data: [0, 0],
+                backgroundColor: [greens[0], reds[0]],
+              }],
+              labels: ['Ja', 'Nein'],
+            };
+            choiceAnswers.individual[checkbox.id] = individual;
+            for(const response of results!) {
+              const answer = response.answers[gId]?.[question.rank];
+              if(!answer) continue;
+              if(answer.checkboxes![checkbox.id]) {
+                individual.datasets[0].data[0]++;
+              } else {
+                individual.datasets[0].data[1]++;
+              }
+            }
+            choiceAnswers.distribution.datasets[0].data.push(individual.datasets[0].data[0]);
+            choiceAnswers.distribution.labels!.push(checkbox.text);
+            let color: Color;
+            if(/ja|yes/i.test(checkbox.text)) color = green.next().value;
+            else if(/nein|no/i.test(checkbox.text)) color = red.next().value;
+            else color = other.next().value;
+            (choiceAnswers.distribution.datasets[0].backgroundColor as Color[]).push(color);
+          }
+          if(choiceAnswers.distribution.datasets[0].data.reduce((a, v) => a + v, 0) === 0) continue;
+          (
+            data[gId] ??= {}
+          )[question.rank] = choiceAnswers;
+          break;
+        case 'ORDER':
+          const oid = question.choices.reduce<Record<string | number, number>>((a, v, i) => {
+            a[v.id!] = i;
+            return a;
+          }, {})
+          const orderAnswers: AnswerCharts = {
+            type: 'ORDER',
+            elementPerPosition: question.choices.map(() => ({
+              datasets: [{
+                data: question.choices.map(() => 0),
+              }],
+              labels: question.choices.map(c => c.text),
+            })),
+            positionPerElement: Object.fromEntries(question.choices.map(c => [c.id, {
+              datasets: [{
+                data: question.choices.map(() => 0),
+              }],
+              labels: question.choices.map((c, i) => i+1),
+            }])),
+            elementComparison: Object.fromEntries(question.choices.map(c => [c.id!,
+              Object.fromEntries(question.choices.filter(c2 => c2 !== c).map((c2): [string | number, ChartData<'pie'>] => [c2.id!, {
+                datasets: [{
+                  data: [0, 0],
+                  backgroundColor: [greens[0], reds[0]],
+                }],
+                labels: ['A vor B', 'B vor A'],
+              }])),
+            ])),
+          };
+          for(const response of results!) {
+            const answer = response.answers[gId]?.[question.rank];
+            if(!answer) continue;
+            const dataIdx: Partial<Record<string | number, 0|1>> = Object.fromEntries(question.choices.map(c => [c.id, 1]));
+            answer.order!.forEach((cid, idx) => {
+              orderAnswers.elementPerPosition[idx].datasets[0].data[oid[cid]]++;
+              orderAnswers.positionPerElement[cid]!.datasets[0].data[idx]++;
+              dataIdx[cid] = 0;
+              for(const [c2id, d] of Object.entries(dataIdx)) {
+                if(c2id == cid) continue;
+                orderAnswers.elementComparison[cid]![c2id]!.datasets[0].data[d!]++;
+                orderAnswers.elementComparison[c2id]![cid]!.datasets[0].data[1-d!]++;
+              }
+            });
+          }
+          (
+            data[gId] ??= {}
+          )[question.rank] = orderAnswers;
+          break;
+        }
       }
       return data;
     }),
