@@ -34,39 +34,42 @@ export class VoteFormEffects {
   }
   
   initVote = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(voteFormAction.init),
-      switchMap(({id}) => {
-        if(!id) return of(voteFormAction.initSuccess({vote: {
-          title: '',
-          deadline: '',
-          voteConfig: {
-            voteOptionConfig: {
-              startDate: true,
-              startTime: false,
-              endDate: false,
-              endTime: false,
-              description: false,
-              url: false,
-            },
-            decisionType: DecisionType.DEFAULT,
-          },
-          options: [],
-          participants: [],
-          consigneeList: [],
-          userConsignees: [],
-        }}));
-        else return this.store.select(configFeature.selectVoteBackendUrl('votes', 'edit', id)).pipe(
-          defined,
-          first(),
-          switchMap(url => this.http.get<VoteModel<true>>(url, {withCredentials: true})),
-          map(deserializeVoteModel),
-          map(vote => voteFormAction.initSuccess({vote})),
-          catchError(err => of(voteFormAction.initError(err))),
-        );
-      }),
-    );
-  });
+      return this.actions$.pipe(
+        ofType(voteFormAction.init),
+        switchMap(({id}) => {
+          if(!id) return of(voteFormAction.initSuccess({
+              vote: {
+                title: '',
+                deadline: '',
+                voteOptionConfig: {
+                  startDate: true,
+                  startTime: false,
+                  endDate: false,
+                  endTime: false,
+                  description: false,
+                  url: false,
+                },
+                decisionType: DecisionType.DEFAULT,
+                options: [],
+                participants: [],
+                consigneeList: [],
+                userConsignees: [],
+              },
+            }),
+          );
+          else
+            return this.store.select(configFeature.selectVoteBackendUrl('votes', 'edit', id)).pipe(
+              defined,
+              first(),
+              switchMap(url => this.http.get<VoteModel<true>>(url, {withCredentials: true})),
+              map(deserializeVoteModel),
+              map(vote => voteFormAction.initSuccess({vote})),
+              catchError(err => of(voteFormAction.initError(err))),
+            );
+        }))
+    },
+  )
+  ;
   
   preview = createEffect(() => this.actions$.pipe(
     ofType(voteFormAction.preview),
@@ -110,6 +113,9 @@ export class VoteFormEffects {
         }
       }),
       map(([request, url]) => {
+        const config = request.request.voteOptionConfig!;
+        request.request = {...request.request, startTime: config.startTime, endTime: config.endTime};
+        delete request.request.voteOptionConfig;
         if(request.request.id) {
           const sanatizedRequest: Partial<VoteModel> = {...request.request};
           if(!request.appointmentsEdited) {

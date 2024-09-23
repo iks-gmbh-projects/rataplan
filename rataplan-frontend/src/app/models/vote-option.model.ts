@@ -5,7 +5,6 @@ export type VoteOptionModel<serialized extends boolean = false> = {
   startDate?: serialized extends false ? string : (string|number),
   endDate?: serialized extends false ? string : (string|number),
   url?: string,
-  participantLimitActive?:boolean,
   participantLimit?:number | null,
 };
 

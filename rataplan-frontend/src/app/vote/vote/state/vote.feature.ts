@@ -33,7 +33,7 @@ export const voteFeature = createFeature({
                 optionId: o.id!,
                 participantId: vote?.participants?.[idx]?.id,
                 ...(
-                  vote?.voteConfig?.decisionType === DecisionType.NUMBER ?
+                  vote?.decisionType === DecisionType.NUMBER ?
                     {
                       participants: participants[o.id!] ??
                         vote?.participants?.[idx]?.decisions?.find(d => d.optionId === o.id!)?.participants ?? 0,
