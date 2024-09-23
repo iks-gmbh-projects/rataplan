@@ -35,17 +35,16 @@ function canChooseDecision(
 {
   switch(decision) {
   case VoteOptionDecisionType.ACCEPT_IF_NECESSARY:
-    return vote.voteConfig.decisionType == DecisionType.EXTENDED;
+    return vote.decisionType == DecisionType.EXTENDED;
   case VoteOptionDecisionType.ACCEPT:
     if(isParticipantLimitMet(optionAccepts, voteOption)) return false;
-    if(!vote.voteConfig.yesLimitActive) return true;
-    return myOtherAccepts < vote.voteConfig.yesAnswerLimit!;
+    return myOtherAccepts < vote.yesAnswerLimit!;
   }
   return true;
 }
 
 function isParticipantLimitMet(optionAccepts: number, voteOption: VoteOptionModel): boolean {
-  if(!voteOption.participantLimitActive) return false;
+  if(voteOption.participantLimit === null) return false;
   return optionAccepts >= voteOption.participantLimit!;
 }
 
@@ -177,18 +176,25 @@ export const voteReducer = createReducer<{
         ...state,
         participantDecisionOverride: state.vote ? {
           ...state.participantDecisionOverride,
+          
           [option]: cycle(
+            
+            
             state.participantDecisionOverride[option] ??
             state.vote.participants[state.participantIndex]?.decisions?.find(d => d.optionId === option)?.decision ??
             VoteOptionDecisionType.NO_ANSWER,
-            state.vote.options.reduce((a, o) => {
-              if((
+            
+            state.vote.options.reduce(
+              (a, o) => {
+              if(
+                (
                 state.participantDecisionOverride[o.id!] ??
                 state.vote!.participants[state.participantIndex]?.decisions?.find(d => d.optionId ===
                   option)?.decision
               ) === VoteOptionDecisionType.ACCEPT) return a + 1;
               return a;
-            }, 0) ?? 0,
+            }, 0),
+            
             state.vote.participants.reduce((a, p) => {
               if(p.decisions.find(d => d.optionId === option)?.decision === VoteOptionDecisionType.ACCEPT) {
                 return a + 1;
@@ -196,7 +202,8 @@ export const voteReducer = createReducer<{
               return a;
             }, 0),
             state.vote.options.find(o => o.id === option)!,
-            state.vote
+            
+            state.vote,
           ),
         } : state.participantDecisionOverride,
       }

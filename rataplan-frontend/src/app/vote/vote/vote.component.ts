@@ -64,7 +64,7 @@ export class VoteComponent {
       data: {
         vote: voteOption,
         voteParticipants: vote.participants,
-        decisionType: vote.voteConfig.decisionType,
+        decisionType: vote.decisionType,
       },
       autoFocus: false,
     });
