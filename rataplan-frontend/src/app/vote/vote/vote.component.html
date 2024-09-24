@@ -97,7 +97,7 @@
         </button>
         <span style="margin-right: 1rex" class="verticalCenter" [textContent]="countParticipants(option, state.vote)"></span>
         <mat-form-field
-          *ngIf="vote?.voteConfig?.decisionType === DecisionType.NUMBER; else decisionComplex"
+          *ngIf="(vote$|async)?.decisionType === DecisionType.NUMBER; else decisionComplex"
           appearance="fill"
           style="width: 8vw; min-width: 50px; max-width: 175px"
         >

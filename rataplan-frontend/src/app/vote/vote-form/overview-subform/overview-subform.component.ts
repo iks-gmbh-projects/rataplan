@@ -7,10 +7,7 @@ import { filter, Observable, of, Subscription } from 'rxjs';
 
 import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
-import { ConfigSubformComponent } from '../config-subform/config-subform.component';
 import { ExtraValidators } from '../../../validator/validators';
-import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../../vote.actions';
-import { voteFeature } from '../../vote.feature';
 import { ConfigSubformComponent } from '../config-subform/config-subform.component';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
