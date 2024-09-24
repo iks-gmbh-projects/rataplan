@@ -41,7 +41,7 @@ export class AuthEffects {
         nonUndefined,
       )),
       switchMap(([action, url]) => {
-        return this.httpClient.post<FrontendUser>(url, action.user, {withCredentials: true})
+        return this.httpClient.post<FrontendUser>(url, action.user)
           .pipe(
             map(user => authActions.registerSuccess({user})),
             tap(() => this.router.navigateByUrl(action.redirect || '/confirm-account')),
