@@ -72,32 +72,45 @@ export class SurveyResultsComponent {
    * Determines an overall ranking of the choices of an OrderQuestion using STV (Single Transferable Vote)
    */
   protected orderRanking(groupId: string | number, questionRank: string | number, answers: SurveyResponse[]): Partial<Record<string|number, number>> {
-    const ret: Partial<Record<string | number, number>> = {};
-    const votes: Partial<Record<string | number, Iterator<string | number>[]>> = {};
+    const options = new Set<string>();
     for(const result of answers) {
       const order = result.answers[groupId]?.[questionRank]?.order;
-      if(order) {
-        const it = order[Symbol.iterator]();
-        const r = it.next();
-        if(!r.done) {
-          votes[r.value]??=[];
-          votes[r.value]!.push(it);
+      order?.map(String)?.forEach(options.add, options);
+    }
+    const ret: Partial<Record<string | number, number>> = {};
+    while(Object.keys(ret).length < options.size) {
+      const processed = Object.keys(ret).length;
+      const votes: Partial<Record<string | number, Iterator<string | number>[]>> = Object.fromEntries(
+        [...options].filter(k => !(k in ret)).map(k => [k, []])
+      );
+      for(const result of answers) {
+        const order = result.answers[groupId]?.[questionRank]?.order;
+        if(order) {
+          const it = order[Symbol.iterator]();
+          for(let r = it.next(); !r.done; r = it.next()) {
+            if(r.value in votes) {
+              votes[r.value]!.push(it);
+              break;
+            }
+          }
         }
       }
-    }
-    while(true) {
-      const [minId, minL, n] = Object.entries(votes).reduce<[keyof typeof votes, Iterator<string|number>[] | undefined, number]>(
-        ([ida, la, n], [idv, lv]) => lv !== undefined && (la === undefined || lv.length < la.length) ? [idv, lv, n+1] : [ida, la, n+1],
-        [-1, undefined, 0],
-      );
-      if(minL === undefined) break;
-      ret[minId] = n;
-      delete votes[minId];
-      for(const it of minL) {
-        for(let r = it.next(); !r.done; r = it.next()) {
-          if(r.value in votes) {
-            votes[r.value]?.push(it);
-            break;
+      while(true) {
+        const [minId, minL, n] = Object.entries(votes).reduce<[keyof typeof votes, Iterator<string | number>[] | undefined, number]>(
+          ([ida, la, n], [idv, lv]) => lv !== undefined && (
+            la === undefined || lv.length < la.length
+          ) ? [idv, lv, n + 1] : [ida, la, n + 1],
+          [-1, undefined, processed],
+        );
+        if(minL === undefined) break;
+        ret[minId] = n;
+        delete votes[minId];
+        for(const it of minL) {
+          for(let r = it.next(); !r.done; r = it.next()) {
+            if(r.value in votes) {
+              votes[r.value]!.push(it);
+              break;
+            }
           }
         }
       }
