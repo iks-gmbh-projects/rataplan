@@ -38,7 +38,7 @@ import { VoteComponent } from './vote/vote.component';
     ConfigSubformComponent,
     OverviewSubformComponent,
     VoteListComponent,
-    
+    VoteFormComponent,
     VoteResultsComponent,
     VoteOptionInfoDialogComponent,
   ],

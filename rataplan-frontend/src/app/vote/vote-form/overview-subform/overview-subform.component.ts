@@ -7,16 +7,14 @@ import { filter, Observable, of, Subscription } from 'rxjs';
 
 import { VoteOptionConfig, VoteOptionModel } from '../../../models/vote-option.model';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
-import { ConfigSubformComponent } from '../config-subform/config-subform.component';
 import { ExtraValidators } from '../../../validator/validators';
-import { AddVoteOptionsAction, EditVoteOptionAction, RemoveVoteOptionAction } from '../../vote.actions';
-import { voteFeature } from '../../vote.feature';
 import { ConfigSubformComponent } from '../config-subform/config-subform.component';
 import { ConfirmChoiceComponent } from '../confirm-choice/confirm-choice.component';
 import { CONFIRM_CHOICE_OPTIONS, VoteOptionDecisionType } from '../decision-type.enum';
 
 import { voteFormAction } from '../state/vote-form.action';
 import { voteFormFeature } from '../state/vote-form.feature';
+
 @Component({
   selector: 'app-overview-subform',
   templateUrl: './overview-subform.component.html',
@@ -87,8 +85,8 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       filter(vote => !!vote),
     ).subscribe(request => {
       this.vote.reset();
-      this.voteConfig = request!.voteOptionConfig!;
-      this.voteOptions = request!.options;
+      this.voteConfig = request?.voteOptionConfig!;
+      this.voteOptions = request?.options || [];
       if(this.originalParticipationLimit.size === 0) {
         this.voteOptions.forEach(vo => {
             if(vo.id && vo.participantLimit !=
