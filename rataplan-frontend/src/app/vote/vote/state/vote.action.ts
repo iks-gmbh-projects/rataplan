@@ -10,6 +10,7 @@ export const voteAction = createActionGroup({
     'Error': props<{error: any}>(),
     'Select Participant': props<{index: number}>(),
     'Delete Participant': props<{index: number}>(),
+    'Delete Participant Intermediary': props<{index: number, id: string | number}>(),
     'Delete Participant Success': emptyProps(),
     'Set Name': props<{name: string}>(),
     'Set Decision': props<{

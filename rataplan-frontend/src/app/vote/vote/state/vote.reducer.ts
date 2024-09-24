@@ -110,7 +110,7 @@ export const voteReducer = createReducer<{
     ),
   ),
   on(
-    voteAction.deleteParticipant,
+    voteAction.deleteParticipantIntermediary,
     (state, {index}) => (
       {
         ...state,

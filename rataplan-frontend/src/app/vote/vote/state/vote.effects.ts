@@ -46,11 +46,22 @@ export class VoteEffects {
     ofType(voteAction.deleteParticipant),
     concatLatestFrom(() => this.store.select(voteFeature.selectVote)),
     filter(([, vote]) => !!vote),
-    switchMap(([{index}, vote]) => this.store.select(configFeature.selectVoteBackendUrl(
+    map(([{index}, vote]) => voteAction.deleteParticipantIntermediary({
+      index,
+      id: vote!.participants[index]?.id as (string | number),
+    })),
+    filter(({id}) => id !== undefined),
+  ));
+  
+  deleteParticipantIntermediary = createEffect(() => this.actions$.pipe(
+    ofType(voteAction.deleteParticipantIntermediary),
+    concatLatestFrom(() => this.store.select(voteFeature.selectVote)),
+    filter(([, vote]) => !!vote),
+    switchMap(([{id}, vote]) => this.store.select(configFeature.selectVoteBackendUrl(
       'votes',
       vote!.participationToken ?? vote!.id!,
       'participants',
-      vote!.participants[index].id!,
+      id,
     )).pipe(
       defined,
       first(),
