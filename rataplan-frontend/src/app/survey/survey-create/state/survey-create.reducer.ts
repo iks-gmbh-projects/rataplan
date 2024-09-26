@@ -57,7 +57,7 @@ export const surveyCreateReducer = createReducer<{
   on(surveyCreateActions.editSurveyLoaded, (state, {survey}) => ({
     editing: true,
     originalStartDate: survey.startDate,
-    head: survey,
+    head: {...survey, timezoneActive:!!survey.timezone},
     groups: survey.questionGroups,
     currentGroupIndex: -1,
     valid: undefined,

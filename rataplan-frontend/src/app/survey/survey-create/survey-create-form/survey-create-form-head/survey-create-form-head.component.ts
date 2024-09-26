@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { concatLatestFrom } from '@ngrx/operators';
 import { Action, Store } from '@ngrx/store';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, combineLatestWith, Observable, of, startWith, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FormErrorMessageService } from '../../../../services/form-error-message-service/form-error-message.service';
 import { TimezoneService } from '../../../../services/timezone-service/timezone-service';
 import { ExtraValidators } from '../../../../validator/validators';
 import { SurveyHead } from '../../../survey.model';
 import { DeepPartial, surveyCreateActions } from '../../state/survey-create.action';
+import { surveyCreateFeature } from '../../state/survey-create.feature';
 
 export type HeadFormFields = {
   id: string | number | null,
@@ -30,8 +32,7 @@ export type HeadFormFields = {
 })
 export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   public readonly head$: Observable<DeepPartial<SurveyHead> | undefined>;
-  public readonly minStartDate$: Observable<Date>;
-  minDate!: Date;
+  public minStartDate$: Observable<Date>;
   filteredOptions!: Observable<string[]>;
   public readonly formGroup = new FormGroup({
     id: new FormControl<string | number | null>(null),
@@ -46,7 +47,7 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
           Validators.maxLength(255),
           ExtraValidators.containsSomeWhitespace,
         ],
-      }
+      },
     ),
     description: new FormControl<string>(
       '',
@@ -57,10 +58,12 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
           Validators.maxLength(3000),
           ExtraValidators.containsSomeWhitespace,
         ],
-      }
+      },
     ),
     startDate: new FormControl<Date>(new Date(), {nonNullable: true}),
-    endDate: new FormControl<Date | null>(null),
+    endDate: new FormControl<Date | null>(new Date(), {nonNullable: true}),
+    timezone: new FormControl<string | null>(null),
+    timezoneActive: new FormControl<boolean | null>(null),
     openAccess: new FormControl<boolean>(false, {nonNullable: true}),
     anonymousParticipation: new FormControl<boolean>(false, {nonNullable: true}),
   });
@@ -80,6 +83,10 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
         return d;
       }),
     );
+    this.filteredOptions = this.formGroup!.get('timezone')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this.timezoneService.filterTimezones(value || '')),
+    );
   }
   
   public ngOnInit(): void {
@@ -94,12 +101,14 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
         description: v?.description ?? '',
         startDate: v?.startDate as Date ?? min,
         endDate: v?.endDate as Date ?? null,
+        timezone: v?.timezone ?? null,
+        timezoneActive: v?.timezoneActive ?? false,
         openAccess: v?.openAccess ?? false,
         anonymousParticipation: v?.anonymousParticipation ?? false,
       }, {
         emitEvent: false,
-      })
-    }))
+      });
+    }));
     this.subs.push(this.formGroup.valueChanges.subscribe(value => this.doSubmit(value)));
   }
   
@@ -108,14 +117,8 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
     this.subs = [];
   }
   
-  
   public submit(): void {
     this.doSubmit(this.formGroup.value);
- }
-  updateMinDate(timezone: string) {
-    this.minDate = new Date(this.timezoneService.getMinDateForTimeZone(timezone));
-    const datePresent = !!this.formGroup!.get('startDate')?.value || !!this.formGroup!.get('endDate')?.value;
-    if(datePresent) this.validateDate();
   }
   
   doSubmit(value: typeof this.formGroup.value, next?: Action): void {
@@ -128,6 +131,8 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
         description: value.description ?? undefined,
         startDate: value.startDate ?? undefined,
         endDate: value.endDate ?? undefined,
+        timezone: value.timezone ?? undefined,
+        timezoneActive: value.timezoneActive ?? !!value.timezone,
         openAccess: value.openAccess ?? false,
         anonymousParticipation: value.anonymousParticipation ?? false,
       },
@@ -138,41 +143,36 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   protected readonly surveyCreateActions = surveyCreateActions;
   
   validateDate() {
-    this.setNewMinDate();
+    const minDate = this.setNewMinDate();
     const startDateControl = this.formGroup!.get('startDate');
     const endDateControl = this.formGroup!.get('endDate');
     const timezone = this.formGroup!.get('timezoneActive')?.value ? this.formGroup!.get('timezone')!.value : undefined;
-    if(startDateControl?.value) this.timezoneService.resetDateIfNecessary(startDateControl, this.minDate, timezone);
-    if(endDateControl?.value) this.timezoneService.resetDateIfNecessary(endDateControl, this.minDate, timezone);
+    if(startDateControl?.value) this.timezoneService.resetDateIfNecessary(
+      startDateControl,
+      minDate,
+      timezone ?? '',
+    );
+    if(endDateControl?.value) this.timezoneService.resetDateIfNecessary(endDateControl, minDate, timezone ?? '');
   }
   
   setNewMinDate() {
     const timezoneActive = this.formGroup!.get('timezoneActive')?.value;
     const timezoneValue = timezoneActive ? this.formGroup!.get('timezone')?.value : undefined;
-    this.minDate = timezoneActive ?
+    const minDate = timezoneActive ?
       new Date(this.timezoneService.getMinDateForTimeZone(timezoneValue!)) :
       new Date();
+    this.minStartDate$ = of(minDate);
+    return minDate;
   }
   
   convertDates(timezone: string) {
-    this.formGroup?.get('timezone')!.setValue(timezone);
+    this.formGroup?.get('timezone')!.setValue(timezone!);
     this.validateDate();
   }
   
-  enableAndDisableTimeoneSettings() {
+  enableAndDisableTimezoneSettings() {
     this.formGroup!.get('timezone')!.setErrors(null);
-    this.setMinDate(this.formGroup!.get('startDate')?.value?.toString() ?? undefined);
     this.validateDate();
-  }
-  
-  setMinDate(deadline: string | undefined) {
-    const timezone = this.formGroup?.get('timezone')?.value;
-    let minDate = timezone ? new Date(this.timezoneService.getMinDateForTimeZone(timezone)) : new Date();
-    if(deadline) {
-      const setDeadline = new Date(deadline);
-      if(setDeadline.getTime() < minDate.getTime()) minDate = setDeadline;
-    }
-    this.minDate = minDate;
   }
   
   // resetDateValuesIfNecessary(control: AbstractControl<Date | null>) {
@@ -185,15 +185,4 @@ export class SurveyCreateFormHeadComponent implements OnInit, OnDestroy {
   
 }
 
-//   this.filteredOptions = this.formGroup!.get('timezone')!.valueChanges.pipe(
-//   startWith(''),
-//   map(value => this.timezoneService.filterTimezones(value || '')),
-// );
-//   const tz = this.formGroup!.get('timezone')?.value;
-//   if(tz) {
-//     this.setTimezone = true;
-//     this.minDate = new Date(this.timezoneService.getMinDateForTimeZone(tz));
-//   } else this.minDate = new Date();
-//   if(this.formGroup?.get('startDate')?.value) this.setMinDate(this.formGroup!.get('startDate')!.value!.toISOString());
-// // if(this.formGroup?.get('startDate')) this.minDate = new Date(this.formGroup!.get('startDate')!.value!);
 //

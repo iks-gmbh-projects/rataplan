@@ -9,6 +9,7 @@ import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/oper
 import { configFeature } from '../../../config/config.feature';
 import { defined } from '../../../operators/non-empty';
 import { routerSelectors } from '../../../router.selectors';
+import { TimezoneService } from '../../../services/timezone-service/timezone-service';
 import { surveyFormActions } from '../../survey-form/state/survey-form.action';
 import { Checkbox, ChoiceQuestion, OpenQuestion, OrderChoice, OrderQuestion, Question, QuestionGroup, Survey, SurveyHead } from '../../survey.model';
 import { DeepPartial, surveyCreateActions } from './survey-create.action';
@@ -41,7 +42,8 @@ function validateQuestion(question?: DeepPartial<Question>): question is Questio
       question.maxSelect <= question.choices.length &&
       question.choices.every(validateChoiceChoices);
   case 'ORDER':
-    return question.choices !== undefined && question.choices.length > 0 && question.choices?.every(validateOrderChoices);
+    return question.choices !== undefined && question.choices.length > 0 &&
+      question.choices?.every(validateOrderChoices);
   default:
     return false;
   }
@@ -62,6 +64,7 @@ export class SurveyCreateEffects {
     private readonly actions$: Actions,
     private readonly http: HttpClient,
     private readonly router: Router,
+    private readonly timezoneService: TimezoneService,
   )
   {}
   
@@ -74,8 +77,8 @@ export class SurveyCreateEffects {
     )),
     map(accessId => accessId ?
       surveyCreateActions.editSurvey({accessId}) :
-      surveyCreateActions.newSurvey()
-    )
+      surveyCreateActions.newSurvey(),
+    ),
   ));
   
   loadSurvey = createEffect(() => this.actions$.pipe(
@@ -87,6 +90,14 @@ export class SurveyCreateEffects {
         withCredentials: true,
       }).pipe(
         map(ensureDate),
+        map(s => {
+          if(s.timezone) {
+            s.startDate = this.timezoneService.convertToDesiredTimezone(s.startDate, s.timezone);
+            s.endDate = this.timezoneService.convertToDesiredTimezone(s.endDate, s.timezone);
+            s.timezoneActive = true;
+          }
+          return s;
+        }),
         map(survey => surveyCreateActions.editSurveyLoaded({survey})),
         catchError(error => of(surveyCreateActions.editSurveyFailed({error}))),
       );
@@ -95,7 +106,9 @@ export class SurveyCreateEffects {
   
   validateSurvey = createEffect(() => this.store.select(surveyCreateFeature.selectSurveyCreationState).pipe(
     distinctUntilChanged((a, b) => {
-      return a.head === b.head && a.groups === b.groups && (b.valid !== undefined);
+      return a.head === b.head && a.groups === b.groups && (
+        b.valid !== undefined
+      );
     }),
     map(state => surveyCreateActions.setValidity({
       headValid: true,
@@ -109,39 +122,53 @@ export class SurveyCreateEffects {
     filter(({valid}) => valid!.head && valid!.groups.length > 0 && valid!.groups.every(b => b)),
     map(({head, groups}): Survey => (
       {
-        ...(head as SurveyHead),
+        ...(
+          head as SurveyHead
+        ),
         questionGroups: groups!.map((g, i): QuestionGroup => (
           {
-            ...(g as QuestionGroup),
+            ...(
+              g as QuestionGroup
+            ),
             id: i,
             questions: g!.questions!.map((q, j): Question => {
               switch(q!.type!) {
               case 'OPEN':
                 return {
-                  ...(q as OpenQuestion),
+                  ...(
+                    q as OpenQuestion
+                  ),
                   rank: j,
                 };
               case 'CHOICE':
                 return {
-                  ...(q as ChoiceQuestion),
+                  ...(
+                    q as ChoiceQuestion
+                  ),
                   rank: j,
                   choices: q!.choices!.map((c, k): Checkbox => (
                     {
-                      ...(c as Checkbox),
+                      ...(
+                        c as Checkbox
+                      ),
                       id: k,
                     }
                   )),
                 };
               case 'ORDER':
                 return {
-                  ...(q as OrderQuestion),
+                  ...(
+                    q as OrderQuestion
+                  ),
                   rank: j,
                   choices: q!.choices!.map((c, k): OrderChoice => (
                     {
-                      ...(c as OrderChoice),
+                      ...(
+                        c as OrderChoice
+                      ),
                       id: k,
                     }
-                  ))
+                  )),
                 };
               }
             }),
@@ -162,7 +189,9 @@ export class SurveyCreateEffects {
           {
             editing,
             survey: {
-              ...(head as SurveyHead),
+              ...(
+                head as SurveyHead
+              ),
               questionGroups: groups as QuestionGroup[],
             },
           }
@@ -173,6 +202,9 @@ export class SurveyCreateEffects {
         first(),
       ),
     })),
+    tap(({url, state}) => state.survey.timezoneActive ?
+      this.timezoneService.convertSurveyDates(state.survey) :
+      state.survey),
     switchMap(({url, state}) => {
       return (
         state.editing ?
