@@ -60,9 +60,10 @@ export class VoteEffects {
           withCredentials: true,
           responseType: 'text',
         },
+      ).pipe(
+        map(voteAction.deleteParticipantSuccess),
+        catchError(error => of(voteAction.error({error}))),
       )),
-      map(voteAction.deleteParticipantSuccess),
-      catchError(error => of(voteAction.error({error}))),
     )),
   ));
   

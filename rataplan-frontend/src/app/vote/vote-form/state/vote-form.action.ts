@@ -10,13 +10,15 @@ export const voteFormAction = createActionGroup({
     'Init Success': props<{vote: VoteModel}>(),
     'Init Error': props<{error: any}>(),
     'Set General Values': props<{
-        title: string,
-        description?: string,
-        deadline: Date,
-        decisionType: DecisionType,
-        yesLimitActive: boolean,
-        yesAnswerLimit: number | null
-      }>(),
+      title: string,
+      description?: string,
+      deadline: Date,
+      timezone: string,
+      timezoneActive: boolean,
+      decisionType: DecisionType,
+      yesLimitActive: boolean,
+      yesAnswerLimit: number | null
+    }>(),
     'Set Option Config': props<{config: VoteOptionConfig}>(),
     'Set Options': props<{options: VoteOptionModel[]}>(),
     'Add Options': props<{options: VoteOptionModel[]}>(),

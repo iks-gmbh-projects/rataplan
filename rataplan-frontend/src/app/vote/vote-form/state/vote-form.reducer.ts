@@ -1,7 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { isConfiguredEqual, matchConfiguration, matchesConfiguration, VoteOptionModel } from '../../../models/vote-option.model';
 import { VoteModel } from '../../../models/vote.model';
-import { ActionRequiresInit, voteFormAction} from './vote-form.action';
+import { ActionRequiresInit, voteFormAction } from './vote-form.action';
 
 export type voteState = {
   busy: boolean,
@@ -41,33 +41,50 @@ const voteFormReducerPart = createReducer<voteState>(
     busy: false,
     error: undefined,
   },
-  on(voteFormAction.init, () => ({
-    vote: undefined,
-    complete: false,
-    appointmentsChanged: undefined,
-    busy: true,
-    error: undefined,
-  })),
-  on(voteFormAction.initSuccess, (state, {vote}) => ({
-    vote: vote,
-    complete: isComplete(vote),
-    appointmentsChanged: false,
-    busy: false,
-    error: undefined,
-  })),
-  on(voteFormAction.initError, (state, {error}) => ({
-    vote: undefined,
-    complete: false,
-    appointmentsChanged: undefined,
-    busy: false,
-    error: error,
-  })),
+  on(
+    voteFormAction.init,
+    () => (
+      {
+        vote: undefined,
+        complete: false,
+        appointmentsChanged: undefined,
+        busy: true,
+        error: undefined,
+      }
+    ),
+  ),
+  on(
+    voteFormAction.initSuccess,
+    (state, {vote}) => (
+      {
+        vote: vote,
+        complete: isComplete(vote),
+        appointmentsChanged: false,
+        busy: false,
+        error: undefined,
+      }
+    ),
+  ),
+  on(
+    voteFormAction.initError,
+    (state, {error}) => (
+      {
+        vote: undefined,
+        complete: false,
+        appointmentsChanged: undefined,
+        busy: false,
+        error: error,
+      }
+    ),
+  ),
   on(voteFormAction.setGeneralValues, (state, action) => assembleRequestState(
     {
       ...state.vote!,
       title: action.title,
       description: action.description,
       deadline: action.deadline.toISOString(),
+      timezone: action.timezone,
+      timezoneActive: action.timezoneActive,
       voteConfig: {
         ...state.vote!.voteConfig,
         decisionType: action.decisionType,
@@ -144,36 +161,56 @@ const voteFormReducerPart = createReducer<voteState>(
     },
     true,
   )),
-  on(voteFormAction.setOrganizerInfo, (state, {name, notificationSettings, consigneeList, userConsignees, personalisedInvitation}) => ({
-    vote: {
-      ...state.vote!,
-      organizerName: name,
-      notificationSettings,
-      consigneeList,
-      userConsignees,
-      personalisedInvitation,
-    },
-    complete: state.complete!,
-    appointmentsChanged: state.appointmentsChanged!,
-    busy: false,
-    error: undefined,
-  })),
-  on(voteFormAction.post, state => ({
-    ...state,
-    busy: true,
-  })),
-  on(voteFormAction.postSuccess, () => ({
-    vote: undefined,
-    complete: false,
-    appointmentsChanged: undefined,
-    busy: false,
-    error: undefined,
-  })),
-  on(voteFormAction.postError, (state, {error}) => ({
-    ...state,
-    busy: false,
-    error,
-  }))
+  on(
+    voteFormAction.setOrganizerInfo,
+    (state, {name, notificationSettings, consigneeList, userConsignees, personalisedInvitation}) => (
+      {
+        vote: {
+          ...state.vote!,
+          organizerName: name,
+          notificationSettings,
+          consigneeList,
+          userConsignees,
+          personalisedInvitation,
+        },
+        complete: state.complete!,
+        appointmentsChanged: state.appointmentsChanged!,
+        busy: false,
+        error: undefined,
+      }
+    ),
+  ),
+  on(
+    voteFormAction.post,
+    state => (
+      {
+        ...state,
+        busy: true,
+      }
+    ),
+  ),
+  on(
+    voteFormAction.postSuccess,
+    () => (
+      {
+        vote: undefined,
+        complete: false,
+        appointmentsChanged: undefined,
+        busy: false,
+        error: undefined,
+      }
+    ),
+  ),
+  on(
+    voteFormAction.postError,
+    (state, {error}) => (
+      {
+        ...state,
+        busy: false,
+        error,
+      }
+    ),
+  ),
 );
 
 export function voteFormReducer(
@@ -198,7 +235,9 @@ export function voteFormReducer(
       },
     };
   }
-  if('voteOptions' in action && !matchConfiguration(action.voteOptions as VoteOptionModel[], state.vote!.voteConfig.voteOptionConfig)) {
+  if('voteOptions' in action &&
+    !matchConfiguration(action.voteOptions as VoteOptionModel[], state.vote!.voteConfig.voteOptionConfig))
+  {
     return {
       ...state,
       error: {

@@ -51,6 +51,7 @@ import { MainNavComponent } from './main-nav/main-nav.component';
 import { notificationFeature } from './notification/notification.feature';
 import { RegisterComponent } from './register/register.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { TimezoneService } from './services/timezone-service/timezone-service';
 import { ValidateProfileUpdateComponent } from './validate-profile-update/validate-profile-update.component';
 import { ChangeNoteComponent } from './version/change-note/change-note.component';
 import { VersionComponent } from './version/version.component';
@@ -123,6 +124,7 @@ registerLocaleData(localeDE);
     MtxNativeDatetimeModule,
     StoreRouterConnectingModule.forRoot(),
   ], providers: [
+    TimezoneService,
     {provide: MAT_DATE_LOCALE, useValue: 'de-DE'},
     {provide: DateAdapter, useClass: EUDateAdapter},
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

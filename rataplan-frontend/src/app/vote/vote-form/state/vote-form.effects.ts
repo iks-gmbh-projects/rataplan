@@ -13,11 +13,11 @@ import { configFeature } from '../../../config/config.feature';
 import { FeedbackDialogComponent } from '../../../dialogs/feedback-dialog/feedback-dialog.component';
 import { deserializeVoteModel, VoteModel } from '../../../models/vote.model';
 import { defined } from '../../../operators/non-empty';
+import { TimezoneService } from '../../../services/timezone-service/timezone-service';
 import { voteAction } from '../../vote/state/vote.action';
 import { DecisionType } from '../decision-type.enum';
 import { voteFormAction } from './vote-form.action';
 import { voteFormFeature } from './vote-form.feature';
-import { voteState } from './vote.reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -39,25 +39,27 @@ export class VoteFormEffects {
     return this.actions$.pipe(
       ofType(voteFormAction.init),
       switchMap(({id}) => {
-        if(!id) return of(voteFormAction.initSuccess({vote: {
-          title: '',
-          deadline: '',
-          voteConfig: {
-            voteOptionConfig: {
-              startDate: true,
-              startTime: false,
-              endDate: false,
-              endTime: false,
-              description: false,
-              url: false,
+        if(!id) return of(voteFormAction.initSuccess({
+          vote: {
+            title: '',
+            deadline: '',
+            voteConfig: {
+              voteOptionConfig: {
+                startDate: true,
+                startTime: false,
+                endDate: false,
+                endTime: false,
+                description: false,
+                url: false,
+              },
+              decisionType: DecisionType.DEFAULT,
             },
-            decisionType: DecisionType.DEFAULT,
+            options: [],
+            participants: [],
+            consigneeList: [],
+            userConsignees: [],
           },
-          options: [],
-          participants: [],
-          consigneeList: [],
-          userConsignees: [],
-        }}));
+        }));
         else return this.store.select(configFeature.selectVoteBackendUrl('votes', 'edit', id)).pipe(
           defined,
           first(),
@@ -207,3 +209,4 @@ export class VoteFormEffects {
     );
   }, {dispatch: false});
 }
+

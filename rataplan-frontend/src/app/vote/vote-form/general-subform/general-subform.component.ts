@@ -8,12 +8,7 @@ import { map } from 'rxjs/operators';
 import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { TimezoneService } from '../../../services/timezone-service/timezone-service';
 import { ExtraValidators } from '../../../validator/validators';
-import { SetGeneralValuesVoteOptionAction } from '../../vote.actions';
-import { voteFeature } from '../../vote.feature';
 import { DecisionType } from '../decision-type.enum';
-import { Store } from '@ngrx/store';
-import { DecisionType } from '../decision-type.enum';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { voteFormAction } from '../state/vote-form.action';
 import { voteFormFeature } from '../state/vote-form.feature';
 
@@ -98,7 +93,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
             ));
           }
           
-          this.setMinDate(deadline);
+          this.setMinDate(deadline?.toString());
           
           if(this.generalSubform.get('description')?.value) {
             this.showDescription = true;
