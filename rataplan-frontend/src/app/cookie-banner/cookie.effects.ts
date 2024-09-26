@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { authActions } from '../authentication/auth.actions';
 import { cookieActions } from './cookie.actions';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 const localStorageKey = "cookieAccept";
 

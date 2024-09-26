@@ -5,7 +5,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 
 import { Store } from '@ngrx/store';
-import { combineLatestWith, EMPTY, first, from, of, timer } from 'rxjs';
+import { combineLatestWith, first, from, of, timer } from 'rxjs';
 import { catchError, concatMap, map, switchMap, tap } from 'rxjs/operators';
 import { configFeature } from '../config/config.feature';
 import { cookieFeature } from '../cookie-banner/cookie.feature';
