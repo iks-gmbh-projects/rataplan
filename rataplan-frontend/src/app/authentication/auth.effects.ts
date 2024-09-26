@@ -51,13 +51,6 @@ export class AuthEffects {
     );
   });
   
-  autoLoginStart = createEffect(() => {
-    return this.store.select(cookieFeature.selectCookieState).pipe(
-      first(({busy}) => !busy),
-      switchMap(cookie => cookie ? of(authActions.autoLogin()) : EMPTY),
-    );
-  });
-  
   autoLogin = createEffect(() => {
     return this.actions$.pipe(
       ofType(authActions.autoLogin),

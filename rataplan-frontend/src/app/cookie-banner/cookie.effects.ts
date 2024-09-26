@@ -1,7 +1,9 @@
 import { Actions, createEffect, ofType, rootEffectsInit } from '@ngrx/effects';
 import { Injectable } from '@angular/core';
+import { of } from 'rxjs';
+import { authActions } from '../authentication/auth.actions';
 import { cookieActions } from './cookie.actions';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 
 const localStorageKey = "cookieAccept";
 
@@ -24,8 +26,7 @@ export class CookieEffects {
     return this.actions$.pipe(
       ofType(cookieActions.load),
       map(() => localStorage.getItem(localStorageKey) || "false"),
-      filter(v => v == "true"),
-      map(() => cookieActions.accept())
+      switchMap(v => v == "true" ? of(cookieActions.accept(), authActions.autoLogin()) : of(authActions.autoLogin()))
     );
   });
 
