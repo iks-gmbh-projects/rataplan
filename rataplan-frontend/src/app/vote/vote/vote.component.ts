@@ -85,6 +85,10 @@ export class VoteComponent {
     ), accepted)})`;
   }
   
+  setParticipantName(name: string): void {
+    this.store.dispatch(voteAction.setName({name}));
+  }
+  
   setParticipantNumber(vote: VoteOptionModel, participants: number | `${number}`) {
     this.store.dispatch(voteAction.setDecision({
       option: vote.id!,

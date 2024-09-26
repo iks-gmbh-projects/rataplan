@@ -59,7 +59,8 @@
   <mat-form-field *ngIf="!hasDeadlinePassed(state.vote)" appearance="fill" style="align-self: center">
     <mat-label>Name</mat-label>
     <input
-      [(ngModel)]="state.participant.name"
+      [ngModel]="state.participant.name"
+      (ngModelChange)="setParticipantName($event)"
       required
       maxlength="100"
       someNonWhitespace
