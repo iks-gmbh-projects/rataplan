@@ -5,13 +5,12 @@ import de.iks.rataplan.domain.notifications.EmailCycle;
 import de.iks.rataplan.domain.notifications.NotificationMailData;
 import de.iks.rataplan.dto.NotificationDTO;
 import de.iks.rataplan.dto.NotificationSettingsDTO;
+import de.iks.rataplan.repository.NotificationRepository;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
-
-import de.iks.rataplan.repository.NotificationRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +22,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -59,6 +59,8 @@ public class NotificationServiceTest {
     @MockBean
     private MailService mailService;
     @MockBean
+    private SimpMessagingTemplate simpMessagingTemplate;
+    @MockBean
     private CryptoService cryptoService;
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -89,12 +91,14 @@ public class NotificationServiceTest {
             ),
             notificationService.getNotificationSettings(1)
         );
+        verifyNoInteractions(simpMessagingTemplate, mailService);
     }
     
     @Test
     @ExpectedDatabase(value = NOTIFICATION_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     void testGetNotificationSettingsBadUserId() {
         assertNull(notificationService.getNotificationSettings(2));
+        verifyNoInteractions(simpMessagingTemplate, mailService);
     }
     
     @Test
@@ -118,33 +122,57 @@ public class NotificationServiceTest {
             assertTrue(notificationRepository.findCycleNotifications(EmailCycle.SUPPRESS).findAny().isEmpty());
             assertTrue(notificationRepository.findCycleNotifications(EmailCycle.INSTANT).findAny().isEmpty());
         });
+        verifyNoInteractions(simpMessagingTemplate, mailService);
     }
     @Test
     @ExpectedDatabase(value = NOTIFICATION_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     void testNotifySuppressed() {
+        final NotificationDTO expected = new NotificationDTO(
+            1,
+            null,
+            "general",
+            "suppressed",
+            "suppressedContent",
+            "suppressedSContent",
+            null
+        );
         notificationService.notify(List.of(new NotificationDTO(
             1,
             null,
             "general",
             "suppressed",
             "suppressedContent",
-            "suppressedSContent"
+            "suppressedSContent",
+            null
         )));
+        verify(simpMessagingTemplate).convertAndSend("/notifications/1", expected);
+        verifyNoMoreInteractions(simpMessagingTemplate);
         verifyNoInteractions(mailService);
     }
     @Test
     @ExpectedDatabase(value = NOTIFICATION_FILE_INITIAL, assertionMode = DatabaseAssertionMode.NON_STRICT_UNORDERED)
     void testNotifyInstant() {
+        final NotificationDTO expected = new NotificationDTO(
+            1,
+            null,
+            "basic",
+            "instant",
+            "instantContent",
+            "instantSContent",
+            null
+        );
         notificationService.notify(List.of(new NotificationDTO(
             1,
             null,
             "basic",
             "instant",
             "instantContent",
-            "instantSContent"
+            "instantSContent",
+            null
         )));
+        verify(simpMessagingTemplate).convertAndSend("/notifications/1", expected);
         verify(mailService).sendNotification("peter@sch.mitz", new NotificationMailData("instant", "instantContent"));
-        verifyNoMoreInteractions(mailService);
+        verifyNoMoreInteractions(simpMessagingTemplate, mailService);
     }
     @Test
     void sendSummary() {
@@ -152,7 +180,7 @@ public class NotificationServiceTest {
         verify(mailService).sendNotificationSummary("peter@sch.mitz", List.of(
             new NotificationMailData("TestNotification", "TestNotificationContent")
         ));
-        verifyNoMoreInteractions(mailService);
+        verifyNoMoreInteractions(simpMessagingTemplate, mailService);
     }
     
     @Test
@@ -162,25 +190,36 @@ public class NotificationServiceTest {
         verify(mailService).sendNotificationSummary("peter@sch.mitz", List.of(
             new NotificationMailData("TestNotification", "TestNotificationContent")
         ));
-        verifyNoMoreInteractions(mailService);
+        verifyNoMoreInteractions(simpMessagingTemplate, mailService);
     }
     
     @Test
     void testNotifyCycle() {
+        final NotificationDTO expected = new NotificationDTO(
+            1,
+            null,
+            "test",
+            "cycle",
+            "cycleContent",
+            "cycleSContent",
+            null
+        );
         notificationService.notify(List.of(new NotificationDTO(
             1,
             null,
             "test",
             "cycle",
             "cycleContent",
-            "cycleSContent"
+            "cycleSContent",
+            null
         )));
+        verify(simpMessagingTemplate).convertAndSend("/notifications/1", expected);
         verifyNoInteractions(mailService);
         notificationService.sendSummary(Set.of(EmailCycle.DAILY_DIGEST));
         verify(mailService).sendNotificationSummary("peter@sch.mitz", List.of(
             new NotificationMailData("TestNotification", "TestNotificationContent"),
             new NotificationMailData("cycle", "cycleSContent")
         ));
-        verifyNoMoreInteractions(mailService);
+        verifyNoMoreInteractions(simpMessagingTemplate, mailService);
     }
 }

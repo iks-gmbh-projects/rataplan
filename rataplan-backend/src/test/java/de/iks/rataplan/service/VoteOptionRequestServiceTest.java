@@ -132,8 +132,8 @@ public class VoteOptionRequestServiceTest {
             any(NotificationType.class),
             anyString(),
             anyString(),
-            anyString(),
-            null
+            isNull(),
+            anyString()
         );
         verifyNoMoreInteractions(authService);
     }
