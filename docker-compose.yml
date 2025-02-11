@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: iks/rataplan-postgres
+    image: ghcr.io/iks-gmbh-projects/rataplan-postgres
     build:
       context: postgres
     secrets:
@@ -26,7 +26,7 @@ services:
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/pg-admin-pw
   rataplan-auth:
-    image: iks/rataplan-auth
+    image: ghcr.io/iks-gmbh-projects/rataplan-auth
     build:
       target: run-auth
     depends_on:
@@ -55,7 +55,7 @@ services:
       - target: 8081
         published: 8081
   rataplan-backend:
-    image: iks/rataplan-backend
+    image: ghcr.io/iks-gmbh-projects/rataplan-backend
     build:
       target: run-backend
     depends_on:
@@ -81,7 +81,7 @@ services:
       - target: 8080
         published: 8080
   rataplan-survey:
-    image: iks/rataplan-survey
+    image: ghcr.io/iks-gmbh-projects/rataplan-survey
     build:
       target: run-survey
     depends_on:
