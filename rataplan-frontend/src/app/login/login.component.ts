@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       tap(b => {
         if (this.cookieInit) {
           this.cookieInit = false;
-          if (!b) this.bottomSheets.open(CookieBannerComponent, { disableClose: true });
+          if (!b.accepted) this.bottomSheets.open(CookieBannerComponent, { disableClose: true });
         }
       })
     ).subscribe(({accepted}) => this.cookieAllowed = accepted);
