@@ -1,5 +1,7 @@
 package de.iks.rataplan.config;
 
+import de.iks.rataplan.service.MailServiceImplSendInBlue;
+import de.iks.rataplan.utils.MailBuilderSendInBlue;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import sendinblue.ApiClient;
@@ -30,5 +32,11 @@ public class SendInBlueConfig {
     @Bean
     public TransactionalEmailsApi sibEmailsApi() {
         return new TransactionalEmailsApi(sendInBlueAPIClient());
+    }
+    
+    @Primary
+    @Bean
+    public MailServiceImplSendInBlue mailServiceImplSendInBlue(MailBuilderSendInBlue mailBuilderSendInBlue) {
+        return new MailServiceImplSendInBlue(mailBuilderSendInBlue, sibEmailsApi());
     }
 }
