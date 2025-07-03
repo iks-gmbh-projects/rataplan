@@ -10,7 +10,7 @@
   <h2 *ngIf="state.preview">Vorschau</h2>
   <div class="left-bound">
     <h2 class="mat-card-title" style="align-self: center" [textContent]="state.vote.title"></h2>
-    <p style="white-space: pre-line">{{ state.vote.description ?? '' }}</p>
+    <p class="linebreak-p-tag">{{ state.vote.description ?? '' }}</p>
     <p class="mat-card-subtitle">
       Abstimmung aktiv bis: {{ state.vote.deadline! | date:'dd. MMMM yyyy hh:mm':undefined:'de' }}
     </p>
