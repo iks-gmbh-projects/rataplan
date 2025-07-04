@@ -1,3 +1,4 @@
+<h1 class="centered">Umfrage {{ editing ? 'ändern' : 'erstellen' }}</h1>
 <app-survey-create-form-head *ngIf="(headPage$ | ngrxPush); else qg" #headForm/>
 <ng-template #qg>
   <app-survey-create-form-page #pageForm/>
