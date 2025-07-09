@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, share } from 'rxjs';
+import { Observable } from 'rxjs';
 import { defined } from '../../../operators/non-empty';
-import { FormErrorMessageService } from '../../../services/form-error-message-service/form-error-message.service';
 import { Survey } from '../../survey.model';
 import { surveyFormFeature } from '../state/survey-form.feature';
 
