@@ -1,52 +1,34 @@
-<div *ngrxLet="survey$ as survey" class="center">
-  <div>
-    <mat-card class="bottomspace">
-      <mat-card-header>
-        <mat-card-title [textContent]="survey.name"></mat-card-title>
-        <mat-card-subtitle>
-          <app-date-range [startDate]="survey.startDate" [endDate]="survey.endDate"></app-date-range>
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="linebreak-p-tag">{{ survey.description }}</p>
-        <p>
-          Teilnahme {{ survey.openAccess ? "für Jeden" : "mit Einladung" }}
-          {{
-            survey.anonymousParticipation ?
-              " anonym" :
-              " mit Benutzerkonto"
-          }}</p>
-      </mat-card-content>
-    </mat-card>
-    <mat-divider class="bottomspace"></mat-divider>
-  </div>
-  <div *ngrxLet="page$ as page" class="size-div">
-    <app-survey-form-page
-      *ngIf="page < survey.questionGroups.length; else finished"
-      (formAfterViewInit)="pageForm = $event"
-    ></app-survey-form-page>
-    <ng-template #finished>
-      <h3 style="text-align: center">Fertig</h3>
-      <div class="bottomSpace">
-        <div class="left">
-          <button
-            class="left" mat-icon-button
-            (click)="prevPage()"
-          >
-            <mat-icon>navigate_before</mat-icon>
-          </button>
+<div class="center">
+  <div *ngrxLet="survey$ as survey" class="center">
+    <app-survey-form-header/>
+    <div *ngrxLet="page$ as page" class="size-div">
+      <app-survey-form-page
+        *ngIf="page < survey.questionGroups.length; else finished"
+        (formAfterViewInit)="pageForm = $event"
+      ></app-survey-form-page>
+      <ng-template #finished>
+        <h3 style="text-align: center">Fertig</h3>
+        <div class="bottomSpace">
+          <div class="left">
+            <button
+              class="left" mat-icon-button
+              (click)="prevPage()"
+            >
+              <mat-icon>navigate_before</mat-icon>
+            </button>
+          </div>
+          <div class="middle"></div>
+          <div class="right">
+            <button
+              class="right" mat-raised-button color="primary"
+              [loading]="delayedBusy$ | ngrxPush"
+              [disabled]="!(isResponseValid$ | ngrxPush) || (busy$ | ngrxPush)"
+              (click)="submit()"
+            >Einreichen
+            </button>
+          </div>
         </div>
-        <div class="middle"></div>
-        <div class="right">
-          <button
-            class="right" mat-raised-button color="primary"
-            [loading]="delayedBusy$ | ngrxPush"
-            [disabled]="!(isResponseValid$ | ngrxPush) || (busy$ | ngrxPush)"
-            (click)="submit()"
-          >Einreichen
-          </button>
-        </div>
-      </div>
-    </ng-template>
+      </ng-template>
+    </div>
   </div>
 </div>
