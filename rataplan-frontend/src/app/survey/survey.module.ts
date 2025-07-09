@@ -31,6 +31,7 @@ import { SurveyResultChartsComponent } from './survey-results/survey-result-char
 import { SurveyResultsComponent } from './survey-results/survey-results.component';
 import { SurveyUnknownErrorComponent } from './survey-unknown-error/survey-unknown-error.component';
 import { SurveyRoutingModule } from './survey.routing.module';
+import {HeaderComponent} from "./survey-form/header/header.component";
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { SurveyRoutingModule } from './survey.routing.module';
     SurveyCreateFormComponent,
     SurveyResultsComponent,
     SurveyClosedComponent,
+    HeaderComponent,
     PageComponent,
     DateRangeComponent,
     SurveyPreviewComponent,
@@ -62,6 +64,9 @@ import { SurveyRoutingModule } from './survey.routing.module';
     StoreModule.forFeature(surveyCreateFeature),
     StoreModule.forFeature(surveyResultsFeature),
     EffectsModule.forFeature([SurveyListEffects, SurveyFormEffects, SurveyCreateEffects, SurveyResultsEffects]),
+  ],
+  exports: [
+    DateRangeComponent,
   ],
 })
 export class SurveyModule {}
