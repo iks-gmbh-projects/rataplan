@@ -141,7 +141,7 @@
           color="primary"
           mat-raised-button
           [loading]="state.delayedBusy"
-          [disabled]="state.busy"
+          [disabled]="state.busy || !state.currentUser && !state.participant.name?.trim()"
           (click)="saveVote()"
           [textContent]="state.editing ? 'Updaten' : 'Abstimmen'"
         ></button>
