@@ -11,17 +11,8 @@
     >
     <mat-error>{{ errorMessageService.genericFormError(generalSubform.get("title")) }}</mat-error>
   </mat-form-field>
-  <button
-    mat-raised-button
-    type="button"
-    (click)="addAndDeleteDescription()"
-  >
-    <mat-icon>{{ showDescription ? 'remove' : 'add' }}</mat-icon>
-    Beschreibung
-  </button>
   <mat-form-field
     appearance="fill"
-    *ngIf="showDescription"
   >
     <mat-label>Beschreibung</mat-label>
     <textarea
