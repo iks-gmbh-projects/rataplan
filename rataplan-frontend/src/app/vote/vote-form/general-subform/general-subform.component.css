@@ -1,3 +1,7 @@
 button {
   margin-bottom: 1rem;
 }
+
+::ng-deep .mat-mdc-button {
+    --mdc-text-button-label-text-color: white !important;
+}
