@@ -39,23 +39,17 @@
     <mtx-datetimepicker #picker></mtx-datetimepicker>
     <mat-error>{{ errorMessageService.genericFormError(generalSubform.get("deadline")) }}</mat-error>
   </mat-form-field>
-  <label id="example-radio-group-label">Antwortmöglichkeiten</label>
-  <mat-radio-group formControlName="decision">
-    <mat-radio-button [value]="DecisionType.DEFAULT">
-      Ja/Nein
-    </mat-radio-button>
-    <br>
-    <mat-radio-button [value]="DecisionType.EXTENDED">
-      Ja/Vielleicht/Nein
-    </mat-radio-button>
-    <br>
-    <mat-radio-button [value]="DecisionType.NUMBER" (click)="resetYesLimitActiveAndYesNumberLimit()">
-      Teilnehmerzahl
-    </mat-radio-button>
-  </mat-radio-group>
+  <label id="example-radio-group-label"><b>Antwortmöglichkeiten</b></label>
+  <mat-form-field >
+    <mat-select formControlName="decision" required>
+        <mat-option [value]="DecisionType.DEFAULT">Ja / Nein</mat-option>
+        <mat-option [value]="DecisionType.EXTENDED">Ja / Vielleicht / Nein</mat-option>
+        <mat-option [value]="DecisionType.NUMBER" (click)="resetYesLimitActiveAndYesNumberLimit()">Teilnehmerzahl</mat-option>
+    </mat-select>
+  </mat-form-field>
   <br>
   <div *ngIf="generalSubform.get('decision')?.value != 2">
-    <span>Möchten Sie begrenzen wie oft Teilnehmer ja stimmen dürfen?</span>
+    <span>Möchten Sie begrenzen, wie oft Teilnehmer zusagen dürfen?</span>
     <mat-radio-group formControlName="yesLimitActive">
       <mat-radio-button style="display: block" [value]=true>Ja</mat-radio-button>
       <mat-radio-button style="display: block" [value]=false (click)="sanitiseYesAnswerLimit()">Nein
@@ -63,8 +57,8 @@
     </mat-radio-group>
   </div>
   <div *ngIf="generalSubform.get('yesLimitActive')!.value! && generalSubform.get('decision')?.value != 2">
-    <p>Geben Sie hier an, wie oft Ja ausgewählt werden darf?</p>
     <mat-form-field>
+      <mat-label>Max. Anzahl</mat-label>
       <input
         matInput
         formControlName="yesAnswerLimit"
