@@ -90,10 +90,6 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     this.storeSub?.unsubscribe();
   }
   
-  addAndDeleteDescription() {
-    this.showDescription = !this.showDescription;
-  }
-  
   sanitiseYesAnswerLimit() {
     this.generalSubform.get('yesAnswerLimit')?.setValue(null);
     this.generalSubform.get('yesAnswerLimit')?.markAsPristine();
@@ -115,7 +111,7 @@ export class GeneralSubformComponent implements OnInit, OnDestroy {
     }
     this.store.dispatch(voteFormAction.setGeneralValues({
       title: this.generalSubform.value.title,
-      description: this.showDescription ? this.generalSubform.value.description : null,
+      description: this.generalSubform.value.description,
       deadline: new Date(this.generalSubform.value.deadline),
       decisionType: this.generalSubform.value.decision,
       yesLimitActive: this.generalSubform.value.yesLimitActive,
