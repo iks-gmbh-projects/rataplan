@@ -28,6 +28,8 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     description: false,
     url: false,
   };
+  onlyOneOptionSelected: boolean = false;
+  enabledInputCount: number = 0;
   
   get startLabel(): string {
     const end = this.voteConfig.endDate || this.voteConfig.endTime;
@@ -54,7 +56,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     }
     return 'date';
   }
-
+  
   participantLimitActive = new FormControl<boolean>(false);
   participantLimit = new FormControl<number | null>(null, [Validators.min(1)]);
   vote = new FormGroup({
@@ -66,16 +68,15 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     participantLimitActive: this.participantLimitActive,
     participantLimit: this.participantLimit
   });
-
+  
   private storeSub?: Subscription;
-
   constructor(
     private store: Store,
     public errorMessageService: FormErrorMessageService,
     private dialog: MatDialog
   ) {
   }
-
+  
   ngOnInit(): void {
     this.storeSub = this.store.select(voteFormFeature.selectVote).pipe(
       filter(vote => !!vote),
@@ -84,30 +85,32 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       this.voteOptions = request!.options;
       if (this.originalParticipationLimit.size === 0) {
         this.voteOptions.forEach(vo => {
-          if (vo.id && vo.participantLimitActive && vo.participantLimit != null) this.originalParticipationLimit.set(vo.id, vo.participantLimit!);
-          else if (vo.id != undefined) {
-            const participantCount = request!.participants
-              .map(p => p.decisions).flatMap(s1 => s1)
-              .filter(d => d.optionId == vo.id)
-              .filter(d => d.decision == VoteOptionDecisionType.ACCEPT)
-              .length;
-            this.originalParticipationLimit.set(vo.id!, participantCount);
-            if (participantCount != 0) this.originalParticipationLimit.set(vo.id,participantCount);
+            if (vo.id && vo.participantLimitActive && vo.participantLimit != null) this.originalParticipationLimit.set(vo.id, vo.participantLimit!);
+            else if (vo.id != undefined) {
+              const participantCount = request!.participants
+                .map(p => p.decisions).flatMap(s1 => s1)
+                .filter(d => d.optionId == vo.id)
+                .filter(d => d.decision == VoteOptionDecisionType.ACCEPT)
+                .length;
+              this.originalParticipationLimit.set(vo.id!, participantCount);
+              if (participantCount != 0) this.originalParticipationLimit.set(vo.id,participantCount);
+            }
           }
-        }
         );
+        this.enabledInputCount = Object.values(this.voteConfig).filter(v => v).length;
+        this.onlyOneOptionSelected = this.enabledInputCount === 1;
       }
     });
   }
-
+  
   ngOnDestroy(): void {
     this.storeSub?.unsubscribe();
   }
-
+  
   clearContent() {
     this.vote.reset();
   }
-
+  
   sanitiseParticipationLimit(checked: boolean) {
     if (!checked) {
       this.participantLimit.setValue(null);
@@ -144,7 +147,7 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       this.clearContent();
     });
   }
-
+  
   isInputInForm() {
     let isInputInForm = false;
     Object.values(this.vote.value).forEach(value => {
@@ -154,11 +157,11 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
     });
     return isInputInForm;
   }
-
+  
   deleteVoteOption(index: number) {
     this.store.dispatch(voteFormAction.removeOption({index}));
   }
-
+  
   editVoteOption(index: number) {
     const voteOption = this.voteOptions[index];
     this.vote.setValue({
@@ -170,5 +173,17 @@ export class OverviewSubformComponent implements OnInit, OnDestroy {
       participantLimitActive: voteOption.participantLimitActive || false,
       participantLimit: voteOption.participantLimit || null,
     });
+  }
+  
+  handleParticipantLimitChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    const active = value !== null && value !== '' && !isNaN(Number(value));
+    if (active) {
+      this.vote.get('participantLimitActive')?.setValue(true);
+    } else {
+      this.vote.get('participantLimitActive')?.setValue(false);
+      this.sanitiseParticipationLimit(false);
+    }
   }
 }

@@ -1,5 +1,16 @@
 <h3>Abstimmungsoptionen</h3>
 <div class="left-bound" [formGroup]="vote">
+  <div>
+    <mat-form-field class="vote-option-form-field">
+      <mat-label>Max. Teilnehmerzahl</mat-label>
+      <input
+        matInput
+        formControlName="participantLimit"
+        type="number"
+        style="text-align: center"
+        (input)="handleParticipantLimitChange($event)">
+    </mat-form-field>
+  </div>
   <div *ngIf="voteConfig.startDate || voteConfig.startTime">
     <mat-form-field appearance="fill">
       <mat-label [textContent]="startLabel"></mat-label>
@@ -9,6 +20,7 @@
         [mtxDatetimepicker]="picker"
         matInput
         [required]="voteConfig.startDate || voteConfig.startTime ?? false"
+        (dateInput)="(onlyOneOptionSelected && addVoteOption())"
       >
       <mtx-datetimepicker-toggle [for]="picker" matSuffix></mtx-datetimepicker-toggle>
       <mtx-datetimepicker [type]="startType" #picker></mtx-datetimepicker>
@@ -25,6 +37,7 @@
         [min]="vote.value.startDateInput ?? null"
         matInput
         [required]="voteConfig.endDate || voteConfig.endTime ?? false"
+        (dateInput)="onlyOneOptionSelected && addVoteOption()"
       >
       <mtx-datetimepicker-toggle [for]="picker" matSuffix></mtx-datetimepicker-toggle>
       <mtx-datetimepicker [type]="endType" [startAt]="vote.value.startDateInput ?? null" #picker></mtx-datetimepicker>
@@ -43,6 +56,7 @@
         autocomplete="off"
         matInput
         [required]="voteConfig.description"
+        (keydown.enter)="(!vote.invalid && addVoteOption())"
       >
       <mat-error>{{ errorMessageService.genericFormError(vote.get('descriptionInput')) }}</mat-error>
     </mat-form-field>
@@ -59,84 +73,66 @@
         autocomplete="off"
         matInput
         [required]="voteConfig.url"
+        (keydown.enter)="(!vote.invalid && addVoteOption())"
       >
       <mat-error>{{ errorMessageService.genericFormError(vote.get('linkInput')) }}</mat-error>
-    </mat-form-field>
-  </div>
-  <div class="vote-option-container">
-    <mat-slide-toggle
-      #participationLimitToggle formControlName="participantLimitActive"
-      (click)="sanitiseParticipationLimit(participationLimitToggle.checked)"
-    ></mat-slide-toggle>
-    <label>Möchten Sie die maximale Anzahl der Teilnehmenden auf diesen
-      Termin begrenzen?</label>
-  </div>
-  <div *ngIf="vote.get('participantLimitActive')!.value!">
-    <p>Geben Sie hier an, die maximale Anzahl der Teilnehmenden für diesen Termin</p>
-    <mat-form-field class="vote-option-form-field">
-      <input
-        matInput
-        formControlName="participantLimit"
-        type="number"
-        style="text-align: center"
-      />
     </mat-form-field>
   </div>
   <div style="display: inline; margin-top: 1rem">
     <button
       mat-button
       color="warn"
+      [hidden]="onlyOneOptionSelected && !voteConfig.url && !voteConfig.description"
       (click)="clearContent()"
     >Zurücksetzen
     </button>
     <button
       mat-raised-button
       color="primary"
-      [disabled]="vote.invalid "
+      [disabled]="vote.invalid"
+      [hidden]="onlyOneOptionSelected && !voteConfig.url && !voteConfig.description"
       (click)="addVoteOption()"
     >
       {{ vote.value.voteIndex === null ? 'Hinzufügen' : 'Ändern' }}
     </button>
   </div>
-  <mat-expansion-panel style="margin-top:10px; min-width: 100%">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Erstellte Abstimmungsoptionen: {{ voteOptions.length }}
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <ng-template matExpansionPanelContent>
-      <div *ngFor="let voteOption of voteOptions; let index = index" style="display: flex">
-        <div>
-          <div *ngIf="voteConfig.startDate">
-            {{ voteOption.startDate | date:(this.voteConfig.startTime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'):undefined:'de' }}
-            <ng-template [ngIf]="voteConfig.endDate || voteConfig.endTime">
-              {{ voteOption.endDate | date:(this.voteConfig.endTime ? '- dd.MM.yyyy HH:mm' : '- dd.MM.yyyy'):undefined:'de' }}
-            </ng-template>
-          </div>
-          <p class="vote-option-description" *ngIf="this.voteConfig.description">
-            {{ voteOption.description }}
-          </p>
-          <div *ngIf="this.voteConfig.url">
-            <a [href]="voteOption.url">Link</a>
-          </div>
-        </div>
-        <div class="vote-option-buttons">
-          <button
-            mat-icon-button
-            (click)="editVoteOption(index)"
-          >
-            <mat-icon>edit_square</mat-icon>
-          </button>
-          <button
-            mat-icon-button color="warn"
-            (click)="deleteVoteOption(index)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
+  <p>
+    <b> Erstellte Abstimmungsoptionen: {{ voteOptions.length }} </b>
+  </p>
+  <div *ngFor="let voteOption of voteOptions; let index = index" style="display: flex; width: 100%"
+  >
+    <div class="show-vote-options">
+      <div *ngIf="voteConfig.startDate">
+        {{ voteOption.startDate | date:(this.voteConfig.startTime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy'):undefined:'de' }}
+        <ng-template [ngIf]="voteConfig.endDate || voteConfig.endTime">
+          {{ voteOption.endDate | date:(this.voteConfig.endTime ? '- dd.MM.yyyy HH:mm' : '- dd.MM.yyyy'):undefined:'de' }}
+        </ng-template>
       </div>
-    </ng-template>
-  </mat-expansion-panel>
+      <div class="vote-option-description" *ngIf="this.voteConfig.description">
+        {{ voteOption.description }}
+      </div>
+      <div *ngIf="this.voteConfig.url">
+        <a [href]="voteOption.url">Link</a>
+      </div>
+      <div *ngIf="voteOption.participantLimit">
+        Max. Teilnehmerzahl: {{ voteOption.participantLimit }}
+      </div>
+    </div>
+    <div class="vote-option-buttons">
+      <button
+        mat-icon-button
+        (click)="editVoteOption(index)"
+      >
+        <mat-icon>edit_square</mat-icon>
+      </button>
+      <button
+        mat-icon-button color="warn"
+        (click)="deleteVoteOption(index)"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
   <div class="navigate-submit-multiple-button-space">
     <button
       mat-icon-button
