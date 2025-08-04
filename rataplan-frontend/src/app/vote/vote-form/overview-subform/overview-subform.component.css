@@ -12,9 +12,12 @@
     word-wrap: break-word;
 }
 
-
 .vote-option-container {
     display: flex;
     flex-direction: row;
     align-items: baseline;
+}
+
+.show-vote-options{
+    margin-bottom: 1rem;
 }
