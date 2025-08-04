@@ -12,15 +12,27 @@ th {
 
 table {
   border-collapse: collapse;
-  margin-left: auto;
-  margin-right: auto;
   white-space: nowrap;
   border: black;
 }
 
+.result-header-container {
+  width: 100%;
+  margin-left: 20vw;
+  overflow: auto;
+}
+
 .result-container {
+  padding-bottom: 1rem;
+  padding-right: 1rem;
+  width: 100%;
   overflow-x: scroll;
   min-width: 50vw;
+  margin-left: 20vw;
+}
+
+.filter-options {
+  margin-bottom: 3rem;
 }
 
 .participant-column-title {
@@ -61,4 +73,37 @@ th > * {
 .rejected-option {
   background: colors.$iks-red;
   color: white;
+}
+
+.result-header {
+  margin-bottom: 1rem;
+  padding-top: 0.5rem;
+}
+
+.result-title {
+  color: rgba(0, 84, 119, 0.87);
+  display: block;
+  font-family: Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.25px;
+  line-height: 32px;
+}
+
+.result-subtitle {
+  color: rgba(0, 84, 119, 0.54);
+  display: block;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  line-height: 22px;
+}
+
+.result-content {
+  font-family: Roboto, sans-serif;
+}
+
+.result-footer {
+  font-family: Roboto, sans-serif;
 }
