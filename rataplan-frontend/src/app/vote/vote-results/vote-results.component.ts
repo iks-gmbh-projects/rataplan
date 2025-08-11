@@ -62,6 +62,7 @@ export class VoteResultsComponent implements OnInit {
     this.sub = this.store.select(voteResultsFeature.selectVoteResultsState).subscribe(({vote, results, charts}) => {
       if(vote) {
         this.allVoteResults = results;
+        this.rawResults = this.buildRawResults(this.allVoteResults);
         this.vote = vote;
         this.pieChartResults = Object.fromEntries(
           Object.entries(charts)
@@ -81,6 +82,21 @@ export class VoteResultsComponent implements OnInit {
       VoteOptionInfoDialogComponent,
       {data: {voteOption, config: this.vote.voteConfig.voteOptionConfig}},
     );
+  }
+  
+  private buildRawResults(userResults: UserVoteResults[]): Partial<Record<string, Partial<Record<VoteOptionDecisionType, number>>>> {
+    const results: Partial<Record<string, Partial<Record<VoteOptionDecisionType, number>>>> = {};
+    for (const user of userResults) {
+      for (const optionId of Object.keys(user.decisions)) {
+        const decision = user.decisions[optionId];
+        if (decision === undefined) continue;
+        if (!results[optionId]) {
+          results[optionId] = {};
+        }
+        results[optionId]![decision] = (results[optionId]![decision] ?? 0) + 1;
+      }
+    }
+    return results;
   }
   
   getVoteOptionSum(voteOptionId: number) {
