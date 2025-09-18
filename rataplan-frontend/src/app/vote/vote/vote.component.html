@@ -132,7 +132,8 @@
         </ng-template>
       </div>
     </div>
-    <div class="fill-width" *ngIf="!state.preview; else previewButtons">
+  </div>
+    <div class="left-bound" *ngIf="!state.preview; else previewButtons" style="margin-bottom: 1rem">
       <div class="vote-button-container">
         <button
           *ngIf="!hasDeadlinePassed(state.vote)"
@@ -170,4 +171,3 @@
       </div>
     </ng-template>
   </div>
-</div>
