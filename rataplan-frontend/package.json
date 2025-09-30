@@ -8,6 +8,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
+    "e2e": "npx playwright test",
+    "e2e:show-report": "npx playwright show-report",
+    "e2e:ui": "npx playwright test --ui",
+    "e2e:test:homepage": "npx playwright test homepage",
+    "e2e:test:umfragen": "npx playwright test umfragen",
     "heroku-postbuild": "ng build --prod"
   },
   "private": true,
