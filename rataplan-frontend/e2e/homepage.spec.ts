@@ -14,6 +14,22 @@ test('change url on "neue Abstimmung"', async({page}) => {
 });
 
 test.describe('sidenav', () => {
-  // TODO Es gibt ein Burgerbutton-Menü in der oberen linken Ecke der Website.
-  //      Schreibe je einen Test für jeden Menüpunkt, der die URL nach der Navigation überprüft.
+  test.beforeEach(async({page}) => {
+    await page.getByRole('button', {name: 'Toggle sidenav'}).click();
+  });
+  
+  test('change url on  burgerbutton "Abstimmung"', async({page}) => {
+    await page.getByRole('link', {name: 'Abstimmung', exact: true}).click();
+    await expect(page).toHaveURL(/vote\/create\/general/);
+  });
+  
+  test('change url on  burgerbutton "Umfragen"', async({page}) => {
+    await page.getByRole('link', {name: 'Umfragen'}).click();
+    await expect(page).toHaveURL(/survey\/list/);
+  });
+  
+  test('change url on  burgerbutton "Feedback"', async({page}) => {
+    await page.getByRole('link', {name: 'Feedback'}).click();
+    await expect(page).toHaveURL(/feedback/);
+  });
 });
