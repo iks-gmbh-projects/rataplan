@@ -5,7 +5,7 @@ test.beforeEach(async({page}) => {
 });
 
 test('has title', async({page}) => {
-  await expect(page).toHaveTitle(/drumdibum/);
+  await expect(page).toHaveTitle('drumdibum');
 });
 
 test('change url on "neue Abstimmung"', async({page}) => {
