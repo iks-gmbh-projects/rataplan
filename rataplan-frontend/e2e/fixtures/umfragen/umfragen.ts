@@ -17,9 +17,16 @@ export class Umfragen {
   
   async fillNextPage() {
     await this.page.getByRole('textbox', {name: 'Frageblocküberschrift'}).fill('Testfrageblocküberschrift');
-    await this.page.getByRole('textbox', {name: 'Frage'}).fill('Test Frage');
-    await this.page.getByRole('textbox', {name: 'Frage'}).blur();
-    await this.page.getByRole('checkbox', {name: 'Erforderlich'}).click();
+    await this.fillNextQuestion();
+  }
+  
+  async fillNextQuestion() {
+    if(await this.page.getByRole('textbox', {name: 'Frage'}).last().inputValue() !== '') {
+      await this.page.locator('div').filter({hasText: /^add$/}).getByRole('button').click();
+    }
+    await this.page.getByRole('textbox', {name: 'Frage'}).last().fill('Test Frage');
+    await this.page.getByRole('textbox', {name: 'Frage'}).last().blur();
+    await this.page.getByRole('checkbox', {name: 'Erforderlich'}).last().click();
   }
   
   async clickVorschau() {
