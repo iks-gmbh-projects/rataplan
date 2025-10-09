@@ -21,3 +21,13 @@ test('UmfragenFixture Test zweite Seite', async({umfragen, page}) => {
   await umfragen.clickVorschau();
   await expect(page.getByText('TEST', {exact: true})).toBeVisible();
 });
+
+test('UmfragenFixture Test dritte Seite', async({umfragen, page}) => {
+  await umfragen.fillFirstPage();
+  await umfragen.fillNextPage();
+  await umfragen.fillNextPage({fragenblockueberschrift: 'DREI', frage: 'Test Frage 2'});
+  await umfragen.clickVorschau();
+  await expect(page.getByText('Test Frage', {exact: true})).toBeVisible();
+  await page.getByRole('button').filter({hasText: 'navigate_next'}).click();
+  await expect(page.getByText('Test Frage 2', {exact: true})).toBeVisible();
+});

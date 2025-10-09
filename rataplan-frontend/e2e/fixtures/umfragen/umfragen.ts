@@ -35,6 +35,9 @@ export class Umfragen {
     erforderlich?: boolean,
   })
   {
+    if(await this.page.getByRole('textbox', {name: 'Frageblocküberschrift'}).inputValue() !== '') {
+      await this.page.getByRole('button').filter({hasText: 'add'}).nth(1).click();
+    }
     await this.page.getByRole('textbox', {name: 'Frageblocküberschrift'}).fill(data?.fragenblockueberschrift ??
       this.defaults.nextPage.fragenblockueberschrift);
     await this.fillNextQuestion(data);
