@@ -15,8 +15,9 @@ test('UmfragenFixture Test Startseite', async({umfragen, page}) => {
 });
 
 test('UmfragenFixture Test zweite Seite', async({umfragen, page}) => {
-  await umfragen.fillFirstPage();
+  await umfragen.fillFirstPage({umfragename: 'Name', beschreibung: 'Beschreibung'});
   await umfragen.fillNextPage();
+  await umfragen.fillNextQuestion({frage: 'TEST', erforderlich: true});
   await umfragen.clickVorschau();
-  await expect(page.getByText('Test Frage', {exact: true})).toBeVisible();
+  await expect(page.getByText('TEST', {exact: true})).toBeVisible();
 });
