@@ -14,4 +14,15 @@ export class Umfragen {
     await this.page.getByText('30').click();
     await this.page.getByRole('button').filter({hasText: 'navigate_next'}).click();
   }
+  
+  async fillNextPage() {
+    await this.page.getByRole('textbox', {name: 'Frageblocküberschrift'}).fill('Testfrageblocküberschrift');
+    await this.page.getByRole('textbox', {name: 'Frage'}).fill('Test Frage');
+    await this.page.getByRole('textbox', {name: 'Frage'}).blur();
+    await this.page.getByRole('checkbox', {name: 'Erforderlich'}).click();
+  }
+  
+  async clickVorschau() {
+    await this.page.getByRole('button', {name: 'Vorschau'}).click();
+  }
 }
