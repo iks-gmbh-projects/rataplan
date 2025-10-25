@@ -50,6 +50,7 @@
     "@angular-eslint/template-parser": "^18.1.0",
     "@angular/cli": "^18.1.2",
     "@angular/compiler-cli": "^18.1.2",
+    "@cucumber/cucumber": "^12.2.0",
     "@ngrx/store-devtools": "^18.0.1",
     "@playwright/test": "^1.55.1",
     "@types/jasmine": "~3.10.0",
@@ -63,6 +64,7 @@
     "karma-coverage": "~2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
+    "playwright-bdd": "^8.4.1",
     "typescript": "~5.4.5",
     "webpack-bundle-analyzer": "^4.9.0"
   },
