@@ -13,6 +13,7 @@
     "e2e:ui": "npx playwright test --ui",
     "e2e:test:homepage": "npx playwright test homepage",
     "e2e:test:umfragen": "npx playwright test umfragen",
+    "e2e:bddgen": "npx bddgen",
     "heroku-postbuild": "ng build --prod"
   },
   "private": true,
