@@ -24,9 +24,12 @@ Then(/^landet der Benutzer auf der zweiten Seite$/, async function({page}) {
   await umfragenPO.checkSecondPage();
 });
 
-When(/^der Benutzer die zweite Seite ausfüllt$/, async function({umfragen}) {
-  await umfragen.fillNextPage();
-});
+When(
+  /^der Benutzer (?:die|auf der) zweiten? Seite (?:die erste Frage mit "([^"]*)" |)ausfüllt$/,
+  async function({umfragen}, frage: string) {
+    await umfragen.fillNextPage({frage: frage});
+  },
+);
 
 When(/^der Benutzer auf Vorschau klickt$/, async function({umfragen}) {
   await umfragen.clickVorschau();
