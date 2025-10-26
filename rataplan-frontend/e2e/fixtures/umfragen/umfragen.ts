@@ -26,6 +26,9 @@ export class Umfragen {
     await this.page.getByText('21', {exact: true}).click();
     await this.page.getByText('23').click();
     await this.page.getByText('30').click();
+  }
+  
+  async clickNextPage() {
     await this.page.getByRole('button').filter({hasText: 'navigate_next'}).click();
   }
   

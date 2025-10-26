@@ -11,11 +11,13 @@ test.beforeEach(async({navigationToUmfragen, page}) => {
 
 test('UmfragenFixture Test Startseite', async({umfragen, page}) => {
   await umfragen.fillFirstPage();
+  await umfragen.clickNextPage();
   await expect(page.getByRole('textbox', {name: 'Frageblocküberschrift'})).toBeVisible();
 });
 
 test('UmfragenFixture Test zweite Seite', async({umfragen, page}) => {
   await umfragen.fillFirstPage({umfragename: 'Name', beschreibung: 'Beschreibung'});
+  await umfragen.clickNextPage();
   await umfragen.fillNextPage();
   await umfragen.fillNextQuestion({frage: 'TEST', erforderlich: true});
   await umfragen.clickVorschau();
@@ -24,6 +26,7 @@ test('UmfragenFixture Test zweite Seite', async({umfragen, page}) => {
 
 test('UmfragenFixture Test dritte Seite', async({umfragen, page}) => {
   await umfragen.fillFirstPage();
+  await umfragen.clickNextPage();
   await umfragen.fillNextPage();
   await umfragen.fillNextPage({fragenblockueberschrift: 'DREI', frage: 'Test Frage 2'});
   await umfragen.clickVorschau();
