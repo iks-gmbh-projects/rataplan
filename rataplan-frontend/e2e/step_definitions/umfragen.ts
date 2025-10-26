@@ -1,4 +1,5 @@
-import { test, createBdd } from 'playwright-bdd';
+import { createBdd } from 'playwright-bdd';
+import { test } from '../fixtures/mergedFixtures';
 import { UmfragenPo } from '../page_objects/umfragen.po';
 
 const {Given, When, Then} = createBdd(test);
