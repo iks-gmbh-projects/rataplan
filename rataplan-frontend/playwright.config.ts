@@ -15,7 +15,7 @@ import { defineBddConfig } from 'playwright-bdd';
 export default defineConfig({
   testDir: defineBddConfig({
     paths: ['e2e/features'],
-    require: ['e2e/step_definitions/**/*.ts'],
+    require: ['e2e/step_definitions/**/*.ts', 'e2e/fixtures/**/*.ts'],
     outputDir: '.features-gen',
   }),
   /* Run tests in files in parallel */
