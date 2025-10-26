@@ -23,3 +23,16 @@ Then(/^landet der Benutzer auf der zweiten Seite$/, async function({page}) {
   const umfragenPO = new UmfragenPo(page);
   await umfragenPO.checkSecondPage();
 });
+
+When(/^der Benutzer die zweite Seite ausfüllt$/, async function({umfragen}) {
+  await umfragen.fillNextPage();
+});
+
+When(/^der Benutzer auf Vorschau klickt$/, async function({umfragen}) {
+  await umfragen.clickVorschau();
+});
+
+Then(/^ist die Frage "([^"]*)" sichtbar$/, async function({page}, frage: string) {
+  const umfragenPO = new UmfragenPo(page);
+  await umfragenPO.checkQuestionVisible(frage);
+});
