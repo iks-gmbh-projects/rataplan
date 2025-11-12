@@ -7,7 +7,7 @@
 <h1>Hallo!</h1><br><br>
 <p><b th:text="participant"></b> hat an ihrer Terminanfrage <i th:text="${title}"></i> teilgenommen.</p>
 <p>Sie können das vorläufige Ergebnis einsehen:</p>
-<a th:href="@{${url}}" th:text="${url}"></a><br><br><br>
+<a th:href="@{${url} + '/results'}" th:text="${url} + '/results'"></a><br><br><br>
 <p>Vielen Dank, dass Sie drumdibum benutzen.</p>
 </body>
 </html>
