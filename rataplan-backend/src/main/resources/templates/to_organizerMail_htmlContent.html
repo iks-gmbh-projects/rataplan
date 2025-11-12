@@ -5,13 +5,13 @@
   </head>
   <body>
      <h1>Hallo!</h1><br><br>
-     <p>Sie haben soeben eine neue Terminanfrage erstellt.</p>
+     <p>Du hast soeben eine neue Terminanfrage erstellt.</p>
      <p>Jetzt müssen nur noch alle abstimmen:</p>
      <a th:href="@{${url}}" th:text="${url}"></a><br><br><br>
      <th:block th:if="${adminUrl != null}">
-     <p>Falls Sie die Terminanfrage bearbeiten möchten, können Sie dies unter folgendem Link tun:</p>
+     <p>Falls du die Terminanfrage bearbeiten möchtest, kannst du dies unter folgendem Link tun:</p>
      <a th:href="@{${adminUrl}}" th:text="${adminUrl}"></a><br><br>
      </th:block>
-     <p>Vielen Dank, dass Sie drumdibum benutzen.</p>
+     <p>Vielen Dank, dass du drumdibum benutzt.</p>
   </body>
 </html>

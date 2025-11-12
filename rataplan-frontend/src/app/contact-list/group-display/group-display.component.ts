@@ -26,7 +26,7 @@ export class GroupDisplayComponent {
   removeContact(contact: string | number): void {
     this.displayNameService.getDisplayName(contact).pipe(
       switchMap(name => this.dialog.open(ConfirmDialogComponent, {
-        data: `Sind Sie sicher, dass Sie ${name} aus Ihren Kontakten entfernen wollen? (Dies ist gruppenübergreifend)`,
+        data: `Bist du sicher, dass du ${name} aus deinen Kontakten entfernen willst? (Dies ist gruppenübergreifend)`,
       }).afterClosed()),
       filter(v => v),
     ).subscribe(() => this.store.dispatch(contactActions.deleteContact({userId: contact})));

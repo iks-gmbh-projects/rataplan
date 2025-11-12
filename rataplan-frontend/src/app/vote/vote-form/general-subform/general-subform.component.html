@@ -49,7 +49,7 @@
   </mat-form-field>
   <br>
   <div *ngIf="generalSubform.get('decision')?.value != 2">
-    <span>Möchten Sie begrenzen, wie oft Teilnehmer zusagen dürfen?</span>
+    <span>Möchtest du begrenzen, wie oft Teilnehmer zusagen dürfen?</span>
     <mat-radio-group formControlName="yesLimitActive">
       <mat-radio-button style="display: block" [value]=true>Ja</mat-radio-button>
       <mat-radio-button style="display: block" [value]=false (click)="sanitiseYesAnswerLimit()">Nein

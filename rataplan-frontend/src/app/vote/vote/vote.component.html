@@ -72,7 +72,7 @@
     <mat-error [textContent]="errorMessageService.genericFormError(nameField.control)"/>
   </mat-form-field>
   <div *ngIf="!hasDeadlinePassed(state.vote)" class="left-bound" style="margin-bottom: 1rem">
-    <p *ngIf="state.vote.voteConfig.yesLimitActive">Bei dieser Anfrage dürfen Sie zu
+    <p *ngIf="state.vote.voteConfig.yesLimitActive">Bei dieser Anfrage darfst du zu
       maximal {{ state.vote.voteConfig.yesAnswerLimit! }} Optionen zustimmen</p>
     <div *ngFor="let option of (state.vote?.options ?? []); index as voteIndex" class="option-container" #scrollTo>
       <div style="min-width: 40%; max-width: 40%">
