@@ -114,13 +114,18 @@ export class PageComponent {
   }
   
   protected reorder(question: OrderQuestion, event: CdkDragDrop<unknown>): void {
+    // Prevent duplication when dropping element on itself
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+    
     const old = this.indexArray(question);
-    if(event.previousIndex <= event.currentIndex) {
+    if(event.previousIndex < event.currentIndex) {
       this.indexes[question.rank!] = [
         ...old.slice(0, event.previousIndex),
-        ...old.slice(event.previousIndex+1, event.currentIndex),
+        ...old.slice(event.previousIndex+1, event.currentIndex+1),
         old[event.previousIndex],
-        ...old.slice(event.currentIndex),
+        ...old.slice(event.currentIndex+1),
       ];
     } else {
       this.indexes[question.rank!] = [
