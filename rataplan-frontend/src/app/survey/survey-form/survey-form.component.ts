@@ -80,7 +80,7 @@ export class SurveyFormComponent implements OnInit, OnDestroy {
       ).subscribe(({error}: {error: HttpErrorResponse}) => {
         switch(error.status) {
         case 409:
-          this.snackBars.open('Sie haben bereits teilgenommen.', 'OK');
+          this.snackBars.open('Du hast bereits teilgenommen.', 'OK');
           break;
         case 422:
           this.snackBars.open('Hochladen nicht erfolgreich, Antwort oder Umfrage war ungültig.', 'OK');

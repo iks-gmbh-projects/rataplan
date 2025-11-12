@@ -41,7 +41,7 @@ export class ContactListComponent implements OnInit {
   
   removeGroup(group: ContactGroup): void {
     this.dialog.open(ConfirmDialogComponent, {
-      data: `Sind Sie sicher, dass Sie ${group.name} löschen wollen? (Die enthaltenen Kontakte bleiben bestehen)`
+      data: `Bist du sicher, dass du ${group.name} löschen willst? (Die enthaltenen Kontakte bleiben bestehen)`
     }).afterClosed()
       .pipe(
         filter(v => v),
