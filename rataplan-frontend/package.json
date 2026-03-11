@@ -43,7 +43,7 @@
     "@angular-eslint/eslint-plugin-template": "^18.1.0",
     "@angular-eslint/schematics": "^18.1.0",
     "@angular-eslint/template-parser": "^18.1.0",
-    "@angular/cli": "^18.1.2",
+    "@angular/cli": "^21.2.1",
     "@angular/compiler-cli": "^18.1.2",
     "@ngrx/store-devtools": "^18.0.1",
     "@types/jasmine": "~3.10.0",
